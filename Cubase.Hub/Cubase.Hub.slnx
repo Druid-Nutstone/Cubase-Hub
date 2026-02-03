@@ -1,0 +1,5 @@
+<Solution>
+  <Project Path="../Cubase.Hub.Services/Cubase.Hub.Services.csproj" />
+  <Project Path="../Cubse.Hub.Tests/Cubse.Hub.Tests.csproj" />
+  <Project Path="Cubase.Hub.csproj" />
+</Solution>
