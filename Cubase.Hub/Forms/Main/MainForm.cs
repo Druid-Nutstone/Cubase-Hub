@@ -30,7 +30,6 @@ namespace Cubase.Hub.Forms.Main
                         ProjectsControl projectsControl)
         {
             InitializeComponent();
-            ApplyWindows11Look();
             this.projectsControl = projectsControl; 
             this.configurationService = configurationService;
             this.configurationForm = configurationForm;
@@ -38,9 +37,14 @@ namespace Cubase.Hub.Forms.Main
             this.messageService = messageService;
         }
 
+
+
         protected override void OnShown(EventArgs e)
         {
             base.OnShown(e);
+
+            ThemeApplier.ApplyDarkTheme(this);
+
             if (this.configurationService.LoadConfiguration(() => 
             { 
                 this.configurationForm.Configuration = new CubaseHubConfiguration();

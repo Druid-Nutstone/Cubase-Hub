@@ -19,6 +19,9 @@ namespace Cubase.Hub
             // To customize application configuration such as set high DPI settings or default font,
             // see https://aka.ms/applicationconfiguration.
             ApplicationConfiguration.Initialize();
+            Application.SetHighDpiMode(HighDpiMode.PerMonitorV2);
+            Application.EnableVisualStyles();
+            Application.SetCompatibleTextRenderingDefault(false);
             var serviceProvider = InstallServices();
             var form = serviceProvider.GetRequiredService<MainForm>();
             Application.Run(form);
@@ -32,6 +35,10 @@ namespace Cubase.Hub
                 .AddScoped<MainForm>()
                 .AddScoped<ConfigurationForm>()
                 .AddScoped<ProjectsControl>()
+                .AddScoped<CubaseProjectControl>()
+                .AddTransient<CubaseProjectItemControl>()
+                .AddTransient<CubaseProjectExtendedPropertiesControl>()
+                .AddTransient<CubaseProjectItemMixesControl>()
                 .AddSingleton<IMessageService, MessageService>()
                 .AddSingleton<IConfigurationService, ConfigurationService>()
                 .AddSingleton<IDirectoryService, DirectoryService>()

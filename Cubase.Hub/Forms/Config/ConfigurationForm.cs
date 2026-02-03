@@ -26,7 +26,6 @@ namespace Cubase.Hub.Forms.Config
             this.configurationService = configurationService;
             this.messageService = messageService;
             InitializeComponent();
-            ApplyWindows11Look();
             this.ButtonSave.Click += ButtonSave_Click;
             this.AddSourceFolderButton.Click += AddSourceFolderButton_Click;    
         }

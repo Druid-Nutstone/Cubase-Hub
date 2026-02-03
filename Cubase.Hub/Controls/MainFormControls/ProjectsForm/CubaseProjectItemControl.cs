@@ -1,0 +1,109 @@
+﻿using Cubase.Hub.Forms.BaseForm;
+using Cubase.Hub.Services.Models;
+using System;
+using System.Collections.Generic;
+using System.ComponentModel;
+using System.Data;
+using System.Drawing;
+using System.Text;
+using System.Windows.Forms;
+
+namespace Cubase.Hub.Controls.MainFormControls.ProjectsForm
+{
+    public enum CubaseProjectItemControlState
+    {
+        Minimized,
+        Expanded
+    }
+
+    public partial class CubaseProjectItemControl : UserControl
+    {
+        private CubaseProjectItemControlState currentState = CubaseProjectItemControlState.Minimized;
+
+        private CubaseProjectControl? parentCubaseProjectControl = null;
+
+        private CubaseProjectExtendedPropertiesControl extendedPropertiesControl;
+
+        private CubaseProject project;
+
+        public CubaseProjectItemControl(CubaseProjectExtendedPropertiesControl extendedPropertiesControl)
+        {
+            this.extendedPropertiesControl = extendedPropertiesControl; 
+            this.Initialise();
+        }
+
+        public void SetParent(CubaseProjectControl cubaseProjectControl) 
+        { 
+            this.parentCubaseProjectControl = cubaseProjectControl;
+        }
+
+        public void Initialise()
+        {
+            InitializeComponent();
+            
+            this.SecondaryPanel.AutoSize = true;    
+
+            AutoSize = true;                      // 🔑 REQUIRED
+            AutoSizeMode = AutoSizeMode.GrowAndShrink;
+
+            Dock = DockStyle.Fill;
+            this.BorderStyle = BorderStyle.FixedSingle;
+            this.Anchor = AnchorStyles.Top | AnchorStyles.Left | AnchorStyles.Right;    
+            this.Minimise();
+            this.ExpandContractButton.Click += ExpandContractButton_Click;
+            this.ProjectLink.LinkClicked += ProjectLink_LinkClicked;    
+        }
+
+        private void ProjectLink_LinkClicked(object? sender, LinkLabelLinkClickedEventArgs e)
+        {
+            throw new NotImplementedException();
+        }
+
+        private void ExpandContractButton_Click(object? sender, EventArgs e)
+        {
+            if (this.currentState == CubaseProjectItemControlState.Minimized)
+            {
+                this.Expand();
+                this.currentState = CubaseProjectItemControlState.Expanded;
+            }
+            else
+            {
+                this.Minimise();
+                this.currentState = CubaseProjectItemControlState.Minimized;
+            }   
+        }
+
+        private void Minimise()
+        {
+            currentState = CubaseProjectItemControlState.Minimized;
+            ExpandContractButton.Image = Properties.Resources.arrow_down;
+            this.SecondaryPanel.Visible = false;
+            PerformLayout();
+            // Invalidate();
+            this.parentCubaseProjectControl?.PerformLayout();
+        } 
+
+        private void Expand()
+        {
+            currentState = CubaseProjectItemControlState.Expanded;
+            ExpandContractButton.Image = Properties.Resources.arrow_up;
+            this.SecondaryPanel.Visible = true;
+            this.SecondaryPanel.Controls.Clear();
+            this.extendedPropertiesControl.SetProject(project);
+            this.SecondaryPanel.Controls.Add(this.extendedPropertiesControl);
+            // Invalidate();
+            this.SecondaryPanel.PerformLayout();
+            PerformLayout();
+            this.parentCubaseProjectControl?.PerformLayout();
+        }
+
+        public void SetProject(CubaseProject project)
+        {
+           this.FolderLabel.Text = project.FolderPath;
+           this.ProjectLink.Text = Path.GetFileNameWithoutExtension(project.Name);
+           this.ProjectLink.Tag = project.FullPath;
+           this.project = project;  
+
+        }
+    }
+}

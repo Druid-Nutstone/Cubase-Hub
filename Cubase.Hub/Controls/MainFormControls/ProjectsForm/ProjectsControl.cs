@@ -1,5 +1,7 @@
-﻿using Cubase.Hub.Services.Messages;
+﻿using Cubase.Hub.Forms.BaseForm;
+using Cubase.Hub.Services.Messages;
 using Cubase.Hub.Services.Projects;
+using Microsoft.Extensions.DependencyInjection;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -16,17 +18,23 @@ namespace Cubase.Hub.Controls.MainFormControls.ProjectsForm
 
         private readonly IProjectService projectService;
 
+        private readonly IServiceProvider serviceProvider;
+
         public ProjectsControl()
         {
             InitializeComponent();
         }
 
         public ProjectsControl(IMessageService messageService, 
+                               IServiceProvider serviceProvider,
                                IProjectService projectService)
         {
+            this.serviceProvider = serviceProvider;
             this.messageService = messageService;   
             this.projectService = projectService;
             InitializeComponent();
+            this.toolStrip.BackColor = DarkTheme.BackColor;
+            this.HideIndex();
         }
 
         public void LoadProjects()
@@ -38,9 +46,39 @@ namespace Cubase.Hub.Controls.MainFormControls.ProjectsForm
             });  
             if (projects != null)
             {
-                // todo do something with the project list !!
+                var projectPanel = this.GetInstanceOf<CubaseProjectControl>();
+                this.PopulateDataPanel(projectPanel);
+                projectPanel.SuspendLayout();
+                foreach (var project in projects)
+                {
+                    var projectItem =  this.GetInstanceOf<CubaseProjectItemControl>();
+                    projectItem.SetProject(project);
+                    projectPanel.AddProjectItem(projectItem);
+                }
+                projectPanel.ResumeLayout();
             }
             this.messageService.ShowMessage("Projects loaded.", false);
+        }
+
+        private void HideIndex()
+        {
+            this.IndexPanel.Visible = false;
+        }
+
+        private void ShowIndex()
+        {
+            this.IndexPanel.Visible = true;
+        }
+
+        private T GetInstanceOf<T>()
+        {
+            return this.serviceProvider.GetService<T>();
+        }
+
+        private void PopulateDataPanel(Control userControl) 
+        {
+            this.DataPanel.Controls.Clear();
+            this.DataPanel.Controls.Add(userControl);
         }
     }
 }

@@ -77,7 +77,8 @@
             Controls.Add(menuStrip1);
             MainMenuStrip = menuStrip1;
             Name = "MainForm";
-            Text = "MainForm";
+            StartPosition = FormStartPosition.CenterScreen;
+            Text = "Cubase Better Hub";
             StatusStrip.ResumeLayout(false);
             StatusStrip.PerformLayout();
             ResumeLayout(false);
