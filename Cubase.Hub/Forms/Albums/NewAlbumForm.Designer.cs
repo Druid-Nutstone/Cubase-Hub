@@ -34,6 +34,7 @@
             AlbumDetails = new GroupBox();
             panel1 = new Panel();
             CreateAlbumButton = new Button();
+            AlbumTitle = new TextBox();
             AlbumDetails.SuspendLayout();
             panel1.SuspendLayout();
             SuspendLayout();
@@ -44,9 +45,9 @@
             label1.Font = new Font("Segoe UI", 9F, FontStyle.Bold);
             label1.Location = new Point(22, 33);
             label1.Name = "label1";
-            label1.Size = new Size(176, 20);
+            label1.Size = new Size(91, 20);
             label1.TabIndex = 0;
-            label1.Text = "Album Parent Directory";
+            label1.Text = "Album Title";
             // 
             // SourceFoldersListBox
             // 
@@ -69,6 +70,7 @@
             // AlbumDetails
             // 
             AlbumDetails.Anchor = AnchorStyles.Top | AnchorStyles.Left | AnchorStyles.Right;
+            AlbumDetails.Controls.Add(AlbumTitle);
             AlbumDetails.Controls.Add(label1);
             AlbumDetails.Location = new Point(22, 162);
             AlbumDetails.Name = "AlbumDetails";
@@ -94,6 +96,13 @@
             CreateAlbumButton.TabIndex = 0;
             CreateAlbumButton.Text = "Create Album";
             CreateAlbumButton.UseVisualStyleBackColor = true;
+            // 
+            // AlbumTitle
+            // 
+            AlbumTitle.Location = new Point(22, 56);
+            AlbumTitle.Name = "AlbumTitle";
+            AlbumTitle.Size = new Size(399, 27);
+            AlbumTitle.TabIndex = 1;
             // 
             // NewAlbumForm
             // 
@@ -122,5 +131,6 @@
         private GroupBox AlbumDetails;
         private Panel panel1;
         private Button CreateAlbumButton;
+        private TextBox AlbumTitle;
     }
 }
