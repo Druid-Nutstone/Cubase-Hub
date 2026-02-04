@@ -18,5 +18,7 @@ namespace Cubase.Hub.Services
         public static string ConfigurationFileName = Path.Combine(UserAppDataFolderPath, "CubaseHub.json");
 
         public static string CubaseFileExtension = ".cpr";  
+
+        public static string CubaseAlbumFileExtension = ".cba";
     }
 }

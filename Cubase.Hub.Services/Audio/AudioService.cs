@@ -2,9 +2,9 @@
 using System.Collections.Generic;
 using System.Text;
 
-namespace Cubase.Hub.Models
+namespace Cubase.Hub.Services.Audio
 {
-    public class CubaseProject
+    public class AudioService : IAudioService
     {
     }
 }

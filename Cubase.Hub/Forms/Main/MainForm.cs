@@ -1,6 +1,7 @@
 ﻿using Cubase.Hub.Controls.MainFormControls.ProjectsForm;
 using Cubase.Hub.Forms.BaseForm;
 using Cubase.Hub.Forms.Config;
+using Cubase.Hub.Forms.Main.Menu;
 using Cubase.Hub.Services.Config;
 using Cubase.Hub.Services.Messages;
 using Cubase.Hub.Services.Models;
@@ -24,27 +25,30 @@ namespace Cubase.Hub.Forms.Main
 
         private readonly ConfigurationForm configurationForm;
 
+        private MenuContent menuContent;
+
         public MainForm(IMessageService messageService,
                         ConfigurationForm configurationForm,
                         IConfigurationService configurationService,
+                        MenuContent menuContent,
                         ProjectsControl projectsControl)
         {
             InitializeComponent();
             this.projectsControl = projectsControl; 
+            this.menuContent = menuContent;
             this.configurationService = configurationService;
             this.configurationForm = configurationForm;
             messageService.RegisterForMessages(this.OnMessageReceived); 
             this.messageService = messageService;
+            this.MainMenu.Renderer = new DarkToolStripRenderer();
+            menuContent.Initialise(this.MainMenu, this);
+            ThemeApplier.ApplyDarkTheme(this);
         }
 
 
 
         protected override void OnShown(EventArgs e)
         {
-            base.OnShown(e);
-
-            ThemeApplier.ApplyDarkTheme(this);
-
             if (this.configurationService.LoadConfiguration(() => 
             { 
                 this.configurationForm.Configuration = new CubaseHubConfiguration();
@@ -68,8 +72,10 @@ namespace Cubase.Hub.Forms.Main
 
         private void LoadProjects()
         {
+            this.SuspendLayout();
             this.LoadControl(this.projectsControl);
             this.projectsControl.LoadProjects();
+            this.ResumeLayout();
         }
 
         private void LoadControl(Control control)

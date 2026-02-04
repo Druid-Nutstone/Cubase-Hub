@@ -28,17 +28,35 @@
         /// </summary>
         private void InitializeComponent()
         {
+            Mixes = new GroupBox();
             SuspendLayout();
+            // 
+            // Mixes
+            // 
+            Mixes.AutoSize = true;
+            Mixes.Dock = DockStyle.Top;
+            Mixes.ForeColor = SystemColors.Control;
+            Mixes.Location = new Point(0, 0);
+            Mixes.Name = "Mixes";
+            Mixes.Size = new Size(400, 5);
+            Mixes.TabIndex = 0;
+            Mixes.TabStop = false;
+            Mixes.Text = "Mixes";
             // 
             // CubaseProjectExtendedPropertiesControl
             // 
             AutoScaleDimensions = new SizeF(8F, 20F);
             AutoScaleMode = AutoScaleMode.Font;
+            AutoSize = true;
+            Controls.Add(Mixes);
             Name = "CubaseProjectExtendedPropertiesControl";
-            Size = new Size(519, 200);
+            Size = new Size(400, 279);
             ResumeLayout(false);
+            PerformLayout();
         }
 
         #endregion
+
+        private GroupBox Mixes;
     }
 }

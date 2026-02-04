@@ -22,9 +22,9 @@ namespace Cubase.Hub.Controls.MainFormControls.ProjectsForm
 
         public void SetProject(CubaseProject project)
         {
-            this.Controls.Clear();
+            this.Mixes.Controls.Clear();
             this.cubaseProjectItemMixesControl.SetMixes(project.Mixes);
-            this.Controls.Add(this.cubaseProjectItemMixesControl);
+            this.Mixes.Controls.Add(this.cubaseProjectItemMixesControl);
         }
     }
 }

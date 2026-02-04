@@ -29,8 +29,11 @@
         private void InitializeComponent()
         {
             IndexPanel = new Panel();
-            toolStrip = new ToolStrip();
-            DataPanel = new DarkScrollPanel();
+            MenuPanel = new Panel();
+            ProjectSearch = new Cubase.Hub.Controls.MainFormControls.ProjectsControl.Search.ProjectSearch();
+            SeperatorPanel = new Panel();
+            DataPanel = new Panel();
+            MenuPanel.SuspendLayout();
             SuspendLayout();
             // 
             // IndexPanel
@@ -41,43 +44,59 @@
             IndexPanel.Size = new Size(125, 445);
             IndexPanel.TabIndex = 0;
             // 
-            // toolStrip
+            // MenuPanel
             // 
-            toolStrip.BackColor = SystemColors.ActiveCaptionText;
-            toolStrip.ImageScalingSize = new Size(20, 20);
-            toolStrip.Location = new Point(125, 0);
-            toolStrip.Name = "toolStrip";
-            toolStrip.Size = new Size(502, 25);
-            toolStrip.TabIndex = 1;
-            toolStrip.Text = "toolSrtip";
+            MenuPanel.Controls.Add(ProjectSearch);
+            MenuPanel.Dock = DockStyle.Top;
+            MenuPanel.Location = new Point(125, 0);
+            MenuPanel.Name = "MenuPanel";
+            MenuPanel.Size = new Size(502, 51);
+            MenuPanel.TabIndex = 3;
+            // 
+            // ProjectSearch
+            // 
+            ProjectSearch.Anchor = AnchorStyles.Top | AnchorStyles.Right;
+            ProjectSearch.Location = new Point(178, 6);
+            ProjectSearch.Name = "ProjectSearch";
+            ProjectSearch.Size = new Size(321, 39);
+            ProjectSearch.TabIndex = 0;
+            // 
+            // SeperatorPanel
+            // 
+            SeperatorPanel.Dock = DockStyle.Top;
+            SeperatorPanel.Location = new Point(125, 51);
+            SeperatorPanel.Name = "SeperatorPanel";
+            SeperatorPanel.Size = new Size(502, 10);
+            SeperatorPanel.TabIndex = 4;
             // 
             // DataPanel
             // 
-            DataPanel.AutoScroll = true;
-            DataPanel.BackColor = Color.FromArgb(37, 37, 38);
             DataPanel.Dock = DockStyle.Fill;
-            DataPanel.Location = new Point(125, 25);
+            DataPanel.Location = new Point(125, 61);
             DataPanel.Name = "DataPanel";
-            DataPanel.Size = new Size(502, 420);
-            DataPanel.TabIndex = 2;
+            DataPanel.Size = new Size(502, 384);
+            DataPanel.TabIndex = 5;
             // 
             // ProjectsControl
             // 
             AutoScaleDimensions = new SizeF(8F, 20F);
             AutoScaleMode = AutoScaleMode.Font;
             Controls.Add(DataPanel);
-            Controls.Add(toolStrip);
+            Controls.Add(SeperatorPanel);
+            Controls.Add(MenuPanel);
             Controls.Add(IndexPanel);
             Name = "ProjectsControl";
             Size = new Size(627, 445);
+            MenuPanel.ResumeLayout(false);
             ResumeLayout(false);
-            PerformLayout();
         }
 
         #endregion
 
         private Panel IndexPanel;
-        private ToolStrip toolStrip;
-        private DarkScrollPanel DataPanel;
+        private Panel MenuPanel;
+        private Panel SeperatorPanel;
+        private Panel DataPanel;
+        private MainFormControls.ProjectsControl.Search.ProjectSearch ProjectSearch;
     }
 }

@@ -27,7 +27,22 @@ namespace Cubase.Hub.Forms.Config
             this.messageService = messageService;
             InitializeComponent();
             this.ButtonSave.Click += ButtonSave_Click;
-            this.AddSourceFolderButton.Click += AddSourceFolderButton_Click;    
+            this.AddSourceFolderButton.Click += AddSourceFolderButton_Click;
+            this.BrowseCubaseExeButton.Click += BrowseCubaseExeButton_Click;
+            ThemeApplier.ApplyDarkTheme(this);
+        }
+
+        private void BrowseCubaseExeButton_Click(object? sender, EventArgs e)
+        {
+            var fileDialog = new OpenFileDialog();
+            fileDialog.Filter = "Cubase Executable|*.exe";
+            fileDialog.Title = "Select Cubase Executable";  
+            fileDialog.InitialDirectory = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ProgramFiles), "Steinberg");    
+            var result = fileDialog.ShowDialog();
+            if (result == DialogResult.OK)
+            {
+                this.CubaseExeLocation.Text = fileDialog.FileName;
+            }
         }
 
         private void AddSourceFolderButton_Click(object? sender, EventArgs e)
@@ -44,6 +59,7 @@ namespace Cubase.Hub.Forms.Config
         {
             this.DialogResult = DialogResult.OK;
             this.Configuration.SourceCubaseFolders = new List<string>(SourceCubaseFolders.Text.Split(new char[] { ';' }, StringSplitOptions.RemoveEmptyEntries));   
+            this.Configuration.CubaseExeLocation = this.CubaseExeLocation.Text;
             this.configurationService.SaveConfiguration(this.Configuration, () => 
             { 
                 this.messageService.ShowError("An error occurred while saving the configuration. Please try again.");
@@ -61,9 +77,14 @@ namespace Cubase.Hub.Forms.Config
         {
             if (this.Configuration == null)
             {
-                throw new Exception("No config model has been passed to the ConfigurationForm");   
+                this.Configuration = this.configurationService.Configuration;
+                if (this.Configuration == null)
+                {
+                    throw new Exception("No config model has been passed to the ConfigurationForm");
+                }
             }
             SourceCubaseFolders.Text = string.Join(";", this.Configuration.SourceCubaseFolders);
+            CubaseExeLocation.Text = this.Configuration.CubaseExeLocation;
         }
     }
 }

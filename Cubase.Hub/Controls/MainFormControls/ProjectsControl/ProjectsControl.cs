@@ -1,5 +1,7 @@
-﻿using Cubase.Hub.Forms.BaseForm;
+﻿using Cubase.Hub.Controls.MainFormControls.ProjectsControl;
+using Cubase.Hub.Forms.BaseForm;
 using Cubase.Hub.Services.Messages;
+using Cubase.Hub.Services.Models;
 using Cubase.Hub.Services.Projects;
 using Microsoft.Extensions.DependencyInjection;
 using System;
@@ -20,6 +22,10 @@ namespace Cubase.Hub.Controls.MainFormControls.ProjectsForm
 
         private readonly IServiceProvider serviceProvider;
 
+        private CubaseProjectCollection projects;
+
+        private CubaseProjectControl projectPanel;
+
         public ProjectsControl()
         {
             InitializeComponent();
@@ -33,31 +39,55 @@ namespace Cubase.Hub.Controls.MainFormControls.ProjectsForm
             this.messageService = messageService;   
             this.projectService = projectService;
             InitializeComponent();
-            this.toolStrip.BackColor = DarkTheme.BackColor;
+            this.ProjectSearch.OnSearchTextChanged += ProjectFilterTextChanged;
+            this.DataPanel.AutoScroll = true;
+            this.SeperatorPanel.Height = 2;
+            this.SeperatorPanel.BorderStyle = BorderStyle.FixedSingle;
             this.HideIndex();
         }
 
+        private void ProjectFilterTextChanged(string text)
+        {
+            projectPanel.ClearProjects();
+            if (text.Length == 0)
+            {
+                this.PopulateProjects(this.projects);
+            }
+            else
+            {
+                if (text.Length >= 3)
+                {
+                    this.PopulateProjects(this.projects.FilteredCollection(text));
+                }
+            }
+        }
+        
         public void LoadProjects()
         {
+            this.SuspendLayout();
             this.messageService.ShowMessage("Loading projects...", true);
-            var projects = this.projectService.LoadProjects((err) => 
+            this.projects = this.projectService.LoadProjects((err) => 
             { 
                 this.messageService.ShowError($"Error loading projects: {err}");   
             });  
-            if (projects != null)
+            if (this.projects != null)
             {
-                var projectPanel = this.GetInstanceOf<CubaseProjectControl>();
+                projectPanel = this.GetInstanceOf<CubaseProjectControl>();
                 this.PopulateDataPanel(projectPanel);
-                projectPanel.SuspendLayout();
-                foreach (var project in projects)
-                {
-                    var projectItem =  this.GetInstanceOf<CubaseProjectItemControl>();
-                    projectItem.SetProject(project);
-                    projectPanel.AddProjectItem(projectItem);
-                }
-                projectPanel.ResumeLayout();
+                this.PopulateProjects(projects);
             }
+            this.ResumeLayout();
             this.messageService.ShowMessage("Projects loaded.", false);
+        }
+
+        private void PopulateProjects(CubaseProjectCollection cubaseProjects) 
+        {
+            foreach (var project in cubaseProjects)
+            {
+                var projectItem = this.GetInstanceOf<CubaseProjectItemControl>();
+                projectItem.SetProject(project);
+                projectPanel.AddProjectItem(projectItem);
+            }
         }
 
         private void HideIndex()

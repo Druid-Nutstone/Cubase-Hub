@@ -1,8 +1,10 @@
-﻿using System;
+﻿using Cubase.Hub.Controls.HorizontalLine;
+using Cubase.Hub.Controls.MainFormControls.ProjectsForm;
+using System;
 using System.Collections.Generic;
 using System.Text;
 
-namespace Cubase.Hub.Controls.MainFormControls.ProjectsForm
+namespace Cubase.Hub.Controls.MainFormControls.ProjectsControl
 {
     public class CubaseProjectControl : TableLayoutPanel
     {
@@ -22,6 +24,13 @@ namespace Cubase.Hub.Controls.MainFormControls.ProjectsForm
             Padding = new Padding(10);
         }
 
+        public void ClearProjects()
+        {
+            this.Controls.Clear();
+            this.RowStyles.Clear();
+            this.RowCount = 0;
+        }
+        
         public void AddProjectItem(CubaseProjectItemControl item) 
         {
             // Add a new row
@@ -38,6 +47,19 @@ namespace Cubase.Hub.Controls.MainFormControls.ProjectsForm
 
             item.SetParent(this);
 
+            this.AddHorizontalLine();
+
+        }
+
+        private void AddHorizontalLine()
+        {
+            this.RowCount++;
+
+            // Ensure row style (optional, so rows auto-size)
+            this.RowStyles.Add(new RowStyle(SizeType.AutoSize));
+
+            // Add the control to the new row
+            this.Controls.Add(new HrControl(), 0, this.RowCount - 1);
         }
     }
 }

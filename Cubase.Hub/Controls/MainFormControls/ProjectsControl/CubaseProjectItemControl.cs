@@ -1,4 +1,6 @@
-﻿using Cubase.Hub.Forms.BaseForm;
+﻿using Cubase.Hub.Controls.MainFormControls.ProjectsControl;
+using Cubase.Hub.Forms.BaseForm;
+using Cubase.Hub.Services.Cubase;
 using Cubase.Hub.Services.Models;
 using System;
 using System.Collections.Generic;
@@ -24,11 +26,15 @@ namespace Cubase.Hub.Controls.MainFormControls.ProjectsForm
 
         private CubaseProjectExtendedPropertiesControl extendedPropertiesControl;
 
+        private readonly ICubaseService cubaseService;
+
         private CubaseProject project;
 
-        public CubaseProjectItemControl(CubaseProjectExtendedPropertiesControl extendedPropertiesControl)
+        public CubaseProjectItemControl(CubaseProjectExtendedPropertiesControl extendedPropertiesControl, 
+                                        ICubaseService cubaseService)
         {
             this.extendedPropertiesControl = extendedPropertiesControl; 
+            this.cubaseService = cubaseService; 
             this.Initialise();
         }
 
@@ -47,16 +53,16 @@ namespace Cubase.Hub.Controls.MainFormControls.ProjectsForm
             AutoSizeMode = AutoSizeMode.GrowAndShrink;
 
             Dock = DockStyle.Fill;
-            this.BorderStyle = BorderStyle.FixedSingle;
+            // this.BorderStyle = BorderStyle.FixedSingle;
             this.Anchor = AnchorStyles.Top | AnchorStyles.Left | AnchorStyles.Right;    
             this.Minimise();
             this.ExpandContractButton.Click += ExpandContractButton_Click;
-            this.ProjectLink.LinkClicked += ProjectLink_LinkClicked;    
+            this.ProjectLink.Click += ProjectLink_LinkClicked;    
         }
 
-        private void ProjectLink_LinkClicked(object? sender, LinkLabelLinkClickedEventArgs e)
+        private void ProjectLink_LinkClicked(object? sender, EventArgs e)
         {
-            throw new NotImplementedException();
+            this.cubaseService.OpenCubaseProject(this.ProjectLink.Tag?.ToString() ?? string.Empty);
         }
 
         private void ExpandContractButton_Click(object? sender, EventArgs e)

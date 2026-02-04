@@ -123,6 +123,11 @@ namespace Cubase.Hub.Forms.BaseForm
             if (control is Panel or TableLayoutPanel)
                 control.BackColor = DarkTheme.PanelColor;
 
+            if (control is SplitContainer splitter)
+            {
+                splitter.BackColor = DarkTheme.ControlColor;
+            }
+
             if (control is TextBox tb)
             {
                 tb.BorderStyle = BorderStyle.FixedSingle;

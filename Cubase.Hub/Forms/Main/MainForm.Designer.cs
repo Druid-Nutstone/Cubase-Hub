@@ -28,21 +28,21 @@
         /// </summary>
         private void InitializeComponent()
         {
-            menuStrip1 = new MenuStrip();
+            MainMenu = new MenuStrip();
             StatusStrip = new StatusStrip();
             StatusMessage = new ToolStripStatusLabel();
             ControlPanel = new Panel();
             StatusStrip.SuspendLayout();
             SuspendLayout();
             // 
-            // menuStrip1
+            // MainMenu
             // 
-            menuStrip1.ImageScalingSize = new Size(20, 20);
-            menuStrip1.Location = new Point(0, 0);
-            menuStrip1.Name = "menuStrip1";
-            menuStrip1.Size = new Size(800, 24);
-            menuStrip1.TabIndex = 0;
-            menuStrip1.Text = "MainMenu";
+            MainMenu.ImageScalingSize = new Size(20, 20);
+            MainMenu.Location = new Point(0, 0);
+            MainMenu.Name = "MainMenu";
+            MainMenu.Size = new Size(800, 28);
+            MainMenu.TabIndex = 0;
+            MainMenu.Text = "MainMenu";
             // 
             // StatusStrip
             // 
@@ -62,9 +62,9 @@
             // ControlPanel
             // 
             ControlPanel.Dock = DockStyle.Fill;
-            ControlPanel.Location = new Point(0, 24);
+            ControlPanel.Location = new Point(0, 28);
             ControlPanel.Name = "ControlPanel";
-            ControlPanel.Size = new Size(800, 400);
+            ControlPanel.Size = new Size(800, 396);
             ControlPanel.TabIndex = 2;
             // 
             // MainForm
@@ -74,8 +74,8 @@
             ClientSize = new Size(800, 450);
             Controls.Add(ControlPanel);
             Controls.Add(StatusStrip);
-            Controls.Add(menuStrip1);
-            MainMenuStrip = menuStrip1;
+            Controls.Add(MainMenu);
+            MainMenuStrip = MainMenu;
             Name = "MainForm";
             StartPosition = FormStartPosition.CenterScreen;
             Text = "Cubase Better Hub";
@@ -87,7 +87,7 @@
 
         #endregion
 
-        private MenuStrip menuStrip1;
+        private MenuStrip MainMenu;
         private StatusStrip StatusStrip;
         private ToolStripStatusLabel StatusMessage;
         private Panel ControlPanel;

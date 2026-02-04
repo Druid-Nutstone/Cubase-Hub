@@ -33,7 +33,12 @@
             label1 = new Label();
             SourceCubaseFolders = new TextBox();
             AddSourceFolderButton = new Button();
+            panel2 = new Panel();
+            label2 = new Label();
+            CubaseExeLocation = new TextBox();
+            BrowseCubaseExeButton = new Button();
             panel1.SuspendLayout();
+            panel2.SuspendLayout();
             SuspendLayout();
             // 
             // panel1
@@ -58,7 +63,7 @@
             // 
             label1.AutoSize = true;
             label1.Font = new Font("Segoe UI", 9F, FontStyle.Bold);
-            label1.Location = new Point(34, 26);
+            label1.Location = new Point(22, 27);
             label1.Name = "label1";
             label1.Size = new Size(165, 20);
             label1.TabIndex = 1;
@@ -66,34 +71,73 @@
             // 
             // SourceCubaseFolders
             // 
-            SourceCubaseFolders.Location = new Point(34, 49);
+            SourceCubaseFolders.Location = new Point(22, 50);
             SourceCubaseFolders.Name = "SourceCubaseFolders";
-            SourceCubaseFolders.Size = new Size(638, 27);
+            SourceCubaseFolders.Size = new Size(666, 27);
             SourceCubaseFolders.TabIndex = 2;
             // 
             // AddSourceFolderButton
             // 
-            AddSourceFolderButton.Location = new Point(678, 48);
+            AddSourceFolderButton.Location = new Point(694, 50);
             AddSourceFolderButton.Name = "AddSourceFolderButton";
             AddSourceFolderButton.Size = new Size(94, 29);
             AddSourceFolderButton.TabIndex = 3;
             AddSourceFolderButton.Text = "Add";
             AddSourceFolderButton.UseVisualStyleBackColor = true;
             // 
+            // panel2
+            // 
+            panel2.Controls.Add(BrowseCubaseExeButton);
+            panel2.Controls.Add(CubaseExeLocation);
+            panel2.Controls.Add(label2);
+            panel2.Controls.Add(label1);
+            panel2.Controls.Add(AddSourceFolderButton);
+            panel2.Controls.Add(SourceCubaseFolders);
+            panel2.Dock = DockStyle.Fill;
+            panel2.Location = new Point(0, 0);
+            panel2.Name = "panel2";
+            panel2.Size = new Size(800, 398);
+            panel2.TabIndex = 4;
+            // 
+            // label2
+            // 
+            label2.AutoSize = true;
+            label2.Font = new Font("Segoe UI", 9F, FontStyle.Bold);
+            label2.Location = new Point(22, 108);
+            label2.Name = "label2";
+            label2.Size = new Size(151, 20);
+            label2.TabIndex = 4;
+            label2.Text = "Cubase Exe Location";
+            // 
+            // CubaseExeLocation
+            // 
+            CubaseExeLocation.Location = new Point(22, 131);
+            CubaseExeLocation.Name = "CubaseExeLocation";
+            CubaseExeLocation.Size = new Size(666, 27);
+            CubaseExeLocation.TabIndex = 5;
+            // 
+            // BrowseCubaseExeButton
+            // 
+            BrowseCubaseExeButton.Location = new Point(694, 131);
+            BrowseCubaseExeButton.Name = "BrowseCubaseExeButton";
+            BrowseCubaseExeButton.Size = new Size(94, 29);
+            BrowseCubaseExeButton.TabIndex = 6;
+            BrowseCubaseExeButton.Text = "Browse";
+            BrowseCubaseExeButton.UseVisualStyleBackColor = true;
+            // 
             // ConfigurationForm
             // 
             AutoScaleDimensions = new SizeF(8F, 20F);
             AutoScaleMode = AutoScaleMode.Font;
             ClientSize = new Size(800, 450);
-            Controls.Add(AddSourceFolderButton);
-            Controls.Add(SourceCubaseFolders);
-            Controls.Add(label1);
+            Controls.Add(panel2);
             Controls.Add(panel1);
             Name = "ConfigurationForm";
             Text = "ConfigurationForm";
             panel1.ResumeLayout(false);
+            panel2.ResumeLayout(false);
+            panel2.PerformLayout();
             ResumeLayout(false);
-            PerformLayout();
         }
 
         #endregion
@@ -103,5 +147,9 @@
         private Label label1;
         private TextBox SourceCubaseFolders;
         private Button AddSourceFolderButton;
+        private Panel panel2;
+        private Label label2;
+        private Button BrowseCubaseExeButton;
+        private TextBox CubaseExeLocation;
     }
 }
