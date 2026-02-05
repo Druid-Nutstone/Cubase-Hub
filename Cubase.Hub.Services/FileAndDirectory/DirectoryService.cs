@@ -1,4 +1,6 @@
-﻿using System;
+﻿using Cubase.Hub.Services.Config;
+using Cubase.Hub.Services.Models;
+using System;
 using System.Collections.Generic;
 using System.Text;
 
@@ -6,6 +8,48 @@ namespace Cubase.Hub.Services.FileAndDirectory
 {
     public class DirectoryService : IDirectoryService
     {
+        
+        public DirectoryService()
+        {
+        }
+
+        public List<Template> GetCubaseTemplates(List<string> cubaseTemplates)
+        {
+            var templateCollection = new List<Template>();
+            foreach (var dir in cubaseTemplates)
+            {
+                templateCollection.AddRange(
+                    Directory.GetFiles(dir,
+                                       $"*{CubaseHubConstants.CubaseFileExtension}",
+                                       SearchOption.AllDirectories
+                                       ).Select(x => new Template()
+                                       {
+                                           TemplateLocation = x,
+                                           TemplateName = Path.GetFileNameWithoutExtension(x)
+                                       })
+                );
+            }
+            return templateCollection;
+        }
+
+        public List<AlbumLocation> GetCubaseAlbums(List<string> cubaseDirectories)
+        {
+            var albumCollection = new List<AlbumLocation>();
+            foreach (var dir in cubaseDirectories)
+            {
+                albumCollection.AddRange(Directory.GetFiles(
+                    dir,
+                    $"*{CubaseHubConstants.CubaseAlbumFileExtension}",
+                    SearchOption.AllDirectories
+                ).Select(x => new AlbumLocation() 
+                { 
+                    AlbumPath = Directory.GetParent(x).FullName, 
+                    AlbumName = Path.GetFileName(Path.GetDirectoryName(x))
+                }));
+            }
+            return albumCollection;
+        }
+        
         public List<string> GetCubaseProjects(string sourceFolderPath)
         {
             var files = Directory.GetFiles(

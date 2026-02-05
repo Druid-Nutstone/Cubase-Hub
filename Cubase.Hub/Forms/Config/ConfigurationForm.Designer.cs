@@ -34,9 +34,15 @@
             SourceCubaseFolders = new TextBox();
             AddSourceFolderButton = new Button();
             panel2 = new Panel();
-            label2 = new Label();
-            CubaseExeLocation = new TextBox();
+            label3 = new Label();
             BrowseCubaseExeButton = new Button();
+            CubaseExeLocation = new TextBox();
+            label2 = new Label();
+            CubaseUserTemplateLocation = new TextBox();
+            BrowseUserTemplateLocationButton = new Button();
+            BrowseCubaseTemplateButton = new Button();
+            CubaseTemplateLocation = new TextBox();
+            label4 = new Label();
             panel1.SuspendLayout();
             panel2.SuspendLayout();
             SuspendLayout();
@@ -87,6 +93,12 @@
             // 
             // panel2
             // 
+            panel2.Controls.Add(BrowseCubaseTemplateButton);
+            panel2.Controls.Add(CubaseTemplateLocation);
+            panel2.Controls.Add(label4);
+            panel2.Controls.Add(BrowseUserTemplateLocationButton);
+            panel2.Controls.Add(CubaseUserTemplateLocation);
+            panel2.Controls.Add(label3);
             panel2.Controls.Add(BrowseCubaseExeButton);
             panel2.Controls.Add(CubaseExeLocation);
             panel2.Controls.Add(label2);
@@ -99,6 +111,32 @@
             panel2.Size = new Size(800, 398);
             panel2.TabIndex = 4;
             // 
+            // label3
+            // 
+            label3.AutoSize = true;
+            label3.Font = new Font("Segoe UI", 9F, FontStyle.Bold);
+            label3.Location = new Point(22, 195);
+            label3.Name = "label3";
+            label3.Size = new Size(228, 20);
+            label3.TabIndex = 7;
+            label3.Text = "Cubase User Template Location";
+            // 
+            // BrowseCubaseExeButton
+            // 
+            BrowseCubaseExeButton.Location = new Point(694, 131);
+            BrowseCubaseExeButton.Name = "BrowseCubaseExeButton";
+            BrowseCubaseExeButton.Size = new Size(94, 29);
+            BrowseCubaseExeButton.TabIndex = 6;
+            BrowseCubaseExeButton.Text = "Browse";
+            BrowseCubaseExeButton.UseVisualStyleBackColor = true;
+            // 
+            // CubaseExeLocation
+            // 
+            CubaseExeLocation.Location = new Point(22, 131);
+            CubaseExeLocation.Name = "CubaseExeLocation";
+            CubaseExeLocation.Size = new Size(666, 27);
+            CubaseExeLocation.TabIndex = 5;
+            // 
             // label2
             // 
             label2.AutoSize = true;
@@ -109,21 +147,47 @@
             label2.TabIndex = 4;
             label2.Text = "Cubase Exe Location";
             // 
-            // CubaseExeLocation
+            // CubaseUserTemplateLocation
             // 
-            CubaseExeLocation.Location = new Point(22, 131);
-            CubaseExeLocation.Name = "CubaseExeLocation";
-            CubaseExeLocation.Size = new Size(666, 27);
-            CubaseExeLocation.TabIndex = 5;
+            CubaseUserTemplateLocation.Location = new Point(22, 218);
+            CubaseUserTemplateLocation.Name = "CubaseUserTemplateLocation";
+            CubaseUserTemplateLocation.Size = new Size(666, 27);
+            CubaseUserTemplateLocation.TabIndex = 8;
             // 
-            // BrowseCubaseExeButton
+            // BrowseUserTemplateLocationButton
             // 
-            BrowseCubaseExeButton.Location = new Point(694, 131);
-            BrowseCubaseExeButton.Name = "BrowseCubaseExeButton";
-            BrowseCubaseExeButton.Size = new Size(94, 29);
-            BrowseCubaseExeButton.TabIndex = 6;
-            BrowseCubaseExeButton.Text = "Browse";
-            BrowseCubaseExeButton.UseVisualStyleBackColor = true;
+            BrowseUserTemplateLocationButton.Location = new Point(694, 218);
+            BrowseUserTemplateLocationButton.Name = "BrowseUserTemplateLocationButton";
+            BrowseUserTemplateLocationButton.Size = new Size(94, 29);
+            BrowseUserTemplateLocationButton.TabIndex = 9;
+            BrowseUserTemplateLocationButton.Text = "Browse";
+            BrowseUserTemplateLocationButton.UseVisualStyleBackColor = true;
+            // 
+            // BrowseCubaseTemplateButton
+            // 
+            BrowseCubaseTemplateButton.Location = new Point(694, 317);
+            BrowseCubaseTemplateButton.Name = "BrowseCubaseTemplateButton";
+            BrowseCubaseTemplateButton.Size = new Size(94, 29);
+            BrowseCubaseTemplateButton.TabIndex = 12;
+            BrowseCubaseTemplateButton.Text = "Browse";
+            BrowseCubaseTemplateButton.UseVisualStyleBackColor = true;
+            // 
+            // CubaseTemplateLocation
+            // 
+            CubaseTemplateLocation.Location = new Point(22, 317);
+            CubaseTemplateLocation.Name = "CubaseTemplateLocation";
+            CubaseTemplateLocation.Size = new Size(666, 27);
+            CubaseTemplateLocation.TabIndex = 11;
+            // 
+            // label4
+            // 
+            label4.AutoSize = true;
+            label4.Font = new Font("Segoe UI", 9F, FontStyle.Bold);
+            label4.Location = new Point(22, 294);
+            label4.Name = "label4";
+            label4.Size = new Size(192, 20);
+            label4.TabIndex = 10;
+            label4.Text = "Cubase Template Location";
             // 
             // ConfigurationForm
             // 
@@ -151,5 +215,11 @@
         private Label label2;
         private Button BrowseCubaseExeButton;
         private TextBox CubaseExeLocation;
+        private Label label3;
+        private Button BrowseUserTemplateLocationButton;
+        private TextBox CubaseUserTemplateLocation;
+        private Button BrowseCubaseTemplateButton;
+        private TextBox CubaseTemplateLocation;
+        private Label label4;
     }
 }

@@ -1,9 +1,11 @@
 using Cubase.Hub.Controls.MainFormControls.ProjectsControl;
+using Cubase.Hub.Controls.MainFormControls.ProjectsControl.PlayControls;
 using Cubase.Hub.Controls.MainFormControls.ProjectsForm;
 using Cubase.Hub.Forms;
 using Cubase.Hub.Forms.Config;
 using Cubase.Hub.Forms.Main;
 using Cubase.Hub.Forms.Main.Menu;
+using Cubase.Hub.Forms.Tracks;
 using Cubase.Hub.Services.Audio;
 using Cubase.Hub.Services.Config;
 using Cubase.Hub.Services.Cubase;
@@ -43,6 +45,8 @@ namespace Cubase.Hub
                 .AddScoped<CubaseProjectControl>()
                 .AddScoped<MenuContent>()
                 .AddScoped<NewAlbumForm>()
+                .AddScoped<NewTrackForm>()
+                .AddTransient<PlayControl>()
                 .AddTransient<CubaseProjectItemControl>()
                 .AddTransient<CubaseProjectExtendedPropertiesControl>()
                 .AddTransient<CubaseProjectItemMixesControl>()
@@ -50,7 +54,7 @@ namespace Cubase.Hub
                 .AddSingleton<IConfigurationService, ConfigurationService>()
                 .AddSingleton<IDirectoryService, DirectoryService>()
                 .AddSingleton<ICubaseService, CubaseService>()
-                .AddSingleton<IAudioService, AudioService>()
+                .AddTransient<IAudioService, AudioService>()
                 .AddSingleton<IProjectService, ProjectService>();   
             var provider = serviceCollection.BuildServiceProvider();
             return provider;

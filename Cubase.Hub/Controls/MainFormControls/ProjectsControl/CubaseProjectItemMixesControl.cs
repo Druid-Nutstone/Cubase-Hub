@@ -1,5 +1,6 @@
 ﻿using Cubase.Hub.Controls.MainFormControls.ProjectsControl.PlayControls;
 using Cubase.Hub.Services.Audio;
+using Microsoft.Extensions.DependencyInjection;
 using System;
 using System.Collections.Generic;
 using System.Text;
@@ -10,9 +11,13 @@ namespace Cubase.Hub.Controls.MainFormControls.ProjectsForm
     {
         private readonly IAudioService audioService;
 
-        public CubaseProjectItemMixesControl(IAudioService audioService)
+        private readonly IServiceProvider serviceProvider;
+
+        public CubaseProjectItemMixesControl(IAudioService audioService, 
+                                             IServiceProvider serviceProvider)
         {
             this.audioService = audioService;   
+            this.serviceProvider = serviceProvider;
             this.Dock = System.Windows.Forms.DockStyle.Top;
             this.AutoSize = true;
             this.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
@@ -28,7 +33,6 @@ namespace Cubase.Hub.Controls.MainFormControls.ProjectsForm
             foreach (var mix in mixes)
             {
                 var tags = TagLib.File.Create(mix);
-                tags.Properties.Duration.ToString(@"mm\:ss");
                 // add the name of the mix as a label
                 this.AddLabel(tags.Tag.Title ?? Path.GetFileName(mix), 0);
                 // add the size of the mix as a label
@@ -38,13 +42,10 @@ namespace Cubase.Hub.Controls.MainFormControls.ProjectsForm
                 this.AddLabel($"#{tags.Tag.Track.ToString() ?? "Unknown number"}", 3);
                 this.AddLabel(Path.GetExtension(mix)?.Replace('.',' ').Trim().ToUpper() ?? "Unknown type", 4);
                 // add play button 
-                var playButton = new PlayControl(mix)
-                {
-                    Text = "Play",
-                    AutoSize = true,
-                    Dock = System.Windows.Forms.DockStyle.Fill,
-                    Padding = new System.Windows.Forms.Padding(4)
-                };
+
+                var playButton = this.serviceProvider.GetService<PlayControl>();
+                playButton.MusicFile = mix;
+                this.Controls.Add(playButton, 5, this.RowCount);
                 this.Controls.Add(playButton, 5, this.RowCount);
 
                 this.RowCount++;

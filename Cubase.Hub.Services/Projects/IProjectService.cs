@@ -9,5 +9,7 @@ namespace Cubase.Hub.Services.Projects
     {
         CubaseProjectCollection? LoadProjects(Action<string> OnError);
 
+        CubaseProjectCollection Projects { get; }
+
     }
 }

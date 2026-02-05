@@ -29,7 +29,29 @@ namespace Cubase.Hub.Forms.Config
             this.ButtonSave.Click += ButtonSave_Click;
             this.AddSourceFolderButton.Click += AddSourceFolderButton_Click;
             this.BrowseCubaseExeButton.Click += BrowseCubaseExeButton_Click;
+            this.BrowseUserTemplateLocationButton.Click += BrowseUserTemplateLocationButton_Click;
+            this.BrowseCubaseTemplateButton.Click += BrowseCubaseTemplateButton_Click;
             ThemeApplier.ApplyDarkTheme(this);
+        }
+
+        private void BrowseCubaseTemplateButton_Click(object? sender, EventArgs e)
+        {
+            var dirDialog = new FolderBrowserDialog();
+            var result = dirDialog.ShowDialog();
+            if (result == DialogResult.OK)
+            {
+                this.CubaseTemplateLocation.Text = dirDialog.SelectedPath;
+            }
+        }
+
+        private void BrowseUserTemplateLocationButton_Click(object? sender, EventArgs e)
+        {
+            var dirDialog = new FolderBrowserDialog();
+            var result = dirDialog.ShowDialog();
+            if (result == DialogResult.OK)
+            {
+                this.CubaseUserTemplateLocation.Text = dirDialog.SelectedPath;  
+            }
         }
 
         private void BrowseCubaseExeButton_Click(object? sender, EventArgs e)
@@ -60,6 +82,8 @@ namespace Cubase.Hub.Forms.Config
             this.DialogResult = DialogResult.OK;
             this.Configuration.SourceCubaseFolders = new List<string>(SourceCubaseFolders.Text.Split(new char[] { ';' }, StringSplitOptions.RemoveEmptyEntries));   
             this.Configuration.CubaseExeLocation = this.CubaseExeLocation.Text;
+            this.Configuration.CubaseUserTemplateLocation = this.CubaseUserTemplateLocation.Text;
+            this.Configuration.CubaseTemplateLocation = this.CubaseTemplateLocation.Text;
             this.configurationService.SaveConfiguration(this.Configuration, () => 
             { 
                 this.messageService.ShowError("An error occurred while saving the configuration. Please try again.");
@@ -85,6 +109,8 @@ namespace Cubase.Hub.Forms.Config
             }
             SourceCubaseFolders.Text = string.Join(";", this.Configuration.SourceCubaseFolders);
             CubaseExeLocation.Text = this.Configuration.CubaseExeLocation;
+            CubaseUserTemplateLocation.Text = this.Configuration.CubaseUserTemplateLocation;
+            CubaseTemplateLocation.Text = this.Configuration.CubaseTemplateLocation;
         }
     }
 }

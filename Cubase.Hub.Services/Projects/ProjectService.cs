@@ -14,6 +14,8 @@ namespace Cubase.Hub.Services.Projects
 
         private readonly IDirectoryService directoryService;
 
+        public CubaseProjectCollection Projects { get; private set; }
+
         public ProjectService(IConfigurationService configurationService, 
                               IDirectoryService directoryService)
         {
@@ -35,16 +37,16 @@ namespace Cubase.Hub.Services.Projects
                     return null;
                 }
             }
-            var cubaseProjects = new CubaseProjectCollection();
+            this.Projects = new CubaseProjectCollection();
             foreach (var cubaseProjectFolder in this.configurationService.Configuration!.SourceCubaseFolders)
             {
                 var projectsInFolder = this.directoryService.GetCubaseProjects(cubaseProjectFolder);
                 foreach (var project in projectsInFolder)
                 {
-                    this.MapCubaseProject(project, cubaseProjects);
+                    this.MapCubaseProject(project, this.Projects);
                 }   
             }
-            return cubaseProjects;
+            return this.Projects;
         }
 
         private void MapCubaseProject(string sourceProject, CubaseProjectCollection cubaseProjects)

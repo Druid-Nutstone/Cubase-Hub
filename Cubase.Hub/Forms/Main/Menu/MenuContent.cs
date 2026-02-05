@@ -1,4 +1,5 @@
 ﻿using Cubase.Hub.Forms.Config;
+using Cubase.Hub.Forms.Tracks;
 using Microsoft.Extensions.DependencyInjection;
 using System;
 using System.Collections.Generic;
@@ -20,7 +21,7 @@ namespace Cubase.Hub.Forms.Main.Menu
             menuStrip.Items.Clear();
             menuStrip.Items.Add(new FileMenu(mainForm, this.serviceProvider));
             menuStrip.Items.Add(new AlbumMenu(mainForm, this.serviceProvider));
-            menuStrip.Items.Add(new ProjectMenu(mainForm, this.serviceProvider));
+            menuStrip.Items.Add(new TrackMenu(mainForm, this.serviceProvider));
             menuStrip.Items.Add(new OptionsMenu(mainForm, this.serviceProvider));
         }
     }
@@ -57,7 +58,7 @@ namespace Cubase.Hub.Forms.Main.Menu
     {
         public AlbumMenu(MainForm mainForm, IServiceProvider serviceProvider) : base(mainForm, serviceProvider)
         {
-            this.Text = "Album";
+            this.Text = "Albums";
             this.DropDownItems.Add(new NewAlbumMenu(mainForm, serviceProvider));
         }
 
@@ -78,12 +79,28 @@ namespace Cubase.Hub.Forms.Main.Menu
         }
     }
 
-    public class ProjectMenu : BaseToolStripMenuItem
+    public class NewTrackMenu : BaseToolStripMenuItem
     {
-        public ProjectMenu(MainForm mainForm, IServiceProvider serviceProvider) : base(mainForm, serviceProvider)
+        public NewTrackMenu(MainForm mainForm, IServiceProvider serviceProvider) : base(mainForm, serviceProvider)
         {
-            this.Text = "Project";
-            // Add album related menu items here
+            this.Text = "New Track";
+        }
+
+        protected override void OnClick(EventArgs e)
+        {
+            var newTrackForm = this.ServiceProvider.GetService<NewTrackForm>();
+            newTrackForm?.Initialise();
+            newTrackForm?.ShowDialog();
+        }
+    }
+
+    public class TrackMenu : BaseToolStripMenuItem
+    {
+        public TrackMenu(MainForm mainForm, IServiceProvider serviceProvider) : base(mainForm, serviceProvider)
+        {
+            this.Text = "Tracks";
+            this.DropDownItems.Add(new NewTrackMenu(mainForm, serviceProvider));
+
         }
     }
 
