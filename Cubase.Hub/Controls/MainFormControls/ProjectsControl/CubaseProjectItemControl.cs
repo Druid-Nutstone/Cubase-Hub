@@ -30,34 +30,34 @@ namespace Cubase.Hub.Controls.MainFormControls.ProjectsForm
 
         private CubaseProject project;
 
-        public CubaseProjectItemControl(CubaseProjectExtendedPropertiesControl extendedPropertiesControl, 
+        public CubaseProjectItemControl(CubaseProjectExtendedPropertiesControl extendedPropertiesControl,
                                         ICubaseService cubaseService)
         {
-            this.extendedPropertiesControl = extendedPropertiesControl; 
-            this.cubaseService = cubaseService; 
+            this.extendedPropertiesControl = extendedPropertiesControl;
+            this.cubaseService = cubaseService;
             this.Initialise();
         }
 
-        public void SetParent(CubaseProjectControl cubaseProjectControl) 
-        { 
+        public void SetParent(CubaseProjectControl cubaseProjectControl)
+        {
             this.parentCubaseProjectControl = cubaseProjectControl;
         }
 
         public void Initialise()
         {
             InitializeComponent();
-            
-            this.SecondaryPanel.AutoSize = true;    
+
+            this.SecondaryPanel.AutoSize = true;
 
             AutoSize = true;                      // 🔑 REQUIRED
             AutoSizeMode = AutoSizeMode.GrowAndShrink;
 
             Dock = DockStyle.Fill;
             // this.BorderStyle = BorderStyle.FixedSingle;
-            this.Anchor = AnchorStyles.Top | AnchorStyles.Left | AnchorStyles.Right;    
+            this.Anchor = AnchorStyles.Top | AnchorStyles.Left | AnchorStyles.Right;
             this.Minimise();
             this.ExpandContractButton.Click += ExpandContractButton_Click;
-            this.ProjectLink.Click += ProjectLink_LinkClicked;    
+            this.ProjectLink.Click += ProjectLink_LinkClicked;
         }
 
         private void ProjectLink_LinkClicked(object? sender, EventArgs e)
@@ -76,7 +76,7 @@ namespace Cubase.Hub.Controls.MainFormControls.ProjectsForm
             {
                 this.Minimise();
                 this.currentState = CubaseProjectItemControlState.Minimized;
-            }   
+            }
         }
 
         private void Minimise()
@@ -87,7 +87,7 @@ namespace Cubase.Hub.Controls.MainFormControls.ProjectsForm
             PerformLayout();
             // Invalidate();
             this.parentCubaseProjectControl?.PerformLayout();
-        } 
+        }
 
         private void Expand()
         {
@@ -105,10 +105,18 @@ namespace Cubase.Hub.Controls.MainFormControls.ProjectsForm
 
         public void SetProject(CubaseProject project)
         {
-           this.FolderLabel.Text = project.FolderPath;
-           this.ProjectLink.Text = Path.GetFileNameWithoutExtension(project.Name);
-           this.ProjectLink.Tag = project.FullPath;
-           this.project = project;  
+            if (string.IsNullOrEmpty(project.Album))
+            {
+                this.FolderLabel.Text = project.FolderPath;
+            }
+            else
+            {
+                this.FolderLabel.ForeColor = Color.Green;
+                this.FolderLabel.Text = project.Album;
+            }
+            this.ProjectLink.Text = Path.GetFileNameWithoutExtension(project.Name);
+            this.ProjectLink.Tag = project.FullPath;
+            this.project = project;
 
         }
     }

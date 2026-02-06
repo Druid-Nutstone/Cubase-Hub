@@ -1,4 +1,5 @@
-﻿using Cubase.Hub.Forms.Config;
+﻿using Cubase.Hub.Forms.Albums;
+using Cubase.Hub.Forms.Config;
 using Cubase.Hub.Forms.Tracks;
 using Microsoft.Extensions.DependencyInjection;
 using System;
@@ -60,6 +61,7 @@ namespace Cubase.Hub.Forms.Main.Menu
         {
             this.Text = "Albums";
             this.DropDownItems.Add(new NewAlbumMenu(mainForm, serviceProvider));
+            this.DropDownItems.Add(new ManageAlbumMenu(mainForm, serviceProvider));
         }
 
 
@@ -76,6 +78,21 @@ namespace Cubase.Hub.Forms.Main.Menu
         {
             var newAlbumForm = this.ServiceProvider.GetService<NewAlbumForm>(); 
             newAlbumForm?.ShowDialog();
+        }
+    }
+
+    public class ManageAlbumMenu : BaseToolStripMenuItem
+    {
+        public ManageAlbumMenu(MainForm mainForm, IServiceProvider serviceProvider) : base(mainForm, serviceProvider)
+        {
+            this.Text = "Manage Albums";
+        }
+
+        protected override void OnClick(EventArgs e)
+        {
+            var manageAlbumForm = this.ServiceProvider.GetService<ManageAlbumsForm>();
+            manageAlbumForm?.Initialise();
+            manageAlbumForm?.ShowDialog();
         }
     }
 

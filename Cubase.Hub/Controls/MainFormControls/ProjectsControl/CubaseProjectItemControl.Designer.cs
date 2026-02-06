@@ -41,7 +41,7 @@
             // 
             FolderLabel.AutoSize = true;
             FolderLabel.Font = new Font("Segoe UI", 9F, FontStyle.Bold);
-            FolderLabel.Location = new Point(28, 17);
+            FolderLabel.Location = new Point(446, 20);
             FolderLabel.Name = "FolderLabel";
             FolderLabel.Size = new Size(90, 20);
             FolderLabel.TabIndex = 0;
@@ -61,10 +61,10 @@
             // ProjectLink
             // 
             ProjectLink.AutoSize = true;
-            ProjectLink.Font = new Font("Segoe UI", 9F, FontStyle.Bold | FontStyle.Underline);
-            ProjectLink.Location = new Point(299, 17);
+            ProjectLink.Font = new Font("Segoe UI", 11F, FontStyle.Bold | FontStyle.Underline);
+            ProjectLink.Location = new Point(36, 15);
             ProjectLink.Name = "ProjectLink";
-            ProjectLink.Size = new Size(80, 20);
+            ProjectLink.Size = new Size(103, 25);
             ProjectLink.TabIndex = 3;
             ProjectLink.Text = "labelLink1";
             // 

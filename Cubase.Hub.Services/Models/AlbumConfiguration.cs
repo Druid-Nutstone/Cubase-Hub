@@ -60,12 +60,15 @@ namespace Cubase.Hub.Services.Models
             set => SetProperty(ref _comments, value);
         }
 
-        public bool Verify(out string propertyInError)
+        public bool Verify(out string propertyInError, bool verifyTitle = true)
         {
-            if (string.IsNullOrWhiteSpace(Title))
+            if (verifyTitle)
             {
-                propertyInError = nameof(Title);
-                return false;
+                if (string.IsNullOrWhiteSpace(Title))
+                {
+                    propertyInError = nameof(Title);
+                    return false;
+                }
             }
             if (string.IsNullOrWhiteSpace(Artist))
             {

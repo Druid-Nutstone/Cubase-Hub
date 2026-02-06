@@ -85,5 +85,27 @@ namespace Cubase.Hub.Services.FileAndDirectory
             }
             return true;
         }
+
+        public MixDownCollection GetMixes(string albumPath)
+        {
+            var mixDownCollection = new MixDownCollection();
+            Directory.GetDirectories(albumPath, "*", SearchOption.AllDirectories)
+                     .ToList()
+                     .ForEach(dir =>
+                     {
+                         mixDownCollection.CreateFromFiles(GetMixDownFiles(dir));   
+                     });
+
+            string[] GetMixDownFiles(string root)
+            {
+                if (Path.GetFileName(root) == CubaseHubConstants.MixdownDirectory)
+                {
+                    return Directory.GetFiles(root);
+                }
+                return [];  
+            }
+
+            return mixDownCollection;
+        }
     }
 }

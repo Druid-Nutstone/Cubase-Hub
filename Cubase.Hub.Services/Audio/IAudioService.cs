@@ -1,4 +1,5 @@
-﻿using NAudio.Wave;
+﻿using Cubase.Hub.Services.Models;
+using NAudio.Wave;
 using System;
 using System.Collections.Generic;
 using System.Text;
@@ -14,5 +15,13 @@ namespace Cubase.Hub.Services.Audio
         IWavePlayer Play(string musicfile, Action<StoppedEventArgs> onStopped);
 
         void Stop();
+
+        MixDown PopulateTagsFromFile(string fileName);
+
+        void PopulateMixdownFromTags(MixDown mixDown);
+
+        void PopulateMixDownCollectionFromTags(MixDownCollection mixes);
+
+        void SetTagsFromMixDowm(MixDown mixDown); 
     }
 }

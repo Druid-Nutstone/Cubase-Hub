@@ -65,8 +65,10 @@ namespace Cubase.Hub.Forms
             folderBrowse.Description = "Select new album root directory";
             folderBrowse.ShowNewFolderButton = true;
             if (folderBrowse.ShowDialog() == DialogResult.OK) 
-            { 
+            {
+                this.albumConfigurationControl.DisableTitle();
                 this.albumPath = folderBrowse.SelectedPath;
+                this.SelectedRootDirectory.Text = folderBrowse.SelectedPath;    
                 this.UpdatePathRoot();
             }
         }
@@ -85,11 +87,14 @@ namespace Cubase.Hub.Forms
             }
         }
 
-        private void CreateAlbumButton_Click(object? sender, EventArgs e)
+        private void  CreateAlbumButton_Click(object? sender, EventArgs e)
         {
-            var targetDirectory = Path.Combine(this.albumPath, this.AlbumConfiguration.Title); 
-            
-            if (!this.AlbumConfiguration.Verify(out string propertyInError))
+            var targetDirectory = Path.Combine(this.albumPath, this.AlbumConfiguration.Title ?? string.Empty).Trim();
+
+            var verifyTitle = string.IsNullOrEmpty(this.SelectedRootDirectory.Text);
+                
+
+            if (!this.AlbumConfiguration.Verify(out string propertyInError, verifyTitle))
             {
                 this.messageService.ShowError($"Album configuration is invalid. Please check the {propertyInError} field.");
                 return;
@@ -107,9 +112,17 @@ namespace Cubase.Hub.Forms
                 return;
             }
             
+            if (!string.IsNullOrWhiteSpace(this.SelectedRootDirectory.Text))
+            {
+                // should return the directory name that has been selected
+                this.AlbumConfiguration.Title = Path.GetFileName(this.SelectedRootDirectory.Text);
+            }
+
             this.AlbumConfiguration.SaveToDirectory(targetDirectory);
             
             this.messageService.ShowMessage($"Album created or verified at: {albumPath}", false);
+
+            this.Close();
         }
 
         private bool IsValidDirectoryPath(string path)

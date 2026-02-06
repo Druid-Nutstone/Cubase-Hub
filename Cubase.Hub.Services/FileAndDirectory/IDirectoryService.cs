@@ -13,7 +13,9 @@ namespace Cubase.Hub.Services.FileAndDirectory
 
         List<AlbumLocation> GetCubaseAlbums(List<string> cubaseDirectories);
 
-        List<Template> GetCubaseTemplates(List<string> cubaseTemplates); 
+        List<Template> GetCubaseTemplates(List<string> cubaseTemplates);
+
+        MixDownCollection GetMixes(string albumPath);
 
     }
 }

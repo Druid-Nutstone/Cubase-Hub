@@ -42,6 +42,7 @@
             // 
             // AlbumGenre
             // 
+            AlbumGenre.Anchor = AnchorStyles.Top | AnchorStyles.Right;
             AlbumGenre.AutoCompleteMode = AutoCompleteMode.SuggestAppend;
             AlbumGenre.AutoCompleteSource = AutoCompleteSource.CustomSource;
             AlbumGenre.Location = new Point(474, 115);
@@ -51,6 +52,7 @@
             // 
             // AlbumComments
             // 
+            AlbumComments.Anchor = AnchorStyles.Top | AnchorStyles.Left | AnchorStyles.Right;
             AlbumComments.Location = new Point(20, 189);
             AlbumComments.Name = "AlbumComments";
             AlbumComments.Size = new Size(709, 27);
@@ -68,6 +70,7 @@
             // 
             // label5
             // 
+            label5.Anchor = AnchorStyles.Top | AnchorStyles.Right;
             label5.AutoSize = true;
             label5.Font = new Font("Segoe UI", 9F, FontStyle.Bold);
             label5.Location = new Point(471, 92);
@@ -95,6 +98,7 @@
             // 
             // AlbumArtist
             // 
+            AlbumArtist.Anchor = AnchorStyles.Top | AnchorStyles.Right;
             AlbumArtist.Location = new Point(471, 39);
             AlbumArtist.Name = "AlbumArtist";
             AlbumArtist.Size = new Size(258, 27);
@@ -109,6 +113,7 @@
             // 
             // label3
             // 
+            label3.Anchor = AnchorStyles.Top | AnchorStyles.Right;
             label3.AutoSize = true;
             label3.Font = new Font("Segoe UI", 9F, FontStyle.Bold);
             label3.Location = new Point(471, 16);

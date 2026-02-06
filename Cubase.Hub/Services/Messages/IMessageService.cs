@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Cubase.Hub.Forms.Message;
+using System;
 using System.Collections.Generic;
 using System.Text;
 
@@ -10,7 +11,9 @@ namespace Cubase.Hub.Services.Messages
 
         void ShowMessage(string message, bool waitCursor);   
     
-        void ShowError(string errorMessage);    
+        void ShowError(string errorMessage); 
+        
+        NonBlockingMessage OpenMessage(string message, Control parent); 
 
     }
 }

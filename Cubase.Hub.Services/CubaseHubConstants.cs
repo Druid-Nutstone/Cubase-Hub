@@ -8,7 +8,7 @@ namespace Cubase.Hub.Services
     {
         public static string UserAppDataFolderName = "CubaseHub";
 
-        public static string MixdownDirectory = "MixDown";
+        public static string MixdownDirectory = "Mixdown";
 
         public static string UserAppDataFolderPath =
             System.IO.Path.Combine(

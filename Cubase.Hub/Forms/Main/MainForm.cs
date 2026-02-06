@@ -73,9 +73,11 @@ namespace Cubase.Hub.Forms.Main
         private void LoadProjects()
         {
             this.SuspendLayout();
+            var globMessage = this.messageService.OpenMessage("Loading Projects ..", this);
             this.LoadControl(this.projectsControl);
             this.projectsControl.LoadProjects();
             this.ResumeLayout();
+            globMessage.Close();
         }
 
         private void LoadControl(Control control)

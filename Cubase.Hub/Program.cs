@@ -2,6 +2,7 @@ using Cubase.Hub.Controls.MainFormControls.ProjectsControl;
 using Cubase.Hub.Controls.MainFormControls.ProjectsControl.PlayControls;
 using Cubase.Hub.Controls.MainFormControls.ProjectsForm;
 using Cubase.Hub.Forms;
+using Cubase.Hub.Forms.Albums;
 using Cubase.Hub.Forms.Config;
 using Cubase.Hub.Forms.Main;
 using Cubase.Hub.Forms.Main.Menu;
@@ -46,6 +47,7 @@ namespace Cubase.Hub
                 .AddScoped<MenuContent>()
                 .AddScoped<NewAlbumForm>()
                 .AddScoped<NewTrackForm>()
+                .AddScoped<ManageAlbumsForm>()
                 .AddTransient<PlayControl>()
                 .AddTransient<CubaseProjectItemControl>()
                 .AddTransient<CubaseProjectExtendedPropertiesControl>()

@@ -32,6 +32,8 @@ namespace Cubase.Hub.Controls.MainFormControls.ProjectsForm
            
             foreach (var mix in mixes)
             {
+                // todo change this to use IAudioservice (see manage albums form#)
+                
                 var tags = TagLib.File.Create(mix);
                 // add the name of the mix as a label
                 this.AddLabel(tags.Tag.Title ?? Path.GetFileName(mix), 0);
