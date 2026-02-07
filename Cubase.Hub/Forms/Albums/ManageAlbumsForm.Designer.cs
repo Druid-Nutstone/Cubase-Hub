@@ -37,6 +37,7 @@
             MixDownPanel = new Panel();
             mixdownControl = new Cubase.Hub.Controls.Album.Manage.MixdownControl();
             TracksControlPanel = new Panel();
+            OpenAlbumDirectory = new Button();
             TopPanel.SuspendLayout();
             AlbumPanel.SuspendLayout();
             TracksPanel.SuspendLayout();
@@ -45,12 +46,13 @@
             // 
             // TopPanel
             // 
+            TopPanel.Controls.Add(OpenAlbumDirectory);
             TopPanel.Controls.Add(SelectedAlbum);
             TopPanel.Controls.Add(label1);
             TopPanel.Dock = DockStyle.Top;
             TopPanel.Location = new Point(0, 0);
             TopPanel.Name = "TopPanel";
-            TopPanel.Size = new Size(979, 102);
+            TopPanel.Size = new Size(1282, 102);
             TopPanel.TabIndex = 0;
             // 
             // SelectedAlbum
@@ -77,7 +79,7 @@
             AlbumPanel.Dock = DockStyle.Top;
             AlbumPanel.Location = new Point(0, 102);
             AlbumPanel.Name = "AlbumPanel";
-            AlbumPanel.Size = new Size(979, 248);
+            AlbumPanel.Size = new Size(1282, 248);
             AlbumPanel.TabIndex = 1;
             // 
             // AlbumConfigurationControl
@@ -85,7 +87,7 @@
             AlbumConfigurationControl.Dock = DockStyle.Fill;
             AlbumConfigurationControl.Location = new Point(0, 0);
             AlbumConfigurationControl.Name = "AlbumConfigurationControl";
-            AlbumConfigurationControl.Size = new Size(979, 248);
+            AlbumConfigurationControl.Size = new Size(1282, 248);
             AlbumConfigurationControl.TabIndex = 0;
             // 
             // TracksPanel
@@ -95,7 +97,7 @@
             TracksPanel.Dock = DockStyle.Fill;
             TracksPanel.Location = new Point(0, 350);
             TracksPanel.Name = "TracksPanel";
-            TracksPanel.Size = new Size(979, 255);
+            TracksPanel.Size = new Size(1282, 353);
             TracksPanel.TabIndex = 2;
             // 
             // MixDownPanel
@@ -105,7 +107,7 @@
             MixDownPanel.Dock = DockStyle.Fill;
             MixDownPanel.Location = new Point(0, 43);
             MixDownPanel.Name = "MixDownPanel";
-            MixDownPanel.Size = new Size(979, 212);
+            MixDownPanel.Size = new Size(1282, 310);
             MixDownPanel.TabIndex = 1;
             // 
             // mixdownControl
@@ -113,6 +115,11 @@
             mixdownControl.AutoSize = true;
             mixdownControl.AutoSizeMode = AutoSizeMode.GrowAndShrink;
             mixdownControl.ColumnCount = 2;
+            mixdownControl.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 100F));
+            mixdownControl.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 100F));
+            mixdownControl.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 100F));
+            mixdownControl.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 100F));
+            mixdownControl.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 100F));
             mixdownControl.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 100F));
             mixdownControl.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 100F));
             mixdownControl.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 50F));
@@ -124,7 +131,7 @@
             mixdownControl.RowCount = 2;
             mixdownControl.RowStyles.Add(new RowStyle(SizeType.Percent, 50F));
             mixdownControl.RowStyles.Add(new RowStyle(SizeType.Percent, 50F));
-            mixdownControl.Size = new Size(979, 20);
+            mixdownControl.Size = new Size(1282, 20);
             mixdownControl.TabIndex = 0;
             // 
             // TracksControlPanel
@@ -132,14 +139,23 @@
             TracksControlPanel.Dock = DockStyle.Top;
             TracksControlPanel.Location = new Point(0, 0);
             TracksControlPanel.Name = "TracksControlPanel";
-            TracksControlPanel.Size = new Size(979, 43);
+            TracksControlPanel.Size = new Size(1282, 43);
             TracksControlPanel.TabIndex = 0;
+            // 
+            // OpenAlbumDirectory
+            // 
+            OpenAlbumDirectory.Location = new Point(300, 41);
+            OpenAlbumDirectory.Name = "OpenAlbumDirectory";
+            OpenAlbumDirectory.Size = new Size(168, 29);
+            OpenAlbumDirectory.TabIndex = 2;
+            OpenAlbumDirectory.Text = "Open Album Folder";
+            OpenAlbumDirectory.UseVisualStyleBackColor = true;
             // 
             // ManageAlbumsForm
             // 
             AutoScaleDimensions = new SizeF(8F, 20F);
             AutoScaleMode = AutoScaleMode.Font;
-            ClientSize = new Size(979, 605);
+            ClientSize = new Size(1282, 703);
             Controls.Add(TracksPanel);
             Controls.Add(AlbumPanel);
             Controls.Add(TopPanel);
@@ -166,5 +182,6 @@
         private Panel MixDownPanel;
         private Panel TracksControlPanel;
         private Controls.Album.Manage.MixdownControl mixdownControl;
+        private Button OpenAlbumDirectory;
     }
 }

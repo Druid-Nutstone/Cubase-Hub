@@ -20,7 +20,7 @@ namespace Cubase.Hub.Services.Audio
 
         void PopulateMixdownFromTags(MixDown mixDown);
 
-        void PopulateMixDownCollectionFromTags(MixDownCollection mixes);
+        MixDownCollection PopulateMixDownCollectionFromTags(MixDownCollection mixes);
 
         void SetTagsFromMixDowm(MixDown mixDown); 
     }

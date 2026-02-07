@@ -17,7 +17,6 @@ namespace Cubase.Hub.Services.Audio
         {
             Player?.Stop();
             Player?.Dispose();
-            Player?.Dispose();
             Audio = new AudioFileReader(musicfile); // supports MP3, WAV, FLAC, AIFF
             Player = new WaveOutEvent();
             Player.PlaybackStopped += (o, e) => { onStopped?.Invoke(e); };
@@ -29,6 +28,7 @@ namespace Cubase.Hub.Services.Audio
         public void Stop()
         {
             Player?.Stop();
+            Player?.Dispose();
         }
 
 
@@ -37,11 +37,11 @@ namespace Cubase.Hub.Services.Audio
             var fileTag = TagLib.File.Create(mixDown.FileName);
             fileTag.Tag.Title = mixDown.Title;
             fileTag.Tag.Album = mixDown.Album;
-            fileTag.Tag.Genres = [mixDown.Genre];
+            fileTag.Tag.Genres = [mixDown.Genre ?? string.Empty];
             fileTag.Tag.Track = mixDown.TrackNumber;
             fileTag.Tag.Year = mixDown.Year;
-            fileTag.Tag.AlbumArtists = mixDown.Performers.Split(";");
-            fileTag.Tag.Performers = [mixDown.Artist]; 
+            fileTag.Tag.AlbumArtists = [mixDown.Artist ?? string.Empty];
+            fileTag.Tag.Performers = mixDown.Performers.Split(";");
             fileTag.Tag.Comment = mixDown.Comment;
             fileTag.Save();
         }
@@ -57,10 +57,12 @@ namespace Cubase.Hub.Services.Audio
             var fileInfo = new FileInfo(mixDown.FileName);
             mixDown.Size = ConvertLengthToString(fileInfo.Length);
             mixDown.TrackNumber = tags.Tag.Track;
-            mixDown.AudioType = Path.GetExtension(mixDown.FileName)?.Replace('.', ' ').Trim();
+            mixDown.AudioType = tags.MimeType.Split("/").TakeLast(1).First();
             mixDown.Year = tags.Tag.Year;
-            mixDown.Artist = tags.Tag.FirstPerformerSort;
-            mixDown.Performers = string.Join(";", tags.Tag.AlbumArtists);
+            mixDown.Artist = tags.Tag.AlbumArtists?.FirstOrDefault()
+                             ?? tags.Tag.Performers?.FirstOrDefault()
+                             ?? string.Empty;
+            mixDown.Performers = string.Join(";", tags.Tag.Performers ?? []);
             mixDown.Comment = tags.Tag.Comment;
         }
 
@@ -87,12 +89,15 @@ namespace Cubase.Hub.Services.Audio
             return mixDown;
         }
 
-        public void PopulateMixDownCollectionFromTags(MixDownCollection mixes)
+        public MixDownCollection PopulateMixDownCollectionFromTags(MixDownCollection mixes)
         {
             foreach (var mix in mixes)
             {
                 PopulateMixdownFromTags(mix);
             }
+            return new MixDownCollection(
+                mixes.OrderBy(x => x.TrackNumber)
+            );
         }
 
     }

@@ -104,7 +104,6 @@ namespace Cubase.Hub.Services.FileAndDirectory
                 }
                 return [];  
             }
-
             return mixDownCollection;
         }
     }

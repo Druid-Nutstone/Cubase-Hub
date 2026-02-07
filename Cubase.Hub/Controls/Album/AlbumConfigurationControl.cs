@@ -14,7 +14,10 @@ namespace Cubase.Hub.Controls.Album
     {
         [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
         public AlbumConfiguration AlbumConfiguration { get; set; } = new AlbumConfiguration();
-        
+
+        [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
+        public Action<AlbumConfiguration, string>? OnAlbumChanged { get; set; }
+
         public AlbumConfigurationControl()
         {
             InitializeComponent();
@@ -30,7 +33,7 @@ namespace Cubase.Hub.Controls.Album
             this.AlbumTitle.Enabled = true;
         }
 
-        public void Initialise()
+        public void Initialise(Action<AlbumConfiguration, string>? onAlbumChanged = null)
         {
             this.AlbumTitle.Bind(nameof(AlbumConfiguration.Title), AlbumConfiguration);
             this.AlbumArtist.Bind(nameof(AlbumConfiguration.Artist), AlbumConfiguration);
@@ -39,8 +42,13 @@ namespace Cubase.Hub.Controls.Album
             this.AlbumGenre.AutoCompleteCustomSource.Clear();
             this.AlbumGenre.AutoCompleteCustomSource.AddRange(CubaseHubConstants.TagGenres);
             this.AlbumGenre.Bind(nameof(AlbumConfiguration.Genre), AlbumConfiguration);
+            this.AlbumConfiguration.PropertyChanged += AlbumConfiguration_PropertyChanged;
+            this.OnAlbumChanged = onAlbumChanged;
         }
 
-
+        private void AlbumConfiguration_PropertyChanged(object? sender, PropertyChangedEventArgs e)
+        {
+            this.OnAlbumChanged?.Invoke(this.AlbumConfiguration, e.PropertyName);
+        }
     }
 }

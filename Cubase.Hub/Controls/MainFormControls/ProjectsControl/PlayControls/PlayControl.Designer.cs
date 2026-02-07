@@ -41,7 +41,7 @@
             Play.Cursor = Cursors.Hand;
             Play.Image = Properties.Resources.Play;
             Play.InitialImage = Properties.Resources.Play;
-            Play.Location = new Point(0, 5);
+            Play.Location = new Point(0, 7);
             Play.Name = "Play";
             Play.Size = new Size(24, 24);
             Play.TabIndex = 0;
@@ -53,7 +53,7 @@
             Stop.Cursor = Cursors.Hand;
             Stop.Image = Properties.Resources.Stop;
             Stop.InitialImage = Properties.Resources.Play;
-            Stop.Location = new Point(26, 5);
+            Stop.Location = new Point(26, 7);
             Stop.Name = "Stop";
             Stop.Size = new Size(24, 24);
             Stop.TabIndex = 1;
