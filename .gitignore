@@ -416,3 +416,15 @@ FodyWeavers.xsd
 *.msix
 *.msm
 *.msp
+/Cubase.Hub.Services/Encoder/avcodec-62.dll
+/Cubase.Hub.Services/Encoder/avdevice-62.dll
+/Cubase.Hub.Services/Encoder/avfilter-11.dll
+/Cubase.Hub.Services/Encoder/avformat-62.dll
+/Cubase.Hub.Services/Encoder/avutil-60.dll
+/Cubase.Hub.Services/Encoder/ffmpeg.exe
+/Cubase.Hub.Services/Encoder/ffplay.exe
+/Cubase.Hub.Services/Encoder/ffprobe.exe
+/Cubase.Hub.Services/Encoder/swresample-6.dll
+/Cubase.Hub.Services/Encoder/swscale-9.dll
+/Cubase.Hub.Services/Encoder/avcodec-62.dll
+/Cubase.Hub.Services/Encoder/avdevice-62.dll
