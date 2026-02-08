@@ -1,5 +1,6 @@
 ﻿using Cubase.Hub.Controls.MainFormControls.ProjectsControl;
 using Cubase.Hub.Forms.BaseForm;
+using Cubase.Hub.Services.FileAndDirectory;
 using Cubase.Hub.Services.Messages;
 using Cubase.Hub.Services.Models;
 using Cubase.Hub.Services.Projects;
@@ -22,9 +23,13 @@ namespace Cubase.Hub.Controls.MainFormControls.ProjectsForm
 
         private readonly IServiceProvider serviceProvider;
 
+        private readonly IDirectoryService directoryService;
+
         private CubaseProjectCollection projects;
 
         private CubaseProjectControl projectPanel;
+
+        private IEnumerable<AlbumLocation> albumLocations;
 
         public ProjectsControl()
         {
@@ -32,18 +37,40 @@ namespace Cubase.Hub.Controls.MainFormControls.ProjectsForm
         }
 
         public ProjectsControl(IMessageService messageService, 
+                               IDirectoryService directoryService,
                                IServiceProvider serviceProvider,
                                IProjectService projectService)
         {
             this.serviceProvider = serviceProvider;
             this.messageService = messageService;   
             this.projectService = projectService;
+            this.directoryService = directoryService;
             InitializeComponent();
             this.ProjectSearch.OnSearchTextChanged += ProjectFilterTextChanged;
+            this.AlbumList.SelectedIndexChanged += AlbumList_SelectedIndexChanged;
+            this.ClearAlbumButton.Click += ClearAlbumButton_Click;
             this.DataPanel.AutoScroll = true;
             this.SeperatorPanel.Height = 2;
             this.SeperatorPanel.BorderStyle = BorderStyle.FixedSingle;
             this.HideIndex();
+            ThemeApplier.ApplyDarkTheme(this);  
+        }
+
+        private void ClearAlbumButton_Click(object? sender, EventArgs e)
+        {
+            projectPanel.ClearProjects();
+            this.PopulateProjects(this.projects);
+            this.AlbumList.SelectedIndex = -1;
+        }
+
+        private void AlbumList_SelectedIndexChanged(object? sender, EventArgs e)
+        {
+            if (this.AlbumList.SelectedIndex > -1)
+            {
+                projectPanel.ClearProjects();
+                var selectedAlbum = this.AlbumList.SelectedItem as AlbumLocation;
+                this.PopulateProjects(this.projects.GetAlbumProjects(selectedAlbum.AlbumName));
+            }
         }
 
         private void ProjectFilterTextChanged(string text)
@@ -72,12 +99,21 @@ namespace Cubase.Hub.Controls.MainFormControls.ProjectsForm
             });  
             if (this.projects != null)
             {
+                this.albumLocations = this.projects.GetAlbums(); 
                 projectPanel = this.GetInstanceOf<CubaseProjectControl>();
                 this.PopulateDataPanel(projectPanel);
                 this.PopulateProjects(projects);
+                this.PopulateAlbums();
             }
             this.ResumeLayout();
             this.messageService.ShowMessage("Projects loaded.", false);
+        }
+
+        private void PopulateAlbums()
+        {
+            this.AlbumList.Items.Clear();
+            this.AlbumList.DisplayMember = nameof(AlbumLocation.AlbumName);
+            this.AlbumList.Items.AddRange(this.albumLocations.ToArray());
         }
 
         private void PopulateProjects(CubaseProjectCollection cubaseProjects) 

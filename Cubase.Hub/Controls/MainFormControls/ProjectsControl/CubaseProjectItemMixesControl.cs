@@ -20,6 +20,7 @@ namespace Cubase.Hub.Controls.MainFormControls.ProjectsForm
             this.serviceProvider = serviceProvider;
             this.Dock = System.Windows.Forms.DockStyle.Top;
             this.AutoSize = true;
+            this.DoubleBuffered = true; 
             this.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
             // this.Padding = new System.Windows.Forms.Padding(5);
         }

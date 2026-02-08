@@ -30,10 +30,14 @@
         {
             IndexPanel = new Panel();
             MenuPanel = new Panel();
+            AlbumList = new ComboBox();
+            label1 = new Label();
             ProjectSearch = new Cubase.Hub.Controls.MainFormControls.ProjectsControl.Search.ProjectSearch();
             SeperatorPanel = new Panel();
             DataPanel = new Panel();
+            ClearAlbumButton = new PictureBox();
             MenuPanel.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)ClearAlbumButton).BeginInit();
             SuspendLayout();
             // 
             // IndexPanel
@@ -46,36 +50,67 @@
             // 
             // MenuPanel
             // 
+            MenuPanel.Controls.Add(ClearAlbumButton);
+            MenuPanel.Controls.Add(AlbumList);
+            MenuPanel.Controls.Add(label1);
             MenuPanel.Controls.Add(ProjectSearch);
             MenuPanel.Dock = DockStyle.Top;
             MenuPanel.Location = new Point(125, 0);
             MenuPanel.Name = "MenuPanel";
-            MenuPanel.Size = new Size(502, 51);
+            MenuPanel.Size = new Size(655, 79);
             MenuPanel.TabIndex = 3;
+            // 
+            // AlbumList
+            // 
+            AlbumList.FormattingEnabled = true;
+            AlbumList.Location = new Point(19, 31);
+            AlbumList.Name = "AlbumList";
+            AlbumList.Size = new Size(239, 28);
+            AlbumList.TabIndex = 2;
+            // 
+            // label1
+            // 
+            label1.AutoSize = true;
+            label1.Font = new Font("Segoe UI", 9F, FontStyle.Bold);
+            label1.Location = new Point(19, 8);
+            label1.Name = "label1";
+            label1.Size = new Size(56, 20);
+            label1.TabIndex = 1;
+            label1.Text = "Album";
             // 
             // ProjectSearch
             // 
             ProjectSearch.Anchor = AnchorStyles.Top | AnchorStyles.Right;
-            ProjectSearch.Location = new Point(178, 6);
+            ProjectSearch.Location = new Point(331, 8);
             ProjectSearch.Name = "ProjectSearch";
-            ProjectSearch.Size = new Size(321, 39);
+            ProjectSearch.Size = new Size(321, 65);
             ProjectSearch.TabIndex = 0;
             // 
             // SeperatorPanel
             // 
             SeperatorPanel.Dock = DockStyle.Top;
-            SeperatorPanel.Location = new Point(125, 51);
+            SeperatorPanel.Location = new Point(125, 79);
             SeperatorPanel.Name = "SeperatorPanel";
-            SeperatorPanel.Size = new Size(502, 10);
+            SeperatorPanel.Size = new Size(655, 10);
             SeperatorPanel.TabIndex = 4;
             // 
             // DataPanel
             // 
             DataPanel.Dock = DockStyle.Fill;
-            DataPanel.Location = new Point(125, 61);
+            DataPanel.Location = new Point(125, 89);
             DataPanel.Name = "DataPanel";
-            DataPanel.Size = new Size(502, 384);
+            DataPanel.Size = new Size(655, 356);
             DataPanel.TabIndex = 5;
+            // 
+            // ClearAlbumButton
+            // 
+            ClearAlbumButton.Cursor = Cursors.Hand;
+            ClearAlbumButton.Image = Properties.Resources.close;
+            ClearAlbumButton.Location = new Point(264, 31);
+            ClearAlbumButton.Name = "ClearAlbumButton";
+            ClearAlbumButton.Size = new Size(24, 24);
+            ClearAlbumButton.TabIndex = 3;
+            ClearAlbumButton.TabStop = false;
             // 
             // ProjectsControl
             // 
@@ -86,8 +121,10 @@
             Controls.Add(MenuPanel);
             Controls.Add(IndexPanel);
             Name = "ProjectsControl";
-            Size = new Size(627, 445);
+            Size = new Size(780, 445);
             MenuPanel.ResumeLayout(false);
+            MenuPanel.PerformLayout();
+            ((System.ComponentModel.ISupportInitialize)ClearAlbumButton).EndInit();
             ResumeLayout(false);
         }
 
@@ -98,5 +135,8 @@
         private Panel SeperatorPanel;
         private Panel DataPanel;
         private MainFormControls.ProjectsControl.Search.ProjectSearch ProjectSearch;
+        private ComboBox AlbumList;
+        private Label label1;
+        private PictureBox ClearAlbumButton;
     }
 }

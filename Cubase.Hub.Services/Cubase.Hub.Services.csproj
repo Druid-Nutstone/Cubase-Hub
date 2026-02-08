@@ -7,8 +7,42 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <PackageReference Include="FFMpegCore" Version="5.4.0" />
     <PackageReference Include="NAudio" Version="2.2.1" />
     <PackageReference Include="TagLibSharp" Version="2.3.0" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Update="Encoder\avcodec-62.dll">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Update="Encoder\avdevice-62.dll">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Update="Encoder\avfilter-11.dll">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Update="Encoder\avformat-62.dll">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Update="Encoder\avutil-60.dll">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Update="Encoder\ffmpeg.exe">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Update="Encoder\ffplay.exe">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Update="Encoder\ffprobe.exe">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Update="Encoder\swresample-6.dll">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Update="Encoder\swscale-9.dll">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
   </ItemGroup>
 
 </Project>

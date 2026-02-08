@@ -16,7 +16,7 @@ namespace Cubase.Hub.Controls.MainFormControls.ProjectsControl
             ColumnCount = 1;
             RowCount = 0;
             GrowStyle = TableLayoutPanelGrowStyle.AddRows;
-
+            this.DoubleBuffered = true; 
             // ✅ THIS IS CRITICAL
             ColumnStyles.Clear();
             ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 100f));

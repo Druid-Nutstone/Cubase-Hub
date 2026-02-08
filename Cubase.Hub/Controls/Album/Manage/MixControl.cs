@@ -1,5 +1,6 @@
 ﻿using Cubase.Hub.Controls.MainFormControls.ProjectsControl.PlayControls;
 using Cubase.Hub.Services.Audio;
+using Cubase.Hub.Services.Messages;
 using Cubase.Hub.Services.Models;
 using System;
 using System.Collections.Generic;
@@ -18,15 +19,18 @@ namespace Cubase.Hub.Controls.Album.Manage
 
         private MixDown Mix;
 
+        private IMessageService messageService;
+
         public MixControl()
         {
             InitializeComponent();
         }
 
-        public MixControl(MixDown mixDown, IAudioService audioService)
+        public MixControl(MixDown mixDown, IAudioService audioService, IMessageService messageService)
         {
             InitializeComponent();
             this.Initialise(mixDown, audioService);
+            this.messageService = messageService;   
         }
 
         public void Initialise(MixDown mixDown, IAudioService audioService)
@@ -44,6 +48,7 @@ namespace Cubase.Hub.Controls.Album.Manage
             this.PlayerPanel.Controls.Add(playerControl);
             this.MixComments.Bind(nameof(MixDown.Comment), mixDown);
             this.MixExtra.Text = $"({mixDown.Size},{mixDown.AudioType},{mixDown.Artist},{mixDown.Album})";
+            this.MixSelected.Bind(nameof(MixDown.Selected),mixDown);
         }
 
         private void MixDown_PropertyChanged(object? sender, PropertyChangedEventArgs e)

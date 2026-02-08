@@ -45,5 +45,10 @@ namespace Cubase.Hub.Services.Messages
                 provider.Invoke(message, waitCursor);
             }
         }
+
+        public DialogResult AskMessage(string message)
+        {
+            return MessageBox.Show(message, "Question?", MessageBoxButtons.YesNo, MessageBoxIcon.Question);
+        }
     }
 }

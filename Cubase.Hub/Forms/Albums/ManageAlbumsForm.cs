@@ -34,6 +34,8 @@ namespace Cubase.Hub.Forms.Albums
 
         private MixDownCollection CurrentMixes;
 
+        private AlbumConfiguration CurrentAlbumConfiguration;
+
         public ManageAlbumsForm(IConfigurationService configurationService, 
                                 IDirectoryService directoryService, 
                                 IAudioService audioService,
@@ -48,7 +50,65 @@ namespace Cubase.Hub.Forms.Albums
             this.messageService = messageService;   
             ThemeApplier.ApplyDarkTheme(this);
             this.SelectedAlbum.SelectedIndexChanged += SelectedAlbum_SelectedIndexChanged;
+            this.RereshFromAblumButton.Click += RereshFromAblumButton_Click;
             this.OpenAlbumDirectory.Click += OpenAlbumDirectory_Click;
+            this.DeleteSelectedButton.BackColor = Color.FromKnownColor(KnownColor.IndianRed);
+            this.DisableButtonsThatNeedASelection();
+            this.SelectDeselectAllMixes.Text = "Select All";
+            this.SelectDeselectAllMixes.CheckedChanged += SelectDeselectAllMixes_CheckedChanged;
+            this.SetSelectedTracksTitleButton.Click += SetSelectedTracksTitleButton_Click;
+        }
+
+        private void SetSelectedTracksTitleButton_Click(object? sender, EventArgs e)
+        {
+            if (this.CurrentMixes != null)
+            {
+                foreach (var mix in this.CurrentMixes)
+                {
+                    mix.Title = Path.GetFileNameWithoutExtension(mix.FileName);
+                    this.audioService.SetTagsFromMixDowm(mix);
+                }
+                this.mixdownControl.ShowMixes(this.CurrentMixes, this.OnMixChanged, this.audioService, this.messageService);
+
+            }
+        }
+
+        private void SelectDeselectAllMixes_CheckedChanged(object? sender, EventArgs e)
+        {
+            if (this.CurrentMixes != null)
+            {
+                this.CurrentMixes.SelectDeSelectMixes(this.SelectDeselectAllMixes.Checked);
+            }
+        }
+
+        private void DisableButtonsThatNeedASelection()
+        {
+            this.ManageMixesButton.Enabled = false;
+            this.DeleteSelectedButton.Enabled = false;
+            this.SetSelectedTracksTitleButton.Enabled = false;
+        }
+
+        private void EnableButtonsThatNeedASelection()
+        {
+            this.ManageMixesButton.Enabled = true;
+            this.DeleteSelectedButton.Enabled = true;
+            this.SetSelectedTracksTitleButton.Enabled = true;
+        }
+
+        private void RereshFromAblumButton_Click(object? sender, EventArgs e)
+        {
+            if (this.CurrentAlbumConfiguration != null && this.CurrentMixes != null)
+            {
+                foreach (var mix in this.CurrentMixes)
+                {
+                    mix.Album = this.CurrentAlbumConfiguration.Title;
+                    mix.Year = this.CurrentAlbumConfiguration.Year;
+                    mix.Artist = CurrentAlbumConfiguration.Artist;
+                    mix.Genre = CurrentAlbumConfiguration.Genre;
+                    this.audioService.SetTagsFromMixDowm(mix);
+                }
+                this.LoadTracks(this.CurrentAlbum.AlbumPath);
+            }
         }
 
         private void OpenAlbumDirectory_Click(object? sender, EventArgs e)
@@ -68,8 +128,8 @@ namespace Cubase.Hub.Forms.Albums
         {
             this.CurrentAlbum = this.SelectedAlbum.SelectedItem as AlbumLocation;
             // get album
-            var albumConfig = AlbumConfiguration.LoadFromFile(Path.Combine(this.CurrentAlbum.AlbumPath, CubaseHubConstants.CubaseAlbumConfigurationFileName));
-            this.AlbumConfigurationControl.AlbumConfiguration = albumConfig;
+            this.CurrentAlbumConfiguration = AlbumConfiguration.LoadFromFile(Path.Combine(this.CurrentAlbum.AlbumPath, CubaseHubConstants.CubaseAlbumConfigurationFileName));
+            this.AlbumConfigurationControl.AlbumConfiguration = this.CurrentAlbumConfiguration;
             this.AlbumConfigurationControl.Initialise(this.OnAlbumChanged);
             // get album mixes 
             var msgDialog = this.messageService.OpenMessage("Loading Tracks..", this);
@@ -81,20 +141,32 @@ namespace Cubase.Hub.Forms.Albums
         {
             var mixes = this.directoryService.GetMixes(albumPath);
             this.CurrentMixes = this.audioService.PopulateMixDownCollectionFromTags(mixes);
-            this.mixdownControl.ShowMixes(this.CurrentMixes, this.OnMixChanged, this.audioService);
+            this.mixdownControl.ShowMixes(this.CurrentMixes, this.OnMixChanged, this.audioService, this.messageService);
         }
 
         private void OnMixChanged(MixDown mixDown, string propertyName)
         {
-            this.audioService.SetTagsFromMixDowm(mixDown);  
-            if (propertyName == nameof(MixDown.TrackNumber))
+            if (propertyName == nameof(MixDown.Selected))
             {
-                this.LoadTracks(this.CurrentAlbum.AlbumPath);
+                this.DisableButtonsThatNeedASelection();
+                if (this.CurrentMixes.AreAnyMixesSelected())
+                {
+                    this.EnableButtonsThatNeedASelection();
+                }
+            }
+            else
+            {
+                this.audioService.SetTagsFromMixDowm(mixDown);
+                if (propertyName == nameof(MixDown.TrackNumber))
+                {
+                    this.LoadTracks(this.CurrentAlbum.AlbumPath);
+                }
             }
         }
 
         private void OnAlbumChanged(AlbumConfiguration albumConfiguration, string propertyName)
         {
+           
             albumConfiguration.SaveToDirectory(this.CurrentAlbum.AlbumPath);
             foreach (var mix in this.CurrentMixes)
             {

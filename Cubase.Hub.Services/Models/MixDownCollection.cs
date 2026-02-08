@@ -17,6 +17,19 @@ namespace Cubase.Hub.Services.Models
         {
         }
 
+        public void SelectDeSelectMixes(bool state)
+        {
+            foreach (var item in this)
+            {
+                item.Selected = state;
+            }
+        }
+
+        public bool AreAnyMixesSelected()
+        {
+            return this.Where(x => x.Selected).Any();
+        }
+
         public void CreateFromFiles(string[] files)
         {
             foreach(var file in files)
@@ -38,6 +51,13 @@ namespace Cubase.Hub.Services.Models
             field = value;
             PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
             return true;
+        }
+
+        private bool _selected = false;
+        public bool Selected
+        {
+            get => _selected;
+            set => SetProperty(ref _selected, value);
         }
 
         private string _fileName;

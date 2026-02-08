@@ -28,8 +28,10 @@
         /// </summary>
         private void InitializeComponent()
         {
+            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(NewAlbumForm));
             label2 = new Label();
             AlbumDetails = new GroupBox();
+            albumConfigurationControl = new Cubase.Hub.Controls.Album.AlbumConfigurationControl();
             panel1 = new Panel();
             CreateAlbumButton = new Button();
             SelectedExistingDirectory = new ComboBox();
@@ -38,7 +40,6 @@
             BrowseRootDirectory = new Button();
             label8 = new Label();
             NewAlbumRoot = new Label();
-            albumConfigurationControl = new Cubase.Hub.Controls.Album.AlbumConfigurationControl();
             AlbumDetails.SuspendLayout();
             panel1.SuspendLayout();
             SuspendLayout();
@@ -63,6 +64,14 @@
             AlbumDetails.TabIndex = 3;
             AlbumDetails.TabStop = false;
             AlbumDetails.Text = "Album Details";
+            // 
+            // albumConfigurationControl
+            // 
+            albumConfigurationControl.Dock = DockStyle.Fill;
+            albumConfigurationControl.Location = new Point(3, 23);
+            albumConfigurationControl.Name = "albumConfigurationControl";
+            albumConfigurationControl.Size = new Size(760, 230);
+            albumConfigurationControl.TabIndex = 0;
             // 
             // panel1
             // 
@@ -135,14 +144,6 @@
             NewAlbumRoot.TabIndex = 10;
             NewAlbumRoot.Text = "Not Specified";
             // 
-            // albumConfigurationControl
-            // 
-            albumConfigurationControl.Dock = DockStyle.Fill;
-            albumConfigurationControl.Location = new Point(3, 23);
-            albumConfigurationControl.Name = "albumConfigurationControl";
-            albumConfigurationControl.Size = new Size(760, 230);
-            albumConfigurationControl.TabIndex = 0;
-            // 
             // NewAlbumForm
             // 
             AutoScaleDimensions = new SizeF(8F, 20F);
@@ -157,6 +158,7 @@
             Controls.Add(panel1);
             Controls.Add(AlbumDetails);
             Controls.Add(label2);
+            Icon = (Icon)resources.GetObject("$this.Icon");
             Name = "NewAlbumForm";
             StartPosition = FormStartPosition.CenterParent;
             Text = "New Album";

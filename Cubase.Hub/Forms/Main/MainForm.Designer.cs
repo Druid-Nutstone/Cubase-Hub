@@ -28,6 +28,7 @@
         /// </summary>
         private void InitializeComponent()
         {
+            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(MainForm));
             MainMenu = new MenuStrip();
             StatusStrip = new StatusStrip();
             StatusMessage = new ToolStripStatusLabel();
@@ -40,7 +41,7 @@
             MainMenu.ImageScalingSize = new Size(20, 20);
             MainMenu.Location = new Point(0, 0);
             MainMenu.Name = "MainMenu";
-            MainMenu.Size = new Size(800, 28);
+            MainMenu.Size = new Size(800, 24);
             MainMenu.TabIndex = 0;
             MainMenu.Text = "MainMenu";
             // 
@@ -62,9 +63,9 @@
             // ControlPanel
             // 
             ControlPanel.Dock = DockStyle.Fill;
-            ControlPanel.Location = new Point(0, 28);
+            ControlPanel.Location = new Point(0, 24);
             ControlPanel.Name = "ControlPanel";
-            ControlPanel.Size = new Size(800, 396);
+            ControlPanel.Size = new Size(800, 400);
             ControlPanel.TabIndex = 2;
             // 
             // MainForm
@@ -75,6 +76,7 @@
             Controls.Add(ControlPanel);
             Controls.Add(StatusStrip);
             Controls.Add(MainMenu);
+            Icon = (Icon)resources.GetObject("$this.Icon");
             MainMenuStrip = MainMenu;
             Name = "MainForm";
             StartPosition = FormStartPosition.CenterScreen;

@@ -18,14 +18,17 @@ namespace Cubase.Hub.Services.Models
 
         public IEnumerable<AlbumLocation> GetAlbums()
         {
-            var albums =  this.Where(a => a.Album != null)
-                .Select(x => new AlbumLocation() 
-                { 
-                    AlbumName= x.Album, 
-                    AlbumPath = x.AlbumPath  
+            return this
+                .Where(p => !string.IsNullOrWhiteSpace(p.Album))
+                .GroupBy(p => p.Album)
+                .Select(g => new AlbumLocation
+                {
+                    AlbumName = g.Key,
+                    AlbumPath = g.First().AlbumPath
                 });
-            return albums;
         } 
+
+
 
         public CubaseProject AddProject(string cprFileName)
         {
@@ -53,6 +56,11 @@ namespace Cubase.Hub.Services.Models
             var project = CubaseProject.Create(Path.GetFileNameWithoutExtension(cprFileName), cprFileName, Path.GetFileName(parentDir), album, albumPath, mixDownFiles);
             this.Add(project);
             return project;
+        }
+
+        public CubaseProjectCollection GetAlbumProjects(string albumName)
+        {
+            return new CubaseProjectCollection(this.Where(x => x.Album == albumName));
         }
 
         public CubaseProjectCollection FilteredCollection(string text)

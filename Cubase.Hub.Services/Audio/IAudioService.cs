@@ -8,6 +8,7 @@ namespace Cubase.Hub.Services.Audio
 {
     public interface IAudioService
     {
+       
         IWavePlayer? Player { get;  }
 
         AudioFileReader? Audio { get; }

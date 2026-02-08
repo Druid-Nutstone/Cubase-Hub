@@ -4,6 +4,7 @@ using System.Text;
 using Cubase.Hub.Services.Models;
 using NAudio.Wave;
 using TagLib;
+using FFMpegCore;
 namespace Cubase.Hub.Services.Audio
 {
     public class AudioService : IAudioService
@@ -11,9 +12,40 @@ namespace Cubase.Hub.Services.Audio
         public IWavePlayer? Player { get; private set; }
         public AudioFileReader? Audio { get; private set; } 
 
-        public AudioService() { }
+        public AudioService() 
+        {
+            GlobalFFOptions.Configure(options =>
+            {
+                options.BinaryFolder = Path.Combine(AppContext.BaseDirectory, "Encoder");
+            });
+        }
     
         public IWavePlayer Play(string musicfile, Action<StoppedEventArgs> onStopped)
+        {
+            var fileName = musicfile;
+            if (musicfile.IsFlac())
+            {
+                fileName = this.ConvertFlacToWav(musicfile);
+            }
+            return internalPlayFile(fileName, onStopped);
+        }
+
+        private string ConvertFlacToWav(string flacfile)
+        {
+            FFMpegArguments
+                .FromFileInput(flacfile)
+                .OutputToFile(this.GetTempWavFile(), overwrite: true, options => options
+                .WithAudioCodec("pcm_s16le"))
+                .ProcessSynchronously();
+            return this.GetTempWavFile();
+        }
+
+        private string GetTempWavFile() 
+        {
+            return Path.Combine(Path.GetTempPath(), "TempWav.Wav");
+        } 
+
+        private IWavePlayer internalPlayFile(string musicfile, Action<StoppedEventArgs> onStopped)
         {
             Player?.Stop();
             Player?.Dispose();
@@ -29,6 +61,11 @@ namespace Cubase.Hub.Services.Audio
         {
             Player?.Stop();
             Player?.Dispose();
+            Audio?.Dispose();
+            if (System.IO.File.Exists(this.GetTempWavFile()))
+            {
+                System.IO.File.Delete(this.GetTempWavFile());   
+            }
         }
 
 
@@ -99,6 +136,5 @@ namespace Cubase.Hub.Services.Audio
                 mixes.OrderBy(x => x.TrackNumber)
             );
         }
-
     }
 }

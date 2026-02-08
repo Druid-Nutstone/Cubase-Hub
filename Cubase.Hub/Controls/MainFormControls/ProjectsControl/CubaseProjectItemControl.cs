@@ -36,6 +36,7 @@ namespace Cubase.Hub.Controls.MainFormControls.ProjectsForm
             this.extendedPropertiesControl = extendedPropertiesControl;
             this.cubaseService = cubaseService;
             this.Initialise();
+            this.DoubleBuffered = true;
         }
 
         public void SetParent(CubaseProjectControl cubaseProjectControl)

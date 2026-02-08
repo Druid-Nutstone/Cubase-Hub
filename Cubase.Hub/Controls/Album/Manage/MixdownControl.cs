@@ -5,6 +5,7 @@ using System.Text;
 using System.ComponentModel;
 using Cubase.Hub.Forms.BaseForm;
 using Cubase.Hub.Services.Audio;
+using Cubase.Hub.Services.Messages;
 
 namespace Cubase.Hub.Controls.Album.Manage
 {
@@ -21,7 +22,7 @@ namespace Cubase.Hub.Controls.Album.Manage
             ColumnCount = 1;
             RowCount = 0;
             GrowStyle = TableLayoutPanelGrowStyle.AddRows;
-
+            this.DoubleBuffered = true;
             // ✅ THIS IS CRITICAL
             ColumnStyles.Clear();
             ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 100f));
@@ -29,7 +30,7 @@ namespace Cubase.Hub.Controls.Album.Manage
             Padding = new Padding(10);
         }
 
-        public void ShowMixes(MixDownCollection mixes, Action<MixDown, string> onMixChanged, IAudioService audioService)
+        public void ShowMixes(MixDownCollection mixes, Action<MixDown, string> onMixChanged, IAudioService audioService, IMessageService messageService)
         {
             this.OnMixChanged = onMixChanged;
 
@@ -43,14 +44,16 @@ namespace Cubase.Hub.Controls.Album.Manage
 
             foreach (var mix in mixes)
             {
-                var mixDowncontrol = new MixControl(mix, audioService)
+                var mixDowncontrol = new MixControl(mix, audioService, messageService)
                 {
                     Dock = DockStyle.Fill
                 };
 
                 mixDowncontrol.OnMixChanged += (m,p) =>
                 {
-                    this.OnMixChanged?.Invoke(m,p);
+
+                    this.OnMixChanged?.Invoke(m, p);
+
                 };
 
                 this.Controls.Add(mixDowncontrol, 0, this.RowCount);

@@ -38,23 +38,24 @@
             // 
             label1.AutoSize = true;
             label1.Font = new Font("Segoe UI", 9F, FontStyle.Bold);
-            label1.Location = new Point(8, 9);
+            label1.Location = new Point(3, 0);
             label1.Name = "label1";
-            label1.Size = new Size(50, 20);
+            label1.Size = new Size(55, 20);
             label1.TabIndex = 0;
-            label1.Text = "Filter:";
+            label1.Text = "Search";
             // 
             // FilterText
             // 
-            FilterText.Location = new Point(53, 6);
+            FilterText.Location = new Point(0, 23);
             FilterText.Name = "FilterText";
             FilterText.Size = new Size(230, 27);
             FilterText.TabIndex = 1;
             // 
             // ClearFilter
             // 
+            ClearFilter.Cursor = Cursors.Hand;
             ClearFilter.Image = Properties.Resources.close;
-            ClearFilter.Location = new Point(289, 9);
+            ClearFilter.Location = new Point(236, 23);
             ClearFilter.Name = "ClearFilter";
             ClearFilter.Size = new Size(27, 24);
             ClearFilter.TabIndex = 2;
@@ -68,7 +69,7 @@
             Controls.Add(FilterText);
             Controls.Add(label1);
             Name = "ProjectSearch";
-            Size = new Size(339, 38);
+            Size = new Size(281, 64);
             ((System.ComponentModel.ISupportInitialize)ClearFilter).EndInit();
             ResumeLayout(false);
             PerformLayout();

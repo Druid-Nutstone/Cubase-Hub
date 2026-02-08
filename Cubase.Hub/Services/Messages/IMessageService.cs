@@ -15,5 +15,7 @@ namespace Cubase.Hub.Services.Messages
         
         NonBlockingMessage OpenMessage(string message, Control parent); 
 
+        DialogResult AskMessage(string message);   
+
     }
 }
