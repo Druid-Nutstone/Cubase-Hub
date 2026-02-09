@@ -1,4 +1,5 @@
 ﻿using Cubase.Hub.Services.Models;
+using FFMpegCore.Enums;
 using NAudio.Wave;
 using System;
 using System.Collections.Generic;
@@ -23,6 +24,10 @@ namespace Cubase.Hub.Services.Audio
 
         MixDownCollection PopulateMixDownCollectionFromTags(MixDownCollection mixes);
 
-        void SetTagsFromMixDowm(MixDown mixDown); 
+        void SetTagsFromMixDowm(MixDown mixDown, string? targetFile = null);
+
+        void ConvertToMp3(MixDown mixDown, string targetDirectory, AudioQuality quality);
+
+        void ConvertToFlac(MixDown mixDown, string targetDirectory, CompressionLevel compressionLevel);
     }
 }

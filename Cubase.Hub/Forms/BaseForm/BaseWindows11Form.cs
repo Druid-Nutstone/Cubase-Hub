@@ -128,6 +128,18 @@ namespace Cubase.Hub.Forms.BaseForm
                 splitter.BackColor = DarkTheme.ControlColor;
             }
 
+            if (control is CheckBox cb)
+            {
+                cb.UseVisualStyleBackColor = false;
+                cb.BackColor = DarkTheme.BackColor;
+                cb.ForeColor = DarkTheme.TextColor;
+            }
+
+            if (control is GroupBox group)
+            {
+                control.ForeColor = DarkTheme.TextColor;
+            }
+
             if (control is TextBox tb)
             {
                 tb.BorderStyle = BorderStyle.FixedSingle;

@@ -6,6 +6,7 @@ using Cubase.Hub.Forms.Albums;
 using Cubase.Hub.Forms.Config;
 using Cubase.Hub.Forms.Main;
 using Cubase.Hub.Forms.Main.Menu;
+using Cubase.Hub.Forms.Mixes;
 using Cubase.Hub.Forms.Tracks;
 using Cubase.Hub.Services.Audio;
 using Cubase.Hub.Services.Config;
@@ -48,6 +49,7 @@ namespace Cubase.Hub
                 .AddScoped<NewAlbumForm>()
                 .AddScoped<NewTrackForm>()
                 .AddScoped<ManageAlbumsForm>()
+                .AddScoped<ManageMixesForm>()
                 .AddTransient<PlayControl>()
                 .AddTransient<CubaseProjectItemControl>()
                 .AddTransient<CubaseProjectExtendedPropertiesControl>()

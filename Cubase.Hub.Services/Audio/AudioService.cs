@@ -5,6 +5,8 @@ using Cubase.Hub.Services.Models;
 using NAudio.Wave;
 using TagLib;
 using FFMpegCore;
+using FFMpegCore.Pipes;
+using FFMpegCore.Enums;
 namespace Cubase.Hub.Services.Audio
 {
     public class AudioService : IAudioService
@@ -18,6 +20,7 @@ namespace Cubase.Hub.Services.Audio
             {
                 options.BinaryFolder = Path.Combine(AppContext.BaseDirectory, "Encoder");
             });
+
         }
     
         public IWavePlayer Play(string musicfile, Action<StoppedEventArgs> onStopped)
@@ -69,9 +72,9 @@ namespace Cubase.Hub.Services.Audio
         }
 
 
-        public void SetTagsFromMixDowm(MixDown mixDown)
+        public void SetTagsFromMixDowm(MixDown mixDown, string? targetFile = null)
         {
-            var fileTag = TagLib.File.Create(mixDown.FileName);
+            var fileTag = TagLib.File.Create(targetFile ?? mixDown.FileName);
             fileTag.Tag.Title = mixDown.Title;
             fileTag.Tag.Album = mixDown.Album;
             fileTag.Tag.Genres = [mixDown.Genre ?? string.Empty];
@@ -135,6 +138,39 @@ namespace Cubase.Hub.Services.Audio
             return new MixDownCollection(
                 mixes.OrderBy(x => x.TrackNumber)
             );
+        }
+
+        public void ConvertToMp3(MixDown mixDown, string targetDirectory, AudioQuality quality)
+        {
+            var outFile = this.MapOutputAudioFile(mixDown.FileName, targetDirectory, ".mp3");
+
+
+            FFMpegArguments
+                 .FromFileInput(mixDown.FileName)
+                 .OutputToFile(outFile, overwrite: true, options => options
+                                   .WithAudioCodec("mp3")
+                                   .WithAudioBitrate(quality))
+                 .ProcessSynchronously();
+            this.SetTagsFromMixDowm(mixDown, outFile);
+
+        }
+
+        public void ConvertToFlac(MixDown mixDown, string targetDirectory, CompressionLevel compressionLevel)
+        {
+            var outFile = this.MapOutputAudioFile(mixDown.FileName, targetDirectory, ".flac");
+            FFMpegArguments
+                 .FromFileInput(mixDown.FileName)
+                 .OutputToFile(outFile, overwrite: true, options => options
+                                   .WithAudioCodec("flac")
+                                   .WithCustomArgument($"-compression_level {(int)compressionLevel}"))
+                 .ProcessSynchronously();
+            this.SetTagsFromMixDowm(mixDown, outFile);
+        }
+
+        private string MapOutputAudioFile(string inputFileName, string targetDirectory, string extention)
+        {
+            var newFileName = Path.GetFileNameWithoutExtension(inputFileName);
+            return Path.Combine(targetDirectory, $"{newFileName}{extention}");
         }
     }
 }

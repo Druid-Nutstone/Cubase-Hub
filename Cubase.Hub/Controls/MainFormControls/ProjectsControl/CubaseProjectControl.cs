@@ -47,7 +47,8 @@ namespace Cubase.Hub.Controls.MainFormControls.ProjectsControl
 
             item.SetParent(this);
 
-            this.AddHorizontalLine();
+            // don't like this really 
+            // this.AddHorizontalLine();
 
         }
 

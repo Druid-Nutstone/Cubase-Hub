@@ -13,5 +13,15 @@ namespace Cubase.Hub.Services.Models
         public string? CubaseUserTemplateLocation { get; set; }
 
         public string? CubaseTemplateLocation { get; set; }
+    
+        public WindowSettings? MainWindowLocation {  get; set; } 
+    }
+
+    public class WindowSettings
+    {
+        public int X { get; set; }
+        public int Y { get; set; }
+        public int Width { get; set; }
+        public int Height { get; set; }
     }
 }

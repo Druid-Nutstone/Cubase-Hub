@@ -63,7 +63,15 @@ namespace Cubase.Hub.Forms.Main
                 }
             }) != null)
             {
-                // have config .. so load project control 
+                if (this.configurationService.Configuration.MainWindowLocation != null)
+                {
+                    StartPosition = FormStartPosition.Manual;
+                    Bounds = new Rectangle(
+                        this.configurationService.Configuration.MainWindowLocation.X,
+                        this.configurationService.Configuration.MainWindowLocation.Y,
+                        this.configurationService.Configuration.MainWindowLocation.Width,
+                        this.configurationService.Configuration.MainWindowLocation.Height);
+                }
                 this.LoadProjects();
             } 
             
@@ -100,5 +108,27 @@ namespace Cubase.Hub.Forms.Main
             this.StatusMessage.Text = message;
             this.StatusStrip.Refresh();
         }
+
+        protected override void OnFormClosing(FormClosingEventArgs e)
+        {
+            base.OnFormClosing(e);
+            //this.Bounds = new Rectangle() {  } 
+            // this.configurationService.Configuration.
+            var bounds = WindowState == FormWindowState.Normal
+            ? Bounds
+            : RestoreBounds;
+
+            var settings = new WindowSettings
+            {
+                X = bounds.X,
+                Y = bounds.Y,
+                Width = bounds.Width,
+                Height = bounds.Height,
+            };
+            this.configurationService?.Configuration?.MainWindowLocation = settings;
+            this.configurationService?.SaveConfiguration(this.configurationService?.Configuration, () => { });
+        }
+
+
     }
 }

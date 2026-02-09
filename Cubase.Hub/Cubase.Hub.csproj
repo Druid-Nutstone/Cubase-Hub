@@ -25,7 +25,6 @@
 
   <ItemGroup>
     <Folder Include="Controls\MainFormControls\ProjectsControl\Menu\" />
-    <Folder Include="Forms\Mixes\" />
     <Folder Include="Models\" />
   </ItemGroup>
 

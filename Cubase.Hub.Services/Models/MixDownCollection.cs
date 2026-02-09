@@ -25,6 +25,22 @@ namespace Cubase.Hub.Services.Models
             }
         }
 
+        public MixDownCollection GetSelectedMixes()
+        {
+            return new MixDownCollection(this.Where(x => x.Selected));
+        }
+
+        public void RemoveSelectedMixes()
+        {
+            for (int i=0; i < this.Count; i++)
+            {
+                if (this[i].Selected)
+                {
+                    this.Remove(this[i]);
+                }
+            }    
+        }
+
         public bool AreAnyMixesSelected()
         {
             return this.Where(x => x.Selected).Any();
