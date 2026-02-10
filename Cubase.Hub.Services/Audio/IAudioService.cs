@@ -16,6 +16,10 @@ namespace Cubase.Hub.Services.Audio
 
         IWavePlayer Play(string musicfile, Action<StoppedEventArgs> onStopped);
 
+        void FastForward(TimeSpan timeSpan);
+
+        void FastBackward(TimeSpan timeSpan);
+
         void Stop();
 
         MixDown PopulateTagsFromFile(string fileName);

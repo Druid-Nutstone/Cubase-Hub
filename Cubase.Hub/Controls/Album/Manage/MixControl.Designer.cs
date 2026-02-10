@@ -79,13 +79,13 @@
             // 
             PlayerPanel.Location = new Point(879, 41);
             PlayerPanel.Name = "PlayerPanel";
-            PlayerPanel.Size = new Size(196, 36);
+            PlayerPanel.Size = new Size(271, 36);
             PlayerPanel.TabIndex = 4;
             // 
             // MixExtra
             // 
             MixExtra.AutoSize = true;
-            MixExtra.Location = new Point(1096, 47);
+            MixExtra.Location = new Point(1173, 50);
             MixExtra.Name = "MixExtra";
             MixExtra.Size = new Size(70, 20);
             MixExtra.TabIndex = 5;

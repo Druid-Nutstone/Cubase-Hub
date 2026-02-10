@@ -1,12 +1,13 @@
-﻿using System;
+﻿using Cubase.Hub.Services.Models;
+using FFMpegCore;
+using FFMpegCore.Enums;
+using FFMpegCore.Pipes;
+using NAudio.Wave;
+using System;
 using System.Collections.Generic;
 using System.Text;
-using Cubase.Hub.Services.Models;
-using NAudio.Wave;
 using TagLib;
-using FFMpegCore;
-using FFMpegCore.Pipes;
-using FFMpegCore.Enums;
+using TagLib.Mpeg;
 namespace Cubase.Hub.Services.Audio
 {
     public class AudioService : IAudioService
@@ -57,6 +58,7 @@ namespace Cubase.Hub.Services.Audio
             Player.PlaybackStopped += (o, e) => { onStopped?.Invoke(e); };
             Player.Init(Audio);
             Player.Play();
+
             return Player;
         }
 
@@ -171,6 +173,32 @@ namespace Cubase.Hub.Services.Audio
         {
             var newFileName = Path.GetFileNameWithoutExtension(inputFileName);
             return Path.Combine(targetDirectory, $"{newFileName}{extention}");
+        }
+
+        public void FastForward(TimeSpan timeSpan)
+        {
+            if (this.Audio != null)
+            {
+                var newTime = this.Audio.CurrentTime + timeSpan;
+
+                if (newTime > this.Audio.TotalTime)
+                    newTime = this.Audio.TotalTime;
+
+                this.Audio.CurrentTime = newTime;
+            }
+        }
+
+        public void FastBackward(TimeSpan timeSpan)
+        {
+            if (this.Audio != null)
+            {
+                var newTime = this.Audio.CurrentTime - timeSpan;
+
+                if (newTime < this.Audio.TotalTime)
+                    newTime = this.Audio.TotalTime;
+
+                this.Audio.CurrentTime = newTime;
+            }
         }
     }
 }

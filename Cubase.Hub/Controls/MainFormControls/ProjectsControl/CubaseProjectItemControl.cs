@@ -12,6 +12,8 @@ using System.Windows.Forms;
 
 namespace Cubase.Hub.Controls.MainFormControls.ProjectsForm
 {
+
+
     public enum CubaseProjectItemControlState
     {
         Minimized,
@@ -29,6 +31,12 @@ namespace Cubase.Hub.Controls.MainFormControls.ProjectsForm
         private readonly ICubaseService cubaseService;
 
         private CubaseProject project;
+
+        [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
+        public Action<CubaseProjectItemControl>? ProjectSelected { get; set; }
+
+        [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
+        public Action<CubaseProjectItemControl>? ProjectDeselected { get; set; }
 
         public CubaseProjectItemControl(CubaseProjectExtendedPropertiesControl extendedPropertiesControl,
                                         ICubaseService cubaseService)
@@ -59,22 +67,33 @@ namespace Cubase.Hub.Controls.MainFormControls.ProjectsForm
             this.Minimise();
             this.ExpandContractButton.Click += ExpandContractButton_Click;
             this.ProjectLink.Click += ProjectLink_LinkClicked;
+            this.ProjectLink.MouseDown += (s, e) =>
+            {
+               this.Cursor = Cursors.WaitCursor;
+            };
+            this.ProjectLink.MouseUp += (s, e) =>
+            {
+                this.Cursor = Cursors.Default;
+            };  
         }
 
         private void ProjectLink_LinkClicked(object? sender, EventArgs e)
         {
             this.cubaseService.OpenCubaseProject(this.ProjectLink.Tag?.ToString() ?? string.Empty);
+            this.ProjectSelected?.Invoke(this); 
         }
 
         private void ExpandContractButton_Click(object? sender, EventArgs e)
         {
             if (this.currentState == CubaseProjectItemControlState.Minimized)
             {
+                this.ProjectSelected?.Invoke(this);
                 this.Expand();
                 this.currentState = CubaseProjectItemControlState.Expanded;
             }
             else
             {
+                this.ProjectDeselected?.Invoke(this);
                 this.Minimise();
                 this.currentState = CubaseProjectItemControlState.Minimized;
             }

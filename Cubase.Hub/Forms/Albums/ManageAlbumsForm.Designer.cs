@@ -39,11 +39,11 @@
             MixDownPanel = new Panel();
             mixdownControl = new Cubase.Hub.Controls.Album.Manage.MixdownControl();
             TracksControlPanel = new Panel();
+            SetSelectedTracksTitleButton = new Button();
             SelectDeselectAllMixes = new CheckBox();
             DeleteSelectedButton = new Button();
             ManageMixesButton = new Button();
             RereshFromAblumButton = new Button();
-            SetSelectedTracksTitleButton = new Button();
             TopPanel.SuspendLayout();
             AlbumPanel.SuspendLayout();
             TracksPanel.SuspendLayout();
@@ -147,6 +147,7 @@
             mixdownControl.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 100F));
             mixdownControl.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 100F));
             mixdownControl.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 100F));
+            mixdownControl.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 100F));
             mixdownControl.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 50F));
             mixdownControl.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 50F));
             mixdownControl.Dock = DockStyle.Top;
@@ -171,6 +172,15 @@
             TracksControlPanel.Name = "TracksControlPanel";
             TracksControlPanel.Size = new Size(1382, 43);
             TracksControlPanel.TabIndex = 0;
+            // 
+            // SetSelectedTracksTitleButton
+            // 
+            SetSelectedTracksTitleButton.Location = new Point(602, 8);
+            SetSelectedTracksTitleButton.Name = "SetSelectedTracksTitleButton";
+            SetSelectedTracksTitleButton.Size = new Size(265, 29);
+            SetSelectedTracksTitleButton.TabIndex = 5;
+            SetSelectedTracksTitleButton.Text = "Set Selected Titles To Track Name";
+            SetSelectedTracksTitleButton.UseVisualStyleBackColor = true;
             // 
             // SelectDeselectAllMixes
             // 
@@ -210,15 +220,6 @@
             RereshFromAblumButton.TabIndex = 0;
             RereshFromAblumButton.Text = "Refresh Tags From Album";
             RereshFromAblumButton.UseVisualStyleBackColor = true;
-            // 
-            // SetSelectedTracksTitleButton
-            // 
-            SetSelectedTracksTitleButton.Location = new Point(602, 8);
-            SetSelectedTracksTitleButton.Name = "SetSelectedTracksTitleButton";
-            SetSelectedTracksTitleButton.Size = new Size(265, 29);
-            SetSelectedTracksTitleButton.TabIndex = 5;
-            SetSelectedTracksTitleButton.Text = "Set Selected Titles To Track Name";
-            SetSelectedTracksTitleButton.UseVisualStyleBackColor = true;
             // 
             // ManageAlbumsForm
             // 

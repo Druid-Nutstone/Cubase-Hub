@@ -61,9 +61,9 @@
             // 
             // Progress
             // 
-            Progress.Location = new Point(58, 5);
+            Progress.Location = new Point(56, 5);
             Progress.Name = "Progress";
-            Progress.Size = new Size(127, 29);
+            Progress.Size = new Size(179, 29);
             Progress.TabIndex = 4;
             Progress.Text = "00:00";
             // 
@@ -76,7 +76,7 @@
             Controls.Add(Stop);
             Controls.Add(Play);
             Name = "PlayControl";
-            Size = new Size(197, 37);
+            Size = new Size(249, 37);
             ((System.ComponentModel.ISupportInitialize)Play).EndInit();
             ((System.ComponentModel.ISupportInitialize)Stop).EndInit();
             ResumeLayout(false);

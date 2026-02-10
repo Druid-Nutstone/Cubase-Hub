@@ -52,8 +52,14 @@ namespace Cubase.Hub.Controls.MainFormControls.ProjectsForm
             this.DataPanel.AutoScroll = true;
             this.SeperatorPanel.Height = 2;
             this.SeperatorPanel.BorderStyle = BorderStyle.FixedSingle;
+            this.RefreshProjectsButton.Click += RefreshProjectsButton_Click;
             this.HideIndex();
             ThemeApplier.ApplyDarkTheme(this);  
+        }
+
+        private void RefreshProjectsButton_Click(object? sender, EventArgs e)
+        {
+            this.LoadProjects();
         }
 
         private void ClearAlbumButton_Click(object? sender, EventArgs e)

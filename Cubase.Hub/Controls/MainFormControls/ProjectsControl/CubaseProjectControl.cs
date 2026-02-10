@@ -1,8 +1,10 @@
 ﻿using Cubase.Hub.Controls.HorizontalLine;
 using Cubase.Hub.Controls.MainFormControls.ProjectsForm;
+using Cubase.Hub.Forms.BaseForm;
 using System;
 using System.Collections.Generic;
 using System.Text;
+using System.Windows.Forms;
 
 namespace Cubase.Hub.Controls.MainFormControls.ProjectsControl
 {
@@ -46,6 +48,27 @@ namespace Cubase.Hub.Controls.MainFormControls.ProjectsControl
             item.Dock = DockStyle.Fill;
 
             item.SetParent(this);
+
+            item.ProjectSelected += (selectedItem) =>
+            {
+                // Deselect all other items
+                foreach (CubaseProjectItemControl control in this.Controls)
+                {
+                    if (control!= selectedItem)
+                    {
+                        ThemeApplier.ApplyDarkTheme(control);
+                    }
+                    else
+                    {
+                        ThemeApplier.ApplyDarkThemeSelected(control);
+                    }
+                }
+            };
+
+            item.ProjectDeselected += (deselectedItem) =>
+            {
+                ThemeApplier.ApplyDarkTheme(deselectedItem);
+            };
 
             // don't like this really 
             // this.AddHorizontalLine();

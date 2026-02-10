@@ -115,6 +115,36 @@ namespace Cubase.Hub.Forms.BaseForm
 
     public static class ThemeApplier
     {
+        public static void ApplyDarkThemeSelected(Control control)
+        {
+            control.BackColor = DarkTheme.TextColor;
+            control.ForeColor = DarkTheme.BackColor;
+            if (control is TextBox tb)
+            {
+                tb.BorderStyle = BorderStyle.FixedSingle;
+                tb.BackColor = DarkTheme.ControlColor;
+                tb.ForeColor = DarkTheme.TextColor;
+            }
+            if (control is Button btn)
+            {
+                btn.FlatStyle = FlatStyle.Flat;
+                btn.FlatAppearance.BorderColor = DarkTheme.BorderColor;
+                btn.BackColor = DarkTheme.ControlColor;
+                btn.ForeColor = DarkTheme.TextColor;
+            }
+            if (control is LinkLabel linkLabel)
+            {
+                linkLabel.LinkBehavior = LinkBehavior.NeverUnderline; // 🔑 disables system style
+                linkLabel.LinkColor = DarkTheme.TextColor;
+                linkLabel.ActiveLinkColor = DarkTheme.TextColor;
+                linkLabel.VisitedLinkColor = DarkTheme.MutedText;
+                linkLabel.DisabledLinkColor = DarkTheme.MutedText;
+                linkLabel.ForeColor = DarkTheme.TextColor; // still required
+            }
+            foreach (Control child in control.Controls)
+                ApplyDarkThemeSelected(child);
+        }
+
         public static void ApplyDarkTheme(Control control)
         {
             control.BackColor = DarkTheme.BackColor;
