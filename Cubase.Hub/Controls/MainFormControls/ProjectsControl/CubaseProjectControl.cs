@@ -22,7 +22,6 @@ namespace Cubase.Hub.Controls.MainFormControls.ProjectsControl
             // ✅ THIS IS CRITICAL
             ColumnStyles.Clear();
             ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 100f));
-
             Padding = new Padding(10);
         }
 
@@ -49,29 +48,33 @@ namespace Cubase.Hub.Controls.MainFormControls.ProjectsControl
 
             item.SetParent(this);
 
-            item.ProjectSelected += (selectedItem) =>
+            item.ProjectExpanded += (expandedItem) =>
             {
+                this.SuspendLayout();
                 // Deselect all other items
                 foreach (CubaseProjectItemControl control in this.Controls)
                 {
-                    if (control!= selectedItem)
+                    if (control != expandedItem)
                     {
-                        ThemeApplier.ApplyDarkTheme(control);
-                    }
-                    else
-                    {
-                        ThemeApplier.ApplyDarkThemeSelected(control);
+                        ThemeApplier.ApplyDarkTheme(control, false);
                     }
                 }
+                this.ResumeLayout();
             };
 
-            item.ProjectDeselected += (deselectedItem) =>
+            item.ProjectMinimized += (minimizedItem) =>
             {
-                ThemeApplier.ApplyDarkTheme(deselectedItem);
-            };
-
-            // don't like this really 
-            // this.AddHorizontalLine();
+                this.SuspendLayout();
+                // Deselect all other items
+                foreach (CubaseProjectItemControl control in this.Controls)
+                {
+                    if (control != minimizedItem)
+                    {
+                        ThemeApplier.ApplyDarkTheme(control, true);
+                    }
+                }
+                this.ResumeLayout();
+            };  
 
         }
 

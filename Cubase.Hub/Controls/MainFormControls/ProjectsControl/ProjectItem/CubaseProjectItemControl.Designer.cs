@@ -28,56 +28,57 @@
         /// </summary>
         private void InitializeComponent()
         {
-            FolderLabel = new Label();
+            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(CubaseProjectItemControl));
             PrimaryPanel = new Panel();
-            ProjectLink = new Cubase.Hub.Controls.MainFormControls.ProjectsControl.LabelLink();
-            ExpandContractButton = new PictureBox();
+            ProjectExpand = new Cubase.Hub.Controls.MainFormControls.ProjectsControl.ProjectItem.ProjectDropDown();
+            ProjectAlbum = new Cubase.Hub.Controls.MainFormControls.ProjectsControl.ProjectItem.ProjectAlbum();
+            ProjectLink = new Cubase.Hub.Controls.MainFormControls.ProjectsControl.ProjectItem.ProjectLink();
             SecondaryPanel = new Panel();
             PrimaryPanel.SuspendLayout();
-            ((System.ComponentModel.ISupportInitialize)ExpandContractButton).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)ProjectExpand).BeginInit();
             SuspendLayout();
-            // 
-            // FolderLabel
-            // 
-            FolderLabel.AutoSize = true;
-            FolderLabel.Font = new Font("Segoe UI", 9F, FontStyle.Bold);
-            FolderLabel.Location = new Point(446, 20);
-            FolderLabel.Name = "FolderLabel";
-            FolderLabel.Size = new Size(90, 20);
-            FolderLabel.TabIndex = 0;
-            FolderLabel.Text = "FolderLabel";
             // 
             // PrimaryPanel
             // 
+            PrimaryPanel.Controls.Add(ProjectExpand);
+            PrimaryPanel.Controls.Add(ProjectAlbum);
             PrimaryPanel.Controls.Add(ProjectLink);
-            PrimaryPanel.Controls.Add(ExpandContractButton);
-            PrimaryPanel.Controls.Add(FolderLabel);
             PrimaryPanel.Dock = DockStyle.Top;
             PrimaryPanel.Location = new Point(0, 0);
             PrimaryPanel.Name = "PrimaryPanel";
             PrimaryPanel.Size = new Size(704, 58);
             PrimaryPanel.TabIndex = 2;
             // 
+            // ProjectExpand
+            // 
+            ProjectExpand.Anchor = AnchorStyles.Top | AnchorStyles.Right;
+            ProjectExpand.Image = (Image)resources.GetObject("ProjectExpand.Image");
+            ProjectExpand.Location = new Point(648, 17);
+            ProjectExpand.Name = "ProjectExpand";
+            ProjectExpand.Size = new Size(24, 24);
+            ProjectExpand.SizeMode = PictureBoxSizeMode.StretchImage;
+            ProjectExpand.TabIndex = 5;
+            ProjectExpand.TabStop = false;
+            // 
+            // ProjectAlbum
+            // 
+            ProjectAlbum.AutoSize = true;
+            ProjectAlbum.Font = new Font("Segoe UI", 9F, FontStyle.Bold);
+            ProjectAlbum.Location = new Point(442, 20);
+            ProjectAlbum.Name = "ProjectAlbum";
+            ProjectAlbum.Size = new Size(105, 20);
+            ProjectAlbum.TabIndex = 4;
+            ProjectAlbum.Text = "ProjectAlbum";
+            // 
             // ProjectLink
             // 
             ProjectLink.AutoSize = true;
-            ProjectLink.Font = new Font("Segoe UI", 11F, FontStyle.Bold | FontStyle.Underline);
-            ProjectLink.Location = new Point(36, 15);
+            ProjectLink.Font = new Font("Segoe UI", 9F, FontStyle.Bold | FontStyle.Underline);
+            ProjectLink.Location = new Point(32, 20);
             ProjectLink.Name = "ProjectLink";
-            ProjectLink.Size = new Size(103, 25);
+            ProjectLink.Size = new Size(87, 20);
             ProjectLink.TabIndex = 3;
-            ProjectLink.Text = "labelLink1";
-            // 
-            // ExpandContractButton
-            // 
-            ExpandContractButton.Anchor = AnchorStyles.Top | AnchorStyles.Right;
-            ExpandContractButton.Image = Properties.Resources.arrow_down;
-            ExpandContractButton.Location = new Point(667, 13);
-            ExpandContractButton.Name = "ExpandContractButton";
-            ExpandContractButton.Size = new Size(24, 24);
-            ExpandContractButton.SizeMode = PictureBoxSizeMode.AutoSize;
-            ExpandContractButton.TabIndex = 2;
-            ExpandContractButton.TabStop = false;
+            ProjectLink.Text = "ProjectLink";
             // 
             // SecondaryPanel
             // 
@@ -100,16 +101,15 @@
             Size = new Size(704, 339);
             PrimaryPanel.ResumeLayout(false);
             PrimaryPanel.PerformLayout();
-            ((System.ComponentModel.ISupportInitialize)ExpandContractButton).EndInit();
+            ((System.ComponentModel.ISupportInitialize)ProjectExpand).EndInit();
             ResumeLayout(false);
         }
 
         #endregion
-
-        private Label FolderLabel;
         private Panel PrimaryPanel;
         private Panel SecondaryPanel;
-        private PictureBox ExpandContractButton;
-        private MainFormControls.ProjectsControl.LabelLink ProjectLink;
+        private MainFormControls.ProjectsControl.ProjectItem.ProjectLink ProjectLink;
+        private MainFormControls.ProjectsControl.ProjectItem.ProjectAlbum ProjectAlbum;
+        private MainFormControls.ProjectsControl.ProjectItem.ProjectDropDown ProjectExpand;
     }
 }

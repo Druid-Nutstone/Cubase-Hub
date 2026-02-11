@@ -22,8 +22,6 @@ namespace Cubase.Hub.Controls.MainFormControls.ProjectsForm
 
     public partial class CubaseProjectItemControl : UserControl
     {
-        private CubaseProjectItemControlState currentState = CubaseProjectItemControlState.Minimized;
-
         private CubaseProjectControl? parentCubaseProjectControl = null;
 
         private CubaseProjectExtendedPropertiesControl extendedPropertiesControl;
@@ -33,10 +31,10 @@ namespace Cubase.Hub.Controls.MainFormControls.ProjectsForm
         private CubaseProject project;
 
         [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
-        public Action<CubaseProjectItemControl>? ProjectSelected { get; set; }
+        public Action<CubaseProjectItemControl>? ProjectExpanded { get; set; }
 
         [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
-        public Action<CubaseProjectItemControl>? ProjectDeselected { get; set; }
+        public Action<CubaseProjectItemControl>? ProjectMinimized { get; set; }
 
         public CubaseProjectItemControl(CubaseProjectExtendedPropertiesControl extendedPropertiesControl,
                                         ICubaseService cubaseService)
@@ -45,6 +43,25 @@ namespace Cubase.Hub.Controls.MainFormControls.ProjectsForm
             this.cubaseService = cubaseService;
             this.Initialise();
             this.DoubleBuffered = true;
+            this.PrimaryPanel.MouseEnter += PrimaryPanel_MouseEnter;
+            this.PrimaryPanel.MouseLeave += PrimaryPanel_MouseLeave;
+        }
+
+        private void PrimaryPanel_MouseLeave(object? sender, EventArgs e)
+        {
+            ThemeApplier.ApplyDarkTheme(this.PrimaryPanel);
+        }
+
+        private void PrimaryPanel_MouseEnter(object? sender, EventArgs e)
+        {
+            ThemeApplier.ApplyDarkThemeSelected(this.PrimaryPanel);
+            foreach (Control cntrl in this.PrimaryPanel.Controls)
+            {
+                cntrl.MouseMove += (s, e) =>
+                {
+                    ThemeApplier.ApplyDarkThemeSelected(this.PrimaryPanel);
+                };
+            }
         }
 
         public void SetParent(CubaseProjectControl cubaseProjectControl)
@@ -62,80 +79,53 @@ namespace Cubase.Hub.Controls.MainFormControls.ProjectsForm
             AutoSizeMode = AutoSizeMode.GrowAndShrink;
 
             Dock = DockStyle.Fill;
-            // this.BorderStyle = BorderStyle.FixedSingle;
             this.Anchor = AnchorStyles.Top | AnchorStyles.Left | AnchorStyles.Right;
             this.Minimise();
-            this.ExpandContractButton.Click += ExpandContractButton_Click;
             this.ProjectLink.Click += ProjectLink_LinkClicked;
-            this.ProjectLink.MouseDown += (s, e) =>
-            {
-               this.Cursor = Cursors.WaitCursor;
-            };
-            this.ProjectLink.MouseUp += (s, e) =>
-            {
-                this.Cursor = Cursors.Default;
-            };  
+
         }
 
         private void ProjectLink_LinkClicked(object? sender, EventArgs e)
         {
-            this.cubaseService.OpenCubaseProject(this.ProjectLink.Tag?.ToString() ?? string.Empty);
-            this.ProjectSelected?.Invoke(this); 
-        }
-
-        private void ExpandContractButton_Click(object? sender, EventArgs e)
-        {
-            if (this.currentState == CubaseProjectItemControlState.Minimized)
-            {
-                this.ProjectSelected?.Invoke(this);
-                this.Expand();
-                this.currentState = CubaseProjectItemControlState.Expanded;
-            }
-            else
-            {
-                this.ProjectDeselected?.Invoke(this);
-                this.Minimise();
-                this.currentState = CubaseProjectItemControlState.Minimized;
-            }
+            this.cubaseService.OpenCubaseProject(this.ProjectLink.Project.FullPath ?? string.Empty);
         }
 
         private void Minimise()
         {
-            currentState = CubaseProjectItemControlState.Minimized;
-            ExpandContractButton.Image = Properties.Resources.arrow_down;
             this.SecondaryPanel.Visible = false;
             PerformLayout();
-            // Invalidate();
-            this.parentCubaseProjectControl?.PerformLayout();
+            //this.parentCubaseProjectControl?.PerformLayout();
         }
 
         private void Expand()
         {
-            currentState = CubaseProjectItemControlState.Expanded;
-            ExpandContractButton.Image = Properties.Resources.arrow_up;
             this.SecondaryPanel.Visible = true;
             this.SecondaryPanel.Controls.Clear();
             this.extendedPropertiesControl.SetProject(project);
             this.SecondaryPanel.Controls.Add(this.extendedPropertiesControl);
-            // Invalidate();
             this.SecondaryPanel.PerformLayout();
             PerformLayout();
-            this.parentCubaseProjectControl?.PerformLayout();
+            //this.parentCubaseProjectControl?.PerformLayout();
         }
 
         public void SetProject(CubaseProject project)
         {
-            if (string.IsNullOrEmpty(project.Album))
+            this.ProjectAlbum.Initialise(project);
+            this.ProjectLink.Initialise(project);
+            this.ProjectExpand.Initialise(project); 
+            this.ProjectExpand.OnStateChanged += (state) =>
             {
-                this.FolderLabel.Text = project.FolderPath;
-            }
-            else
-            {
-                this.FolderLabel.ForeColor = Color.Green;
-                this.FolderLabel.Text = project.Album;
-            }
-            this.ProjectLink.Text = Path.GetFileNameWithoutExtension(project.Name);
-            this.ProjectLink.Tag = project.FullPath;
+                if (state == CubaseProjectItemControlState.Expanded)
+                {
+                    this.ProjectExpanded?.Invoke(this);
+                    this.Expand();
+                }
+                else
+                {
+                    this.ProjectMinimized?.Invoke(this);
+                    this.Minimise();
+                }
+            };  
             this.project = project;
 
         }

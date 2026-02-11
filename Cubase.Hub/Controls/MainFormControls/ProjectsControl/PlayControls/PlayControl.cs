@@ -47,7 +47,7 @@ namespace Cubase.Hub.Controls.MainFormControls.ProjectsControl.PlayControls
             this.Progress.MouseDown += Progress_MouseDown;
             this.Progress.MouseMove += Progress_MouseMove;
             this.Progress.MouseUp += Progress_MouseUp; 
-            this.Progress.MouseEnter += (s, e) => { if (this.AudioService.Audio != null) this.Progress.Cursor = Cursors.Hand; }; 
+            this.Progress.MouseEnter += (s, e) => { if (this.AudioService.Audio != null) this.Progress.Cursor = Cursors.VSplit; }; 
             this.Progress.MouseLeave += (s, e) => { this.Progress.Cursor = Cursors.Default; };
             this.Stop.Enabled = false;
             this.Progress.Minimum = 0;

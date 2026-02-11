@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Cubase.Hub.Controls.MainFormControls.ProjectsControl.ProjectItem;
+using System;
 using System.Collections.Generic;
 using System.Runtime.InteropServices;
 using System.Text;
@@ -111,6 +112,8 @@ namespace Cubase.Hub.Forms.BaseForm
         public static Color TextColor = Color.FromArgb(220, 220, 220);
         public static Color MutedText = Color.FromArgb(160, 160, 160);
         public static Color BorderColor = Color.FromArgb(60, 60, 60);
+
+        public static Color ProjectAlbum = Color.Green;
     }
 
     public static class ThemeApplier
@@ -132,6 +135,15 @@ namespace Cubase.Hub.Forms.BaseForm
                 btn.BackColor = DarkTheme.ControlColor;
                 btn.ForeColor = DarkTheme.TextColor;
             }
+
+            if (control is ProjectAlbum pa)
+            {
+                if (pa.HasAlbum)
+                {
+                    pa.ForeColor = DarkTheme.ProjectAlbum;
+                }
+            }
+
             if (control is LinkLabel linkLabel)
             {
                 linkLabel.LinkBehavior = LinkBehavior.NeverUnderline; // 🔑 disables system style
@@ -141,14 +153,17 @@ namespace Cubase.Hub.Forms.BaseForm
                 linkLabel.DisabledLinkColor = DarkTheme.MutedText;
                 linkLabel.ForeColor = DarkTheme.TextColor; // still required
             }
+            
             foreach (Control child in control.Controls)
                 ApplyDarkThemeSelected(child);
         }
 
-        public static void ApplyDarkTheme(Control control)
+
+        public static void ApplyDarkTheme(Control control, bool enabled = true)
         {
             control.BackColor = DarkTheme.BackColor;
             control.ForeColor = DarkTheme.TextColor;
+
 
             if (control is Panel or TableLayoutPanel)
                 control.BackColor = DarkTheme.PanelColor;
@@ -163,6 +178,14 @@ namespace Cubase.Hub.Forms.BaseForm
                 cb.UseVisualStyleBackColor = false;
                 cb.BackColor = DarkTheme.BackColor;
                 cb.ForeColor = DarkTheme.TextColor;
+            }
+
+            if (control is ProjectAlbum pa)
+            {
+                if (pa.HasAlbum)
+                {
+                    pa.ForeColor = DarkTheme.ProjectAlbum;
+                }
             }
 
             if (control is GroupBox group)
@@ -196,6 +219,8 @@ namespace Cubase.Hub.Forms.BaseForm
 
                 linkLabel.ForeColor = DarkTheme.TextColor; // still required
             }
+
+            control.Enabled = enabled;  
 
             foreach (Control child in control.Controls)
                 ApplyDarkTheme(child);
