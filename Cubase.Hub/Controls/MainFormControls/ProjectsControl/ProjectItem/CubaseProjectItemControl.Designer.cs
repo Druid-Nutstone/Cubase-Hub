@@ -30,6 +30,7 @@
         {
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(CubaseProjectItemControl));
             PrimaryPanel = new Panel();
+            ProjectLastModified = new Cubase.Hub.Controls.MainFormControls.ProjectsControl.ProjectItem.ProjectLastModified();
             ProjectExpand = new Cubase.Hub.Controls.MainFormControls.ProjectsControl.ProjectItem.ProjectDropDown();
             ProjectAlbum = new Cubase.Hub.Controls.MainFormControls.ProjectsControl.ProjectItem.ProjectAlbum();
             ProjectLink = new Cubase.Hub.Controls.MainFormControls.ProjectsControl.ProjectItem.ProjectLink();
@@ -40,20 +41,32 @@
             // 
             // PrimaryPanel
             // 
+            PrimaryPanel.Controls.Add(ProjectLastModified);
             PrimaryPanel.Controls.Add(ProjectExpand);
             PrimaryPanel.Controls.Add(ProjectAlbum);
             PrimaryPanel.Controls.Add(ProjectLink);
             PrimaryPanel.Dock = DockStyle.Top;
             PrimaryPanel.Location = new Point(0, 0);
             PrimaryPanel.Name = "PrimaryPanel";
-            PrimaryPanel.Size = new Size(704, 58);
+            PrimaryPanel.Size = new Size(830, 58);
             PrimaryPanel.TabIndex = 2;
+            // 
+            // ProjectLastModified
+            // 
+            ProjectLastModified.Anchor = AnchorStyles.Top | AnchorStyles.Right;
+            ProjectLastModified.AutoSize = true;
+            ProjectLastModified.Font = new Font("Segoe UI", 9F, FontStyle.Italic);
+            ProjectLastModified.Location = new Point(614, 20);
+            ProjectLastModified.Name = "ProjectLastModified";
+            ProjectLastModified.Size = new Size(135, 20);
+            ProjectLastModified.TabIndex = 6;
+            ProjectLastModified.Text = "ProjectLastModified";
             // 
             // ProjectExpand
             // 
             ProjectExpand.Anchor = AnchorStyles.Top | AnchorStyles.Right;
             ProjectExpand.Image = (Image)resources.GetObject("ProjectExpand.Image");
-            ProjectExpand.Location = new Point(648, 17);
+            ProjectExpand.Location = new Point(774, 17);
             ProjectExpand.Name = "ProjectExpand";
             ProjectExpand.Size = new Size(24, 24);
             ProjectExpand.SizeMode = PictureBoxSizeMode.StretchImage;
@@ -64,7 +77,7 @@
             // 
             ProjectAlbum.AutoSize = true;
             ProjectAlbum.Font = new Font("Segoe UI", 9F, FontStyle.Bold);
-            ProjectAlbum.Location = new Point(442, 20);
+            ProjectAlbum.Location = new Point(428, 20);
             ProjectAlbum.Name = "ProjectAlbum";
             ProjectAlbum.Size = new Size(105, 20);
             ProjectAlbum.TabIndex = 4;
@@ -85,7 +98,7 @@
             SecondaryPanel.Dock = DockStyle.Top;
             SecondaryPanel.Location = new Point(0, 58);
             SecondaryPanel.Name = "SecondaryPanel";
-            SecondaryPanel.Size = new Size(704, 281);
+            SecondaryPanel.Size = new Size(830, 281);
             SecondaryPanel.TabIndex = 3;
             SecondaryPanel.Visible = false;
             // 
@@ -98,7 +111,7 @@
             Controls.Add(SecondaryPanel);
             Controls.Add(PrimaryPanel);
             Name = "CubaseProjectItemControl";
-            Size = new Size(704, 339);
+            Size = new Size(830, 339);
             PrimaryPanel.ResumeLayout(false);
             PrimaryPanel.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)ProjectExpand).EndInit();
@@ -111,5 +124,6 @@
         private MainFormControls.ProjectsControl.ProjectItem.ProjectLink ProjectLink;
         private MainFormControls.ProjectsControl.ProjectItem.ProjectAlbum ProjectAlbum;
         private MainFormControls.ProjectsControl.ProjectItem.ProjectDropDown ProjectExpand;
+        private MainFormControls.ProjectsControl.ProjectItem.ProjectLastModified ProjectLastModified;
     }
 }

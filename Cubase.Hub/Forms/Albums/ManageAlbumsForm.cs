@@ -31,7 +31,8 @@ namespace Cubase.Hub.Forms.Albums
 
         private readonly IMessageService messageService;
 
-        private AlbumLocation CurrentAlbum;
+        [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
+        public AlbumLocation CurrentAlbum { get; set; }
 
         private MixDownCollection CurrentMixes;
 
@@ -238,9 +239,21 @@ namespace Cubase.Hub.Forms.Albums
             }
         }
 
-        public void Initialise()
+        public void Initialise(AlbumLocation? albumLocation = null)
         {
             this.InitialiseAlbumDropDown();
+            if (albumLocation != null)
+            {
+                for (int i = 0; i < this.SelectedAlbum.Items.Count; i++)
+                {
+                    var album = this.SelectedAlbum.Items[i] as AlbumLocation;
+                    if (album.AlbumPath == albumLocation.AlbumPath)
+                    {
+                        this.SelectedAlbum.SelectedIndex = i;
+                        break;
+                    }
+                }
+            }
         }
 
         private void InitialiseAlbumDropDown()

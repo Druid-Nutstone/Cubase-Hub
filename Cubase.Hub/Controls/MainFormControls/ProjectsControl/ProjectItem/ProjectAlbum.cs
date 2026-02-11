@@ -15,11 +15,23 @@ namespace Cubase.Hub.Controls.MainFormControls.ProjectsControl.ProjectItem
         [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
         public CubaseProject Project { get; private set; }
 
+        [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
+        public Action<CubaseProject>? OnAlbumClicked { get; set; }
+
         public bool HasAlbum => !string.IsNullOrEmpty(this.Project?.Album);
 
         public ProjectAlbum() : base()
         {
             this.Font = new System.Drawing.Font(this.Font, FontStyle.Bold);
+        }
+
+        protected override void OnClick(EventArgs e)
+        {
+            base.OnClick(e);
+            if (this.HasAlbum)
+            {
+                this.OnAlbumClicked?.Invoke(this.Project);  
+            }
         }
 
         public void Initialise(CubaseProject project)

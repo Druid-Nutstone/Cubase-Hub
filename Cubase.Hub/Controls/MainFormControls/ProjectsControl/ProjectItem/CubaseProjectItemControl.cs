@@ -1,4 +1,5 @@
 ﻿using Cubase.Hub.Controls.MainFormControls.ProjectsControl;
+using Cubase.Hub.Forms.Albums;
 using Cubase.Hub.Forms.BaseForm;
 using Cubase.Hub.Services.Cubase;
 using Cubase.Hub.Services.Models;
@@ -28,6 +29,8 @@ namespace Cubase.Hub.Controls.MainFormControls.ProjectsForm
 
         private readonly ICubaseService cubaseService;
 
+        private readonly ManageAlbumsForm manageAlbumsForm;
+
         private CubaseProject project;
 
         [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
@@ -37,9 +40,11 @@ namespace Cubase.Hub.Controls.MainFormControls.ProjectsForm
         public Action<CubaseProjectItemControl>? ProjectMinimized { get; set; }
 
         public CubaseProjectItemControl(CubaseProjectExtendedPropertiesControl extendedPropertiesControl,
+                                        ManageAlbumsForm manageAlbumsForm,
                                         ICubaseService cubaseService)
         {
             this.extendedPropertiesControl = extendedPropertiesControl;
+            this.manageAlbumsForm = manageAlbumsForm;
             this.cubaseService = cubaseService;
             this.Initialise();
             this.DoubleBuffered = true;
@@ -111,7 +116,18 @@ namespace Cubase.Hub.Controls.MainFormControls.ProjectsForm
         public void SetProject(CubaseProject project)
         {
             this.ProjectAlbum.Initialise(project);
+            this.ProjectAlbum.OnAlbumClicked += (albumPath) =>
+            {
+                var albumLocation = new AlbumLocation() { AlbumName = albumPath.Album, AlbumPath = albumPath.AlbumPath };
+                this.manageAlbumsForm.Initialise(albumLocation);
+                this.manageAlbumsForm.ShowDialog();
+            };
+            
             this.ProjectLink.Initialise(project);
+            
+            this.ProjectLastModified.Initialise(project);   
+
+
             this.ProjectExpand.Initialise(project); 
             this.ProjectExpand.OnStateChanged += (state) =>
             {
