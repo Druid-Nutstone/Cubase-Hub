@@ -43,6 +43,7 @@ namespace Cubase.Hub.Forms.Main
             this.MainMenu.Renderer = new DarkToolStripRenderer();
             menuContent.Initialise(this.MainMenu, this);
             ThemeApplier.ApplyDarkTheme(this);
+            this.AutoScaleMode = AutoScaleMode.Dpi;
         }
 
 

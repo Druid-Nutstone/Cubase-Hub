@@ -46,8 +46,8 @@ namespace Cubase.Hub.Controls.MainFormControls.ProjectsControl.PlayControls
             this.Stop.Click += Stop_Click;
             this.Progress.MouseDown += Progress_MouseDown;
             this.Progress.MouseMove += Progress_MouseMove;
-            this.Progress.MouseUp += Progress_MouseUp; 
-            this.Progress.MouseEnter += (s, e) => { if (this.AudioService.Audio != null) this.Progress.Cursor = Cursors.VSplit; }; 
+            this.Progress.MouseUp += Progress_MouseUp;
+            this.Progress.MouseEnter += (s, e) => { if (this.AudioService.Audio != null) this.Progress.Cursor = Cursors.VSplit; };
             this.Progress.MouseLeave += (s, e) => { this.Progress.Cursor = Cursors.Default; };
             this.Stop.Enabled = false;
             this.Progress.Minimum = 0;
@@ -81,6 +81,9 @@ namespace Cubase.Hub.Controls.MainFormControls.ProjectsControl.PlayControls
             if (this.AudioService.Audio == null)
                 return;
 
+            if (this.AudioService.Audio?.CurrentTime == null)
+                return;
+
             int width = this.Progress.Width;
 
             // Clamp mouse position
@@ -88,7 +91,7 @@ namespace Cubase.Hub.Controls.MainFormControls.ProjectsControl.PlayControls
 
             double percent = (double)mouseX / width;
 
-            this.AudioService.Audio.CurrentTime =
+            this.AudioService.Audio?.CurrentTime =
                 TimeSpan.FromMilliseconds(this.AudioService.Audio.TotalTime.TotalMilliseconds * percent);
 
             // Optional: update visual position
@@ -102,9 +105,9 @@ namespace Cubase.Hub.Controls.MainFormControls.ProjectsControl.PlayControls
 
         private void Play_Click(object? sender, EventArgs e)
         {
-            this.Cursor = Cursors.WaitCursor;   
+            this.Cursor = Cursors.WaitCursor;
             this.AudioService.Play(this.MusicFile, PlaybackStopped);
-            this.Play.Enabled = false; 
+            this.Play.Enabled = false;
             this.Stop.Enabled = true;
             timer = new System.Windows.Forms.Timer();
             timer.Interval = 200; // ms
@@ -121,12 +124,12 @@ namespace Cubase.Hub.Controls.MainFormControls.ProjectsControl.PlayControls
                     // Safety clamp
                     value = Math.Max(Progress.Minimum,
                             Math.Min(value, Progress.Maximum));
-                    Progress.Value = value; 
+                    Progress.Value = value;
                     Progress.DisplayText = this.AudioService.Audio.CurrentTime.ToString(@"mm\:ss");
                 }
             };
             timer.Start();
-            this.Cursor = Cursors.Default;  
+            this.Cursor = Cursors.Default;
         }
 
         private void PlaybackStopped(StoppedEventArgs e)
@@ -137,5 +140,7 @@ namespace Cubase.Hub.Controls.MainFormControls.ProjectsControl.PlayControls
             Progress.DisplayText = "00:00";
             this.Progress.Value = 0;
         }
+
+
     }
 }

@@ -55,9 +55,10 @@
             // 
             ClearFilter.Cursor = Cursors.Hand;
             ClearFilter.Image = Properties.Resources.close;
-            ClearFilter.Location = new Point(236, 23);
+            ClearFilter.Location = new Point(232, 23);
             ClearFilter.Name = "ClearFilter";
-            ClearFilter.Size = new Size(27, 24);
+            ClearFilter.Size = new Size(29, 29);
+            ClearFilter.SizeMode = PictureBoxSizeMode.StretchImage;
             ClearFilter.TabIndex = 2;
             ClearFilter.TabStop = false;
             // 

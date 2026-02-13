@@ -122,13 +122,13 @@ namespace Cubase.Hub.Controls.MainFormControls.ProjectsForm
                 this.manageAlbumsForm.Initialise(albumLocation);
                 this.manageAlbumsForm.ShowDialog();
             };
-            
+
             this.ProjectLink.Initialise(project);
-            
-            this.ProjectLastModified.Initialise(project);   
+
+            this.ProjectLastModified.Initialise(project);
 
 
-            this.ProjectExpand.Initialise(project); 
+            this.ProjectExpand.Initialise(project);
             this.ProjectExpand.OnStateChanged += (state) =>
             {
                 if (state == CubaseProjectItemControlState.Expanded)
@@ -141,9 +141,10 @@ namespace Cubase.Hub.Controls.MainFormControls.ProjectsForm
                     this.ProjectMinimized?.Invoke(this);
                     this.Minimise();
                 }
-            };  
+            };
             this.project = project;
 
         }
+
     }
 }

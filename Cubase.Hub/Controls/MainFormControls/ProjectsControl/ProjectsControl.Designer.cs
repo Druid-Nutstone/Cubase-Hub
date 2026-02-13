@@ -30,13 +30,13 @@
         {
             IndexPanel = new Panel();
             MenuPanel = new Panel();
+            RefreshProjectsButton = new Button();
             ClearAlbumButton = new PictureBox();
             AlbumList = new ComboBox();
             label1 = new Label();
             ProjectSearch = new Cubase.Hub.Controls.MainFormControls.ProjectsControl.Search.ProjectSearch();
             SeperatorPanel = new Panel();
             DataPanel = new Panel();
-            RefreshProjectsButton = new Button();
             MenuPanel.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)ClearAlbumButton).BeginInit();
             SuspendLayout();
@@ -62,13 +62,26 @@
             MenuPanel.Size = new Size(884, 79);
             MenuPanel.TabIndex = 3;
             // 
+            // RefreshProjectsButton
+            // 
+            RefreshProjectsButton.Anchor = AnchorStyles.Top | AnchorStyles.Right;
+            RefreshProjectsButton.Image = Properties.Resources.refresh;
+            RefreshProjectsButton.ImageAlign = ContentAlignment.MiddleLeft;
+            RefreshProjectsButton.Location = new Point(690, 20);
+            RefreshProjectsButton.Name = "RefreshProjectsButton";
+            RefreshProjectsButton.Size = new Size(176, 48);
+            RefreshProjectsButton.TabIndex = 4;
+            RefreshProjectsButton.Text = "Refresh Tracks";
+            RefreshProjectsButton.UseVisualStyleBackColor = true;
+            // 
             // ClearAlbumButton
             // 
             ClearAlbumButton.Cursor = Cursors.Hand;
             ClearAlbumButton.Image = Properties.Resources.close;
-            ClearAlbumButton.Location = new Point(264, 31);
+            ClearAlbumButton.Location = new Point(259, 30);
             ClearAlbumButton.Name = "ClearAlbumButton";
-            ClearAlbumButton.Size = new Size(24, 24);
+            ClearAlbumButton.Size = new Size(29, 29);
+            ClearAlbumButton.SizeMode = PictureBoxSizeMode.StretchImage;
             ClearAlbumButton.TabIndex = 3;
             ClearAlbumButton.TabStop = false;
             // 
@@ -113,18 +126,6 @@
             DataPanel.Name = "DataPanel";
             DataPanel.Size = new Size(884, 356);
             DataPanel.TabIndex = 5;
-            // 
-            // RefreshProjectsButton
-            // 
-            RefreshProjectsButton.Anchor = AnchorStyles.Top | AnchorStyles.Right;
-            RefreshProjectsButton.Image = Properties.Resources.refresh;
-            RefreshProjectsButton.ImageAlign = ContentAlignment.MiddleLeft;
-            RefreshProjectsButton.Location = new Point(689, 28);
-            RefreshProjectsButton.Name = "RefreshProjectsButton";
-            RefreshProjectsButton.Size = new Size(176, 29);
-            RefreshProjectsButton.TabIndex = 4;
-            RefreshProjectsButton.Text = "Refresh Tracks";
-            RefreshProjectsButton.UseVisualStyleBackColor = true;
             // 
             // ProjectsControl
             // 

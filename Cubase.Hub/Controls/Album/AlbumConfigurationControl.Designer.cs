@@ -45,7 +45,7 @@
             AlbumGenre.Anchor = AnchorStyles.Top | AnchorStyles.Right;
             AlbumGenre.AutoCompleteMode = AutoCompleteMode.SuggestAppend;
             AlbumGenre.AutoCompleteSource = AutoCompleteSource.CustomSource;
-            AlbumGenre.Location = new Point(474, 115);
+            AlbumGenre.Location = new Point(713, 115);
             AlbumGenre.Name = "AlbumGenre";
             AlbumGenre.Size = new Size(255, 27);
             AlbumGenre.TabIndex = 21;
@@ -55,7 +55,7 @@
             AlbumComments.Anchor = AnchorStyles.Top | AnchorStyles.Left | AnchorStyles.Right;
             AlbumComments.Location = new Point(20, 189);
             AlbumComments.Name = "AlbumComments";
-            AlbumComments.Size = new Size(709, 27);
+            AlbumComments.Size = new Size(948, 27);
             AlbumComments.TabIndex = 20;
             // 
             // label6
@@ -73,7 +73,7 @@
             label5.Anchor = AnchorStyles.Top | AnchorStyles.Right;
             label5.AutoSize = true;
             label5.Font = new Font("Segoe UI", 9F, FontStyle.Bold);
-            label5.Location = new Point(471, 92);
+            label5.Location = new Point(710, 92);
             label5.Name = "label5";
             label5.Size = new Size(102, 20);
             label5.TabIndex = 18;
@@ -99,7 +99,7 @@
             // AlbumArtist
             // 
             AlbumArtist.Anchor = AnchorStyles.Top | AnchorStyles.Right;
-            AlbumArtist.Location = new Point(471, 39);
+            AlbumArtist.Location = new Point(710, 39);
             AlbumArtist.Name = "AlbumArtist";
             AlbumArtist.Size = new Size(258, 27);
             AlbumArtist.TabIndex = 15;
@@ -116,7 +116,7 @@
             label3.Anchor = AnchorStyles.Top | AnchorStyles.Right;
             label3.AutoSize = true;
             label3.Font = new Font("Segoe UI", 9F, FontStyle.Bold);
-            label3.Location = new Point(471, 16);
+            label3.Location = new Point(710, 16);
             label3.Name = "label3";
             label3.Size = new Size(49, 20);
             label3.TabIndex = 13;
@@ -147,7 +147,7 @@
             Controls.Add(label3);
             Controls.Add(label1);
             Name = "AlbumConfigurationControl";
-            Size = new Size(739, 241);
+            Size = new Size(978, 241);
             ResumeLayout(false);
             PerformLayout();
         }

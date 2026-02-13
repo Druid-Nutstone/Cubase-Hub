@@ -20,9 +20,9 @@ namespace Cubase.Hub.Forms.Albums
 {
     public partial class ManageAlbumsForm : BaseWindows11Form
     {
-        
+
         private readonly IConfigurationService configurationService;
-               
+
         private readonly IProjectService projectService;
 
         private readonly IDirectoryService directoryService;
@@ -40,8 +40,8 @@ namespace Cubase.Hub.Forms.Albums
 
         private ManageMixesForm mixesForm;
 
-        public ManageAlbumsForm(IConfigurationService configurationService, 
-                                IDirectoryService directoryService, 
+        public ManageAlbumsForm(IConfigurationService configurationService,
+                                IDirectoryService directoryService,
                                 IAudioService audioService,
                                 IMessageService messageService,
                                 ManageMixesForm manageMixesForm,
@@ -50,7 +50,7 @@ namespace Cubase.Hub.Forms.Albums
             InitializeComponent();
             this.configurationService = configurationService;
             this.directoryService = directoryService;
-            this.audioService = audioService;   
+            this.audioService = audioService;
             this.projectService = projectService;
             this.messageService = messageService;
             this.mixesForm = manageMixesForm;
@@ -65,6 +65,7 @@ namespace Cubase.Hub.Forms.Albums
             this.SelectDeselectAllMixes.Text = "Select All";
             this.SelectDeselectAllMixes.CheckedChanged += SelectDeselectAllMixes_CheckedChanged;
             this.SetSelectedTracksTitleButton.Click += SetSelectedTracksTitleButton_Click;
+            this.AutoScaleMode = AutoScaleMode.Dpi;
         }
 
         private void ManageMixesButton_Click(object? sender, EventArgs e)
@@ -81,13 +82,13 @@ namespace Cubase.Hub.Forms.Albums
                 var yesNo = this.messageService.AskMessage("Are you sure you want to delete the selected mixes?");
                 if (yesNo == DialogResult.Yes)
                 {
-                    foreach ( var mix in mixesToDelete )
+                    foreach (var mix in mixesToDelete)
                     {
                         try
                         {
                             File.Delete(mix.FileName);
                         }
-                        catch ( Exception ex )
+                        catch (Exception ex)
                         {
                             this.messageService.ShowError($"Could not delete {mix.FileName}{Environment.NewLine} {ex.Message}");
                             return;
@@ -97,7 +98,7 @@ namespace Cubase.Hub.Forms.Albums
                 this.CurrentMixes.RemoveSelectedMixes();
                 this.ShowMixes();
                 this.SetSelectionButtonsState();
-            } 
+            }
         }
 
         private void SetSelectedTracksTitleButton_Click(object? sender, EventArgs e)
@@ -207,7 +208,7 @@ namespace Cubase.Hub.Forms.Albums
             }
         }
 
-            
+
 
         private void OnMixChanged(MixDown mixDown, string propertyName)
         {
@@ -227,7 +228,7 @@ namespace Cubase.Hub.Forms.Albums
 
         private void OnAlbumChanged(AlbumConfiguration albumConfiguration, string propertyName)
         {
-           
+
             albumConfiguration.SaveToDirectory(this.CurrentAlbum.AlbumPath);
             foreach (var mix in this.CurrentMixes)
             {
@@ -266,7 +267,5 @@ namespace Cubase.Hub.Forms.Albums
             this.SelectedAlbum.Items.AddRange(this.directoryService.GetCubaseAlbums(this.configurationService.Configuration.SourceCubaseFolders).ToArray());
             this.SelectedAlbum.DisplayMember = nameof(AlbumLocation.AlbumName);
         }
-
-
     }
 }

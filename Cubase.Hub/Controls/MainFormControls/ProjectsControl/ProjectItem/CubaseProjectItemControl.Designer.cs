@@ -68,7 +68,7 @@
             ProjectExpand.Image = (Image)resources.GetObject("ProjectExpand.Image");
             ProjectExpand.Location = new Point(774, 17);
             ProjectExpand.Name = "ProjectExpand";
-            ProjectExpand.Size = new Size(24, 24);
+            ProjectExpand.Size = new Size(29, 29);
             ProjectExpand.SizeMode = PictureBoxSizeMode.StretchImage;
             ProjectExpand.TabIndex = 5;
             ProjectExpand.TabStop = false;

@@ -37,31 +37,31 @@
             // 
             // Play
             // 
-            Play.Anchor = AnchorStyles.Left;
             Play.Cursor = Cursors.Hand;
             Play.Image = Properties.Resources.Play;
             Play.InitialImage = Properties.Resources.Play;
-            Play.Location = new Point(0, 7);
+            Play.Location = new Point(0, 5);
             Play.Name = "Play";
-            Play.Size = new Size(24, 24);
+            Play.Size = new Size(29, 29);
+            Play.SizeMode = PictureBoxSizeMode.StretchImage;
             Play.TabIndex = 0;
             Play.TabStop = false;
             // 
             // Stop
             // 
-            Stop.Anchor = AnchorStyles.Left;
             Stop.Cursor = Cursors.Hand;
             Stop.Image = Properties.Resources.Stop;
             Stop.InitialImage = Properties.Resources.Play;
-            Stop.Location = new Point(26, 7);
+            Stop.Location = new Point(30, 5);
             Stop.Name = "Stop";
-            Stop.Size = new Size(24, 24);
+            Stop.Size = new Size(29, 29);
+            Stop.SizeMode = PictureBoxSizeMode.StretchImage;
             Stop.TabIndex = 1;
             Stop.TabStop = false;
             // 
             // Progress
             // 
-            Progress.Location = new Point(56, 5);
+            Progress.Location = new Point(60, 5);
             Progress.Name = "Progress";
             Progress.Size = new Size(179, 29);
             Progress.TabIndex = 4;
@@ -76,7 +76,7 @@
             Controls.Add(Stop);
             Controls.Add(Play);
             Name = "PlayControl";
-            Size = new Size(249, 37);
+            Size = new Size(249, 40);
             ((System.ComponentModel.ISupportInitialize)Play).EndInit();
             ((System.ComponentModel.ISupportInitialize)Stop).EndInit();
             ResumeLayout(false);

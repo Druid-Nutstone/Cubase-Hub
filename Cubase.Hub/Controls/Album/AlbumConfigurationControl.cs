@@ -50,5 +50,7 @@ namespace Cubase.Hub.Controls.Album
         {
             this.OnAlbumChanged?.Invoke(this.AlbumConfiguration, e.PropertyName);
         }
+
+
     }
 }

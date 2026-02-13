@@ -36,13 +36,13 @@ namespace Cubase.Hub.Controls.MainFormControls.ProjectsForm
             InitializeComponent();
         }
 
-        public ProjectsControl(IMessageService messageService, 
+        public ProjectsControl(IMessageService messageService,
                                IDirectoryService directoryService,
                                IServiceProvider serviceProvider,
                                IProjectService projectService)
         {
             this.serviceProvider = serviceProvider;
-            this.messageService = messageService;   
+            this.messageService = messageService;
             this.projectService = projectService;
             this.directoryService = directoryService;
             InitializeComponent();
@@ -54,7 +54,7 @@ namespace Cubase.Hub.Controls.MainFormControls.ProjectsForm
             this.SeperatorPanel.BorderStyle = BorderStyle.FixedSingle;
             this.RefreshProjectsButton.Click += RefreshProjectsButton_Click;
             this.HideIndex();
-            ThemeApplier.ApplyDarkTheme(this);  
+            ThemeApplier.ApplyDarkTheme(this);
         }
 
         private void RefreshProjectsButton_Click(object? sender, EventArgs e)
@@ -94,18 +94,18 @@ namespace Cubase.Hub.Controls.MainFormControls.ProjectsForm
                 }
             }
         }
-        
+
         public void LoadProjects()
         {
             this.SuspendLayout();
             this.messageService.ShowMessage("Loading projects...", true);
-            this.projects = this.projectService.LoadProjects((err) => 
-            { 
-                this.messageService.ShowError($"Error loading projects: {err}");   
-            });  
+            this.projects = this.projectService.LoadProjects((err) =>
+            {
+                this.messageService.ShowError($"Error loading projects: {err}");
+            });
             if (this.projects != null)
             {
-                this.albumLocations = this.projects.GetAlbums(); 
+                this.albumLocations = this.projects.GetAlbums();
                 projectPanel = this.GetInstanceOf<CubaseProjectControl>();
                 this.PopulateDataPanel(projectPanel);
                 this.PopulateProjects(projects);
@@ -122,7 +122,7 @@ namespace Cubase.Hub.Controls.MainFormControls.ProjectsForm
             this.AlbumList.Items.AddRange(this.albumLocations.ToArray());
         }
 
-        private void PopulateProjects(CubaseProjectCollection cubaseProjects) 
+        private void PopulateProjects(CubaseProjectCollection cubaseProjects)
         {
             foreach (var project in cubaseProjects)
             {
@@ -147,7 +147,7 @@ namespace Cubase.Hub.Controls.MainFormControls.ProjectsForm
             return this.serviceProvider.GetService<T>();
         }
 
-        private void PopulateDataPanel(Control userControl) 
+        private void PopulateDataPanel(Control userControl)
         {
             this.DataPanel.Controls.Clear();
             this.DataPanel.Controls.Add(userControl);

@@ -26,5 +26,7 @@ namespace Cubase.Hub.Controls.MainFormControls.ProjectsControl.Search
                 OnSearchTextChanged?.Invoke(this.FilterText.Text);
             };
         }
+
+
     }
 }

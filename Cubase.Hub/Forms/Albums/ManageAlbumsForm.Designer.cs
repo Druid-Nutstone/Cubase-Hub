@@ -100,7 +100,7 @@
             // 
             // AlbumConfigurationControl
             // 
-            AlbumConfigurationControl.Dock = DockStyle.Fill;
+            AlbumConfigurationControl.Dock = DockStyle.Top;
             AlbumConfigurationControl.Location = new Point(0, 0);
             AlbumConfigurationControl.Name = "AlbumConfigurationControl";
             AlbumConfigurationControl.Size = new Size(1382, 248);
@@ -131,6 +131,8 @@
             mixdownControl.AutoSize = true;
             mixdownControl.AutoSizeMode = AutoSizeMode.GrowAndShrink;
             mixdownControl.ColumnCount = 2;
+            mixdownControl.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 100F));
+            mixdownControl.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 100F));
             mixdownControl.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 100F));
             mixdownControl.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 100F));
             mixdownControl.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 100F));
