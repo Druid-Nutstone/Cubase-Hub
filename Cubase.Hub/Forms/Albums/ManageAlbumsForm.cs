@@ -156,12 +156,7 @@ namespace Cubase.Hub.Forms.Albums
         {
             if (this.CurrentAlbum != null)
             {
-                Process.Start(new ProcessStartInfo
-                {
-                    FileName = "explorer.exe",
-                    Arguments = this.CurrentAlbum.AlbumPath,
-                    UseShellExecute = true
-                });
+                this.directoryService.OpenExplorer(this.CurrentAlbum.AlbumPath);    
             }
         }
 

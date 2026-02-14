@@ -24,7 +24,6 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="Controls\MainFormControls\ProjectsControl\Menu\" />
     <Folder Include="Models\" />
   </ItemGroup>
 

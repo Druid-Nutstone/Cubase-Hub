@@ -2,6 +2,7 @@
 using Cubase.Hub.Services.Models;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Text;
 
 namespace Cubase.Hub.Services.FileAndDirectory
@@ -105,6 +106,16 @@ namespace Cubase.Hub.Services.FileAndDirectory
                 return [];  
             }
             return mixDownCollection;
+        }
+
+        public void OpenExplorer(string path)
+        {
+            Process.Start(new ProcessStartInfo
+            {
+                FileName = "explorer.exe",
+                Arguments = path,
+                UseShellExecute = true
+            });
         }
     }
 }

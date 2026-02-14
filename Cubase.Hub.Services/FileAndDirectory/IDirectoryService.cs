@@ -17,5 +17,7 @@ namespace Cubase.Hub.Services.FileAndDirectory
 
         MixDownCollection GetMixes(string albumPath);
 
+        void OpenExplorer(string path);
+
     }
 }

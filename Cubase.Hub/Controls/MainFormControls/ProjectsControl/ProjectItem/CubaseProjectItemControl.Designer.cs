@@ -86,10 +86,10 @@
             // ProjectLink
             // 
             ProjectLink.AutoSize = true;
-            ProjectLink.Font = new Font("Segoe UI", 9F, FontStyle.Bold | FontStyle.Underline);
-            ProjectLink.Location = new Point(32, 20);
+            ProjectLink.Font = new Font("Segoe UI", 11F, FontStyle.Bold);
+            ProjectLink.Location = new Point(32, 16);
             ProjectLink.Name = "ProjectLink";
-            ProjectLink.Size = new Size(87, 20);
+            ProjectLink.Size = new Size(113, 25);
             ProjectLink.TabIndex = 3;
             ProjectLink.Text = "ProjectLink";
             // 

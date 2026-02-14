@@ -1,7 +1,10 @@
 ﻿using Cubase.Hub.Controls.MainFormControls.ProjectsControl;
+using Cubase.Hub.Controls.MainFormControls.ProjectsControl.Menu;
 using Cubase.Hub.Forms.Albums;
 using Cubase.Hub.Forms.BaseForm;
 using Cubase.Hub.Services.Cubase;
+using Cubase.Hub.Services.FileAndDirectory;
+using Cubase.Hub.Services.Messages;
 using Cubase.Hub.Services.Models;
 using System;
 using System.Collections.Generic;
@@ -31,6 +34,12 @@ namespace Cubase.Hub.Controls.MainFormControls.ProjectsForm
 
         private readonly ManageAlbumsForm manageAlbumsForm;
 
+        private readonly IDirectoryService directoryService;
+
+        private readonly IMessageService messageService;
+
+        private readonly IServiceProvider serviceProvider;
+
         private CubaseProject project;
 
         [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
@@ -41,19 +50,28 @@ namespace Cubase.Hub.Controls.MainFormControls.ProjectsForm
 
         public CubaseProjectItemControl(CubaseProjectExtendedPropertiesControl extendedPropertiesControl,
                                         ManageAlbumsForm manageAlbumsForm,
+                                        IDirectoryService directoryService,
+                                        IMessageService messageService,
+                                        IServiceProvider serviceProvider,
                                         ICubaseService cubaseService)
         {
             this.extendedPropertiesControl = extendedPropertiesControl;
             this.manageAlbumsForm = manageAlbumsForm;
             this.cubaseService = cubaseService;
+            this.serviceProvider = serviceProvider;
+            this.directoryService = directoryService;  
+            this.messageService = messageService;   
             this.Initialise();
             this.DoubleBuffered = true;
             this.PrimaryPanel.MouseEnter += PrimaryPanel_MouseEnter;
             this.PrimaryPanel.MouseLeave += PrimaryPanel_MouseLeave;
+
         }
 
         private void PrimaryPanel_MouseLeave(object? sender, EventArgs e)
         {
+            if (((ProjectContextMenu)this.PrimaryPanel.ContextMenuStrip).IsOpen) return;
+
             ThemeApplier.ApplyDarkTheme(this.PrimaryPanel);
         }
 
@@ -116,6 +134,7 @@ namespace Cubase.Hub.Controls.MainFormControls.ProjectsForm
         public void SetProject(CubaseProject project)
         {
             this.ProjectAlbum.Initialise(project);
+            this.PrimaryPanel.ContextMenuStrip = new ProjectContextMenu(project, this.serviceProvider);
             this.ProjectAlbum.OnAlbumClicked += (albumPath) =>
             {
                 var albumLocation = new AlbumLocation() { AlbumName = albumPath.Album, AlbumPath = albumPath.AlbumPath };
