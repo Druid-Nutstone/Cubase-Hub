@@ -17,7 +17,7 @@ namespace Cubase.Hub.Controls.MainFormControls.ProjectsForm
         {
             InitializeComponent();
             this.cubaseProjectItemMixesControl = cubaseProjectItemMixesControl;
-            this.Dock = DockStyle.Top; 
+            this.Dock = DockStyle.Top;
         }
 
         public void SetProject(CubaseProject project)
@@ -26,5 +26,7 @@ namespace Cubase.Hub.Controls.MainFormControls.ProjectsForm
             this.cubaseProjectItemMixesControl.SetMixes(project.Mixes);
             this.Mixes.Controls.Add(this.cubaseProjectItemMixesControl);
         }
+
+
     }
 }

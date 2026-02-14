@@ -1,5 +1,7 @@
-﻿using Cubase.Hub.Controls.MainFormControls.ProjectsControl.PlayControls;
+﻿using Cubase.Hub.Controls.MainFormControls.ProjectsControl;
+using Cubase.Hub.Controls.MainFormControls.ProjectsControl.PlayControls;
 using Cubase.Hub.Services.Audio;
+using Cubase.Hub.Services.Messages;
 using Microsoft.Extensions.DependencyInjection;
 using System;
 using System.Collections.Generic;
@@ -13,20 +15,32 @@ namespace Cubase.Hub.Controls.MainFormControls.ProjectsForm
 
         private readonly IServiceProvider serviceProvider;
 
+        private readonly IMessageService messageService;    
+
+        private List<string> mixes;
+
+        private ProjectItemMixesContextMenu contextMenu; 
+
+
+        
         public CubaseProjectItemMixesControl(IAudioService audioService, 
+                                             IMessageService messageService,
                                              IServiceProvider serviceProvider)
         {
             this.audioService = audioService;   
             this.serviceProvider = serviceProvider;
+            this.messageService = messageService;
             this.Dock = System.Windows.Forms.DockStyle.Top;
             this.AutoSize = true;
             this.DoubleBuffered = true; 
             this.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
+            this.contextMenu = new ProjectItemMixesContextMenu(audioService, this.messageService);   
             // this.Padding = new System.Windows.Forms.Padding(5);
         }
 
         public void SetMixes(List<string> mixes)
         {
+            this.mixes = mixes;
             this.Controls.Clear();
             this.RowStyles.Clear();
             this.RowCount = 0;
@@ -50,7 +64,6 @@ namespace Cubase.Hub.Controls.MainFormControls.ProjectsForm
                 playButton.MusicFile = mix;
                 this.Controls.Add(playButton, 5, this.RowCount);
                 this.Controls.Add(playButton, 5, this.RowCount);
-
                 this.RowCount++;
             }
         }
@@ -67,6 +80,36 @@ namespace Cubase.Hub.Controls.MainFormControls.ProjectsForm
                 Padding = new System.Windows.Forms.Padding(5)
             };
             this.Controls.Add(label, column, this.RowCount); 
+        }
+
+        protected override void OnMouseDown(MouseEventArgs e)
+        {
+            base.OnMouseDown(e);
+            if (e.Button != MouseButtons.Right)
+                return;
+
+            int y = 0;
+            var heights = this.GetRowHeights();
+
+            var rowIndex = -1;
+            for (int i = 0; i < heights.Length; i++)
+            {
+                if (e.Location.Y >= y && e.Location.Y < y + heights[i])
+                {
+                    rowIndex = i;
+                    break;
+                }
+
+                y += heights[i];
+            }
+
+            if (rowIndex >= 0 && rowIndex < mixes.Count)
+            {
+                if (Path.GetExtension(this.mixes[rowIndex]).ToLower() == ".wav")
+                {
+                    contextMenu.Show(this, e.Location);
+                }
+            }
         }
 
     }
