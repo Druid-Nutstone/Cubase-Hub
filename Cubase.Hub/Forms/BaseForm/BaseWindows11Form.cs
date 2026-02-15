@@ -136,6 +136,12 @@ namespace Cubase.Hub.Forms.BaseForm
                 btn.ForeColor = DarkTheme.TextColor;
             }
 
+            if (control is TrackBar trackBar)
+            {   
+                trackBar.BackColor = DarkTheme.PanelColor;
+                trackBar.ForeColor = DarkTheme.TextColor;
+            }
+
             if (control is ProjectAlbum pa)
             {
                 if (pa.HasAlbum)

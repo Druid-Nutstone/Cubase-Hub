@@ -1,4 +1,5 @@
-﻿using Cubase.Hub.Forms.BaseForm;
+﻿using Cubase.Hub.Controls.Album.Manage;
+using Cubase.Hub.Forms.BaseForm;
 using Cubase.Hub.Forms.Mixes;
 using Cubase.Hub.Services;
 using Cubase.Hub.Services.Audio;
@@ -66,6 +67,21 @@ namespace Cubase.Hub.Forms.Albums
             this.SelectDeselectAllMixes.CheckedChanged += SelectDeselectAllMixes_CheckedChanged;
             this.SetSelectedTracksTitleButton.Click += SetSelectedTracksTitleButton_Click;
             this.AutoScaleMode = AutoScaleMode.Dpi;
+            // register static event class and wait for commands comming in 
+            AlbumCommands.Instance.RegisterForAlbumCommand(this.OnAlbumCommandReceived);
+        }
+
+        private void OnAlbumCommandReceived(AlbumCommandType command)
+        {
+            switch (command)
+            {
+                case AlbumCommandType.RefreshTracks:
+                    if (this.CurrentAlbum != null)
+                    {
+                        this.LoadTracks(this.CurrentAlbum.AlbumPath);
+                    }
+                    break;
+            }
         }
 
         private void ManageMixesButton_Click(object? sender, EventArgs e)
@@ -156,7 +172,7 @@ namespace Cubase.Hub.Forms.Albums
         {
             if (this.CurrentAlbum != null)
             {
-                this.directoryService.OpenExplorer(this.CurrentAlbum.AlbumPath);    
+                this.directoryService.OpenExplorer(this.CurrentAlbum.AlbumPath);
             }
         }
 
@@ -261,6 +277,41 @@ namespace Cubase.Hub.Forms.Albums
             this.SelectedAlbum.Items.Clear();
             this.SelectedAlbum.Items.AddRange(this.directoryService.GetCubaseAlbums(this.configurationService.Configuration.SourceCubaseFolders).ToArray());
             this.SelectedAlbum.DisplayMember = nameof(AlbumLocation.AlbumName);
+        }
+
+        protected override void OnShown(EventArgs e)
+        {
+            base.OnShown(e);
+            if (this.configurationService?.Configuration?.AlbumWindowLocation != null)
+            {
+                StartPosition = FormStartPosition.Manual;
+                Bounds = new Rectangle(
+                    this.configurationService.Configuration.AlbumWindowLocation.X,
+                    this.configurationService.Configuration.AlbumWindowLocation.Y,
+                    this.configurationService.Configuration.AlbumWindowLocation.Width,
+                    this.configurationService.Configuration.AlbumWindowLocation.Height);
+            }
+        }
+
+        protected override void OnFormClosing(FormClosingEventArgs e)
+        {
+            base.OnFormClosing(e);
+            base.OnFormClosing(e);
+            //this.Bounds = new Rectangle() {  } 
+            // this.configurationService.Configuration.
+            var bounds = WindowState == FormWindowState.Normal
+            ? Bounds
+            : RestoreBounds;
+
+            var settings = new WindowSettings
+            {
+                X = bounds.X,
+                Y = bounds.Y,
+                Width = bounds.Width,
+                Height = bounds.Height,
+            };
+            this.configurationService?.Configuration?.MainWindowLocation = settings;
+            this.configurationService?.SaveConfiguration(this.configurationService?.Configuration, () => { });
         }
     }
 }

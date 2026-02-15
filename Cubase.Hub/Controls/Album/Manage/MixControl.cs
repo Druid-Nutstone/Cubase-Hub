@@ -26,7 +26,9 @@ namespace Cubase.Hub.Controls.Album.Manage
             InitializeComponent();
         }
 
-        public MixControl(MixDown mixDown, IAudioService audioService, IMessageService messageService)
+        public MixControl(MixDown mixDown, 
+                          IAudioService audioService, 
+                          IMessageService messageService)
         {
             InitializeComponent();
             this.Initialise(mixDown, audioService);
@@ -52,8 +54,10 @@ namespace Cubase.Hub.Controls.Album.Manage
             playerControl.Dock = DockStyle.Fill;    
             this.PlayerPanel.Controls.Add(playerControl);
             this.MixComments.Bind(nameof(MixDown.Comment), mixDown);
-            this.MixExtra.Text = $"({mixDown.Size},{mixDown.AudioType},{mixDown.Artist},{mixDown.Album})";
+            this.MixBitRate.Bind(nameof(MixDown.BitRate), mixDown);
+            this.MixDownSize.Bind(nameof(MixDown.Size), mixDown);   
             this.MixSelected.Bind(nameof(MixDown.Selected),mixDown);
+            this.MixType.Text = mixDown.AudioType.ToUpper();
         }
 
         private void MixDown_PropertyChanged(object? sender, PropertyChangedEventArgs e)

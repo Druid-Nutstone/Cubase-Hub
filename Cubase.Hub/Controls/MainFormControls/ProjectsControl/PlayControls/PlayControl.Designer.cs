@@ -31,6 +31,7 @@
             Play = new PictureBox();
             Stop = new PictureBox();
             Progress = new DarkProgressBar();
+            Volume = new DarkTrackBar();
             ((System.ComponentModel.ISupportInitialize)Play).BeginInit();
             ((System.ComponentModel.ISupportInitialize)Stop).BeginInit();
             SuspendLayout();
@@ -63,20 +64,29 @@
             // 
             Progress.Location = new Point(60, 5);
             Progress.Name = "Progress";
-            Progress.Size = new Size(179, 29);
+            Progress.Size = new Size(179, 19);
             Progress.TabIndex = 4;
             Progress.Text = "00:00";
+            // 
+            // Volume
+            // 
+            Volume.Location = new Point(60, 24);
+            Volume.Name = "Volume";
+            Volume.Size = new Size(179, 10);
+            Volume.TabIndex = 5;
+            Volume.Text = "darkTrackBar1";
             // 
             // PlayControl
             // 
             AutoScaleDimensions = new SizeF(8F, 20F);
             AutoScaleMode = AutoScaleMode.Font;
             AutoSize = true;
+            Controls.Add(Volume);
             Controls.Add(Progress);
             Controls.Add(Stop);
             Controls.Add(Play);
             Name = "PlayControl";
-            Size = new Size(249, 40);
+            Size = new Size(252, 39);
             ((System.ComponentModel.ISupportInitialize)Play).EndInit();
             ((System.ComponentModel.ISupportInitialize)Stop).EndInit();
             ResumeLayout(false);
@@ -87,5 +97,6 @@
         private PictureBox Play;
         private PictureBox Stop;
         private DarkProgressBar Progress;
+        private DarkTrackBar Volume;
     }
 }

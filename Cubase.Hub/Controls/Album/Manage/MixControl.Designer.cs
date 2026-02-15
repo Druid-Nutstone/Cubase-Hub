@@ -33,7 +33,6 @@
             MixPerformers = new Cubase.Hub.Controls.BoundControls.BoundTextBox();
             MixDuration = new Cubase.Hub.Controls.BoundControls.BoundLabel();
             PlayerPanel = new Panel();
-            MixExtra = new Label();
             label1 = new Label();
             label2 = new Label();
             Performers = new Label();
@@ -42,6 +41,12 @@
             MixComments = new Cubase.Hub.Controls.BoundControls.BoundTextBox();
             label5 = new Label();
             MixSelected = new Cubase.Hub.Controls.BoundControls.BoundCheckbox();
+            label6 = new Label();
+            MixType = new Label();
+            label7 = new Label();
+            MixBitRate = new Cubase.Hub.Controls.BoundControls.BoundLabel();
+            label9 = new Label();
+            MixDownSize = new Cubase.Hub.Controls.BoundControls.BoundLabel();
             ((System.ComponentModel.ISupportInitialize)MixTrackNo).BeginInit();
             SuspendLayout();
             // 
@@ -77,19 +82,10 @@
             // 
             // PlayerPanel
             // 
-            PlayerPanel.Location = new Point(879, 41);
+            PlayerPanel.Location = new Point(1096, 39);
             PlayerPanel.Name = "PlayerPanel";
-            PlayerPanel.Size = new Size(271, 36);
+            PlayerPanel.Size = new Size(250, 36);
             PlayerPanel.TabIndex = 4;
-            // 
-            // MixExtra
-            // 
-            MixExtra.AutoSize = true;
-            MixExtra.Location = new Point(1173, 50);
-            MixExtra.Name = "MixExtra";
-            MixExtra.Size = new Size(70, 20);
-            MixExtra.TabIndex = 5;
-            MixExtra.Text = "Mix Extra";
             // 
             // label1
             // 
@@ -161,10 +157,70 @@
             MixSelected.TabIndex = 14;
             MixSelected.UseVisualStyleBackColor = true;
             // 
+            // label6
+            // 
+            label6.AutoSize = true;
+            label6.Location = new Point(876, 25);
+            label6.Name = "label6";
+            label6.Size = new Size(40, 20);
+            label6.TabIndex = 15;
+            label6.Text = "Type";
+            // 
+            // MixType
+            // 
+            MixType.AutoSize = true;
+            MixType.Location = new Point(878, 50);
+            MixType.Name = "MixType";
+            MixType.Size = new Size(38, 20);
+            MixType.TabIndex = 16;
+            MixType.Text = "type";
+            // 
+            // label7
+            // 
+            label7.AutoSize = true;
+            label7.Location = new Point(935, 25);
+            label7.Name = "label7";
+            label7.Size = new Size(53, 20);
+            label7.TabIndex = 17;
+            label7.Text = "Bitrate";
+            // 
+            // MixBitRate
+            // 
+            MixBitRate.AutoSize = true;
+            MixBitRate.Location = new Point(935, 51);
+            MixBitRate.Name = "MixBitRate";
+            MixBitRate.Size = new Size(53, 20);
+            MixBitRate.TabIndex = 18;
+            MixBitRate.Text = "Bitrate";
+            // 
+            // label9
+            // 
+            label9.AutoSize = true;
+            label9.Location = new Point(1016, 25);
+            label9.Name = "label9";
+            label9.Size = new Size(36, 20);
+            label9.TabIndex = 20;
+            label9.Text = "Size";
+            // 
+            // MixDownSize
+            // 
+            MixDownSize.AutoSize = true;
+            MixDownSize.Location = new Point(1016, 51);
+            MixDownSize.Name = "MixDownSize";
+            MixDownSize.Size = new Size(36, 20);
+            MixDownSize.TabIndex = 21;
+            MixDownSize.Text = "Size";
+            // 
             // MixControl
             // 
             AutoScaleDimensions = new SizeF(8F, 20F);
             AutoScaleMode = AutoScaleMode.Font;
+            Controls.Add(MixDownSize);
+            Controls.Add(label9);
+            Controls.Add(MixBitRate);
+            Controls.Add(label7);
+            Controls.Add(MixType);
+            Controls.Add(label6);
             Controls.Add(MixSelected);
             Controls.Add(label5);
             Controls.Add(MixComments);
@@ -173,14 +229,13 @@
             Controls.Add(Performers);
             Controls.Add(label2);
             Controls.Add(label1);
-            Controls.Add(MixExtra);
             Controls.Add(PlayerPanel);
             Controls.Add(MixDuration);
             Controls.Add(MixPerformers);
             Controls.Add(MixTrackNo);
             Controls.Add(MixTitle);
             Name = "MixControl";
-            Size = new Size(1347, 109);
+            Size = new Size(1366, 109);
             ((System.ComponentModel.ISupportInitialize)MixTrackNo).EndInit();
             ResumeLayout(false);
             PerformLayout();
@@ -193,7 +248,6 @@
         private BoundControls.BoundTextBox MixPerformers;
         private BoundControls.BoundLabel MixDuration;
         private Panel PlayerPanel;
-        private Label MixExtra;
         private Label label1;
         private Label label2;
         private Label Performers;
@@ -202,5 +256,11 @@
         private BoundControls.BoundTextBox MixComments;
         private Label label5;
         private BoundControls.BoundCheckbox MixSelected;
+        private Label label6;
+        private Label MixType;
+        private Label label7;
+        private BoundControls.BoundLabel MixBitRate;
+        private Label label9;
+        private BoundControls.BoundLabel MixDownSize;
     }
 }

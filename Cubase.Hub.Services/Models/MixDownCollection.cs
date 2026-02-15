@@ -162,6 +162,13 @@ namespace Cubase.Hub.Services.Models
             set => SetProperty(ref _performers, value);
         }
 
+        private string _bitRate;
+        public string BitRate
+        {
+            get => _bitRate;
+            set => SetProperty(ref _bitRate, value);
+        }
+
         private string _comment;
         public string Comment
         {

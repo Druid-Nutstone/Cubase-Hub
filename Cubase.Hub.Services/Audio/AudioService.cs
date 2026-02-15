@@ -105,6 +105,7 @@ namespace Cubase.Hub.Services.Audio
                              ?? tags.Tag.Performers?.FirstOrDefault()
                              ?? string.Empty;
             mixDown.Performers = string.Join(";", tags.Tag.Performers ?? []);
+            mixDown.BitRate = $"{tags.Properties.AudioBitrate} kbps";
             mixDown.Comment = tags.Tag.Comment;
         }
 

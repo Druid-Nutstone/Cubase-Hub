@@ -28,6 +28,13 @@ namespace Cubase.Hub.Controls.Album.Manage
             this.AudioService = audioService;
             this.MessageService = messageService;
         }
+
+        public override Size GetPreferredSize(Size constrainingSize)
+        {
+            var size = base.GetPreferredSize(constrainingSize);
+            size.Height = 50; // your desired row height
+            return size;
+        }
     }
 
     public class ConvertToMp3MenuItem : BaseMixdownMenuItem
@@ -39,7 +46,10 @@ namespace Cubase.Hub.Controls.Album.Manage
 
         protected override void OnClick(EventArgs e)
         {
-
+            var msgBox = this.MessageService.OpenMessage($"Converting {this.MixDown.Title} to MP3...", this.Parent);
+            this.AudioService.ConvertToMp3(this.MixDown, Path.GetDirectoryName(this.MixDown.FileName), FFMpegCore.Enums.AudioQuality.Ultra);
+            AlbumCommands.Instance.RefreshTracks();
+            msgBox.Close();
         }
     }
 
@@ -52,7 +62,10 @@ namespace Cubase.Hub.Controls.Album.Manage
 
         protected override void OnClick(EventArgs e)
         {
-
+            var msgBox = this.MessageService.OpenMessage($"Converting {this.MixDown.Title} to FLAC...", this.Parent);
+            this.AudioService.ConvertToFlac(this.MixDown, Path.GetDirectoryName(this.MixDown.FileName), CompressionLevel.Default);
+            AlbumCommands.Instance.RefreshTracks();
+            msgBox.Close();
         }
     }
 

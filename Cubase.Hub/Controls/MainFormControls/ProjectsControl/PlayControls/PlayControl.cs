@@ -52,9 +52,15 @@ namespace Cubase.Hub.Controls.MainFormControls.ProjectsControl.PlayControls
             this.Stop.Enabled = false;
             this.Progress.Minimum = 0;
             this.Progress.Maximum = 1000;
+            this.Volume.ValueChanged += Volume_Scroll;
             AutoSize = true;
             Dock = System.Windows.Forms.DockStyle.Fill;
             Padding = new System.Windows.Forms.Padding(4);
+        }
+
+        private void Volume_Scroll(object? sender, EventArgs e)
+        {
+            this.AudioService.Player?.Volume = this.Volume.Value / 100f; // Assuming Volume is a TrackBar with values from 0 to 100 
         }
 
         private void Progress_MouseUp(object? sender, MouseEventArgs e)
@@ -81,7 +87,7 @@ namespace Cubase.Hub.Controls.MainFormControls.ProjectsControl.PlayControls
             if (this.AudioService.Audio == null)
                 return;
 
-            if (this.AudioService.Audio?.CurrentTime == null)
+            if (this.AudioService.Audio.CurrentTime == null)
                 return;
 
             int width = this.Progress.Width;
@@ -115,6 +121,7 @@ namespace Cubase.Hub.Controls.MainFormControls.ProjectsControl.PlayControls
             {
                 if (this.AudioService.Audio != null)
                 {
+                    this.Volume.Value = (int)(this.AudioService.Player?.Volume * 100 ?? 0);
                     double progress = this.AudioService.Audio.CurrentTime.TotalSeconds /
                                       this.AudioService.Audio.TotalTime.TotalSeconds;
 
@@ -140,7 +147,5 @@ namespace Cubase.Hub.Controls.MainFormControls.ProjectsControl.PlayControls
             Progress.DisplayText = "00:00";
             this.Progress.Value = 0;
         }
-
-
     }
 }
