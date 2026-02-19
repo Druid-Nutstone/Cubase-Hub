@@ -1,3 +1,4 @@
+using Cubase.Hub.Controls.Export;
 using Cubase.Hub.Controls.MainFormControls.ProjectsControl;
 using Cubase.Hub.Controls.MainFormControls.ProjectsControl.PlayControls;
 using Cubase.Hub.Controls.MainFormControls.ProjectsForm;
@@ -52,6 +53,7 @@ namespace Cubase.Hub
                 .AddScoped<ManageAlbumsForm>()
                 .AddScoped<ManageMixesForm>()
                 .AddTransient<PlayControl>()
+                .AddTransient<ExportProjectControl>()
                 .AddTransient<ExportForm>()
                 .AddTransient<CubaseProjectItemControl>()
                 .AddTransient<CubaseProjectExtendedPropertiesControl>()

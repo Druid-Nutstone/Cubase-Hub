@@ -17,6 +17,8 @@ namespace Cubase.Hub.Services.Models
         public WindowSettings? MainWindowLocation {  get; set; } 
 
         public WindowSettings? AlbumWindowLocation { get; set; }
+
+        public string? LastExportFolderLocation { get; set; }
     }
 
     public class WindowSettings

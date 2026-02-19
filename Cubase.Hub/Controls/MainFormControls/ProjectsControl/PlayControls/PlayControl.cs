@@ -53,6 +53,7 @@ namespace Cubase.Hub.Controls.MainFormControls.ProjectsControl.PlayControls
             this.Progress.Minimum = 0;
             this.Progress.Maximum = 1000;
             this.Volume.ValueChanged += Volume_Scroll;
+            this.Volume.Value = 100;
             AutoSize = true;
             Dock = System.Windows.Forms.DockStyle.Fill;
             Padding = new System.Windows.Forms.Padding(4);

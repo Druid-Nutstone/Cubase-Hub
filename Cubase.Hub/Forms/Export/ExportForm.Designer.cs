@@ -29,13 +29,23 @@
         private void InitializeComponent()
         {
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(ExportForm));
+            DataPanel = new Panel();
             SuspendLayout();
+            // 
+            // DataPanel
+            // 
+            DataPanel.Dock = DockStyle.Fill;
+            DataPanel.Location = new Point(0, 0);
+            DataPanel.Name = "DataPanel";
+            DataPanel.Size = new Size(800, 450);
+            DataPanel.TabIndex = 0;
             // 
             // ExportForm
             // 
             AutoScaleDimensions = new SizeF(8F, 20F);
             AutoScaleMode = AutoScaleMode.Font;
             ClientSize = new Size(800, 450);
+            Controls.Add(DataPanel);
             Icon = (Icon)resources.GetObject("$this.Icon");
             Name = "ExportForm";
             StartPosition = FormStartPosition.CenterParent;
@@ -44,5 +54,7 @@
         }
 
         #endregion
+
+        private Panel DataPanel;
     }
 }
