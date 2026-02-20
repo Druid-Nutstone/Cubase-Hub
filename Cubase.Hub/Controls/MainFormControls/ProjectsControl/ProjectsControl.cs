@@ -1,4 +1,5 @@
-﻿using Cubase.Hub.Controls.MainFormControls.ProjectsControl;
+﻿using Cubase.Hub.Controls.Album.Manage;
+using Cubase.Hub.Controls.MainFormControls.ProjectsControl;
 using Cubase.Hub.Forms.BaseForm;
 using Cubase.Hub.Services.FileAndDirectory;
 using Cubase.Hub.Services.Messages;
@@ -54,12 +55,23 @@ namespace Cubase.Hub.Controls.MainFormControls.ProjectsForm
             this.SeperatorPanel.BorderStyle = BorderStyle.FixedSingle;
             this.RefreshProjectsButton.Click += RefreshProjectsButton_Click;
             this.HideIndex();
+            AlbumCommands.Instance.RegisterForAlbumCommand(OnAlbumCommand);
+
+
             ThemeApplier.ApplyDarkTheme(this);
         }
 
         private void RefreshProjectsButton_Click(object? sender, EventArgs e)
         {
             this.LoadProjects();
+        }
+
+        private void OnAlbumCommand(AlbumCommandType commandType)
+        {
+            if (commandType == AlbumCommandType.RefreshTracks)
+            {
+                this.LoadProjects();
+            }
         }
 
         private void ClearAlbumButton_Click(object? sender, EventArgs e)

@@ -1,4 +1,5 @@
-﻿using Cubase.Hub.Forms.BaseForm;
+﻿using Cubase.Hub.Controls.Album.Manage;
+using Cubase.Hub.Forms.BaseForm;
 using Cubase.Hub.Services;
 using Cubase.Hub.Services.Config;
 using Cubase.Hub.Services.Cubase;
@@ -74,14 +75,25 @@ namespace Cubase.Hub.Forms.Tracks
 
             var targetTemplate = Path.Combine(trackDirectory, $"{this.TrackName.Text.Trim()}{CubaseHubConstants.CubaseFileExtension}");
 
+            if (!this.directoryService.MakeSureDirectoryExists(Path.Combine(trackDirectory, CubaseHubConstants.MixdownDirectory)))
+            { 
+                this.messageService.ShowError($"Could NOT create {Path.Combine(trackDirectory, CubaseHubConstants.MixdownDirectory)}. you will have to do it manually"); 
+            }
+
             Clipboard.SetText(trackDirectory);
 
             File.Copy(template.TemplateLocation, targetTemplate);
 
-            this.messageService.ShowError($"Cubase does not support creating a new project programatically {Environment.NewLine}. I have copied the target directory to the clipboard {Environment.NewLine}. Paste that into the File open dialogue. {Environment.NewLine} AND REMEMBER TO SAVE IT!");
-            
-            this.cubaseService.OpenCubaseProject(targetTemplate);    
+            var now = DateTime.Now;
 
+            File.SetCreationTime(targetTemplate, now);
+            File.SetLastWriteTime(targetTemplate, now);
+            File.SetLastAccessTime(targetTemplate, now);
+
+            this.cubaseService.OpenCubaseProject(targetTemplate);
+
+            AlbumCommands.Instance.RefreshTracks();
+            
             this.Close();
 
         }
