@@ -110,7 +110,10 @@ namespace Cubase.Hub.Controls.MainFormControls.ProjectsForm
 
         private void ProjectLink_LinkClicked(object? sender, EventArgs e)
         {
-            this.cubaseService.OpenCubaseProject(this.ProjectLink.Project.FullPath ?? string.Empty);
+            this.cubaseService.OpenCubaseProject(this.ProjectLink.Project.FullPath ?? string.Empty, (err) => 
+            { 
+                this.messageService.ShowError($"Error opening project: {err}");
+            });
         }
 
         private void Minimise()

@@ -44,6 +44,11 @@ namespace Cubase.Hub.Forms.Main
             menuContent.Initialise(this.MainMenu, this);
             ThemeApplier.ApplyDarkTheme(this);
             this.AutoScaleMode = AutoScaleMode.Dpi;
+            var trayIcon = new NotifyIcon();
+            trayIcon.Text = "My App";
+            trayIcon.Icon = this.Icon; // or new Icon("app.ico")
+            // trayIcon.ContextMenuStrip = trayMenu;
+            trayIcon.Visible = true;
         }
 
 

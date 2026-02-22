@@ -19,6 +19,8 @@ namespace Cubase.Hub.Services.Models
         public WindowSettings? AlbumWindowLocation { get; set; }
 
         public string? LastExportFolderLocation { get; set; }
+
+        public IEnumerable<string>? RecentProjects { get; set; } = new List<string>();
     }
 
     public class WindowSettings

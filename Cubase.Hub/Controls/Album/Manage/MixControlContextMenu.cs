@@ -4,6 +4,7 @@ using Cubase.Hub.Services.Messages;
 using Cubase.Hub.Services.Models;
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Text;
 
 namespace Cubase.Hub.Controls.Album.Manage

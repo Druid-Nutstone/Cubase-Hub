@@ -5,6 +5,7 @@ using Cubase.Hub.Services.Messages;
 using Microsoft.Extensions.DependencyInjection;
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Text;
 
 namespace Cubase.Hub.Controls.MainFormControls.ProjectsForm

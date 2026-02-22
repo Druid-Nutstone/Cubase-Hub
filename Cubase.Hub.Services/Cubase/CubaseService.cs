@@ -14,14 +14,32 @@ namespace Cubase.Hub.Services.Cubase
           this.configurationService = configurationService; 
         }
 
-        public void OpenCubaseProject(string projectPath)
+        public void OpenCubaseProject(string projectPath, Action<string>? OnError)
         {
             if (File.Exists(projectPath))
             {
-                var cubase = new System.Diagnostics.Process();
-                cubase.StartInfo.FileName = this.configurationService.Configuration?.CubaseExeLocation;
-                cubase.StartInfo.Arguments = $"\"{projectPath}\"";
-                cubase.Start();
+                var cubaseLocation = this.configurationService.Configuration?.CubaseExeLocation;
+                if (!string.IsNullOrEmpty(cubaseLocation))
+                {
+                    var cubase = new System.Diagnostics.Process();
+                    cubase.StartInfo.FileName = this.configurationService.Configuration?.CubaseExeLocation;
+                    cubase.StartInfo.Arguments = $"\"{projectPath}\"";
+                    cubase.Start();
+                }
+                else
+                {
+                    if (OnError != null)
+                    {
+                        OnError("Cubase executable location is not configured. Please set it in the configuration.");
+                    }
+                }
+            }
+            else
+            {
+                if (OnError != null)
+                {
+                    OnError($"Project file not found: {projectPath}");
+                }
             }
         }
     }

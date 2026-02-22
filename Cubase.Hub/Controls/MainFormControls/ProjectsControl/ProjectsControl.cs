@@ -1,6 +1,7 @@
 ﻿using Cubase.Hub.Controls.Album.Manage;
 using Cubase.Hub.Controls.MainFormControls.ProjectsControl;
 using Cubase.Hub.Forms.BaseForm;
+using Cubase.Hub.Services.Config;
 using Cubase.Hub.Services.FileAndDirectory;
 using Cubase.Hub.Services.Messages;
 using Cubase.Hub.Services.Models;
@@ -26,6 +27,8 @@ namespace Cubase.Hub.Controls.MainFormControls.ProjectsForm
 
         private readonly IDirectoryService directoryService;
 
+        private readonly IConfigurationService configurationService;
+
         private CubaseProjectCollection projects;
 
         private CubaseProjectControl projectPanel;
@@ -39,12 +42,14 @@ namespace Cubase.Hub.Controls.MainFormControls.ProjectsForm
 
         public ProjectsControl(IMessageService messageService,
                                IDirectoryService directoryService,
+                               IConfigurationService configurationService,
                                IServiceProvider serviceProvider,
                                IProjectService projectService)
         {
             this.serviceProvider = serviceProvider;
             this.messageService = messageService;
             this.projectService = projectService;
+            this.configurationService = configurationService;
             this.directoryService = directoryService;
             InitializeComponent();
             this.ProjectSearch.OnSearchTextChanged += ProjectFilterTextChanged;
@@ -117,6 +122,9 @@ namespace Cubase.Hub.Controls.MainFormControls.ProjectsForm
             });
             if (this.projects != null)
             {
+                this.configurationService.Configuration.RecentProjects = this.projects.Select(p => p.FullPath).Take(5);
+                this.configurationService.SaveConfiguration(this.configurationService.Configuration, () => { });    
+
                 this.albumLocations = this.projects.GetAlbums();
                 projectPanel = this.GetInstanceOf<CubaseProjectControl>();
                 this.PopulateDataPanel(projectPanel);

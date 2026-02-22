@@ -12,6 +12,7 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
 using System.Drawing;
+using System.IO;
 using System.Text;
 using System.Windows.Forms;
 
@@ -90,7 +91,10 @@ namespace Cubase.Hub.Forms.Tracks
             File.SetLastWriteTime(targetTemplate, now);
             File.SetLastAccessTime(targetTemplate, now);
 
-            this.cubaseService.OpenCubaseProject(targetTemplate);
+            this.cubaseService.OpenCubaseProject(targetTemplate, (err) => 
+            { 
+               this.messageService.ShowError($"An error occurred while opening the new track in Cubase: {err}");
+            });
 
             AlbumCommands.Instance.RefreshTracks();
             

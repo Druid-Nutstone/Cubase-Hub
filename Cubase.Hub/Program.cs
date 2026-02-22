@@ -14,33 +14,75 @@ using Cubase.Hub.Services.Audio;
 using Cubase.Hub.Services.Config;
 using Cubase.Hub.Services.Cubase;
 using Cubase.Hub.Services.FileAndDirectory;
+using Cubase.Hub.Services.JumpFolder;
 using Cubase.Hub.Services.Messages;
 using Cubase.Hub.Services.Projects;
 using Microsoft.Extensions.DependencyInjection;
+using System;
+using System.Runtime.InteropServices;
 namespace Cubase.Hub
 {
     internal static class Program
     {
+        [DllImport("shell32.dll")]
+        private static extern int SetCurrentProcessExplicitAppUserModelID(string AppID);
+
         /// <summary>
         ///  The main entry point for the application.
         /// </summary>
         [STAThread]
-        static void Main()
+        static void Main(string[] args)
         {
-            // To customize application configuration such as set high DPI settings or default font,
-            // see https://aka.ms/applicationconfiguration.
+            SetCurrentProcessExplicitAppUserModelID("DavidNuttall.CubaseHub");
             ApplicationConfiguration.Initialize();
             Application.SetHighDpiMode(HighDpiMode.PerMonitorV2);
             Application.EnableVisualStyles();
             Application.SetCompatibleTextRenderingDefault(false);
             var serviceProvider = InstallServices();
-            var form = serviceProvider.GetRequiredService<MainForm>();
-            Application.Run(form);
+            var cubaseService = serviceProvider.GetRequiredService<ICubaseService>();   
+            var configurationService = serviceProvider.GetRequiredService<IConfigurationService>(); 
+            if (!ProcessAnyCommands(args, cubaseService, configurationService, serviceProvider))
+            {
+                var form = serviceProvider.GetRequiredService<MainForm>();
+                var jumpListService = serviceProvider.GetRequiredService<IJumpListService>();
+                jumpListService.Initialise();
+                Application.Run(form);
+            }
+        }
+
+        static bool ProcessAnyCommands(string[] args, ICubaseService cubaseService, IConfigurationService configurationService, IServiceProvider serviceProvider)
+        {
+            configurationService.LoadConfiguration(() => 
+            { 
+                MessageBox.Show("Error loading configuration. Please check your configuration file.", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            });
+
+            if (args.Length > 0)
+            {
+                if (args[0] == "open")
+                {
+                    cubaseService.OpenCubaseProject(args[1], (err) => 
+                    { 
+                        MessageBox.Show($"Error opening project: {err}", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    });
+                    // open last project logic
+                    return true;
+                }
+
+                if (args[0] == "albums")
+                {
+                    var form = serviceProvider.GetRequiredService<ManageAlbumsForm>();
+                    form.Initialise();
+                    Application.Run(form);
+                    return true;
+                }
+
+            }
+            return false;
         }
 
         static IServiceProvider InstallServices()
         {
-
             var serviceCollection = new ServiceCollection();
             serviceCollection
                 .AddScoped<MainForm>()
@@ -63,7 +105,9 @@ namespace Cubase.Hub
                 .AddSingleton<IDirectoryService, DirectoryService>()
                 .AddSingleton<ICubaseService, CubaseService>()
                 .AddTransient<IAudioService, AudioService>()
-                .AddSingleton<IProjectService, ProjectService>();   
+                .AddSingleton<IJumpListService, JumpListService>()
+                .AddSingleton<IProjectService, ProjectService>();
+                
             var provider = serviceCollection.BuildServiceProvider();
             return provider;
         }
