@@ -67,9 +67,41 @@ namespace Cubase.Hub.Forms.Albums
             this.SelectDeselectAllMixes.Text = "Select All";
             this.SelectDeselectAllMixes.CheckedChanged += SelectDeselectAllMixes_CheckedChanged;
             this.SetSelectedTracksTitleButton.Click += SetSelectedTracksTitleButton_Click;
+            this.BrowseExportLocationButton.Click += BrowseExportLocationButton_Click;
+            this.OpenExportDirectory.Click += OpenExportDirectory_Click;
             this.AutoScaleMode = AutoScaleMode.Dpi;
             // register static event class and wait for commands comming in 
             AlbumCommands.Instance.RegisterForAlbumCommand(this.OnAlbumCommandReceived);
+        }
+
+        private void OpenExportDirectory_Click(object? sender, EventArgs e)
+        {
+            if (!string.IsNullOrEmpty(this.AlbumExportLocation.Text))
+            {
+                this.directoryService.OpenExplorer(this.AlbumExportLocation.Text);
+            }   
+        }
+
+        private void BrowseExportLocationButton_Click(object? sender, EventArgs e)
+        {
+            var folderBrowser = new FolderBrowserDialog();
+            folderBrowser.Description = "Select Album Export Location";
+            folderBrowser.UseDescriptionForTitle = true;    
+            if (folderBrowser.ShowDialog() == DialogResult.OK)
+            {
+                this.AlbumExportLocation.Text = folderBrowser.SelectedPath;
+                var albumExportConfig = this.configurationService?.Configuration?.AlbumExports?.FirstOrDefault(x => x.Name.Equals(this.CurrentAlbum.AlbumName));
+                if (albumExportConfig == null)
+                {
+                    albumExportConfig = new AlbumExport { Name = this.CurrentAlbum.AlbumName, Location = folderBrowser.SelectedPath };
+                    this.configurationService.Configuration.AlbumExports.Add(albumExportConfig);
+                }
+                else
+                {
+                    albumExportConfig.Location = folderBrowser.SelectedPath;
+                }
+                this.configurationService.SaveConfiguration(this.configurationService.Configuration, () => { });
+            }
         }
 
         private void OnAlbumCommandReceived(AlbumCommandType command)
@@ -190,6 +222,8 @@ namespace Cubase.Hub.Forms.Albums
                 var msgDialog = this.messageService.OpenMessage("Loading Tracks..", this);
                 this.LoadTracks(this.CurrentAlbum.AlbumPath);
                 msgDialog.Close();
+                this.AlbumExportLocation.Text = this.configurationService?.Configuration?.AlbumExports?.FirstOrDefault(x => x.Name.Equals(this.CurrentAlbum.AlbumName))?.Location;
+                this.SetMixExportLocation();
             }
             else
             {
@@ -206,8 +240,17 @@ namespace Cubase.Hub.Forms.Albums
             this.ShowMixes();
         }
 
+        private void SetMixExportLocation()
+        {
+           if (!string.IsNullOrEmpty(this.AlbumExportLocation.Text) && this.CurrentMixes != null)
+            {
+               this.CurrentMixes.SetMixdownExportLocation(this.AlbumExportLocation.Text);   
+            }   
+        }
+
         private void ShowMixes()
         {
+            this.SetMixExportLocation();
             this.mixdownControl.ShowMixes(this.CurrentMixes, this.OnMixChanged, this.audioService, this.messageService);
         }
 
@@ -283,6 +326,13 @@ namespace Cubase.Hub.Forms.Albums
         protected override void OnShown(EventArgs e)
         {
             base.OnShown(e);
+            if (this.configurationService.Configuration == null)
+            {
+                this.configurationService.LoadConfiguration(() =>
+                {
+                    this.messageService.ShowError("Could not load configuration. Please check if the configuration file is correct.");
+                });
+            }
             if (this.configurationService?.Configuration?.AlbumWindowLocation != null)
             {
                 StartPosition = FormStartPosition.Manual;
@@ -297,7 +347,6 @@ namespace Cubase.Hub.Forms.Albums
         protected override void OnFormClosing(FormClosingEventArgs e)
         {
             base.OnFormClosing(e);
-            base.OnFormClosing(e);
             //this.Bounds = new Rectangle() {  } 
             // this.configurationService.Configuration.
             var bounds = WindowState == FormWindowState.Normal
@@ -311,7 +360,7 @@ namespace Cubase.Hub.Forms.Albums
                 Width = bounds.Width,
                 Height = bounds.Height,
             };
-            this.configurationService?.Configuration?.MainWindowLocation = settings;
+            this.configurationService?.Configuration?.AlbumWindowLocation = settings;
             this.configurationService?.SaveConfiguration(this.configurationService?.Configuration, () => { });
         }
     }

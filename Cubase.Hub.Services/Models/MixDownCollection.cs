@@ -25,6 +25,14 @@ namespace Cubase.Hub.Services.Models
             }
         }
 
+        public void SetMixdownExportLocation(string location)
+        {
+            foreach (var item in this)
+            {
+                item.ExportLocation = location;
+            }
+        }
+
         public MixDownCollection GetSelectedMixes()
         {
             return new MixDownCollection(this.Where(x => x.Selected));
@@ -176,6 +184,8 @@ namespace Cubase.Hub.Services.Models
             set => SetProperty(ref _comment, value);
         }
 
+        public string ExportLocation { get; set; }
+        
         public static MixDown CreateFromFile(string file)
         {
             return new MixDown

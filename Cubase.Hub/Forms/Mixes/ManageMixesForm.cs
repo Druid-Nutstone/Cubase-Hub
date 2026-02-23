@@ -1,6 +1,7 @@
 ﻿using Cubase.Hub.Forms.BaseForm;
 using Cubase.Hub.Forms.Mixes.MixActions;
 using Cubase.Hub.Services.Audio;
+using Cubase.Hub.Services.Config;
 using Cubase.Hub.Services.FileAndDirectory;
 using Cubase.Hub.Services.Messages;
 using Cubase.Hub.Services.Models;
@@ -19,6 +20,7 @@ namespace Cubase.Hub.Forms.Mixes
         private readonly IAudioService audioService;
         private readonly IDirectoryService directoryService;
         private readonly IMessageService messageService;
+        private readonly IConfigurationService configurationService;
         private MixDownCollection Mixes;
 
         private MixAction MixAction = MixAction.None;
@@ -30,11 +32,14 @@ namespace Cubase.Hub.Forms.Mixes
 
         public ManageMixesForm(IAudioService audioService, 
                                IMessageService messageService,
+                               IConfigurationService configurationService,
                                IDirectoryService directoryService)
         {
             this.audioService = audioService;
             this.directoryService = directoryService;
-            this.messageService = messageService;               InitializeComponent();
+            this.messageService = messageService;               
+            this.configurationService = configurationService;
+            InitializeComponent();
             ThemeApplier.ApplyDarkTheme(this);
             this.InitialiseControls();
             this.BrowseTargetDirectoryButton.Click += BrowseTargetDirectoryButton_Click;
@@ -117,19 +122,21 @@ namespace Cubase.Hub.Forms.Mixes
 
         public void Initialise(MixDownCollection mixDowns)
         {
-            // mixdowns just containes selecte mixes
+            this.Mixes = mixDowns; 
+            if (mixDowns.Count > 0)
+            {
+                this.TargetDirectory.Text = this.Mixes.First().ExportLocation ?? string.Empty;
+            }
             this.InitialiseControls();
-            this.Mixes = mixDowns;  
         }
 
         public void InitialiseControls()
         {
-            this.TargetDirectory.Text = string.Empty;
             this.CopyToDirectoryButton.Checked = false; 
             this.ConvertToMp3Button.Checked = false;    
             this.ConvertToFlacButton.Checked = false;
-            this.ActionGroup.Enabled = false;
-            this.ActionGroup.Visible = false;
+            this.ActionGroup.Enabled = !string.IsNullOrEmpty(this.TargetDirectory.Text);
+            this.ActionGroup.Visible = !string.IsNullOrEmpty(this.TargetDirectory.Text);
         }
     }
 

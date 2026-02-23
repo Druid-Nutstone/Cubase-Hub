@@ -20,6 +20,8 @@ namespace Cubase.Hub.Services.Models
 
         public string? LastExportFolderLocation { get; set; }
 
+        public AlbumExportCollection? AlbumExports { get; set; } = new AlbumExportCollection();
+
         public IEnumerable<string>? RecentProjects { get; set; } = new List<string>();
     }
 

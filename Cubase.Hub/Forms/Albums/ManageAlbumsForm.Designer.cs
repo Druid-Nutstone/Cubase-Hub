@@ -30,6 +30,9 @@
         {
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(ManageAlbumsForm));
             TopPanel = new Panel();
+            BrowseExportLocationButton = new Button();
+            AlbumExportLocation = new TextBox();
+            label2 = new Label();
             OpenAlbumDirectory = new Button();
             SelectedAlbum = new ComboBox();
             label1 = new Label();
@@ -44,6 +47,7 @@
             DeleteSelectedButton = new Button();
             ManageMixesButton = new Button();
             RereshFromAblumButton = new Button();
+            OpenExportDirectory = new Button();
             TopPanel.SuspendLayout();
             AlbumPanel.SuspendLayout();
             TracksPanel.SuspendLayout();
@@ -53,6 +57,10 @@
             // 
             // TopPanel
             // 
+            TopPanel.Controls.Add(OpenExportDirectory);
+            TopPanel.Controls.Add(BrowseExportLocationButton);
+            TopPanel.Controls.Add(AlbumExportLocation);
+            TopPanel.Controls.Add(label2);
             TopPanel.Controls.Add(OpenAlbumDirectory);
             TopPanel.Controls.Add(SelectedAlbum);
             TopPanel.Controls.Add(label1);
@@ -62,9 +70,37 @@
             TopPanel.Size = new Size(1382, 102);
             TopPanel.TabIndex = 0;
             // 
+            // BrowseExportLocationButton
+            // 
+            BrowseExportLocationButton.Anchor = AnchorStyles.Top | AnchorStyles.Right;
+            BrowseExportLocationButton.Location = new Point(1159, 42);
+            BrowseExportLocationButton.Name = "BrowseExportLocationButton";
+            BrowseExportLocationButton.Size = new Size(94, 29);
+            BrowseExportLocationButton.TabIndex = 5;
+            BrowseExportLocationButton.Text = "Browse";
+            BrowseExportLocationButton.UseVisualStyleBackColor = true;
+            // 
+            // AlbumExportLocation
+            // 
+            AlbumExportLocation.Anchor = AnchorStyles.Top | AnchorStyles.Left | AnchorStyles.Right;
+            AlbumExportLocation.Location = new Point(486, 42);
+            AlbumExportLocation.Name = "AlbumExportLocation";
+            AlbumExportLocation.Size = new Size(667, 27);
+            AlbumExportLocation.TabIndex = 4;
+            // 
+            // label2
+            // 
+            label2.AutoSize = true;
+            label2.Font = new Font("Segoe UI", 9F, FontStyle.Bold);
+            label2.Location = new Point(486, 19);
+            label2.Name = "label2";
+            label2.Size = new Size(174, 20);
+            label2.TabIndex = 3;
+            label2.Text = "Album Export Location ";
+            // 
             // OpenAlbumDirectory
             // 
-            OpenAlbumDirectory.Location = new Point(300, 41);
+            OpenAlbumDirectory.Location = new Point(285, 42);
             OpenAlbumDirectory.Name = "OpenAlbumDirectory";
             OpenAlbumDirectory.Size = new Size(168, 29);
             OpenAlbumDirectory.TabIndex = 2;
@@ -131,6 +167,14 @@
             mixdownControl.AutoSize = true;
             mixdownControl.AutoSizeMode = AutoSizeMode.GrowAndShrink;
             mixdownControl.ColumnCount = 2;
+            mixdownControl.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 100F));
+            mixdownControl.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 100F));
+            mixdownControl.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 100F));
+            mixdownControl.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 100F));
+            mixdownControl.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 100F));
+            mixdownControl.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 100F));
+            mixdownControl.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 100F));
+            mixdownControl.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 100F));
             mixdownControl.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 100F));
             mixdownControl.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 100F));
             mixdownControl.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 100F));
@@ -223,6 +267,16 @@
             RereshFromAblumButton.Text = "Refresh Tags From Album";
             RereshFromAblumButton.UseVisualStyleBackColor = true;
             // 
+            // OpenExportDirectory
+            // 
+            OpenExportDirectory.Anchor = AnchorStyles.Top | AnchorStyles.Right;
+            OpenExportDirectory.Location = new Point(1259, 42);
+            OpenExportDirectory.Name = "OpenExportDirectory";
+            OpenExportDirectory.Size = new Size(94, 29);
+            OpenExportDirectory.TabIndex = 6;
+            OpenExportDirectory.Text = "Open";
+            OpenExportDirectory.UseVisualStyleBackColor = true;
+            // 
             // ManageAlbumsForm
             // 
             AutoScaleDimensions = new SizeF(8F, 20F);
@@ -263,5 +317,9 @@
         private Button DeleteSelectedButton;
         private CheckBox SelectDeselectAllMixes;
         private Button SetSelectedTracksTitleButton;
+        private Label label2;
+        private TextBox AlbumExportLocation;
+        private Button BrowseExportLocationButton;
+        private Button OpenExportDirectory;
     }
 }

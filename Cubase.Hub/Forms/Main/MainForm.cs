@@ -27,6 +27,8 @@ namespace Cubase.Hub.Forms.Main
 
         private MenuContent menuContent;
 
+        private bool startMinimised = false;
+
         public MainForm(IMessageService messageService,
                         ConfigurationForm configurationForm,
                         IConfigurationService configurationService,
@@ -34,11 +36,11 @@ namespace Cubase.Hub.Forms.Main
                         ProjectsControl projectsControl)
         {
             InitializeComponent();
-            this.projectsControl = projectsControl; 
+            this.projectsControl = projectsControl;
             this.menuContent = menuContent;
             this.configurationService = configurationService;
             this.configurationForm = configurationForm;
-            messageService.RegisterForMessages(this.OnMessageReceived); 
+            messageService.RegisterForMessages(this.OnMessageReceived);
             this.messageService = messageService;
             this.MainMenu.Renderer = new DarkToolStripRenderer();
             menuContent.Initialise(this.MainMenu, this);
@@ -51,24 +53,30 @@ namespace Cubase.Hub.Forms.Main
             trayIcon.Visible = true;
         }
 
+        public void StartMinimised()
+        {
+            this.startMinimised = true;
+            this.WindowState = FormWindowState.Minimized;
+        }
 
 
         protected override void OnShown(EventArgs e)
         {
-            if (this.configurationService.LoadConfiguration(() => 
-            { 
+            if (this.configurationService.LoadConfiguration(() =>
+            {
                 this.configurationForm.Configuration = new CubaseHubConfiguration();
-                var result = this.configurationForm.ShowDialog();   
+                var result = this.configurationForm.ShowDialog();
                 if (result == DialogResult.OK)
                 {
                     this.LoadProjects();
                 }
                 else
                 {
-                    this.Close();   
+                    this.Close();
                 }
             }) != null)
             {
+
                 if (this.configurationService.Configuration.MainWindowLocation != null)
                 {
                     StartPosition = FormStartPosition.Manual;
@@ -79,9 +87,12 @@ namespace Cubase.Hub.Forms.Main
                         this.configurationService.Configuration.MainWindowLocation.Height);
                 }
                 this.LoadProjects();
-            } 
-            
-   
+                if (this.startMinimised)
+                {
+                    this.WindowState = FormWindowState.Minimized;
+                }
+            }
+
         }
 
         private void LoadProjects()
@@ -95,7 +106,7 @@ namespace Cubase.Hub.Forms.Main
         }
 
         private void LoadControl(Control control)
-        {       
+        {
             this.ControlPanel.Controls.Clear();
             control.Dock = DockStyle.Fill;
             this.ControlPanel.Controls.Add(control);
@@ -110,7 +121,7 @@ namespace Cubase.Hub.Forms.Main
             else
             {
                 this.Cursor = Cursors.Default;
-            }   
+            }
             this.StatusMessage.Text = message;
             this.StatusStrip.Refresh();
         }

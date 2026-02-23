@@ -148,7 +148,7 @@
     <value>True</value>
   </data>
   <data name="FileName.Location" type="System.Drawing.Point, System.Drawing">
-    <value>452, 16</value>
+    <value>452, 0</value>
   </data>
   <data name="FileName.Size" type="System.Drawing.Size, System.Drawing">
     <value>89, 20</value>
@@ -172,7 +172,7 @@
     <value>0</value>
   </data>
   <data name="FileProgress.Location" type="System.Drawing.Point, System.Drawing">
-    <value>452, 38</value>
+    <value>452, 27</value>
   </data>
   <data name="FileProgress.Size" type="System.Drawing.Size, System.Drawing">
     <value>305, 29</value>
@@ -193,7 +193,7 @@
     <value>1</value>
   </data>
   <data name="CopyButton.Location" type="System.Drawing.Point, System.Drawing">
-    <value>14, 38</value>
+    <value>14, 27</value>
   </data>
   <data name="CopyButton.Size" type="System.Drawing.Size, System.Drawing">
     <value>94, 29</value>

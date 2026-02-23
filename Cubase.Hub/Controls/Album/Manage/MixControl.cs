@@ -33,10 +33,7 @@ namespace Cubase.Hub.Controls.Album.Manage
             InitializeComponent();
             this.Initialise(mixDown, audioService);
             this.messageService = messageService;
-            if (mixDown.AudioType.ToLower() == "wav")
-            {
-                this.ContextMenuStrip = new MixControlContextMenu(mixDown, audioService, messageService);
-            }
+            this.ContextMenuStrip = new MixControlContextMenu(mixDown, audioService, messageService);
             
         }
 

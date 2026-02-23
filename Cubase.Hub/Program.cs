@@ -19,6 +19,7 @@ using Cubase.Hub.Services.Messages;
 using Cubase.Hub.Services.Projects;
 using Microsoft.Extensions.DependencyInjection;
 using System;
+using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
 namespace Cubase.Hub
 {
@@ -77,6 +78,13 @@ namespace Cubase.Hub
                     return true;
                 }
 
+                if (args[0] == "minimise")
+                    {
+                        var form = serviceProvider.GetRequiredService<MainForm>();
+                        form.StartMinimised();
+                        Application.Run(form);
+                    return true;
+                }
             }
             return false;
         }
