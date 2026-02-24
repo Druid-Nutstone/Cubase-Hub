@@ -30,6 +30,7 @@
         {
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(ManageAlbumsForm));
             TopPanel = new Panel();
+            OpenExportDirectory = new Button();
             BrowseExportLocationButton = new Button();
             AlbumExportLocation = new TextBox();
             label2 = new Label();
@@ -47,7 +48,7 @@
             DeleteSelectedButton = new Button();
             ManageMixesButton = new Button();
             RereshFromAblumButton = new Button();
-            OpenExportDirectory = new Button();
+            RefreshTracksButton = new Button();
             TopPanel.SuspendLayout();
             AlbumPanel.SuspendLayout();
             TracksPanel.SuspendLayout();
@@ -69,6 +70,16 @@
             TopPanel.Name = "TopPanel";
             TopPanel.Size = new Size(1382, 102);
             TopPanel.TabIndex = 0;
+            // 
+            // OpenExportDirectory
+            // 
+            OpenExportDirectory.Anchor = AnchorStyles.Top | AnchorStyles.Right;
+            OpenExportDirectory.Location = new Point(1259, 42);
+            OpenExportDirectory.Name = "OpenExportDirectory";
+            OpenExportDirectory.Size = new Size(94, 29);
+            OpenExportDirectory.TabIndex = 6;
+            OpenExportDirectory.Text = "Open";
+            OpenExportDirectory.UseVisualStyleBackColor = true;
             // 
             // BrowseExportLocationButton
             // 
@@ -194,6 +205,7 @@
             mixdownControl.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 100F));
             mixdownControl.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 100F));
             mixdownControl.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 100F));
+            mixdownControl.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 100F));
             mixdownControl.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 50F));
             mixdownControl.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 50F));
             mixdownControl.Dock = DockStyle.Top;
@@ -208,6 +220,7 @@
             // 
             // TracksControlPanel
             // 
+            TracksControlPanel.Controls.Add(RefreshTracksButton);
             TracksControlPanel.Controls.Add(SetSelectedTracksTitleButton);
             TracksControlPanel.Controls.Add(SelectDeselectAllMixes);
             TracksControlPanel.Controls.Add(DeleteSelectedButton);
@@ -260,6 +273,8 @@
             // RereshFromAblumButton
             // 
             RereshFromAblumButton.Anchor = AnchorStyles.Top | AnchorStyles.Right;
+            RereshFromAblumButton.Image = Properties.Resources.refresh;
+            RereshFromAblumButton.ImageAlign = ContentAlignment.MiddleLeft;
             RereshFromAblumButton.Location = new Point(1101, 8);
             RereshFromAblumButton.Name = "RereshFromAblumButton";
             RereshFromAblumButton.Size = new Size(269, 29);
@@ -267,15 +282,17 @@
             RereshFromAblumButton.Text = "Refresh Tags From Album";
             RereshFromAblumButton.UseVisualStyleBackColor = true;
             // 
-            // OpenExportDirectory
+            // RefreshTracksButton
             // 
-            OpenExportDirectory.Anchor = AnchorStyles.Top | AnchorStyles.Right;
-            OpenExportDirectory.Location = new Point(1259, 42);
-            OpenExportDirectory.Name = "OpenExportDirectory";
-            OpenExportDirectory.Size = new Size(94, 29);
-            OpenExportDirectory.TabIndex = 6;
-            OpenExportDirectory.Text = "Open";
-            OpenExportDirectory.UseVisualStyleBackColor = true;
+            RefreshTracksButton.Anchor = AnchorStyles.Top | AnchorStyles.Right;
+            RefreshTracksButton.Image = Properties.Resources.refresh;
+            RefreshTracksButton.ImageAlign = ContentAlignment.MiddleLeft;
+            RefreshTracksButton.Location = new Point(955, 8);
+            RefreshTracksButton.Name = "RefreshTracksButton";
+            RefreshTracksButton.Size = new Size(131, 29);
+            RefreshTracksButton.TabIndex = 6;
+            RefreshTracksButton.Text = "Refresh";
+            RefreshTracksButton.UseVisualStyleBackColor = true;
             // 
             // ManageAlbumsForm
             // 
@@ -321,5 +338,6 @@
         private TextBox AlbumExportLocation;
         private Button BrowseExportLocationButton;
         private Button OpenExportDirectory;
+        private Button RefreshTracksButton;
     }
 }

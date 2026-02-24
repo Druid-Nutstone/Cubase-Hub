@@ -186,6 +186,8 @@ namespace Cubase.Hub.Services.Models
 
         public string ExportLocation { get; set; }
         
+        public DateTime LastModified { get; set; }
+
         public static MixDown CreateFromFile(string file)
         {
             return new MixDown

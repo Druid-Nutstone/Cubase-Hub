@@ -13,7 +13,7 @@ namespace Cubase.Hub.Services.Config
 
         CubaseHubConfiguration? Configuration { get; }     
 
-        bool SaveConfiguration(CubaseHubConfiguration configuration, Action? OnSaveError);
+        bool SaveConfiguration(CubaseHubConfiguration configuration, Action<string>? OnSaveError);
 
     }
 }

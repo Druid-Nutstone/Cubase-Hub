@@ -143,7 +143,10 @@ namespace Cubase.Hub.Forms.Main
                 Height = bounds.Height,
             };
             this.configurationService?.Configuration?.MainWindowLocation = settings;
-            this.configurationService?.SaveConfiguration(this.configurationService?.Configuration, () => { });
+            this.configurationService?.SaveConfiguration(this.configurationService?.Configuration, (err) => 
+            { 
+               this.messageService.ShowError("An error occurred while saving the configuration. Please try again.");    
+            });
         }
 
 

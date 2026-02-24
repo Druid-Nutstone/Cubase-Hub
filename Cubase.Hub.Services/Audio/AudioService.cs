@@ -98,6 +98,7 @@ namespace Cubase.Hub.Services.Audio
             mixDown.Duration = tags.Properties.Duration.ToString(@"mm\:ss");
             var fileInfo = new FileInfo(mixDown.FileName);
             mixDown.Size = ConvertLengthToString(fileInfo.Length);
+            mixDown.LastModified = fileInfo.LastWriteTime;
             mixDown.TrackNumber = tags.Tag.Track;
             mixDown.AudioType = tags.MimeType.Split("/").TakeLast(1).First();
             mixDown.Year = tags.Tag.Year;
@@ -139,7 +140,9 @@ namespace Cubase.Hub.Services.Audio
                 PopulateMixdownFromTags(mix);
             }
             return new MixDownCollection(
-                mixes.OrderBy(x => x.TrackNumber)
+                mixes
+                    .OrderBy(x => x.TrackNumber == 0)   // false (0) first, true (1) last
+                    .ThenBy(x => x.TrackNumber)         // normal ordering for the rest
             );
         }
 

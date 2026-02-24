@@ -54,8 +54,23 @@ namespace Cubase.Hub.Controls.Album.Manage
             this.MixBitRate.Bind(nameof(MixDown.BitRate), mixDown);
             this.MixDownSize.Bind(nameof(MixDown.Size), mixDown);   
             this.MixSelected.Bind(nameof(MixDown.Selected),mixDown);
+            this.MixdownLastModified.Text = this.GetLastModified(mixDown);
             this.MixType.Text = mixDown.AudioType.ToUpper();
+            
         }
+
+        private string GetLastModified(MixDown mixDown)
+        {
+            if (mixDown.LastModified.Date == DateTime.Now.Date)
+            {
+                return $"Today {mixDown.LastModified.ToString("t")}";
+            }
+            if (mixDown.LastModified.Date == DateTime.Now.AddDays(-1).Date)
+            {
+                return $"Yesterday {mixDown.LastModified.ToString("t")}";
+            }   
+            return mixDown.LastModified.ToString("g");  
+        }    
 
         private void MixDown_PropertyChanged(object? sender, PropertyChangedEventArgs e)
         {

@@ -40,7 +40,7 @@ namespace Cubase.Hub.Services.Config
             return null;
         }
 
-        public bool SaveConfiguration(CubaseHubConfiguration configuration, Action? OnSaveError)
+        public bool SaveConfiguration(CubaseHubConfiguration configuration, Action<string>? OnSaveError)
         {
             try
             {
@@ -49,11 +49,11 @@ namespace Cubase.Hub.Services.Config
                 this.configuration = configuration; 
                 return true;
             }
-            catch (Exception)
+            catch (Exception ex)
             {
                 if (OnSaveError != null)
                 {
-                    OnSaveError();
+                    OnSaveError(ex.Message);
                 }
                 return false;
             }

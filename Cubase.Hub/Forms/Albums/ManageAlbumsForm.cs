@@ -69,9 +69,15 @@ namespace Cubase.Hub.Forms.Albums
             this.SetSelectedTracksTitleButton.Click += SetSelectedTracksTitleButton_Click;
             this.BrowseExportLocationButton.Click += BrowseExportLocationButton_Click;
             this.OpenExportDirectory.Click += OpenExportDirectory_Click;
+            this.RefreshTracksButton.Click += RefreshTracksButton_Click;    
             this.AutoScaleMode = AutoScaleMode.Dpi;
             // register static event class and wait for commands comming in 
             AlbumCommands.Instance.RegisterForAlbumCommand(this.OnAlbumCommandReceived);
+        }
+
+        private void RefreshTracksButton_Click(object? sender, EventArgs e)
+        {
+            this.LoadTracks(this.CurrentAlbum.AlbumPath);
         }
 
         private void OpenExportDirectory_Click(object? sender, EventArgs e)
@@ -100,7 +106,10 @@ namespace Cubase.Hub.Forms.Albums
                 {
                     albumExportConfig.Location = folderBrowser.SelectedPath;
                 }
-                this.configurationService.SaveConfiguration(this.configurationService.Configuration, () => { });
+                this.configurationService.SaveConfiguration(this.configurationService.Configuration, (err) => 
+                { 
+                   this.messageService.ShowError($"Could not save configuration file. {err}");
+                });
             }
         }
 
@@ -274,10 +283,11 @@ namespace Cubase.Hub.Forms.Albums
             else
             {
                 this.audioService.SetTagsFromMixDowm(mixDown);
-                if (propertyName == nameof(MixDown.TrackNumber))
-                {
-                    this.LoadTracks(this.CurrentAlbum.AlbumPath);
-                }
+                // not now 
+                //if (propertyName == nameof(MixDown.TrackNumber))
+                //{
+                //    this.LoadTracks(this.CurrentAlbum.AlbumPath);
+                //}
             }
         }
 
@@ -361,7 +371,10 @@ namespace Cubase.Hub.Forms.Albums
                 Height = bounds.Height,
             };
             this.configurationService?.Configuration?.AlbumWindowLocation = settings;
-            this.configurationService?.SaveConfiguration(this.configurationService?.Configuration, () => { });
+            this.configurationService?.SaveConfiguration(this.configurationService?.Configuration, (err) => 
+            { 
+                 this.messageService.ShowError($"Could not save configuration file. {err}");
+            });
         }
     }
 }
