@@ -16,7 +16,7 @@ namespace Cubase.Hub.Forms.Mixes.MixActions
 {
     public partial class MixActionFlacControl : UserControl, IMixActionControl
     {
-        private CompressionLevel CompressionLevel = CompressionLevel.Default;
+        private FlacConfiguration FlacConfiguration = new FlacConfiguration();
         
         public MixActionFlacControl()
         {
@@ -24,12 +24,30 @@ namespace Cubase.Hub.Forms.Mixes.MixActions
             this.CompressionComboBox.Items.Clear();
             this.CompressionComboBox.Items.AddRange(Enum.GetNames(typeof(CompressionLevel)));
             this.CompressionComboBox.SelectedIndexChanged += CompressionComboBox_SelectedIndexChanged;
-            this.CompressionComboBox.SelectedItem = this.CompressionLevel.ToString();
+            this.CompressionComboBox.SelectedItem = this.FlacConfiguration.CompressionLevel.ToString();
+            this.BitRate.Items.Clear();
+            this.BitRate.Items.AddRange(["8bit", "16bit", "32bit"]);
+            this.BitRate.SelectedIndex = 2;
+            this.BitRate.SelectedIndexChanged += BitRate_SelectedIndexChanged;
+            this.SampleRate.Items.Clear();
+            this.SampleRate.Items.AddRange(["16000khz","44000khz","48000khz","64000khz", "96000khz"]);
+            this.SampleRate.SelectedIndex = 2;
+            this.SampleRate.SelectedIndexChanged += SampleRate_SelectedIndexChanged;
+        }
+
+        private void SampleRate_SelectedIndexChanged(object? sender, EventArgs e)
+        {
+            this.FlacConfiguration.SampleRate = Enum.GetValues<SampleRate>()[this.SampleRate.SelectedIndex];
+        }
+
+        private void BitRate_SelectedIndexChanged(object? sender, EventArgs e)
+        {
+            this.FlacConfiguration.Depth = Enum.GetValues<BitDepth>()[this.BitRate.SelectedIndex];
         }
 
         private void CompressionComboBox_SelectedIndexChanged(object? sender, EventArgs e)
         {
-            this.CompressionLevel = Enum.Parse<CompressionLevel>(this.CompressionComboBox.SelectedItem as string, true);
+            this.FlacConfiguration.CompressionLevel = Enum.Parse<CompressionLevel>(this.CompressionComboBox.SelectedItem as string, true);
         }
 
         public void RunAction(MixDownCollection mixDowns, 
@@ -42,9 +60,9 @@ namespace Cubase.Hub.Forms.Mixes.MixActions
             for (var i = 0; i < mixDowns.Count; i++)
             {
                 var state = onProgress.Invoke(i + 1, Path.GetFileNameWithoutExtension(mixDowns[i].FileName));
-                audioService.ConvertToFlac(mixDowns[i], targetDirectory, this.CompressionLevel);
+                audioService.ConvertToFlac(mixDowns[i], targetDirectory, this.FlacConfiguration);
             }
-            onProgress.Invoke(0, "All Done");
+            onProgress.Invoke(-1, "All Done");
         }
     }
 }

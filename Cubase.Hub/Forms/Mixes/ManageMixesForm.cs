@@ -30,14 +30,14 @@ namespace Cubase.Hub.Forms.Mixes
             InitializeComponent();
         }
 
-        public ManageMixesForm(IAudioService audioService, 
+        public ManageMixesForm(IAudioService audioService,
                                IMessageService messageService,
                                IConfigurationService configurationService,
                                IDirectoryService directoryService)
         {
             this.audioService = audioService;
             this.directoryService = directoryService;
-            this.messageService = messageService;               
+            this.messageService = messageService;
             this.configurationService = configurationService;
             InitializeComponent();
             ThemeApplier.ApplyDarkTheme(this);
@@ -53,9 +53,6 @@ namespace Cubase.Hub.Forms.Mixes
         {
             if (this.MixAction != MixAction.None)
             {
-                FileProgress.Value = 0;
-                FileProgress.PerformLayout();
-                FileProgress.Refresh();
                 ((IMixActionControl)this.ActionControl.Controls[0]).RunAction(
                     this.Mixes,
                     this.TargetDirectory.Text,
@@ -72,10 +69,18 @@ namespace Cubase.Hub.Forms.Mixes
 
         void UpdateProgress(int fileIndex, string fileName)
         {
-            this.FileProgress.Value =
-                (int)Math.Round((double)fileIndex * 100 / this.Mixes.Count);
-
-            this.FileName.Text = fileName;
+            if (fileIndex < 0)
+            {
+                this.FileName.Text = "Complete";
+                this.FileName.ForeColor = Color.Green; 
+                this.CurrentFile.Text = "";
+            }
+            else
+            {
+                this.FileName.Text = $"File {fileIndex}";
+                this.CurrentFile.Text = $"Converting {fileName}";
+                this.FileName.ForeColor = this.CurrentFile.ForeColor;
+            }
             Application.DoEvents();
         }
 
@@ -122,7 +127,7 @@ namespace Cubase.Hub.Forms.Mixes
 
         public void Initialise(MixDownCollection mixDowns)
         {
-            this.Mixes = mixDowns; 
+            this.Mixes = mixDowns;
             if (mixDowns.Count > 0)
             {
                 this.TargetDirectory.Text = this.Mixes.First().ExportLocation ?? string.Empty;
@@ -132,8 +137,8 @@ namespace Cubase.Hub.Forms.Mixes
 
         public void InitialiseControls()
         {
-            this.CopyToDirectoryButton.Checked = false; 
-            this.ConvertToMp3Button.Checked = false;    
+            this.CopyToDirectoryButton.Checked = false;
+            this.ConvertToMp3Button.Checked = false;
             this.ConvertToFlacButton.Checked = false;
             this.ActionGroup.Enabled = !string.IsNullOrEmpty(this.TargetDirectory.Text);
             this.ActionGroup.Visible = !string.IsNullOrEmpty(this.TargetDirectory.Text);

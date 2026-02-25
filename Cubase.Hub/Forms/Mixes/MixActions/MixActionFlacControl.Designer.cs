@@ -30,6 +30,10 @@
         {
             CompressionComboBox = new ComboBox();
             label1 = new Label();
+            label2 = new Label();
+            BitRate = new ComboBox();
+            label3 = new Label();
+            SampleRate = new ComboBox();
             SuspendLayout();
             // 
             // CompressionComboBox
@@ -50,14 +54,54 @@
             label1.TabIndex = 2;
             label1.Text = "Compression";
             // 
+            // label2
+            // 
+            label2.AutoSize = true;
+            label2.Font = new Font("Segoe UI", 9F, FontStyle.Bold);
+            label2.Location = new Point(237, 9);
+            label2.Name = "label2";
+            label2.Size = new Size(65, 20);
+            label2.TabIndex = 4;
+            label2.Text = "Bit Rate";
+            // 
+            // BitRate
+            // 
+            BitRate.FormattingEnabled = true;
+            BitRate.Location = new Point(237, 32);
+            BitRate.Name = "BitRate";
+            BitRate.Size = new Size(96, 28);
+            BitRate.TabIndex = 5;
+            // 
+            // label3
+            // 
+            label3.AutoSize = true;
+            label3.Font = new Font("Segoe UI", 9F, FontStyle.Bold);
+            label3.Location = new Point(389, 9);
+            label3.Name = "label3";
+            label3.Size = new Size(96, 20);
+            label3.TabIndex = 6;
+            label3.Text = "Sample Rate";
+            // 
+            // SampleRate
+            // 
+            SampleRate.FormattingEnabled = true;
+            SampleRate.Location = new Point(389, 32);
+            SampleRate.Name = "SampleRate";
+            SampleRate.Size = new Size(151, 28);
+            SampleRate.TabIndex = 7;
+            // 
             // MixActionFlacControl
             // 
             AutoScaleDimensions = new SizeF(8F, 20F);
             AutoScaleMode = AutoScaleMode.Font;
+            Controls.Add(SampleRate);
+            Controls.Add(label3);
+            Controls.Add(BitRate);
+            Controls.Add(label2);
             Controls.Add(CompressionComboBox);
             Controls.Add(label1);
             Name = "MixActionFlacControl";
-            Size = new Size(518, 83);
+            Size = new Size(608, 83);
             ResumeLayout(false);
             PerformLayout();
         }
@@ -66,5 +110,9 @@
 
         private ComboBox CompressionComboBox;
         private Label label1;
+        private Label label2;
+        private ComboBox BitRate;
+        private Label label3;
+        private ComboBox SampleRate;
     }
 }

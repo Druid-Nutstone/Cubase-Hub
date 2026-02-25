@@ -13,6 +13,8 @@ namespace Cubase.Hub.Services.Config
 
         private readonly IDirectoryService directoryService;
 
+        private DateTime LastModified = DateTime.MinValue;
+
         public bool IsLoaded { get => this.configuration != null; set { } } 
         
         public CubaseHubConfiguration? Configuration => this.configuration;
@@ -24,29 +26,49 @@ namespace Cubase.Hub.Services.Config
 
 
 
-        public CubaseHubConfiguration? LoadConfiguration(Action? OnLoadError)
+        public bool LoadConfiguration(Action? OnLoadError)
         {
             this.directoryService.MakeSureDirectoryExists(CubaseHubConstants.ConfigurationFileName);
             if (File.Exists(CubaseHubConstants.ConfigurationFileName))
             {
                 var fileContent = File.ReadAllText(CubaseHubConstants.ConfigurationFileName);
-                this.configuration = JsonSerializer.Deserialize<CubaseHubConfiguration>(fileContent);   
-                return this.configuration;
+                this.configuration = JsonSerializer.Deserialize<CubaseHubConfiguration>(fileContent);
+                this.SetLastModified();
+                return true;
             }
             if (OnLoadError != null)
             {
                 OnLoadError();
+
             }
-            return null;
+            return false;
+
         }
 
-        public bool SaveConfiguration(CubaseHubConfiguration configuration, Action<string>? OnSaveError)
+        private void SetLastModified()
+        {
+            this.LastModified = this.GetLastModifiedFromFile();
+        }
+
+
+        private DateTime GetLastModifiedFromFile()
+        {
+            var lm = new FileInfo(CubaseHubConstants.ConfigurationFileName);
+            return lm.LastWriteTime;
+        }
+
+        public bool SaveConfiguration(Action<string>? OnSaveError)
         {
             try
             {
-                var newConfig = JsonSerializer.Serialize<CubaseHubConfiguration>(configuration, new JsonSerializerOptions() { WriteIndented = true});
-                File.WriteAllText(CubaseHubConstants.ConfigurationFileName, newConfig);
-                this.configuration = configuration; 
+                // check lastmodified in case config has been changed via another instance of config 
+                // as will happen if albums are loaded from the jumplist or an external source 
+                if (!(this.GetLastModifiedFromFile().CompareTo(this.LastModified) > 0))
+                {
+                    var newConfig = JsonSerializer.Serialize<CubaseHubConfiguration>(this.configuration, new JsonSerializerOptions() { WriteIndented = true });
+                    File.WriteAllText(CubaseHubConstants.ConfigurationFileName, newConfig);
+                    this.LastModified = this.GetLastModifiedFromFile();
+                }
                 return true;
             }
             catch (Exception ex)

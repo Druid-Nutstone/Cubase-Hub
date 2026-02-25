@@ -33,8 +33,8 @@
             ActionGroup = new GroupBox();
             ActionControl = new Panel();
             ButtonPanel = new Panel();
+            CurrentFile = new Label();
             FileName = new Label();
-            FileProgress = new ProgressBar();
             CopyButton = new Button();
             ActionPanel = new Panel();
             CopyToDirectoryButton = new RadioButton();
@@ -74,21 +74,21 @@
             // 
             // ButtonPanel
             // 
+            ButtonPanel.Controls.Add(CurrentFile);
             ButtonPanel.Controls.Add(FileName);
-            ButtonPanel.Controls.Add(FileProgress);
             ButtonPanel.Controls.Add(CopyButton);
             resources.ApplyResources(ButtonPanel, "ButtonPanel");
             ButtonPanel.Name = "ButtonPanel";
+            // 
+            // CurrentFile
+            // 
+            resources.ApplyResources(CurrentFile, "CurrentFile");
+            CurrentFile.Name = "CurrentFile";
             // 
             // FileName
             // 
             resources.ApplyResources(FileName, "FileName");
             FileName.Name = "FileName";
-            // 
-            // FileProgress
-            // 
-            resources.ApplyResources(FileProgress, "FileProgress");
-            FileProgress.Name = "FileProgress";
             // 
             // CopyButton
             // 
@@ -181,7 +181,7 @@
         private Panel ActionControl;
         private Panel ButtonPanel;
         private Button CopyButton;
-        private ProgressBar FileProgress;
         private Label FileName;
+        private Label CurrentFile;
     }
 }

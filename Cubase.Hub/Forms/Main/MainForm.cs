@@ -62,37 +62,48 @@ namespace Cubase.Hub.Forms.Main
 
         protected override void OnShown(EventArgs e)
         {
-            if (this.configurationService.LoadConfiguration(() =>
+            var configState = this.configurationService.LoadConfiguration(() =>
             {
                 this.configurationForm.Configuration = new CubaseHubConfiguration();
                 var result = this.configurationForm.ShowDialog();
                 if (result == DialogResult.OK)
                 {
-                    this.LoadProjects();
+                    this.SetLocation();
                 }
                 else
                 {
                     this.Close();
                 }
-            }) != null)
+            });
+            if (configState)
             {
+                this.SetLocation();
+            }
+        }
 
-                if (this.configurationService.Configuration.MainWindowLocation != null)
+        private void SetLocation()
+        {
+            if (this.configurationService?.Configuration?.MainWindowLocation != null)
+            {
+                StartPosition = FormStartPosition.Manual;
+                Bounds = new Rectangle(
+                    this.configurationService.Configuration.MainWindowLocation.X,
+                    this.configurationService.Configuration.MainWindowLocation.Y,
+                    this.configurationService.Configuration.MainWindowLocation.Width,
+                    this.configurationService.Configuration.MainWindowLocation.Height);
+            }
+            this.LoadProjects();
+            if (this.startMinimised)
+            {
+                this.WindowState = FormWindowState.Minimized;
+            }
+            else
+            {
+                if (this.configurationService.Configuration.MainWindowLocation.isMaximised)
                 {
-                    StartPosition = FormStartPosition.Manual;
-                    Bounds = new Rectangle(
-                        this.configurationService.Configuration.MainWindowLocation.X,
-                        this.configurationService.Configuration.MainWindowLocation.Y,
-                        this.configurationService.Configuration.MainWindowLocation.Width,
-                        this.configurationService.Configuration.MainWindowLocation.Height);
-                }
-                this.LoadProjects();
-                if (this.startMinimised)
-                {
-                    this.WindowState = FormWindowState.Minimized;
+                    this.WindowState = FormWindowState.Maximized;
                 }
             }
-
         }
 
         private void LoadProjects()
@@ -141,11 +152,12 @@ namespace Cubase.Hub.Forms.Main
                 Y = bounds.Y,
                 Width = bounds.Width,
                 Height = bounds.Height,
+                isMaximised = WindowState == FormWindowState.Maximized
             };
             this.configurationService?.Configuration?.MainWindowLocation = settings;
-            this.configurationService?.SaveConfiguration(this.configurationService?.Configuration, (err) => 
-            { 
-               this.messageService.ShowError("An error occurred while saving the configuration. Please try again.");    
+            this.configurationService?.SaveConfiguration((err) =>
+            {
+                this.messageService.ShowError("An error occurred while saving the configuration. Please try again.");
             });
         }
 

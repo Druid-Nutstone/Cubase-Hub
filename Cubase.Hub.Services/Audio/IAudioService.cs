@@ -32,6 +32,6 @@ namespace Cubase.Hub.Services.Audio
 
         void ConvertToMp3(MixDown mixDown, string targetDirectory, AudioQuality quality);
 
-        void ConvertToFlac(MixDown mixDown, string targetDirectory, CompressionLevel compressionLevel);
+        void ConvertToFlac(MixDown mixDown, string targetDirectory, FlacConfiguration configuration);
     }
 }

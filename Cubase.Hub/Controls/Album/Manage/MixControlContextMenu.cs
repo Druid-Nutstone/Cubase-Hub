@@ -135,7 +135,7 @@ namespace Cubase.Hub.Controls.Album.Manage
         protected override void OnClick(EventArgs e)
         {
             var msgBox = this.MessageService.OpenMessage($"Converting {this.MixDown.Title} to FLAC...", this.Parent);
-            this.AudioService.ConvertToFlac(this.MixDown, Path.GetDirectoryName(this.MixDown.FileName), CompressionLevel.Default);
+            this.AudioService.ConvertToFlac(this.MixDown, Path.GetDirectoryName(this.MixDown.FileName), new FlacConfiguration());
             AlbumCommands.Instance.RefreshTracks();
             msgBox.Close();
         }

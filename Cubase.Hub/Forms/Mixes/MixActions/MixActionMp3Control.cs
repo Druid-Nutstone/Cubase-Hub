@@ -45,7 +45,7 @@ namespace Cubase.Hub.Forms.Mixes.MixActions
                var state = onProgress.Invoke((i+1), Path.GetFileNameWithoutExtension(mixDowns[i].FileName));
                audioService.ConvertToMp3(mixDowns[i], targetDirectory, this.quality);
            }
-           onProgress.Invoke(0, "All Done");
+           onProgress.Invoke(-1, "All Done");
         }
     }
 }

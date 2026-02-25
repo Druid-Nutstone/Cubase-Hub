@@ -31,5 +31,7 @@ namespace Cubase.Hub.Services.Models
         public int Y { get; set; }
         public int Width { get; set; }
         public int Height { get; set; }
+
+        public bool isMaximised { get; set; }
     }
 }

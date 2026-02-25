@@ -91,7 +91,7 @@ namespace Cubase.Hub.Controls.Export
             {
                 this.TargetDirectory.Text = folderBrowser.SelectedPath;
                 this.configurationService.Configuration.LastExportFolderLocation = this.TargetDirectory.Text;
-                this.configurationService.SaveConfiguration(this.configurationService.Configuration, (err) => 
+                this.configurationService.SaveConfiguration((err) => 
                 { 
                    this.messageService.ShowError($"Failed to save configuration: {err}");
                 });

@@ -33,7 +33,7 @@ namespace Cubase.Hub.Forms.Mixes.MixActions
                 var targetFile = Path.Combine(targetDirectory, Path.GetFileName(mixDowns[i].FileName));
                 File.Copy(mixDowns[i].FileName, targetFile, true);
             }
-            onProgress.Invoke(0, "All Done");
+            onProgress.Invoke(-1, "All Done");
         }
     }
 }

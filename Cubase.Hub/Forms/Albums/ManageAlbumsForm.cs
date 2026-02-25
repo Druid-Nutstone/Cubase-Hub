@@ -106,7 +106,7 @@ namespace Cubase.Hub.Forms.Albums
                 {
                     albumExportConfig.Location = folderBrowser.SelectedPath;
                 }
-                this.configurationService.SaveConfiguration(this.configurationService.Configuration, (err) => 
+                this.configurationService.SaveConfiguration((err) => 
                 { 
                    this.messageService.ShowError($"Could not save configuration file. {err}");
                 });
@@ -345,12 +345,19 @@ namespace Cubase.Hub.Forms.Albums
             }
             if (this.configurationService?.Configuration?.AlbumWindowLocation != null)
             {
-                StartPosition = FormStartPosition.Manual;
-                Bounds = new Rectangle(
-                    this.configurationService.Configuration.AlbumWindowLocation.X,
-                    this.configurationService.Configuration.AlbumWindowLocation.Y,
-                    this.configurationService.Configuration.AlbumWindowLocation.Width,
-                    this.configurationService.Configuration.AlbumWindowLocation.Height);
+                if (this.configurationService.Configuration.AlbumWindowLocation.isMaximised)
+                {
+                    this.WindowState = FormWindowState.Maximized;
+                }
+                else
+                {
+                    StartPosition = FormStartPosition.Manual;
+                    Bounds = new Rectangle(
+                        this.configurationService.Configuration.AlbumWindowLocation.X,
+                        this.configurationService.Configuration.AlbumWindowLocation.Y,
+                        this.configurationService.Configuration.AlbumWindowLocation.Width,
+                        this.configurationService.Configuration.AlbumWindowLocation.Height);
+                }
             }
         }
 
@@ -370,8 +377,10 @@ namespace Cubase.Hub.Forms.Albums
                 Width = bounds.Width,
                 Height = bounds.Height,
             };
+
+            settings.isMaximised = this.WindowState == FormWindowState.Maximized;
             this.configurationService?.Configuration?.AlbumWindowLocation = settings;
-            this.configurationService?.SaveConfiguration(this.configurationService?.Configuration, (err) => 
+            this.configurationService?.SaveConfiguration((err) => 
             { 
                  this.messageService.ShowError($"Could not save configuration file. {err}");
             });

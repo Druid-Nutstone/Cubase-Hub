@@ -144,20 +144,53 @@
   <data name="&gt;&gt;ActionControl.ZOrder" xml:space="preserve">
     <value>0</value>
   </data>
+  <data name="CurrentFile.Anchor" type="System.Windows.Forms.AnchorStyles, System.Windows.Forms">
+    <value>Top, Left, Right</value>
+  </data>
+  <data name="CurrentFile.AutoSize" type="System.Boolean, mscorlib">
+    <value>True</value>
+  </data>
+  <data name="CurrentFile.Location" type="System.Drawing.Point, System.Drawing">
+    <value>136, 31</value>
+  </data>
+  <data name="CurrentFile.Size" type="System.Drawing.Size, System.Drawing">
+    <value>91, 20</value>
+  </data>
+  <data name="CurrentFile.TabIndex" type="System.Int32, mscorlib">
+    <value>3</value>
+  </data>
+  <data name="CurrentFile.Text" xml:space="preserve">
+    <value>Converting ..</value>
+  </data>
+  <data name="&gt;&gt;CurrentFile.Name" xml:space="preserve">
+    <value>CurrentFile</value>
+  </data>
+  <data name="&gt;&gt;CurrentFile.Type" xml:space="preserve">
+    <value>System.Windows.Forms.Label, System.Windows.Forms, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </data>
+  <data name="&gt;&gt;CurrentFile.Parent" xml:space="preserve">
+    <value>ButtonPanel</value>
+  </data>
+  <data name="&gt;&gt;CurrentFile.ZOrder" xml:space="preserve">
+    <value>0</value>
+  </data>
+  <data name="FileName.Anchor" type="System.Windows.Forms.AnchorStyles, System.Windows.Forms">
+    <value>Top, Right</value>
+  </data>
   <data name="FileName.AutoSize" type="System.Boolean, mscorlib">
     <value>True</value>
   </data>
   <data name="FileName.Location" type="System.Drawing.Point, System.Drawing">
-    <value>452, 0</value>
+    <value>697, 31</value>
   </data>
   <data name="FileName.Size" type="System.Drawing.Size, System.Drawing">
-    <value>89, 20</value>
+    <value>60, 20</value>
   </data>
   <data name="FileName.TabIndex" type="System.Int32, mscorlib">
     <value>2</value>
   </data>
   <data name="FileName.Text" xml:space="preserve">
-    <value>No Progress</value>
+    <value>Waiting</value>
   </data>
   <data name="&gt;&gt;FileName.Name" xml:space="preserve">
     <value>FileName</value>
@@ -169,27 +202,6 @@
     <value>ButtonPanel</value>
   </data>
   <data name="&gt;&gt;FileName.ZOrder" xml:space="preserve">
-    <value>0</value>
-  </data>
-  <data name="FileProgress.Location" type="System.Drawing.Point, System.Drawing">
-    <value>452, 27</value>
-  </data>
-  <data name="FileProgress.Size" type="System.Drawing.Size, System.Drawing">
-    <value>305, 29</value>
-  </data>
-  <data name="FileProgress.TabIndex" type="System.Int32, mscorlib">
-    <value>1</value>
-  </data>
-  <data name="&gt;&gt;FileProgress.Name" xml:space="preserve">
-    <value>FileProgress</value>
-  </data>
-  <data name="&gt;&gt;FileProgress.Type" xml:space="preserve">
-    <value>System.Windows.Forms.ProgressBar, System.Windows.Forms, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
-  </data>
-  <data name="&gt;&gt;FileProgress.Parent" xml:space="preserve">
-    <value>ButtonPanel</value>
-  </data>
-  <data name="&gt;&gt;FileProgress.ZOrder" xml:space="preserve">
     <value>1</value>
   </data>
   <data name="CopyButton.Location" type="System.Drawing.Point, System.Drawing">

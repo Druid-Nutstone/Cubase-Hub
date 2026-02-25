@@ -161,14 +161,19 @@ namespace Cubase.Hub.Services.Audio
 
         }
 
-        public void ConvertToFlac(MixDown mixDown, string targetDirectory, CompressionLevel compressionLevel)
+        public void ConvertToFlac(MixDown mixDown, string targetDirectory, FlacConfiguration configuration)
         {
             var outFile = this.MapOutputAudioFile(mixDown.FileName, targetDirectory, ".flac");
+            int compressionLevel = (int)configuration.CompressionLevel;
+            int sampleRate = (int)configuration.SampleRate;
+            int bitRate = (int)configuration.Depth;
             FFMpegArguments
                  .FromFileInput(mixDown.FileName)
                  .OutputToFile(outFile, overwrite: true, options => options
                                    .WithAudioCodec("flac")
-                                   .WithCustomArgument($"-compression_level {(int)compressionLevel}"))
+                                   .WithAudioSamplingRate(sampleRate)
+                                   .WithAudioBitrate(bitRate)
+                                   .WithCustomArgument($"-compression_level {compressionLevel}"))
                  .ProcessSynchronously();
             this.SetTagsFromMixDowm(mixDown, outFile);
         }

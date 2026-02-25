@@ -123,7 +123,7 @@ namespace Cubase.Hub.Controls.MainFormControls.ProjectsForm
             if (this.projects != null)
             {
                 this.configurationService.Configuration.RecentProjects = this.projects.Select(p => p.FullPath).Take(5);
-                this.configurationService.SaveConfiguration(this.configurationService.Configuration, (err) => 
+                this.configurationService.SaveConfiguration((err) => 
                 { 
                    this.messageService.ShowError($"Failed to save configuration: {err}");
                 });    

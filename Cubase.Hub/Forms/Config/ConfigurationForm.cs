@@ -85,7 +85,7 @@ namespace Cubase.Hub.Forms.Config
             this.Configuration.CubaseExeLocation = this.CubaseExeLocation.Text;
             this.Configuration.CubaseUserTemplateLocation = this.CubaseUserTemplateLocation.Text;
             this.Configuration.CubaseTemplateLocation = this.CubaseTemplateLocation.Text;
-            this.configurationService.SaveConfiguration(this.Configuration, (err) => 
+            this.configurationService.SaveConfiguration((err) => 
             { 
                 this.messageService.ShowError("An error occurred while saving the configuration. Please try again.");
             });

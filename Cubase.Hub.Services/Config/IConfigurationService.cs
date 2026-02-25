@@ -9,11 +9,11 @@ namespace Cubase.Hub.Services.Config
     {
         bool IsLoaded { get; set; }
 
-        CubaseHubConfiguration? LoadConfiguration(Action? OnLoadError);
+        bool LoadConfiguration(Action? OnLoadError);
 
         CubaseHubConfiguration? Configuration { get; }     
 
-        bool SaveConfiguration(CubaseHubConfiguration configuration, Action<string>? OnSaveError);
+        bool SaveConfiguration(Action<string>? OnSaveError);
 
     }
 }
