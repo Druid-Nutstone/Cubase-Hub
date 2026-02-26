@@ -33,6 +33,8 @@ namespace Cubase.Hub.Forms.Albums
 
         private readonly IMessageService messageService;
 
+        private readonly IServiceProvider serviceProvider;
+
         [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
         public AlbumLocation CurrentAlbum { get; set; }
 
@@ -46,6 +48,7 @@ namespace Cubase.Hub.Forms.Albums
                                 IDirectoryService directoryService,
                                 IAudioService audioService,
                                 IMessageService messageService,
+                                IServiceProvider serviceProvider,
                                 ManageMixesForm manageMixesForm,
                                 IProjectService projectService)
         {
@@ -56,6 +59,7 @@ namespace Cubase.Hub.Forms.Albums
             this.projectService = projectService;
             this.messageService = messageService;
             this.mixesForm = manageMixesForm;
+            this.serviceProvider = serviceProvider;
             ThemeApplier.ApplyDarkTheme(this);
             this.SelectedAlbum.SelectedIndexChanged += SelectedAlbum_SelectedIndexChanged;
             this.RereshFromAblumButton.Click += RereshFromAblumButton_Click;
@@ -238,7 +242,7 @@ namespace Cubase.Hub.Forms.Albums
             {
                 this.AlbumConfigurationControl.AlbumConfiguration = new AlbumConfiguration();
                 this.AlbumConfigurationControl.Initialise();
-                this.mixdownControl.ShowMixes(new MixDownCollection(), this.OnMixChanged, this.audioService, this.messageService);
+                this.mixdownControl.ShowMixes(new MixDownCollection(), this.OnMixChanged, this.audioService, this.messageService, this.serviceProvider);
             }
         }
 
@@ -260,7 +264,7 @@ namespace Cubase.Hub.Forms.Albums
         private void ShowMixes()
         {
             this.SetMixExportLocation();
-            this.mixdownControl.ShowMixes(this.CurrentMixes, this.OnMixChanged, this.audioService, this.messageService);
+            this.mixdownControl.ShowMixes(this.CurrentMixes, this.OnMixChanged, this.audioService, this.messageService, this.serviceProvider);
         }
 
         private void SetSelectionButtonsState()

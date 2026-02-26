@@ -30,7 +30,7 @@ namespace Cubase.Hub.Forms.Mixes.MixActions
             this.BitRate.SelectedIndex = 2;
             this.BitRate.SelectedIndexChanged += BitRate_SelectedIndexChanged;
             this.SampleRate.Items.Clear();
-            this.SampleRate.Items.AddRange(["16000khz","44000khz","48000khz","64000khz", "96000khz"]);
+            this.SampleRate.Items.AddRange(["16000khz","44100khz","48000khz","64000khz", "96000khz"]);
             this.SampleRate.SelectedIndex = 2;
             this.SampleRate.SelectedIndexChanged += SampleRate_SelectedIndexChanged;
         }

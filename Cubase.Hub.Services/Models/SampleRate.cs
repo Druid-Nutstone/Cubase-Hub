@@ -7,7 +7,7 @@ namespace Cubase.Hub.Services.Models
     public enum SampleRate
     {
         Herts16 = 16000,
-        Herts44 = 44000,
+        Herts44 = 44100,
         Herts48 = 48000,
         Herts64 = 64000,
         Herts96 = 96000,

@@ -107,6 +107,7 @@ namespace Cubase.Hub.Services.Audio
                              ?? string.Empty;
             mixDown.Performers = string.Join(";", tags.Tag.Performers ?? []);
             mixDown.BitRate = $"{tags.Properties.AudioBitrate} kbps";
+            mixDown.SampleRate = tags.Properties.AudioSampleRate;
             mixDown.Comment = tags.Tag.Comment;
         }
 
@@ -167,12 +168,26 @@ namespace Cubase.Hub.Services.Audio
             int compressionLevel = (int)configuration.CompressionLevel;
             int sampleRate = (int)configuration.SampleRate;
             int bitRate = (int)configuration.Depth;
+
+            string sampleFormat = bitRate switch
+            {
+                16 => "s16",
+                24 => "s24",
+                32 => "s32",
+                _ => "s16"
+            };
+
             FFMpegArguments
                  .FromFileInput(mixDown.FileName)
                  .OutputToFile(outFile, overwrite: true, options => options
                                    .WithAudioCodec("flac")
-                                   .WithAudioSamplingRate(sampleRate)
-                                   .WithAudioBitrate(bitRate)
+                                   .WithCustomArgument("-vn")
+                                   .WithCustomArgument("-map_metadata -1")
+                                   .WithCustomArgument("-ac 2")
+                                   .WithCustomArgument("-af aresample=resampler=soxr:dither_method=triangular")
+                                   .WithCustomArgument($"-ar {sampleRate}")
+                                   .WithCustomArgument($"-sample_fmt {sampleFormat}")
+                                   .WithCustomArgument("-c:a flac")
                                    .WithCustomArgument($"-compression_level {compressionLevel}"))
                  .ProcessSynchronously();
             this.SetTagsFromMixDowm(mixDown, outFile);

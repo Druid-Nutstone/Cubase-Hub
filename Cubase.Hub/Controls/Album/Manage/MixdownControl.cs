@@ -30,7 +30,7 @@ namespace Cubase.Hub.Controls.Album.Manage
             Padding = new Padding(10);
         }
 
-        public void ShowMixes(MixDownCollection mixes, Action<MixDown, string> onMixChanged, IAudioService audioService, IMessageService messageService)
+        public void ShowMixes(MixDownCollection mixes, Action<MixDown, string> onMixChanged, IAudioService audioService, IMessageService messageService, IServiceProvider serviceProvider)
         {
             this.OnMixChanged = onMixChanged;
 
@@ -44,7 +44,7 @@ namespace Cubase.Hub.Controls.Album.Manage
 
             foreach (var mix in mixes)
             {
-                var mixDowncontrol = new MixControl(mix, audioService, messageService)
+                var mixDowncontrol = new MixControl(mix, serviceProvider, audioService, messageService)
                 {
                     Dock = DockStyle.Fill
                 };

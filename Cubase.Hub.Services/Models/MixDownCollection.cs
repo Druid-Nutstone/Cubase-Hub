@@ -188,6 +188,8 @@ namespace Cubase.Hub.Services.Models
         
         public DateTime LastModified { get; set; }
 
+        public int SampleRate { get; set; }
+
         public static MixDown CreateFromFile(string file)
         {
             return new MixDown

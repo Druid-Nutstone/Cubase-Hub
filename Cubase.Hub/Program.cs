@@ -5,6 +5,7 @@ using Cubase.Hub.Controls.MainFormControls.ProjectsForm;
 using Cubase.Hub.Forms;
 using Cubase.Hub.Forms.Albums;
 using Cubase.Hub.Forms.Config;
+using Cubase.Hub.Forms.Edit;
 using Cubase.Hub.Forms.Export;
 using Cubase.Hub.Forms.Main;
 using Cubase.Hub.Forms.Main.Menu;
@@ -13,9 +14,12 @@ using Cubase.Hub.Forms.Tracks;
 using Cubase.Hub.Services.Audio;
 using Cubase.Hub.Services.Config;
 using Cubase.Hub.Services.Cubase;
+using Cubase.Hub.Services.Distributers;
+using Cubase.Hub.Services.Distributers.RouteNoteDistro;
 using Cubase.Hub.Services.FileAndDirectory;
 using Cubase.Hub.Services.JumpFolder;
 using Cubase.Hub.Services.Messages;
+using Cubase.Hub.Services.Models;
 using Cubase.Hub.Services.Projects;
 using Microsoft.Extensions.DependencyInjection;
 using System;
@@ -102,6 +106,7 @@ namespace Cubase.Hub
                 .AddScoped<NewTrackForm>()
                 .AddScoped<ManageAlbumsForm>()
                 .AddScoped<ManageMixesForm>()
+                .AddScoped<EditTrackForm>()
                 .AddTransient<PlayControl>()
                 .AddTransient<ExportProjectControl>()
                 .AddTransient<ExportForm>()
@@ -114,6 +119,7 @@ namespace Cubase.Hub
                 .AddSingleton<ICubaseService, CubaseService>()
                 .AddTransient<IAudioService, AudioService>()
                 .AddSingleton<IJumpListService, JumpListService>()
+                .AddKeyedTransient<IDistributer, RouteNoteDistributer>(Distributers.RouteNote)
                 .AddSingleton<IProjectService, ProjectService>();
                 
             var provider = serviceCollection.BuildServiceProvider();

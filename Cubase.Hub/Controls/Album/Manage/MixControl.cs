@@ -27,13 +27,14 @@ namespace Cubase.Hub.Controls.Album.Manage
         }
 
         public MixControl(MixDown mixDown, 
+                          IServiceProvider serviceProvider,
                           IAudioService audioService, 
                           IMessageService messageService)
         {
             InitializeComponent();
             this.Initialise(mixDown, audioService);
             this.messageService = messageService;
-            this.ContextMenuStrip = new MixControlContextMenu(mixDown, audioService, messageService);
+            this.ContextMenuStrip = new MixControlContextMenu(mixDown, serviceProvider);
             
         }
 
