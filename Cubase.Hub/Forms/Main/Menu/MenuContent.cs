@@ -1,9 +1,12 @@
 ﻿using Cubase.Hub.Forms.Albums;
 using Cubase.Hub.Forms.Config;
 using Cubase.Hub.Forms.Tracks;
+using Cubase.Hub.Services;
+using Cubase.Hub.Services.Config;
 using Microsoft.Extensions.DependencyInjection;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Text;
 
 namespace Cubase.Hub.Forms.Main.Menu
@@ -45,7 +48,16 @@ namespace Cubase.Hub.Forms.Main.Menu
         public OptionsMenu(MainForm mainForm, IServiceProvider serviceProvider) : base(mainForm, serviceProvider)
         {
             this.Text = "Options";
-            // Add album related menu items here
+            this.DropDownItems.Add(new OptionsMenuEdit(mainForm, this.ServiceProvider));
+            this.DropDownItems.Add(new OptionsMenuOpen(mainForm, this.ServiceProvider));
+        }
+    }
+
+    public class OptionsMenuEdit : BaseToolStripMenuItem
+    {
+        public OptionsMenuEdit(MainForm mainForm, IServiceProvider serviceProvider) : base(mainForm, serviceProvider)
+        {
+            this.Text = "Edit";
         }
 
         protected override void OnClick(EventArgs e)
@@ -54,6 +66,22 @@ namespace Cubase.Hub.Forms.Main.Menu
             configForm?.ShowDialog();
         }
     }
+
+    public class OptionsMenuOpen : BaseToolStripMenuItem
+    {
+        public OptionsMenuOpen(MainForm mainForm, IServiceProvider serviceProvider) : base(mainForm, serviceProvider)
+        {
+            this.Text = "Open (File)";
+        }
+
+        protected override void OnClick(EventArgs e)
+        {
+            var p = new Process() { StartInfo = new ProcessStartInfo() { Arguments = CubaseHubConstants.ConfigurationFileName, FileName = "notepad.exe", UseShellExecute = true } };
+            p.Start();
+        }
+    }
+
+
 
     public class AlbumMenu : BaseToolStripMenuItem 
     {

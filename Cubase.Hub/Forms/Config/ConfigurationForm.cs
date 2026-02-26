@@ -32,7 +32,18 @@ namespace Cubase.Hub.Forms.Config
             this.BrowseCubaseExeButton.Click += BrowseCubaseExeButton_Click;
             this.BrowseUserTemplateLocationButton.Click += BrowseUserTemplateLocationButton_Click;
             this.BrowseCubaseTemplateButton.Click += BrowseCubaseTemplateButton_Click;
+            this.BrowseAlbumExportLocation.Click += BrowseAlbumExportLocation_Click;
             ThemeApplier.ApplyDarkTheme(this);
+        }
+
+        private void BrowseAlbumExportLocation_Click(object? sender, EventArgs e)
+        {
+            var dirDialog = new FolderBrowserDialog();
+            var result = dirDialog.ShowDialog();
+            if (result == DialogResult.OK)
+            {
+                this.AlbumExportLocation.Text = dirDialog.SelectedPath;
+            }
         }
 
         private void BrowseCubaseTemplateButton_Click(object? sender, EventArgs e)
@@ -51,7 +62,7 @@ namespace Cubase.Hub.Forms.Config
             var result = dirDialog.ShowDialog();
             if (result == DialogResult.OK)
             {
-                this.CubaseUserTemplateLocation.Text = dirDialog.SelectedPath;  
+                this.CubaseUserTemplateLocation.Text = dirDialog.SelectedPath;
             }
         }
 
@@ -59,8 +70,8 @@ namespace Cubase.Hub.Forms.Config
         {
             var fileDialog = new OpenFileDialog();
             fileDialog.Filter = "Cubase Executable|*.exe";
-            fileDialog.Title = "Select Cubase Executable";  
-            fileDialog.InitialDirectory = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ProgramFiles), "Steinberg");    
+            fileDialog.Title = "Select Cubase Executable";
+            fileDialog.InitialDirectory = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ProgramFiles), "Steinberg");
             var result = fileDialog.ShowDialog();
             if (result == DialogResult.OK)
             {
@@ -81,12 +92,13 @@ namespace Cubase.Hub.Forms.Config
         private void ButtonSave_Click(object? sender, EventArgs e)
         {
             this.DialogResult = DialogResult.OK;
-            this.Configuration.SourceCubaseFolders = new List<string>(SourceCubaseFolders.Text.Split(new char[] { ';' }, StringSplitOptions.RemoveEmptyEntries));   
+            this.Configuration.SourceCubaseFolders = new List<string>(SourceCubaseFolders.Text.Split(new char[] { ';' }, StringSplitOptions.RemoveEmptyEntries));
             this.Configuration.CubaseExeLocation = this.CubaseExeLocation.Text;
             this.Configuration.CubaseUserTemplateLocation = this.CubaseUserTemplateLocation.Text;
             this.Configuration.CubaseTemplateLocation = this.CubaseTemplateLocation.Text;
-            this.configurationService.SaveConfiguration((err) => 
-            { 
+            this.Configuration.AlbumExportLocation = this.AlbumExportLocation.Text; 
+            this.configurationService.SaveConfiguration((err) =>
+            {
                 this.messageService.ShowError("An error occurred while saving the configuration. Please try again.");
             });
             this.Close();
@@ -112,6 +124,8 @@ namespace Cubase.Hub.Forms.Config
             CubaseExeLocation.Text = this.Configuration.CubaseExeLocation;
             CubaseUserTemplateLocation.Text = this.Configuration.CubaseUserTemplateLocation;
             CubaseTemplateLocation.Text = this.Configuration.CubaseTemplateLocation;
+            AlbumExportLocation.Text = this.Configuration.AlbumExportLocation;  
         }
+
     }
 }

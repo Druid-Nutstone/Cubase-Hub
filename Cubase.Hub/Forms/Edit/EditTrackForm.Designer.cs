@@ -53,6 +53,9 @@
             AudioType = new Cubase.Hub.Controls.BoundControls.BoundLabel();
             label12 = new Label();
             Genre = new Cubase.Hub.Controls.BoundControls.BoundTextBox();
+            panel1 = new Panel();
+            UpdateButton = new Button();
+            panel1.SuspendLayout();
             SuspendLayout();
             // 
             // label1
@@ -274,11 +277,30 @@
             Genre.Size = new Size(204, 27);
             Genre.TabIndex = 23;
             // 
+            // panel1
+            // 
+            panel1.Controls.Add(UpdateButton);
+            panel1.Dock = DockStyle.Bottom;
+            panel1.Location = new Point(0, 526);
+            panel1.Name = "panel1";
+            panel1.Size = new Size(375, 52);
+            panel1.TabIndex = 24;
+            // 
+            // UpdateButton
+            // 
+            UpdateButton.Location = new Point(18, 11);
+            UpdateButton.Name = "UpdateButton";
+            UpdateButton.Size = new Size(94, 29);
+            UpdateButton.TabIndex = 0;
+            UpdateButton.Text = "Update";
+            UpdateButton.UseVisualStyleBackColor = true;
+            // 
             // EditTrackForm
             // 
             AutoScaleDimensions = new SizeF(8F, 20F);
             AutoScaleMode = AutoScaleMode.Font;
-            ClientSize = new Size(375, 545);
+            ClientSize = new Size(375, 578);
+            Controls.Add(panel1);
             Controls.Add(Genre);
             Controls.Add(label12);
             Controls.Add(AudioType);
@@ -307,6 +329,7 @@
             Name = "EditTrackForm";
             StartPosition = FormStartPosition.CenterScreen;
             Text = "Edit";
+            panel1.ResumeLayout(false);
             ResumeLayout(false);
             PerformLayout();
         }
@@ -337,5 +360,7 @@
         private Controls.BoundControls.BoundLabel AudioType;
         private Label label12;
         private Controls.BoundControls.BoundTextBox Genre;
+        private Panel panel1;
+        private Button UpdateButton;
     }
 }

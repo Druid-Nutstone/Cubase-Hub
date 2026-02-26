@@ -83,10 +83,18 @@ namespace Cubase.Hub
                 }
 
                 if (args[0] == "minimise")
-                    {
-                        var form = serviceProvider.GetRequiredService<MainForm>();
-                        form.StartMinimised();
-                        Application.Run(form);
+                {
+                    var form = serviceProvider.GetRequiredService<MainForm>();
+                    form.StartMinimised();
+                    Application.Run(form);
+                    return true;
+                }
+
+                if (args[0] == "editaudio")
+                {
+                    var form = serviceProvider.GetRequiredService<EditTrackForm>();
+                    form.Initialise(args[1]);
+                    Application.Run(form);
                     return true;
                 }
             }

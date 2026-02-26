@@ -35,6 +35,8 @@
             SourceCubaseFolders = new TextBox();
             AddSourceFolderButton = new Button();
             panel2 = new Panel();
+            AlbumExportLocation = new TextBox();
+            label5 = new Label();
             BrowseCubaseTemplateButton = new Button();
             CubaseTemplateLocation = new TextBox();
             label4 = new Label();
@@ -44,6 +46,7 @@
             BrowseCubaseExeButton = new Button();
             CubaseExeLocation = new TextBox();
             label2 = new Label();
+            BrowseAlbumExportLocation = new Button();
             panel1.SuspendLayout();
             panel2.SuspendLayout();
             SuspendLayout();
@@ -52,7 +55,7 @@
             // 
             panel1.Controls.Add(ButtonSave);
             panel1.Dock = DockStyle.Bottom;
-            panel1.Location = new Point(0, 398);
+            panel1.Location = new Point(0, 483);
             panel1.Name = "panel1";
             panel1.Size = new Size(800, 52);
             panel1.TabIndex = 0;
@@ -94,6 +97,9 @@
             // 
             // panel2
             // 
+            panel2.Controls.Add(BrowseAlbumExportLocation);
+            panel2.Controls.Add(AlbumExportLocation);
+            panel2.Controls.Add(label5);
             panel2.Controls.Add(BrowseCubaseTemplateButton);
             panel2.Controls.Add(CubaseTemplateLocation);
             panel2.Controls.Add(label4);
@@ -109,8 +115,26 @@
             panel2.Dock = DockStyle.Fill;
             panel2.Location = new Point(0, 0);
             panel2.Name = "panel2";
-            panel2.Size = new Size(800, 398);
+            panel2.Size = new Size(800, 483);
             panel2.TabIndex = 4;
+            // 
+            // AlbumExportLocation
+            // 
+            AlbumExportLocation.Anchor = AnchorStyles.Top | AnchorStyles.Left | AnchorStyles.Right;
+            AlbumExportLocation.Location = new Point(22, 409);
+            AlbumExportLocation.Name = "AlbumExportLocation";
+            AlbumExportLocation.Size = new Size(666, 27);
+            AlbumExportLocation.TabIndex = 14;
+            // 
+            // label5
+            // 
+            label5.AutoSize = true;
+            label5.Font = new Font("Segoe UI", 9F, FontStyle.Bold);
+            label5.Location = new Point(22, 386);
+            label5.Name = "label5";
+            label5.Size = new Size(174, 20);
+            label5.TabIndex = 13;
+            label5.Text = "Album Export Location ";
             // 
             // BrowseCubaseTemplateButton
             // 
@@ -190,11 +214,20 @@
             label2.TabIndex = 4;
             label2.Text = "Cubase Exe Location";
             // 
+            // BrowseAlbumExportLocation
+            // 
+            BrowseAlbumExportLocation.Location = new Point(694, 409);
+            BrowseAlbumExportLocation.Name = "BrowseAlbumExportLocation";
+            BrowseAlbumExportLocation.Size = new Size(94, 29);
+            BrowseAlbumExportLocation.TabIndex = 15;
+            BrowseAlbumExportLocation.Text = "Browse";
+            BrowseAlbumExportLocation.UseVisualStyleBackColor = true;
+            // 
             // ConfigurationForm
             // 
             AutoScaleDimensions = new SizeF(8F, 20F);
             AutoScaleMode = AutoScaleMode.Font;
-            ClientSize = new Size(800, 450);
+            ClientSize = new Size(800, 535);
             Controls.Add(panel2);
             Controls.Add(panel1);
             Icon = (Icon)resources.GetObject("$this.Icon");
@@ -223,5 +256,8 @@
         private Button BrowseCubaseTemplateButton;
         private TextBox CubaseTemplateLocation;
         private Label label4;
+        private Label label5;
+        private TextBox AlbumExportLocation;
+        private Button BrowseAlbumExportLocation;
     }
 }
