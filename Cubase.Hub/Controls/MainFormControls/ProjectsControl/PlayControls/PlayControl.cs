@@ -1,4 +1,5 @@
 ﻿using Cubase.Hub.Services.Audio;
+using Cubase.Hub.Services.Track;
 using NAudio.Wave;
 using System;
 using System.Collections.Generic;
@@ -25,7 +26,7 @@ namespace Cubase.Hub.Controls.MainFormControls.ProjectsControl.PlayControls
         private bool IsProgressMouseDragging = false;
 
         [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
-        public IAudioService AudioService { get; set; }
+        public ITrackService TrackService { get; set; }
 
         public PlayControl()
         {
@@ -33,10 +34,10 @@ namespace Cubase.Hub.Controls.MainFormControls.ProjectsControl.PlayControls
             this.Initialise();
         }
 
-        public PlayControl(IAudioService audioService)
+        public PlayControl(ITrackService trackService)
         {
             InitializeComponent();
-            this.AudioService = audioService;
+            this.TrackService = trackService;
             this.Initialise();
 
         }
@@ -47,7 +48,7 @@ namespace Cubase.Hub.Controls.MainFormControls.ProjectsControl.PlayControls
             this.Progress.MouseDown += Progress_MouseDown;
             this.Progress.MouseMove += Progress_MouseMove;
             this.Progress.MouseUp += Progress_MouseUp;
-            this.Progress.MouseEnter += (s, e) => { if (this.AudioService.Audio != null) this.Progress.Cursor = Cursors.VSplit; };
+            this.Progress.MouseEnter += (s, e) => { if (this.TrackService.Audio != null) this.Progress.Cursor = Cursors.VSplit; };
             this.Progress.MouseLeave += (s, e) => { this.Progress.Cursor = Cursors.Default; };
             this.Stop.Enabled = false;
             this.Progress.Minimum = 0;
@@ -61,7 +62,7 @@ namespace Cubase.Hub.Controls.MainFormControls.ProjectsControl.PlayControls
 
         private void Volume_Scroll(object? sender, EventArgs e)
         {
-            this.AudioService.Player?.Volume = this.Volume.Value / 100f; // Assuming Volume is a TrackBar with values from 0 to 100 
+            this.TrackService.Player?.Volume = this.Volume.Value / 100f; // Assuming Volume is a TrackBar with values from 0 to 100 
         }
 
         private void Progress_MouseUp(object? sender, MouseEventArgs e)
@@ -72,7 +73,7 @@ namespace Cubase.Hub.Controls.MainFormControls.ProjectsControl.PlayControls
 
         private void Progress_MouseMove(object? sender, MouseEventArgs e)
         {
-            if (!this.IsProgressMouseDragging && this.AudioService.Audio != null)
+            if (!this.IsProgressMouseDragging && this.TrackService.Audio != null)
                 return;
             this.SeekFromMouse(e.X);
         }
@@ -85,10 +86,10 @@ namespace Cubase.Hub.Controls.MainFormControls.ProjectsControl.PlayControls
 
         private void SeekFromMouse(int mouseX)
         {
-            if (this.AudioService.Audio == null)
+            if (this.TrackService.Audio == null)
                 return;
 
-            if (this.AudioService.Audio.CurrentTime == null)
+            if (this.TrackService.Audio.CurrentTime == null)
                 return;
 
             int width = this.Progress.Width;
@@ -98,8 +99,8 @@ namespace Cubase.Hub.Controls.MainFormControls.ProjectsControl.PlayControls
 
             double percent = (double)mouseX / width;
 
-            this.AudioService.Audio?.CurrentTime =
-                TimeSpan.FromMilliseconds(this.AudioService.Audio.TotalTime.TotalMilliseconds * percent);
+            this.TrackService.Audio?.CurrentTime =
+                TimeSpan.FromMilliseconds(this.TrackService.Audio.TotalTime.TotalMilliseconds * percent);
 
             // Optional: update visual position
             this.Progress.Value = (int)(percent * this.Progress.Maximum);
@@ -107,24 +108,24 @@ namespace Cubase.Hub.Controls.MainFormControls.ProjectsControl.PlayControls
 
         private void Stop_Click(object? sender, EventArgs e)
         {
-            this.AudioService.Stop();
+            this.TrackService.StopTrack();
         }
 
         private void Play_Click(object? sender, EventArgs e)
         {
             this.Cursor = Cursors.WaitCursor;
-            this.AudioService.Play(this.MusicFile, PlaybackStopped);
+            this.TrackService.PlayTrack(this.MusicFile, PlaybackStopped);
             this.Play.Enabled = false;
             this.Stop.Enabled = true;
             timer = new System.Windows.Forms.Timer();
             timer.Interval = 200; // ms
             timer.Tick += (s, e) =>
             {
-                if (this.AudioService.Audio != null)
+                if (this.TrackService.Audio != null)
                 {
-                    this.Volume.Value = (int)(this.AudioService.Player?.Volume * 100 ?? 0);
-                    double progress = this.AudioService.Audio.CurrentTime.TotalSeconds /
-                                      this.AudioService.Audio.TotalTime.TotalSeconds;
+                    this.Volume.Value = (int)(this.TrackService.Player?.Volume * 100 ?? 0);
+                    double progress = this.TrackService.Audio.CurrentTime.TotalSeconds /
+                                      this.TrackService.Audio.TotalTime.TotalSeconds;
 
                     // progress = 0.0 → 1.0
                     int value = (int)(progress * Progress.Maximum);
@@ -133,7 +134,7 @@ namespace Cubase.Hub.Controls.MainFormControls.ProjectsControl.PlayControls
                     value = Math.Max(Progress.Minimum,
                             Math.Min(value, Progress.Maximum));
                     Progress.Value = value;
-                    Progress.DisplayText = this.AudioService.Audio.CurrentTime.ToString(@"mm\:ss");
+                    Progress.DisplayText = this.TrackService.Audio.CurrentTime.ToString(@"mm\:ss");
                 }
             };
             timer.Start();

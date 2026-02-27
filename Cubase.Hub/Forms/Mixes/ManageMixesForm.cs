@@ -5,6 +5,7 @@ using Cubase.Hub.Services.Config;
 using Cubase.Hub.Services.FileAndDirectory;
 using Cubase.Hub.Services.Messages;
 using Cubase.Hub.Services.Models;
+using Cubase.Hub.Services.Track;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -17,7 +18,7 @@ namespace Cubase.Hub.Forms.Mixes
 {
     public partial class ManageMixesForm : BaseWindows11Form
     {
-        private readonly IAudioService audioService;
+        private readonly ITrackService trackService;
         private readonly IDirectoryService directoryService;
         private readonly IMessageService messageService;
         private readonly IConfigurationService configurationService;
@@ -30,12 +31,12 @@ namespace Cubase.Hub.Forms.Mixes
             InitializeComponent();
         }
 
-        public ManageMixesForm(IAudioService audioService,
+        public ManageMixesForm(ITrackService trackService,
                                IMessageService messageService,
                                IConfigurationService configurationService,
                                IDirectoryService directoryService)
         {
-            this.audioService = audioService;
+            this.trackService = trackService;
             this.directoryService = directoryService;
             this.messageService = messageService;
             this.configurationService = configurationService;
@@ -56,7 +57,7 @@ namespace Cubase.Hub.Forms.Mixes
                 ((IMixActionControl)this.ActionControl.Controls[0]).RunAction(
                     this.Mixes,
                     this.TargetDirectory.Text,
-                    this.audioService,
+                    this.trackService,
                     this.messageService,
                     this.directoryService,
                     (fileIndex, fileName) =>

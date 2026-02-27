@@ -22,16 +22,17 @@ namespace Cubase.Hub.Services.Audio
 
         void Stop();
 
-        MixDown PopulateTagsFromFile(string fileName);
+        MixDownCollection AudioPopulateMixDownCollectionFromTags(MixDownCollection mixes);
 
-        void PopulateMixdownFromTags(MixDown mixDown);
+        void AudioSetTagsFromMixDowm(MixDown mixDown, string? targetFile = null);
 
-        MixDownCollection PopulateMixDownCollectionFromTags(MixDownCollection mixes);
+        void AudioConvertToMp3(MixDown mixDown, string targetDirectory, AudioQuality quality);
 
-        void SetTagsFromMixDowm(MixDown mixDown, string? targetFile = null);
+        void AudioConvertToFlac(MixDown mixDown, string targetDirectory, FlacConfiguration configuration);
 
-        void ConvertToMp3(MixDown mixDown, string targetDirectory, AudioQuality quality);
+        void AudioPopulateMixdownFromTags(MixDown mixDown);
 
-        void ConvertToFlac(MixDown mixDown, string targetDirectory, FlacConfiguration configuration);
+        MixDown AudioPopulateTagsFromFile(string fileName);
+
     }
 }

@@ -6,6 +6,7 @@ using System.ComponentModel;
 using Cubase.Hub.Forms.BaseForm;
 using Cubase.Hub.Services.Audio;
 using Cubase.Hub.Services.Messages;
+using Cubase.Hub.Services.Track;
 
 namespace Cubase.Hub.Controls.Album.Manage
 {
@@ -30,7 +31,7 @@ namespace Cubase.Hub.Controls.Album.Manage
             Padding = new Padding(10);
         }
 
-        public void ShowMixes(MixDownCollection mixes, Action<MixDown, string> onMixChanged, IAudioService audioService, IMessageService messageService, IServiceProvider serviceProvider)
+        public void ShowMixes(MixDownCollection mixes, Action<MixDown, string> onMixChanged, ITrackService trackService, IMessageService messageService, IServiceProvider serviceProvider)
         {
             this.OnMixChanged = onMixChanged;
 
@@ -44,7 +45,7 @@ namespace Cubase.Hub.Controls.Album.Manage
 
             foreach (var mix in mixes)
             {
-                var mixDowncontrol = new MixControl(mix, serviceProvider, audioService, messageService)
+                var mixDowncontrol = new MixControl(mix, serviceProvider, trackService, messageService)
                 {
                     Dock = DockStyle.Fill
                 };

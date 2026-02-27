@@ -6,6 +6,7 @@ using Cubase.Hub.Services.Cubase;
 using Cubase.Hub.Services.FileAndDirectory;
 using Cubase.Hub.Services.Messages;
 using Cubase.Hub.Services.Models;
+using Cubase.Hub.Services.Track;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -40,6 +41,8 @@ namespace Cubase.Hub.Controls.MainFormControls.ProjectsForm
 
         private readonly IServiceProvider serviceProvider;
 
+        private readonly ITrackService trackService;
+
         private CubaseProject project;
 
         [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
@@ -52,6 +55,7 @@ namespace Cubase.Hub.Controls.MainFormControls.ProjectsForm
                                         ManageAlbumsForm manageAlbumsForm,
                                         IDirectoryService directoryService,
                                         IMessageService messageService,
+                                        ITrackService trackService,
                                         IServiceProvider serviceProvider,
                                         ICubaseService cubaseService)
         {
@@ -61,6 +65,7 @@ namespace Cubase.Hub.Controls.MainFormControls.ProjectsForm
             this.serviceProvider = serviceProvider;
             this.directoryService = directoryService;  
             this.messageService = messageService;   
+            this.trackService = trackService;
             this.Initialise();
             this.DoubleBuffered = true;
             this.PrimaryPanel.MouseEnter += PrimaryPanel_MouseEnter;
@@ -71,7 +76,6 @@ namespace Cubase.Hub.Controls.MainFormControls.ProjectsForm
         private void PrimaryPanel_MouseLeave(object? sender, EventArgs e)
         {
             if (((ProjectContextMenu)this.PrimaryPanel.ContextMenuStrip).IsOpen) return;
-
             ThemeApplier.ApplyDarkTheme(this.PrimaryPanel);
         }
 
@@ -161,6 +165,7 @@ namespace Cubase.Hub.Controls.MainFormControls.ProjectsForm
                 else
                 {
                     this.ProjectMinimized?.Invoke(this);
+                    this.trackService.StopTrack();
                     this.Minimise();
                 }
             };

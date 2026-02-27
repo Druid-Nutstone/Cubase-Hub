@@ -2,6 +2,7 @@
 using Cubase.Hub.Services.FileAndDirectory;
 using Cubase.Hub.Services.Messages;
 using Cubase.Hub.Services.Models;
+using Cubase.Hub.Services.Track;
 using FFMpegCore.Enums;
 using System;
 using System.Collections.Generic;
@@ -52,7 +53,7 @@ namespace Cubase.Hub.Forms.Mixes.MixActions
 
         public void RunAction(MixDownCollection mixDowns, 
                               string targetDirectory,
-                              IAudioService audioService, 
+                              ITrackService trackService, 
                               IMessageService messageService, 
                               IDirectoryService directoryService,
                               Func<int, string, bool> onProgress)
@@ -60,7 +61,7 @@ namespace Cubase.Hub.Forms.Mixes.MixActions
             for (var i = 0; i < mixDowns.Count; i++)
             {
                 var state = onProgress.Invoke(i + 1, Path.GetFileNameWithoutExtension(mixDowns[i].FileName));
-                audioService.ConvertToFlac(mixDowns[i], targetDirectory, this.FlacConfiguration);
+                trackService.ConvertToFlac(mixDowns[i], targetDirectory, this.FlacConfiguration);
             }
             onProgress.Invoke(-1, "All Done");
         }

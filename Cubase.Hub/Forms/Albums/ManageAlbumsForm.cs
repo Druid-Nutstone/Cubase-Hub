@@ -2,12 +2,14 @@
 using Cubase.Hub.Forms.BaseForm;
 using Cubase.Hub.Forms.Mixes;
 using Cubase.Hub.Services;
+using Cubase.Hub.Services.Album;
 using Cubase.Hub.Services.Audio;
 using Cubase.Hub.Services.Config;
 using Cubase.Hub.Services.FileAndDirectory;
 using Cubase.Hub.Services.Messages;
 using Cubase.Hub.Services.Models;
 using Cubase.Hub.Services.Projects;
+using Cubase.Hub.Services.Track;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -29,11 +31,13 @@ namespace Cubase.Hub.Forms.Albums
 
         private readonly IDirectoryService directoryService;
 
-        private readonly IAudioService audioService;
+        private readonly ITrackService trackService;
 
         private readonly IMessageService messageService;
 
         private readonly IServiceProvider serviceProvider;
+
+        private readonly IAlbumService albumService;    
 
         [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
         public AlbumLocation CurrentAlbum { get; set; }
@@ -46,7 +50,8 @@ namespace Cubase.Hub.Forms.Albums
 
         public ManageAlbumsForm(IConfigurationService configurationService,
                                 IDirectoryService directoryService,
-                                IAudioService audioService,
+                                ITrackService trackService,
+                                IAlbumService albumService,
                                 IMessageService messageService,
                                 IServiceProvider serviceProvider,
                                 ManageMixesForm manageMixesForm,
@@ -55,7 +60,8 @@ namespace Cubase.Hub.Forms.Albums
             InitializeComponent();
             this.configurationService = configurationService;
             this.directoryService = directoryService;
-            this.audioService = audioService;
+            this.trackService = trackService;
+            this.albumService = albumService;   
             this.projectService = projectService;
             this.messageService = messageService;
             this.mixesForm = manageMixesForm;
@@ -81,7 +87,7 @@ namespace Cubase.Hub.Forms.Albums
 
         private void RefreshTracksButton_Click(object? sender, EventArgs e)
         {
-            this.LoadTracks(this.CurrentAlbum.AlbumPath);
+            this.LoadTracks();
         }
 
         private void OpenExportDirectory_Click(object? sender, EventArgs e)
@@ -114,6 +120,8 @@ namespace Cubase.Hub.Forms.Albums
                 { 
                    this.messageService.ShowError($"Could not save configuration file. {err}");
                 });
+                this.SetMixExportLocation(this.AlbumExportLocation.Text);
+                this.albumService.InitialiseAlbumArt(this.AlbumExportLocation.Text);
             }
         }
 
@@ -124,7 +132,7 @@ namespace Cubase.Hub.Forms.Albums
                 case AlbumCommandType.RefreshTracks:
                     if (this.CurrentAlbum != null)
                     {
-                        this.LoadTracks(this.CurrentAlbum.AlbumPath);
+                        this.LoadTracks();
                     }
                     break;
             }
@@ -170,7 +178,7 @@ namespace Cubase.Hub.Forms.Albums
                 foreach (var mix in this.CurrentMixes)
                 {
                     mix.Title = Path.GetFileNameWithoutExtension(mix.FileName);
-                    this.audioService.SetTagsFromMixDowm(mix);
+                    this.trackService.SetTagsFromMixDown(mix);
                 }
                 this.ShowMixes();
             }
@@ -208,9 +216,9 @@ namespace Cubase.Hub.Forms.Albums
                     mix.Year = this.CurrentAlbumConfiguration.Year;
                     mix.Artist = CurrentAlbumConfiguration.Artist;
                     mix.Genre = CurrentAlbumConfiguration.Genre;
-                    this.audioService.SetTagsFromMixDowm(mix);
+                    this.trackService.SetTagsFromMixDown(mix);
                 }
-                this.LoadTracks(this.CurrentAlbum.AlbumPath);
+                this.LoadTracks();
             }
         }
 
@@ -228,43 +236,55 @@ namespace Cubase.Hub.Forms.Albums
             {
                 this.CurrentAlbum = this.SelectedAlbum.SelectedItem as AlbumLocation;
                 // get album
-                this.CurrentAlbumConfiguration = AlbumConfiguration.LoadFromFile(Path.Combine(this.CurrentAlbum.AlbumPath, CubaseHubConstants.CubaseAlbumConfigurationFileName));
+                this.CurrentAlbumConfiguration = this.albumService.GetAlbumConfigurationFromAlbumLocation(this.CurrentAlbum);
                 this.AlbumConfigurationControl.AlbumConfiguration = this.CurrentAlbumConfiguration;
                 this.AlbumConfigurationControl.Initialise(this.OnAlbumChanged);
                 // get album mixes 
                 var msgDialog = this.messageService.OpenMessage("Loading Tracks..", this);
-                this.LoadTracks(this.CurrentAlbum.AlbumPath);
+                this.LoadTracks();
                 msgDialog.Close();
-                this.AlbumExportLocation.Text = this.configurationService?.Configuration?.AlbumExports?.FirstOrDefault(x => x.Name.Equals(this.CurrentAlbum.AlbumName))?.Location;
-                this.SetMixExportLocation();
+                this.InitialiseAlbumExportLocation();
             }
             else
             {
                 this.AlbumConfigurationControl.AlbumConfiguration = new AlbumConfiguration();
                 this.AlbumConfigurationControl.Initialise();
-                this.mixdownControl.ShowMixes(new MixDownCollection(), this.OnMixChanged, this.audioService, this.messageService, this.serviceProvider);
+                this.mixdownControl.ShowMixes(new MixDownCollection(), this.OnMixChanged, this.trackService, this.messageService, this.serviceProvider);
             }
         }
 
-        private void LoadTracks(string albumPath)
+        private void InitialiseAlbumExportLocation()
         {
-            var mixes = this.directoryService.GetMixes(albumPath);
-            this.CurrentMixes = this.audioService.PopulateMixDownCollectionFromTags(mixes);
+            var albumLocation = this.albumService.AlbumExportLocation(this.CurrentAlbum);
+            if (string.IsNullOrEmpty(albumLocation))
+            {
+                albumLocation = this.albumService.InitialiseAlbumExportLocation(this.CurrentAlbum, (err) => { });
+                if (albumLocation != null)
+                {
+                    this.SetMixExportLocation(albumLocation);
+                }
+            }
+            this.AlbumExportLocation.Text = albumLocation ?? string.Empty;
+        }
+
+        private void LoadTracks()
+        {
+            this.CurrentMixes = this.albumService.GetMixesForAlbum(this.CurrentAlbum);  
             this.ShowMixes();
         }
 
-        private void SetMixExportLocation()
+        private void SetMixExportLocation(string albumLocation)
         {
-           if (!string.IsNullOrEmpty(this.AlbumExportLocation.Text) && this.CurrentMixes != null)
+           if (!string.IsNullOrEmpty(albumLocation) && this.CurrentMixes != null)
             {
-               this.CurrentMixes.SetMixdownExportLocation(this.AlbumExportLocation.Text);   
+               this.CurrentMixes.SetMixdownExportLocation(albumLocation);   
             }   
         }
 
         private void ShowMixes()
         {
-            this.SetMixExportLocation();
-            this.mixdownControl.ShowMixes(this.CurrentMixes, this.OnMixChanged, this.audioService, this.messageService, this.serviceProvider);
+            this.SetMixExportLocation(this.AlbumExportLocation.Text);
+            this.mixdownControl.ShowMixes(this.CurrentMixes, this.OnMixChanged, this.trackService, this.messageService, this.serviceProvider);
         }
 
         private void SetSelectionButtonsState()
@@ -286,7 +306,7 @@ namespace Cubase.Hub.Forms.Albums
             }
             else
             {
-                this.audioService.SetTagsFromMixDowm(mixDown);
+                this.trackService.SetTagsFromMixDown(mixDown);
                 // not now 
                 //if (propertyName == nameof(MixDown.TrackNumber))
                 //{
@@ -297,7 +317,6 @@ namespace Cubase.Hub.Forms.Albums
 
         private void OnAlbumChanged(AlbumConfiguration albumConfiguration, string propertyName)
         {
-
             albumConfiguration.SaveToDirectory(this.CurrentAlbum.AlbumPath);
             foreach (var mix in this.CurrentMixes)
             {
@@ -305,7 +324,7 @@ namespace Cubase.Hub.Forms.Albums
                 mix.Year = albumConfiguration.Year;
                 mix.Artist = albumConfiguration.Artist;
                 mix.Genre = albumConfiguration.Genre;
-                this.audioService.SetTagsFromMixDowm(mix);
+                this.trackService.SetTagsFromMixDown(mix);
             }
         }
 
@@ -332,8 +351,10 @@ namespace Cubase.Hub.Forms.Albums
             {
                 this.SelectedAlbum.SelectedIndex = -1;
             }
+            
             this.SelectedAlbum.Items.Clear();
-            this.SelectedAlbum.Items.AddRange(this.directoryService.GetCubaseAlbums(this.configurationService.Configuration.SourceCubaseFolders).ToArray());
+            var albumList = this.albumService.GetAlbumList(this.messageService.ShowError);
+            this.SelectedAlbum.Items.AddRange(albumList.ToArray());
             this.SelectedAlbum.DisplayMember = nameof(AlbumLocation.AlbumName);
         }
 

@@ -2,6 +2,7 @@
 using Cubase.Hub.Services.Audio;
 using Cubase.Hub.Services.Messages;
 using Cubase.Hub.Services.Models;
+using Cubase.Hub.Services.Track;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -28,17 +29,17 @@ namespace Cubase.Hub.Controls.Album.Manage
 
         public MixControl(MixDown mixDown, 
                           IServiceProvider serviceProvider,
-                          IAudioService audioService, 
+                          ITrackService trackService, 
                           IMessageService messageService)
         {
             InitializeComponent();
-            this.Initialise(mixDown, audioService);
+            this.Initialise(mixDown, trackService);
             this.messageService = messageService;
             this.ContextMenuStrip = new MixControlContextMenu(mixDown, serviceProvider);
             
         }
 
-        public void Initialise(MixDown mixDown, IAudioService audioService)
+        public void Initialise(MixDown mixDown, ITrackService trackService)
         {
             this.Mix = mixDown;
             mixDown.PropertyChanged += MixDown_PropertyChanged;
@@ -47,7 +48,7 @@ namespace Cubase.Hub.Controls.Album.Manage
             this.MixPerformers.Bind(nameof(MixDown.Performers), mixDown);
             this.MixDuration.Bind(nameof(MixDown.Duration), mixDown);
             this.PlayerPanel.Controls.Clear();
-            var playerControl = new PlayControl(audioService);
+            var playerControl = new PlayControl(trackService);
             playerControl.MusicFile = mixDown.FileName;
             playerControl.Dock = DockStyle.Fill;    
             this.PlayerPanel.Controls.Add(playerControl);

@@ -11,6 +11,7 @@ using Cubase.Hub.Forms.Main;
 using Cubase.Hub.Forms.Main.Menu;
 using Cubase.Hub.Forms.Mixes;
 using Cubase.Hub.Forms.Tracks;
+using Cubase.Hub.Services.Album;
 using Cubase.Hub.Services.Audio;
 using Cubase.Hub.Services.Config;
 using Cubase.Hub.Services.Cubase;
@@ -21,6 +22,7 @@ using Cubase.Hub.Services.JumpFolder;
 using Cubase.Hub.Services.Messages;
 using Cubase.Hub.Services.Models;
 using Cubase.Hub.Services.Projects;
+using Cubase.Hub.Services.Track;
 using Microsoft.Extensions.DependencyInjection;
 using System;
 using System.Runtime.CompilerServices;
@@ -125,7 +127,9 @@ namespace Cubase.Hub
                 .AddSingleton<IConfigurationService, ConfigurationService>()
                 .AddSingleton<IDirectoryService, DirectoryService>()
                 .AddSingleton<ICubaseService, CubaseService>()
-                .AddTransient<IAudioService, AudioService>()
+                .AddSingleton<IAudioService, AudioService>()
+                .AddTransient<IAlbumService, AlbumService>()
+                .AddTransient<ITrackService, TrackService>()
                 .AddSingleton<IJumpListService, JumpListService>()
                 .AddKeyedTransient<IDistributer, RouteNoteDistributer>(Distributers.RouteNote)
                 .AddSingleton<IProjectService, ProjectService>();

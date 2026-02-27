@@ -4,6 +4,7 @@ using Cubase.Hub.Services.Audio;
 using Cubase.Hub.Services.Distributers;
 using Cubase.Hub.Services.Messages;
 using Cubase.Hub.Services.Models;
+using Cubase.Hub.Services.Track;
 using Microsoft.Extensions.DependencyInjection;
 using System;
 using System.Collections.Generic;
@@ -64,7 +65,7 @@ namespace Cubase.Hub.Controls.Album.Manage
             return size;
         }
 
-        protected IAudioService AudioService => this.ServiceProvider.GetService<IAudioService>();
+        protected ITrackService TrackService => this.ServiceProvider.GetService<ITrackService>();
 
         protected IMessageService MessageService => this.ServiceProvider.GetService<IMessageService>();
 
@@ -145,7 +146,7 @@ namespace Cubase.Hub.Controls.Album.Manage
         protected override void OnClick(EventArgs e)
         {
             this.MixDown.Title = Path.GetFileNameWithoutExtension(this.MixDown.FileName);
-            this.AudioService.PopulateMixdownFromTags(this.MixDown);
+            this.TrackService.PopulateMixdownFromTags(this.MixDown);
             AlbumCommands.Instance.RefreshTracks();
         }
     }
@@ -176,7 +177,7 @@ namespace Cubase.Hub.Controls.Album.Manage
         protected override void OnClick(EventArgs e)
         {
             var msgBox = this.MessageService.OpenMessage($"Converting {this.MixDown.Title} to MP3...", this.Parent);
-            this.AudioService.ConvertToMp3(this.MixDown, Path.GetDirectoryName(this.MixDown.FileName), FFMpegCore.Enums.AudioQuality.Ultra);
+            this.TrackService.ConvertToMp3(this.MixDown, Path.GetDirectoryName(this.MixDown.FileName), FFMpegCore.Enums.AudioQuality.Ultra);
             AlbumCommands.Instance.RefreshTracks();
             msgBox.Close();
         }
@@ -192,7 +193,7 @@ namespace Cubase.Hub.Controls.Album.Manage
         protected override void OnClick(EventArgs e)
         {
             var msgBox = this.MessageService.OpenMessage($"Converting {this.MixDown.Title} to FLAC...", this.Parent);
-            this.AudioService.ConvertToFlac(this.MixDown, Path.GetDirectoryName(this.MixDown.FileName), new FlacConfiguration());
+            this.TrackService.ConvertToFlac(this.MixDown, Path.GetDirectoryName(this.MixDown.FileName), new FlacConfiguration());
             AlbumCommands.Instance.RefreshTracks();
             msgBox.Close();
         }

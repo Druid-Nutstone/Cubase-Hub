@@ -3,6 +3,7 @@ using Cubase.Hub.Services;
 using Cubase.Hub.Services.Audio;
 using Cubase.Hub.Services.Messages;
 using Cubase.Hub.Services.Models;
+using Cubase.Hub.Services.Track;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -15,7 +16,7 @@ namespace Cubase.Hub.Forms.Edit
 {
     public partial class EditTrackForm : BaseWindows11Form
     {
-        private readonly IAudioService audioService;
+        private readonly ITrackService trackService;
 
         private readonly IMessageService messageService;
         
@@ -24,10 +25,10 @@ namespace Cubase.Hub.Forms.Edit
         [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
         public string? AudioFile { get; set; }
 
-        public EditTrackForm(IAudioService audioService, IMessageService messageService)
+        public EditTrackForm(ITrackService trackService, IMessageService messageService)
         {
             InitializeComponent();
-            this.audioService = audioService;
+            this.trackService = trackService;
             this.messageService = messageService;
             ThemeApplier.ApplyDarkTheme(this);
             this.UpdateButton.Click += UpdateButton_Click;
@@ -38,7 +39,7 @@ namespace Cubase.Hub.Forms.Edit
             if (this.mixDown != null)
             {
                 var msgHandler = this.messageService.OpenMessage($"Updating mix {this.mixDown.Title}", this); 
-                this.audioService.SetTagsFromMixDowm(this.mixDown);
+                this.trackService.SetTagsFromMixDowm(this.mixDown);
                 msgHandler.Close();
             }
         }
@@ -47,7 +48,7 @@ namespace Cubase.Hub.Forms.Edit
         {
             this.UpdateButton.Enabled = false;  
             this.AudioFile = audioFile;
-            this.mixDown = this.audioService.PopulateTagsFromFile(this.AudioFile);
+            this.mixDown = this.trackService.PopulateTagsFromFile(this.AudioFile);
             this.mixDown.PropertyChanged += MixDown_PropertyChanged;
             this.Text = $"Edit {this.mixDown.Title}";
             this.Title.Bind(nameof(MixDown.Title), this.mixDown);

@@ -26,6 +26,10 @@ namespace Cubase.Hub.Services.Audio
     
         public IWavePlayer Play(string musicfile, Action<StoppedEventArgs> onStopped)
         {
+            if (Player != null)
+            {
+                this.Stop();
+            }
             var fileName = musicfile;
             if (musicfile.IsFlac())
             {
@@ -74,7 +78,7 @@ namespace Cubase.Hub.Services.Audio
         }
 
 
-        public void SetTagsFromMixDowm(MixDown mixDown, string? targetFile = null)
+        public void AudioSetTagsFromMixDowm(MixDown mixDown, string? targetFile = null)
         {
             var fileTag = TagLib.File.Create(targetFile ?? mixDown.FileName);
             fileTag.Tag.Title = mixDown.Title;
@@ -88,7 +92,7 @@ namespace Cubase.Hub.Services.Audio
             fileTag.Save();
         }
 
-        public void PopulateMixdownFromTags(MixDown mixDown)
+        public void AudioPopulateMixdownFromTags(MixDown mixDown)
         {
             var tags = TagLib.File.Create(mixDown.FileName);
 
@@ -127,18 +131,18 @@ namespace Cubase.Hub.Services.Audio
                 return $"{(length / (double)GB):0.##} GB";
         }
 
-        public MixDown PopulateTagsFromFile(string fileName)
+        public MixDown AudioPopulateTagsFromFile(string fileName)
         {
             var mixDown = new MixDown() { FileName = fileName };
-            PopulateMixdownFromTags(mixDown);
+            AudioPopulateMixdownFromTags(mixDown);
             return mixDown;
         }
 
-        public MixDownCollection PopulateMixDownCollectionFromTags(MixDownCollection mixes)
+        public MixDownCollection AudioPopulateMixDownCollectionFromTags(MixDownCollection mixes)
         {
             foreach (var mix in mixes)
             {
-                PopulateMixdownFromTags(mix);
+                AudioPopulateMixdownFromTags(mix);
             }
             return new MixDownCollection(
                 mixes
@@ -147,7 +151,7 @@ namespace Cubase.Hub.Services.Audio
             );
         }
 
-        public void ConvertToMp3(MixDown mixDown, string targetDirectory, AudioQuality quality)
+        public void AudioConvertToMp3(MixDown mixDown, string targetDirectory, AudioQuality quality)
         {
             var outFile = this.MapOutputAudioFile(mixDown.FileName, targetDirectory, ".mp3");
 
@@ -158,11 +162,11 @@ namespace Cubase.Hub.Services.Audio
                                    .WithAudioCodec("mp3")
                                    .WithAudioBitrate(quality))
                  .ProcessSynchronously();
-            this.SetTagsFromMixDowm(mixDown, outFile);
+            this.AudioSetTagsFromMixDowm(mixDown, outFile);
 
         }
 
-        public void ConvertToFlac(MixDown mixDown, string targetDirectory, FlacConfiguration configuration)
+        public void AudioConvertToFlac(MixDown mixDown, string targetDirectory, FlacConfiguration configuration)
         {
             var outFile = this.MapOutputAudioFile(mixDown.FileName, targetDirectory, ".flac");
             int compressionLevel = (int)configuration.CompressionLevel;
@@ -190,7 +194,7 @@ namespace Cubase.Hub.Services.Audio
                                    .WithCustomArgument("-c:a flac")
                                    .WithCustomArgument($"-compression_level {compressionLevel}"))
                  .ProcessSynchronously();
-            this.SetTagsFromMixDowm(mixDown, outFile);
+            this.AudioSetTagsFromMixDowm(mixDown, outFile);
         }
 
         private string MapOutputAudioFile(string inputFileName, string targetDirectory, string extention)

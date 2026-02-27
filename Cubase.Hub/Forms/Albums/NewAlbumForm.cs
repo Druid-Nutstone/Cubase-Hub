@@ -1,5 +1,6 @@
 ﻿using Cubase.Hub.Forms.BaseForm;
 using Cubase.Hub.Services;
+using Cubase.Hub.Services.Album;
 using Cubase.Hub.Services.Config;
 using Cubase.Hub.Services.FileAndDirectory;
 using Cubase.Hub.Services.Messages;
@@ -17,8 +18,10 @@ namespace Cubase.Hub.Forms
 {
     public partial class NewAlbumForm : BaseWindows11Form
     {
+        /*
         [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
         public AlbumConfiguration AlbumConfiguration { get; set; } = new AlbumConfiguration();
+        */
 
         private readonly IConfigurationService configurationService;
 
@@ -26,21 +29,26 @@ namespace Cubase.Hub.Forms
 
         private readonly IMessageService messageService;
 
+        private readonly IAlbumService albumService;
+
         private string? albumPath;
 
         public NewAlbumForm(IConfigurationService configurationService, 
                             IMessageService messageService,
+                            IAlbumService albumService,
                             IDirectoryService directoryService)
         {
             InitializeComponent();
             this.configurationService = configurationService;
-            this.directoryService = directoryService;   
+            this.directoryService = directoryService;
+            this.albumService = albumService;   
             this.messageService = messageService;
             ThemeApplier.ApplyDarkTheme(this);
             this.Initialise();
-            this.albumConfigurationControl.AlbumConfiguration = this.AlbumConfiguration;
+            this.albumService.NewAlbum();
+            this.albumConfigurationControl.AlbumConfiguration = this.albumService.Configuration;
             this.albumConfigurationControl.Initialise();
-            this.AlbumConfiguration.PropertyChanged += AlbumConfiguration_PropertyChanged;
+            this.albumService.Configuration.PropertyChanged += AlbumConfiguration_PropertyChanged;
         }
 
         private void AlbumConfiguration_PropertyChanged(object? sender, PropertyChangedEventArgs e)
@@ -84,23 +92,33 @@ namespace Cubase.Hub.Forms
         {
             if (!string.IsNullOrWhiteSpace(this.albumPath))
             {
-                this.NewAlbumRoot.Text = Path.Combine(this.albumPath, this.AlbumConfiguration.Title ?? "");
+                this.NewAlbumRoot.Text = Path.Combine(this.albumPath, this.albumService.Configuration.Title ?? "");
             }
         }
 
         private void  CreateAlbumButton_Click(object? sender, EventArgs e)
         {
-            var targetDirectory = Path.Combine(this.albumPath, this.AlbumConfiguration.Title ?? string.Empty).Trim();
-
-            var verifyTitle = string.IsNullOrEmpty(this.SelectedRootDirectory.Text);
-                
-
-            if (!this.AlbumConfiguration.Verify(out string propertyInError, verifyTitle))
+            if (string.IsNullOrEmpty(this.albumPath))
             {
-                this.messageService.ShowError($"Album configuration is invalid. Please check the {propertyInError} field.");
                 return;
             }
             
+            var targetDirectory = Path.Combine(this.albumPath, this.albumService.Configuration.Title ?? string.Empty).Trim();
+
+            var verifyTitle = string.IsNullOrEmpty(this.SelectedRootDirectory.Text);
+
+
+            var verifyAlbumProperties = this.albumService.VerifyAlbum((err) => 
+            { 
+                this.messageService.ShowError(err);     
+            });
+
+            if (!verifyAlbumProperties)
+            {
+                return;
+            }
+
+           
             if (!this.IsValidDirectoryPath(targetDirectory))
             {
                 this.messageService.ShowError($"The album directory {targetDirectory} is not valid");
@@ -116,14 +134,16 @@ namespace Cubase.Hub.Forms
             if (!string.IsNullOrWhiteSpace(this.SelectedRootDirectory.Text))
             {
                 // should return the directory name that has been selected
-                this.AlbumConfiguration.Title = Path.GetFileName(this.SelectedRootDirectory.Text);
+                this.albumService.Configuration.Title = Path.GetFileName(this.SelectedRootDirectory.Text);
             }
 
-            this.AlbumConfiguration.SaveToDirectory(targetDirectory);
             
-            this.messageService.ShowMessage($"Album created or verified at: {albumPath}", false);
+            if (this.albumService.SaveAlbum(targetDirectory, this.messageService.ShowError))
+            {
+                this.Close();
+            }
+            return;              
 
-            this.Close();
         }
 
         private bool IsValidDirectoryPath(string path)

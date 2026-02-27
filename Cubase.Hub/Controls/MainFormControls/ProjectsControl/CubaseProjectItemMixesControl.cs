@@ -64,7 +64,7 @@ namespace Cubase.Hub.Controls.MainFormControls.ProjectsForm
                 var playButton = this.serviceProvider.GetService<PlayControl>();
                 playButton.MusicFile = mix;
                 this.Controls.Add(playButton, 5, this.RowCount);
-                this.Controls.Add(playButton, 5, this.RowCount);
+                // this.Controls.Add(playButton, 5, this.RowCount);
                 this.RowCount++;
             }
         }

@@ -10,6 +10,10 @@ namespace Cubase.Hub.Services
 
         public static string MixdownDirectory = "Mixdown";
 
+        public static string AlbumArt = nameof(AlbumArt);   
+
+        public static string TrackArt = nameof(TrackArt);
+
         public static string UserAppDataFolderPath =
             System.IO.Path.Combine(
                 Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData),
