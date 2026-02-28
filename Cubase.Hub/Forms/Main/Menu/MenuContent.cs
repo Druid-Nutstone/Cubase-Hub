@@ -1,4 +1,5 @@
 ﻿using Cubase.Hub.Forms.Albums;
+using Cubase.Hub.Forms.CompletedMixes;
 using Cubase.Hub.Forms.Config;
 using Cubase.Hub.Forms.Tracks;
 using Cubase.Hub.Services;
@@ -27,6 +28,7 @@ namespace Cubase.Hub.Forms.Main.Menu
             menuStrip.Items.Add(new AlbumMenu(mainForm, this.serviceProvider));
             menuStrip.Items.Add(new TrackMenu(mainForm, this.serviceProvider));
             menuStrip.Items.Add(new OptionsMenu(mainForm, this.serviceProvider));
+            menuStrip.Items.Add(new PlayMenu(mainForm, this.serviceProvider));
         }
     }
 
@@ -52,6 +54,32 @@ namespace Cubase.Hub.Forms.Main.Menu
             this.DropDownItems.Add(new OptionsMenuOpen(mainForm, this.ServiceProvider));
         }
     }
+
+    public class PlayMenu : BaseToolStripMenuItem
+    {
+        public PlayMenu(MainForm mainForm, IServiceProvider serviceProvider) : base(mainForm, serviceProvider)
+        {
+            this.Text = "Play and Deploy";
+            this.DropDownItems.Add(new PlayMixesMenu(mainForm, this.ServiceProvider));
+        }
+    }
+
+    public class PlayMixesMenu : BaseToolStripMenuItem
+    {
+        public PlayMixesMenu(MainForm mainForm, IServiceProvider serviceProvider) : base(mainForm, serviceProvider)
+        {
+            this.Text = "Mixes";
+        }
+
+        protected override void OnClick(EventArgs e)
+        {
+            var mixesForm = this.ServiceProvider.GetService<CompletedMixesForm>();
+            mixesForm.InitialiseMixes();
+            mixesForm?.ShowDialog();
+        }
+    }
+
+
 
     public class OptionsMenuEdit : BaseToolStripMenuItem
     {

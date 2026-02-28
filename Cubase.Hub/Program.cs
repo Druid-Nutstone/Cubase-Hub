@@ -4,6 +4,7 @@ using Cubase.Hub.Controls.MainFormControls.ProjectsControl.PlayControls;
 using Cubase.Hub.Controls.MainFormControls.ProjectsForm;
 using Cubase.Hub.Forms;
 using Cubase.Hub.Forms.Albums;
+using Cubase.Hub.Forms.CompletedMixes;
 using Cubase.Hub.Forms.Config;
 using Cubase.Hub.Forms.Edit;
 using Cubase.Hub.Forms.Export;
@@ -128,6 +129,7 @@ namespace Cubase.Hub
                 .AddSingleton<IDirectoryService, DirectoryService>()
                 .AddSingleton<ICubaseService, CubaseService>()
                 .AddSingleton<IAudioService, AudioService>()
+                .AddSingleton<CompletedMixesForm,  CompletedMixesForm>()
                 .AddTransient<IAlbumService, AlbumService>()
                 .AddTransient<ITrackService, TrackService>()
                 .AddSingleton<IJumpListService, JumpListService>()

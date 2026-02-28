@@ -15,5 +15,7 @@ namespace Cubase.Hub.Services.Config
 
         bool SaveConfiguration(Action<string>? OnSaveError);
 
+        string? GetFinalMixLocationFromAlbumName(string albumName);
+
     }
 }

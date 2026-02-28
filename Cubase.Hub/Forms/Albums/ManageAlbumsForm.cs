@@ -37,7 +37,7 @@ namespace Cubase.Hub.Forms.Albums
 
         private readonly IServiceProvider serviceProvider;
 
-        private readonly IAlbumService albumService;    
+        private readonly IAlbumService albumService;
 
         [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
         public AlbumLocation CurrentAlbum { get; set; }
@@ -61,7 +61,7 @@ namespace Cubase.Hub.Forms.Albums
             this.configurationService = configurationService;
             this.directoryService = directoryService;
             this.trackService = trackService;
-            this.albumService = albumService;   
+            this.albumService = albumService;
             this.projectService = projectService;
             this.messageService = messageService;
             this.mixesForm = manageMixesForm;
@@ -79,10 +79,12 @@ namespace Cubase.Hub.Forms.Albums
             this.SetSelectedTracksTitleButton.Click += SetSelectedTracksTitleButton_Click;
             this.BrowseExportLocationButton.Click += BrowseExportLocationButton_Click;
             this.OpenExportDirectory.Click += OpenExportDirectory_Click;
-            this.RefreshTracksButton.Click += RefreshTracksButton_Click;    
+            this.RefreshTracksButton.Click += RefreshTracksButton_Click;
             this.AutoScaleMode = AutoScaleMode.Dpi;
             // register static event class and wait for commands comming in 
             AlbumCommands.Instance.RegisterForAlbumCommand(this.OnAlbumCommandReceived);
+            this.PlayTrack.TrackService = this.trackService;
+            this.PlayTrack.ShowPlay = false;
         }
 
         private void RefreshTracksButton_Click(object? sender, EventArgs e)
@@ -95,14 +97,14 @@ namespace Cubase.Hub.Forms.Albums
             if (!string.IsNullOrEmpty(this.AlbumExportLocation.Text))
             {
                 this.directoryService.OpenExplorer(this.AlbumExportLocation.Text);
-            }   
+            }
         }
 
         private void BrowseExportLocationButton_Click(object? sender, EventArgs e)
         {
             var folderBrowser = new FolderBrowserDialog();
             folderBrowser.Description = "Select Album Export Location";
-            folderBrowser.UseDescriptionForTitle = true;    
+            folderBrowser.UseDescriptionForTitle = true;
             if (folderBrowser.ShowDialog() == DialogResult.OK)
             {
                 this.AlbumExportLocation.Text = folderBrowser.SelectedPath;
@@ -116,9 +118,9 @@ namespace Cubase.Hub.Forms.Albums
                 {
                     albumExportConfig.Location = folderBrowser.SelectedPath;
                 }
-                this.configurationService.SaveConfiguration((err) => 
-                { 
-                   this.messageService.ShowError($"Could not save configuration file. {err}");
+                this.configurationService.SaveConfiguration((err) =>
+                {
+                    this.messageService.ShowError($"Could not save configuration file. {err}");
                 });
                 this.SetMixExportLocation(this.AlbumExportLocation.Text);
                 this.albumService.InitialiseAlbumArt(this.AlbumExportLocation.Text);
@@ -249,7 +251,7 @@ namespace Cubase.Hub.Forms.Albums
             {
                 this.AlbumConfigurationControl.AlbumConfiguration = new AlbumConfiguration();
                 this.AlbumConfigurationControl.Initialise();
-                this.mixdownControl.ShowMixes(new MixDownCollection(), this.OnMixChanged, this.trackService, this.messageService, this.serviceProvider);
+                this.mixdownControl.ShowMixes(new MixDownCollection(), this.OnMixChanged, this.OnPlayMix, this.trackService, this.messageService, this.serviceProvider);
             }
         }
 
@@ -269,22 +271,22 @@ namespace Cubase.Hub.Forms.Albums
 
         private void LoadTracks()
         {
-            this.CurrentMixes = this.albumService.GetMixesForAlbum(this.CurrentAlbum);  
+            this.CurrentMixes = this.albumService.GetMixesForAlbum(this.CurrentAlbum);
             this.ShowMixes();
         }
 
         private void SetMixExportLocation(string albumLocation)
         {
-           if (!string.IsNullOrEmpty(albumLocation) && this.CurrentMixes != null)
+            if (!string.IsNullOrEmpty(albumLocation) && this.CurrentMixes != null)
             {
-               this.CurrentMixes.SetMixdownExportLocation(albumLocation);   
-            }   
+                this.CurrentMixes.SetMixdownExportLocation(albumLocation);
+            }
         }
 
         private void ShowMixes()
         {
             this.SetMixExportLocation(this.AlbumExportLocation.Text);
-            this.mixdownControl.ShowMixes(this.CurrentMixes, this.OnMixChanged, this.trackService, this.messageService, this.serviceProvider);
+            this.mixdownControl.ShowMixes(this.CurrentMixes, this.OnMixChanged, this.OnPlayMix, this.trackService, this.messageService, this.serviceProvider);
         }
 
         private void SetSelectionButtonsState()
@@ -296,7 +298,10 @@ namespace Cubase.Hub.Forms.Albums
             }
         }
 
-
+        private void OnPlayMix(MixDown mixDown)
+        {
+            this.PlayTrack.PlayTrack(mixDown);
+        }
 
         private void OnMixChanged(MixDown mixDown, string propertyName)
         {
@@ -351,7 +356,7 @@ namespace Cubase.Hub.Forms.Albums
             {
                 this.SelectedAlbum.SelectedIndex = -1;
             }
-            
+
             this.SelectedAlbum.Items.Clear();
             var albumList = this.albumService.GetAlbumList(this.messageService.ShowError);
             this.SelectedAlbum.Items.AddRange(albumList.ToArray());
@@ -405,10 +410,11 @@ namespace Cubase.Hub.Forms.Albums
 
             settings.isMaximised = this.WindowState == FormWindowState.Maximized;
             this.configurationService?.Configuration?.AlbumWindowLocation = settings;
-            this.configurationService?.SaveConfiguration((err) => 
-            { 
-                 this.messageService.ShowError($"Could not save configuration file. {err}");
+            this.configurationService?.SaveConfiguration((err) =>
+            {
+                this.messageService.ShowError($"Could not save configuration file. {err}");
             });
         }
+
     }
 }

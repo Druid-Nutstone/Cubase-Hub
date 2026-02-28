@@ -18,6 +18,9 @@ namespace Cubase.Hub.Controls.Album.Manage
         [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
         public Action<MixDown, string> OnMixChanged { get; set; }
 
+        [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
+        public Action<MixDown>? OnPlay { get; set; } 
+
         private MixDown Mix;
 
         private IMessageService messageService;
@@ -47,18 +50,21 @@ namespace Cubase.Hub.Controls.Album.Manage
             this.MixTrackNo.Bind(nameof(MixDown.TrackNumber), mixDown);
             this.MixPerformers.Bind(nameof(MixDown.Performers), mixDown);
             this.MixDuration.Bind(nameof(MixDown.Duration), mixDown);
-            this.PlayerPanel.Controls.Clear();
-            var playerControl = new PlayControl(trackService);
-            playerControl.MusicFile = mixDown.FileName;
-            playerControl.Dock = DockStyle.Fill;    
-            this.PlayerPanel.Controls.Add(playerControl);
+            this.Play.Click += Play_Click;
             this.MixComments.Bind(nameof(MixDown.Comment), mixDown);
             this.MixBitRate.Bind(nameof(MixDown.BitRate), mixDown);
             this.MixDownSize.Bind(nameof(MixDown.Size), mixDown);   
             this.MixSelected.Bind(nameof(MixDown.Selected),mixDown);
+            this.MixSampleRate.Bind(nameof(MixDown.SampleRate), mixDown);
+            this.MixArtist.Bind(nameof(MixDown.Artist), mixDown);
             this.MixdownLastModified.Text = this.GetLastModified(mixDown);
             this.MixType.Text = mixDown.AudioType.ToUpper();
             
+        }
+
+        private void Play_Click(object? sender, EventArgs e)
+        {
+            this.OnPlay?.Invoke(this.Mix);
         }
 
         private string GetLastModified(MixDown mixDown)

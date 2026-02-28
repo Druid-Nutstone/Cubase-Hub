@@ -112,5 +112,35 @@ namespace Cubase.Hub.Services.Album
             this.directoryService.MakeSureDirectoryExists(Path.Combine(albumExportLocation, CubaseHubConstants.AlbumArt));
             this.directoryService.MakeSureDirectoryExists(Path.Combine(albumExportLocation, CubaseHubConstants.TrackArt));
         }
+
+        public string? GetAlbumArt(AlbumLocation albumLocation)
+        {
+            var albumFinalMixLocation = this.configurationService.GetFinalMixLocationFromAlbumName(albumLocation.AlbumName);
+            if (albumFinalMixLocation != null) 
+            { 
+                var albumArtLocation = Path.Combine(albumFinalMixLocation, CubaseHubConstants.AlbumArt);
+                return Directory.GetFiles(albumArtLocation, "*.*")?.FirstOrDefault();
+            }
+            return null;
+        }
+
+        public bool CopyAlbumArt(AlbumLocation albumLocation, string targetart)
+        {
+            var albumFinalMixLocation = this.configurationService.GetFinalMixLocationFromAlbumName(albumLocation.AlbumName);
+            if (albumFinalMixLocation != null)
+            {
+                var albumArtLocation = Path.Combine(albumFinalMixLocation, CubaseHubConstants.AlbumArt);
+
+                var existingArt = Directory.GetFiles(albumArtLocation, $"{albumLocation.AlbumName}.*");
+                foreach (var delFile in existingArt)
+                {
+                    File.Delete(delFile);
+                }
+
+                File.Copy(targetart, Path.Combine(albumArtLocation, $"{albumLocation.AlbumName}{Path.GetExtension(targetart)}"), true);
+                return true;
+            }
+            return false;
+        }
     }
 }

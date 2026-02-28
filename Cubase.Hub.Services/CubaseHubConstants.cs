@@ -14,10 +14,17 @@ namespace Cubase.Hub.Services
 
         public static string TrackArt = nameof(TrackArt);
 
+        public static string DefaultAlbumArt => "NoImage.png";
+            
         public static string UserAppDataFolderPath =
             System.IO.Path.Combine(
                 Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData),
                 UserAppDataFolderName);
+
+        /// <summary>
+        /// Note these are in order of quality (mp3 worst , wav best) 
+        /// </summary>
+        public static IEnumerable<string> ValidAudioExtensions => [".mp3", ".flac", ".wav"];
 
         public static string ConfigurationFileName = Path.Combine(UserAppDataFolderPath, "CubaseHub.json");
 

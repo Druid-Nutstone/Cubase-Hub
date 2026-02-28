@@ -34,5 +34,10 @@ namespace Cubase.Hub.Services.Track
 
         MixDownCollection GetMixesForAlbum(AlbumLocation albumLocation);
 
+        MixDownCollection GetFinalMixesForAlbum(AlbumLocation albumLocation);
+
+        string? GetTrackCoverArt(MixDown mixDown);
+
+        bool CopyTrackArt(MixDown mixDown, string targetart);
     }
 }

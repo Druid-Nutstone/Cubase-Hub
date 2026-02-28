@@ -24,7 +24,15 @@ namespace Cubase.Hub.Services.Config
             this.directoryService = directoryService;
         }
 
-
+        public string? GetFinalMixLocationFromAlbumName(string albumName)
+        {
+            var albumLocation = this.Configuration.AlbumExports.FirstOrDefault(x => x.Name == albumName);
+            if (albumLocation != null)
+            {
+                return albumLocation.Location;
+            }
+            return null;
+        }
 
         public bool LoadConfiguration(Action? OnLoadError)
         {
