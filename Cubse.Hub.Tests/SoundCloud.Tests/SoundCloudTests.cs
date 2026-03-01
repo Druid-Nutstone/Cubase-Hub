@@ -15,7 +15,10 @@ namespace Cubse.Hub.Tests.SoundCloud.Tests
         {
             var provider = this.serviceProvider.GetKeyedService<IDistributionProvider>(DistributionProvider.SoundCloud);
             provider?.Initialise();
-            provider?.GetTracks();
+            var mixCollection = provider?.GetTracks((err) => 
+            {
+                var error = err;
+            });
         }
     }
 }

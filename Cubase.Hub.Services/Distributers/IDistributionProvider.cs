@@ -9,7 +9,7 @@ namespace Cubase.Hub.Services.Distributers
     {
         void Initialise();
 
-        MixDownCollection GetTracks();
+        MixDownCollection? GetTracks(Action<string> onError);
     
     }
 }

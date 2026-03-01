@@ -27,10 +27,28 @@ namespace Cubase.Hub.Services.Distributers.SoundCloud
 
         private static string BaseAddressString = "https://api.soundcloud.com";
 
-        public MixDownCollection GetTracks()
+        public MixDownCollection? GetTracks(Action<string> onError)
         {
             MixDownCollection tracks = new MixDownCollection();
-            var response = this.GetSync("https://api-v2.soundcloud.com/me/tracks?limit=50");
+            var response = this.GetSync("/me/tracks");
+            if (!response.IsSuccessStatusCode)
+            {
+                onError(response.GetErrorResponse());
+                return null;
+            }
+
+            string error = string.Empty;
+            var soundCloudCollection = response.GetModel<SoundCloudTrackCollection>((err) => 
+            {
+                error = err;
+            });
+            
+            if (soundCloudCollection == null)
+            {
+                onError(error);
+                return null;    
+            }
+
             return tracks;
         }
 
@@ -65,8 +83,8 @@ namespace Cubase.Hub.Services.Distributers.SoundCloud
                 new MediaTypeWithQualityHeaderValue("application/json"));
 
             // Send POST request
-            HttpResponseMessage response = this.PostAsync("/oauth/token", content).Result;
-            var tokenResponse = response.GetModel<SoundCloudTokenResponse>();
+            HttpResponseMessage response = this.PostAsync("https://secure.soundcloud.com/oauth/token", content).Result;
+            var tokenResponse = response.GetModel<SoundCloudTokenResponse>((err) => { });
             return tokenResponse.AccessToken;
         }
 
