@@ -35,10 +35,21 @@ namespace Cubase.Hub.Controls.CompletedMixes.Tracks
             this.mixDown = mixDown;
             InitializeComponent();
             this.InitialiseMixDown();
-            this.LoadArtButton.Click += LoadArtButton_Click;
+            this.ContextMenuStrip = new TrackPlayViewControlContextMenu(this, mixDown, serviceProvider); ;
         }
 
-        private void LoadArtButton_Click(object? sender, EventArgs e)
+        public void Reload()
+        {
+            this.mixDown = this.trackService.PopulateTagsFromFile(this.mixDown.FileName);
+            this.InitialiseMixDown();
+        }
+
+        public void ReBind()
+        {
+            this.InitialiseMixDown();
+        }
+
+        private void ChangeTrackCoverArt()
         {
             var selectFile = new OpenFileDialog();
             selectFile.Filter = "PNG Image (*.png)|*.png|JPEG Image (*.jpg)|*.jpg|All Files (*.*)|*.*";
@@ -52,6 +63,7 @@ namespace Cubase.Hub.Controls.CompletedMixes.Tracks
 
         private void InitialiseMixDown()
         {
+            this.MixSelected.Bind(nameof(MixDown.Selected), this.mixDown);
             this.MixTitle.Bind(nameof(MixDown.Title), this.mixDown);
             this.MixTitle.Cursor = Cursors.Hand;
             this.MixTitle.Click += MixTitle_Click;
@@ -63,6 +75,7 @@ namespace Cubase.Hub.Controls.CompletedMixes.Tracks
             this.MixSize.Bind(nameof(MixDown.Size), this.mixDown);
             this.MixPerformers.Bind(nameof(MixDown.Performers), this.mixDown);
             this.MixCover.TrackCoverFileName = this.GetTrackCover();
+            this.MixCover.OnClicked = this.ChangeTrackCoverArt;
         }
 
         private string? GetTrackCover()

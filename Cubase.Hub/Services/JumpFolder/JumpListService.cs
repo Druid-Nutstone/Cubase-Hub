@@ -47,8 +47,18 @@ namespace Cubase.Hub.Services.JumpFolder
                 IconResourcePath = Path.Combine(Application.StartupPath, "album.ico"),
                 IconResourceIndex = 0
             };
-
             jumpList.JumpItems.Add(openTask);
+
+            JumpTask openMixesTask = new JumpTask
+            {
+                Title = "Open Mixes",
+                Description = "Open Mixes for all Albums",
+                ApplicationPath = Application.ExecutablePath,
+                Arguments = "mixes",
+                IconResourcePath = Path.Combine(Application.StartupPath, "album.ico"),
+                IconResourceIndex = 0
+            };
+            jumpList.JumpItems.Add(openMixesTask);
 
             jumpList.Apply();
         }

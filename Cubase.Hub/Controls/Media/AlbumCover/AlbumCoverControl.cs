@@ -12,10 +12,15 @@ namespace Cubase.Hub.Controls.Media.AlbumCover
 
         [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
         public string AlbumCoverFileName { get; set; }
-        
+
+        [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
+        public Action OnClicked {  get; set; }
+
         public AlbumCoverControl() : base() 
         {
             this.SizeMode = PictureBoxSizeMode.StretchImage; 
+            this.Cursor = Cursors.Hand;
+            this.Click += (s,e) => { this.OnClicked?.Invoke(); };
         }
 
         protected override void OnHandleCreated(EventArgs e)

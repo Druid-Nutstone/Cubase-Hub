@@ -102,20 +102,12 @@ namespace Cubase.Hub.Services.Track
             if (finalMixes != null)
             {
                 List<MixDown> mixes = new List<MixDown>();
-                // loop through any versions in quality order (wav is best then flac then mp3 
-                // so any wav's will replace others 
                 foreach (var validExt in CubaseHubConstants.ValidAudioExtensions)
                 {
-                    var audioFiles = Directory.GetFiles(finalMixes, $"*{validExt}");
+                    var audioFiles = Directory.GetFiles(finalMixes, "*.*");
                     foreach (var audioFile in audioFiles)
                     {
                         var mixdown = this.audioService.AudioPopulateTagsFromFile(audioFile);
-                        // replace any existing mixes 
-                        var existingTitle = mixes.FirstOrDefault(x => x.Title == mixdown.Title);
-                        if (existingTitle != null)
-                        {
-                            mixes.Remove(existingTitle);
-                        } 
                         mixes.Add(mixdown);
                     }
                 }

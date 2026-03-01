@@ -30,8 +30,8 @@
         {
             TopPanel = new Panel();
             CommandPanel = new Panel();
+            SelectAllTracks = new CheckBox();
             PlayAllButton = new Button();
-            AlbumArtButton = new Button();
             AlbumComments = new Cubase.Hub.Controls.BoundControls.BoundLabel();
             AlbumGenre = new Cubase.Hub.Controls.BoundControls.BoundLabel();
             label5 = new Label();
@@ -78,13 +78,23 @@
             // 
             // CommandPanel
             // 
+            CommandPanel.Controls.Add(SelectAllTracks);
             CommandPanel.Controls.Add(PlayAllButton);
-            CommandPanel.Controls.Add(AlbumArtButton);
             CommandPanel.Dock = DockStyle.Bottom;
             CommandPanel.Location = new Point(0, 124);
             CommandPanel.Name = "CommandPanel";
             CommandPanel.Size = new Size(702, 52);
             CommandPanel.TabIndex = 12;
+            // 
+            // SelectAllTracks
+            // 
+            SelectAllTracks.AutoSize = true;
+            SelectAllTracks.Location = new Point(33, 17);
+            SelectAllTracks.Name = "SelectAllTracks";
+            SelectAllTracks.Size = new Size(93, 24);
+            SelectAllTracks.TabIndex = 2;
+            SelectAllTracks.Text = "Select All";
+            SelectAllTracks.UseVisualStyleBackColor = true;
             // 
             // PlayAllButton
             // 
@@ -97,15 +107,6 @@
             PlayAllButton.TabIndex = 1;
             PlayAllButton.Text = "Play All";
             PlayAllButton.UseVisualStyleBackColor = true;
-            // 
-            // AlbumArtButton
-            // 
-            AlbumArtButton.Location = new Point(33, 5);
-            AlbumArtButton.Name = "AlbumArtButton";
-            AlbumArtButton.Size = new Size(94, 41);
-            AlbumArtButton.TabIndex = 0;
-            AlbumArtButton.Text = "Album Art";
-            AlbumArtButton.UseVisualStyleBackColor = true;
             // 
             // AlbumComments
             // 
@@ -187,7 +188,7 @@
             // 
             // AlbumArt
             // 
-            AlbumArt.ImageLocation = "C:\\Users\\david\\AppData\\Local\\Microsoft\\VisualStudio\\18.0_113ede53\\WinFormsDesigner\\up2xp5fj.gfs\\NoImage.png";
+            AlbumArt.ImageLocation = "C:\\Users\\david\\AppData\\Local\\Microsoft\\VisualStudio\\18.0_113ede53\\WinFormsDesigner\\msotpum2.isb\\NoImage.png";
             AlbumArt.Location = new Point(33, 14);
             AlbumArt.Name = "AlbumArt";
             AlbumArt.Size = new Size(125, 104);
@@ -243,6 +244,8 @@
             TrackPlayView.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 100F));
             TrackPlayView.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 100F));
             TrackPlayView.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 100F));
+            TrackPlayView.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 100F));
+            TrackPlayView.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 100F));
             TrackPlayView.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 50F));
             TrackPlayView.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 50F));
             TrackPlayView.Dock = DockStyle.Top;
@@ -283,6 +286,7 @@
             TopPanel.ResumeLayout(false);
             TopPanel.PerformLayout();
             CommandPanel.ResumeLayout(false);
+            CommandPanel.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)AlbumArt).EndInit();
             DataPanel.ResumeLayout(false);
             TrackPanel.ResumeLayout(false);
@@ -311,7 +315,7 @@
         private Panel PlayerPanel;
         private Media.Play.PlayTrackControl PlayTrackControl;
         private Tracks.TrackPlayView TrackPlayView;
-        private Button AlbumArtButton;
         private Button PlayAllButton;
+        private CheckBox SelectAllTracks;
     }
 }

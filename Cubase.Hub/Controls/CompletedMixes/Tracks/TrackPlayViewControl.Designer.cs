@@ -37,14 +37,14 @@
             MixSize = new Cubase.Hub.Controls.BoundControls.BoundLabel();
             MixPerformers = new Cubase.Hub.Controls.BoundControls.BoundLabel();
             MixCover = new Cubase.Hub.Controls.Media.TrackCover.TrackCoverControl();
-            LoadArtButton = new Button();
+            MixSelected = new Cubase.Hub.Controls.BoundControls.BoundCheckbox();
             ((System.ComponentModel.ISupportInitialize)MixCover).BeginInit();
             SuspendLayout();
             // 
             // MixTitle
             // 
             MixTitle.AutoSize = true;
-            MixTitle.Location = new Point(114, 38);
+            MixTitle.Location = new Point(187, 38);
             MixTitle.Name = "MixTitle";
             MixTitle.Size = new Size(67, 20);
             MixTitle.TabIndex = 0;
@@ -53,7 +53,7 @@
             // MixTrackNo
             // 
             MixTrackNo.AutoSize = true;
-            MixTrackNo.Location = new Point(285, 38);
+            MixTrackNo.Location = new Point(358, 38);
             MixTrackNo.Name = "MixTrackNo";
             MixTrackNo.Size = new Size(63, 20);
             MixTrackNo.TabIndex = 1;
@@ -62,7 +62,7 @@
             // MixDuration
             // 
             MixDuration.AutoSize = true;
-            MixDuration.Location = new Point(345, 38);
+            MixDuration.Location = new Point(418, 38);
             MixDuration.Name = "MixDuration";
             MixDuration.Size = new Size(45, 20);
             MixDuration.TabIndex = 2;
@@ -71,7 +71,7 @@
             // MixAudioType
             // 
             MixAudioType.AutoSize = true;
-            MixAudioType.Location = new Point(408, 38);
+            MixAudioType.Location = new Point(481, 38);
             MixAudioType.Name = "MixAudioType";
             MixAudioType.Size = new Size(53, 20);
             MixAudioType.TabIndex = 3;
@@ -80,7 +80,7 @@
             // MixBitrate
             // 
             MixBitrate.AutoSize = true;
-            MixBitrate.Location = new Point(467, 38);
+            MixBitrate.Location = new Point(540, 38);
             MixBitrate.Name = "MixBitrate";
             MixBitrate.Size = new Size(57, 20);
             MixBitrate.TabIndex = 4;
@@ -89,7 +89,7 @@
             // MixSampleRate
             // 
             MixSampleRate.AutoSize = true;
-            MixSampleRate.Location = new Point(530, 38);
+            MixSampleRate.Location = new Point(603, 38);
             MixSampleRate.Name = "MixSampleRate";
             MixSampleRate.Size = new Size(89, 20);
             MixSampleRate.TabIndex = 5;
@@ -98,7 +98,7 @@
             // MixSize
             // 
             MixSize.AutoSize = true;
-            MixSize.Location = new Point(625, 38);
+            MixSize.Location = new Point(698, 38);
             MixSize.Name = "MixSize";
             MixSize.Size = new Size(36, 20);
             MixSize.TabIndex = 6;
@@ -107,7 +107,7 @@
             // MixPerformers
             // 
             MixPerformers.AutoSize = true;
-            MixPerformers.Location = new Point(697, 38);
+            MixPerformers.Location = new Point(770, 38);
             MixPerformers.Name = "MixPerformers";
             MixPerformers.Size = new Size(104, 20);
             MixPerformers.TabIndex = 7;
@@ -115,29 +115,28 @@
             // 
             // MixCover
             // 
-            MixCover.ImageLocation = "C:\\Users\\david\\AppData\\Local\\Microsoft\\VisualStudio\\18.0_113ede53\\WinFormsDesigner\\bnvyi04p.kmd\\NoImage.png";
-            MixCover.Location = new Point(23, 16);
+            MixCover.ImageLocation = "C:\\Users\\david\\AppData\\Local\\Microsoft\\VisualStudio\\18.0_113ede53\\WinFormsDesigner\\qifkpeev.tzi\\NoImage.png";
+            MixCover.Location = new Point(96, 16);
             MixCover.Name = "MixCover";
             MixCover.Size = new Size(65, 62);
             MixCover.SizeMode = PictureBoxSizeMode.StretchImage;
             MixCover.TabIndex = 8;
             MixCover.TabStop = false;
             // 
-            // LoadArtButton
+            // MixSelected
             // 
-            LoadArtButton.Anchor = AnchorStyles.Top | AnchorStyles.Right;
-            LoadArtButton.Location = new Point(954, 34);
-            LoadArtButton.Name = "LoadArtButton";
-            LoadArtButton.Size = new Size(45, 29);
-            LoadArtButton.TabIndex = 9;
-            LoadArtButton.Text = "Art";
-            LoadArtButton.UseVisualStyleBackColor = true;
+            MixSelected.AutoSize = true;
+            MixSelected.Location = new Point(28, 37);
+            MixSelected.Name = "MixSelected";
+            MixSelected.Size = new Size(18, 17);
+            MixSelected.TabIndex = 10;
+            MixSelected.UseVisualStyleBackColor = true;
             // 
             // TrackPlayViewControl
             // 
             AutoScaleDimensions = new SizeF(8F, 20F);
             AutoScaleMode = AutoScaleMode.Font;
-            Controls.Add(LoadArtButton);
+            Controls.Add(MixSelected);
             Controls.Add(MixCover);
             Controls.Add(MixPerformers);
             Controls.Add(MixSize);
@@ -165,6 +164,6 @@
         private BoundControls.BoundLabel MixSize;
         private BoundControls.BoundLabel MixPerformers;
         private Media.TrackCover.TrackCoverControl MixCover;
-        private Button LoadArtButton;
+        private BoundControls.BoundCheckbox MixSelected;
     }
 }

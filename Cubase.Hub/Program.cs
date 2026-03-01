@@ -85,6 +85,15 @@ namespace Cubase.Hub
                     return true;
                 }
 
+
+                if (args[0] == "mixes")
+                {
+                    var form = serviceProvider.GetRequiredService<CompletedMixesForm>();
+                    form.InitialiseMixes();
+                    Application.Run(form);
+                    return true;
+                }
+
                 if (args[0] == "minimise")
                 {
                     var form = serviceProvider.GetRequiredService<MainForm>();

@@ -12,7 +12,10 @@ namespace Cubase.Hub.Controls.Media.TrackCover
 
         [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
         public string TrackCoverFileName { get; set; }
-        
+
+        [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
+        public Action OnClicked { get; set; }
+
         public TrackCoverControl() : base() 
         {
             this.SizeMode = PictureBoxSizeMode.StretchImage; 
@@ -22,6 +25,8 @@ namespace Cubase.Hub.Controls.Media.TrackCover
         {
             base.OnHandleCreated(e);
             this.RefreshImage();
+            this.Cursor = Cursors.Hand;
+            this.Click += (s, e) => { this.OnClicked?.Invoke(); };
         }
 
         public void RefreshImage() 

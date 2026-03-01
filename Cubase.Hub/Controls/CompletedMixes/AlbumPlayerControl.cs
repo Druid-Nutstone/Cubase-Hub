@@ -40,8 +40,15 @@ namespace Cubase.Hub.Controls.CompletedMixes
             this.trackService = this.serviceProvider.GetService<ITrackService>();
             this.PlayTrackControl.TrackService = this.trackService;
             this.PlayTrackControl.ShowPlay = false;
-            this.AlbumArtButton.Click += AlbumArt_Click;
+            this.AlbumArt.OnClicked = this.ChangeAlbumArt;
             this.PlayAllButton.Click += PlayAllButton_Click;
+            this.SelectAllTracks.CheckedChanged += SelectAllTracks_CheckedChanged;
+        }
+
+        private void SelectAllTracks_CheckedChanged(object? sender, EventArgs e)
+        {
+            this.tracks.SelectDeSelectMixes(this.SelectAllTracks.Checked);
+            this.TrackPlayView.ShowMixes(tracks, this.serviceProvider, this.PlayTrackControl);
         }
 
         private void PlayAllButton_Click(object? sender, EventArgs e)
@@ -53,7 +60,7 @@ namespace Cubase.Hub.Controls.CompletedMixes
         }
 
 
-        private void AlbumArt_Click(object? sender, EventArgs e)
+        private void ChangeAlbumArt()
         {
             var selectFile = new OpenFileDialog();
             selectFile.Filter = "PNG Image (*.png)|*.png|JPEG Image (*.jpg)|*.jpg|All Files (*.*)|*.*";

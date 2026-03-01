@@ -129,9 +129,10 @@ namespace Cubase.Hub.Forms.Mixes
         public void Initialise(MixDownCollection mixDowns)
         {
             this.Mixes = mixDowns;
+            
             if (mixDowns.Count > 0)
             {
-                this.TargetDirectory.Text = this.Mixes.First().ExportLocation ?? string.Empty;
+                this.TargetDirectory.Text = this.configurationService.GetFinalMixLocationFromAlbumName(mixDowns[0].Album) ?? string.Empty;
             }
             this.InitialiseControls();
         }
