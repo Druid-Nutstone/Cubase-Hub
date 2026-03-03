@@ -30,11 +30,14 @@
         {
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(CompletedMixesForm));
             MenuPanel = new Panel();
+            MenuTreePanel = new Panel();
+            panel1 = new Panel();
+            label1 = new Label();
             splitter1 = new Splitter();
             DataPanel = new Panel();
-            panel1 = new Panel();
-            MenuTreePanel = new Panel();
+            Distributer = new Cubase.Hub.Controls.BoundControls.BoundEnumComboBox();
             MenuPanel.SuspendLayout();
+            panel1.SuspendLayout();
             SuspendLayout();
             // 
             // MenuPanel
@@ -46,6 +49,34 @@
             MenuPanel.Name = "MenuPanel";
             MenuPanel.Size = new Size(250, 450);
             MenuPanel.TabIndex = 0;
+            // 
+            // MenuTreePanel
+            // 
+            MenuTreePanel.Dock = DockStyle.Fill;
+            MenuTreePanel.Location = new Point(0, 86);
+            MenuTreePanel.Name = "MenuTreePanel";
+            MenuTreePanel.Size = new Size(250, 364);
+            MenuTreePanel.TabIndex = 1;
+            // 
+            // panel1
+            // 
+            panel1.Controls.Add(Distributer);
+            panel1.Controls.Add(label1);
+            panel1.Dock = DockStyle.Top;
+            panel1.Location = new Point(0, 0);
+            panel1.Name = "panel1";
+            panel1.Size = new Size(250, 86);
+            panel1.TabIndex = 0;
+            // 
+            // label1
+            // 
+            label1.AutoSize = true;
+            label1.Font = new Font("Segoe UI", 9F, FontStyle.Bold);
+            label1.Location = new Point(12, 19);
+            label1.Name = "label1";
+            label1.Size = new Size(85, 20);
+            label1.TabIndex = 0;
+            label1.Text = "Distributer";
             // 
             // splitter1
             // 
@@ -63,21 +94,13 @@
             DataPanel.Size = new Size(546, 450);
             DataPanel.TabIndex = 2;
             // 
-            // panel1
+            // Distributer
             // 
-            panel1.Dock = DockStyle.Top;
-            panel1.Location = new Point(0, 0);
-            panel1.Name = "panel1";
-            panel1.Size = new Size(250, 57);
-            panel1.TabIndex = 0;
-            // 
-            // MenuTreePanel
-            // 
-            MenuTreePanel.Dock = DockStyle.Fill;
-            MenuTreePanel.Location = new Point(0, 57);
-            MenuTreePanel.Name = "MenuTreePanel";
-            MenuTreePanel.Size = new Size(250, 393);
-            MenuTreePanel.TabIndex = 1;
+            Distributer.FormattingEnabled = true;
+            Distributer.Location = new Point(12, 42);
+            Distributer.Name = "Distributer";
+            Distributer.Size = new Size(151, 28);
+            Distributer.TabIndex = 1;
             // 
             // CompletedMixesForm
             // 
@@ -92,6 +115,8 @@
             StartPosition = FormStartPosition.CenterParent;
             Text = "Completed Mixes";
             MenuPanel.ResumeLayout(false);
+            panel1.ResumeLayout(false);
+            panel1.PerformLayout();
             ResumeLayout(false);
         }
 
@@ -102,5 +127,7 @@
         private Panel DataPanel;
         private Panel MenuTreePanel;
         private Panel panel1;
+        private Label label1;
+        private Controls.BoundControls.BoundEnumComboBox Distributer;
     }
 }

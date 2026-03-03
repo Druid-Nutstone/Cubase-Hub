@@ -29,6 +29,7 @@ namespace Cubase.Hub.Services.Album
     
         string? GetAlbumArt(AlbumLocation albumLocation);
 
+        string? GetAlbumArt(AlbumConfiguration albumConfiguration);
         bool CopyAlbumArt(AlbumLocation albumLocation, string targetart);
     }
 }

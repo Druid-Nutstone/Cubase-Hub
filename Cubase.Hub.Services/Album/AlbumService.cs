@@ -113,6 +113,11 @@ namespace Cubase.Hub.Services.Album
             this.directoryService.MakeSureDirectoryExists(Path.Combine(albumExportLocation, CubaseHubConstants.TrackArt));
         }
 
+        public string GetAlbumArt(AlbumConfiguration albumConfiguration)
+        {
+            return this.GetAlbumArt(new AlbumLocation() { AlbumName = albumConfiguration.Title });
+        }
+
         public string? GetAlbumArt(AlbumLocation albumLocation)
         {
             var albumFinalMixLocation = this.configurationService.GetFinalMixLocationFromAlbumName(albumLocation.AlbumName);

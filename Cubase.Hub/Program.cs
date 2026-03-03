@@ -6,6 +6,8 @@ using Cubase.Hub.Forms;
 using Cubase.Hub.Forms.Albums;
 using Cubase.Hub.Forms.CompletedMixes;
 using Cubase.Hub.Forms.Config;
+using Cubase.Hub.Forms.Distributers;
+using Cubase.Hub.Forms.Distributers.SoundCloud;
 using Cubase.Hub.Forms.Edit;
 using Cubase.Hub.Forms.Export;
 using Cubase.Hub.Forms.Main;
@@ -18,6 +20,7 @@ using Cubase.Hub.Services.Config;
 using Cubase.Hub.Services.Cubase;
 using Cubase.Hub.Services.Distributers;
 using Cubase.Hub.Services.Distributers.RouteNoteDistro;
+using Cubase.Hub.Services.Distributers.SoundCloud;
 using Cubase.Hub.Services.FileAndDirectory;
 using Cubase.Hub.Services.JumpFolder;
 using Cubase.Hub.Services.Messages;
@@ -126,6 +129,7 @@ namespace Cubase.Hub
                 .AddScoped<NewTrackForm>()
                 .AddScoped<ManageAlbumsForm>()
                 .AddScoped<ManageMixesForm>()
+                .AddKeyedScoped<IDistributerForm, SoundCloudDistributer>(DistributionProvider.SoundCloud)
                 .AddScoped<EditTrackForm>()
                 .AddTransient<PlayControl>()
                 .AddTransient<ExportProjectControl>()
@@ -133,6 +137,7 @@ namespace Cubase.Hub
                 .AddTransient<CubaseProjectItemControl>()
                 .AddTransient<CubaseProjectExtendedPropertiesControl>()
                 .AddTransient<CubaseProjectItemMixesControl>()
+                .AddTransient<SoundCloudDistributionProvider>()
                 .AddSingleton<IMessageService, MessageService>()
                 .AddSingleton<IConfigurationService, ConfigurationService>()
                 .AddSingleton<IDirectoryService, DirectoryService>()

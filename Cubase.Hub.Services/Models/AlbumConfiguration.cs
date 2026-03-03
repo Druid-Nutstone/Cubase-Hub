@@ -13,6 +13,7 @@ namespace Cubase.Hub.Services.Models
         private string _genre = "Unknown";
         private string _comments;
 
+
         public event PropertyChangedEventHandler PropertyChanged;
 
         protected void OnPropertyChanged([CallerMemberName] string propertyName = null)
@@ -83,6 +84,14 @@ namespace Cubase.Hub.Services.Models
 
             propertyInError = string.Empty;
             return true;
+        }
+
+        public string? AlbumArt { get; set; }
+
+        public AlbumConfiguration WithAlbumArt(string albumArtLocation)
+        {
+            AlbumArt = albumArtLocation;
+            return this;
         }
 
         public bool SaveToDirectory(string directoryPath)

@@ -8,7 +8,10 @@ namespace Cubase.Hub.Services.Distributers.SoundCloud
 
     public class SoundCloudTrackCollection : List<SoundCloudTrack>
     {
-
+        public SoundCloudTrack? GetTrackByTitle(string title)
+        {
+            return this.FirstOrDefault(x => x.Title == title);
+        }
     }
 
     public class SoundCloudTrack
@@ -17,7 +20,7 @@ namespace Cubase.Hub.Services.Distributers.SoundCloud
         public string? Kind { get; set; }
 
         [JsonPropertyName("id")]
-        public long Id { get; set; }
+        public long? Id { get; set; }
 
         [JsonPropertyName("urn")]
         public string? Urn { get; set; }
@@ -26,13 +29,13 @@ namespace Cubase.Hub.Services.Distributers.SoundCloud
         public string? CreatedAt { get; set; }
 
         [JsonPropertyName("duration")]
-        public int Duration { get; set; }
+        public int? Duration { get; set; }
 
         [JsonPropertyName("commentable")]
-        public bool Commentable { get; set; }
+        public bool? Commentable { get; set; }
 
         [JsonPropertyName("comment_count")]
-        public int CommentCount { get; set; }
+        public int? CommentCount { get; set; }
 
         [JsonPropertyName("sharing")]
         public string? Sharing { get; set; }
@@ -41,7 +44,7 @@ namespace Cubase.Hub.Services.Distributers.SoundCloud
         public string? TagList { get; set; }
 
         [JsonPropertyName("streamable")]
-        public bool Streamable { get; set; }
+        public bool? Streamable { get; set; }
 
         [JsonPropertyName("embeddable_by")]
         public string? EmbeddableBy { get; set; }
@@ -116,25 +119,25 @@ namespace Cubase.Hub.Services.Distributers.SoundCloud
         public string? SecretUri { get; set; }
 
         [JsonPropertyName("user_favorite")]
-        public bool UserFavorite { get; set; }
+        public bool? UserFavorite { get; set; }
 
         [JsonPropertyName("user_playback_count")]
         public int? UserPlaybackCount { get; set; }
 
         [JsonPropertyName("playback_count")]
-        public int PlaybackCount { get; set; }
+        public int? PlaybackCount { get; set; }
 
         [JsonPropertyName("download_count")]
-        public int DownloadCount { get; set; }
+        public int? DownloadCount { get; set; }
 
         [JsonPropertyName("favoritings_count")]
-        public int FavoritingsCount { get; set; }
+        public int? FavoritingsCount { get; set; }
 
         [JsonPropertyName("reposts_count")]
-        public int RepostsCount { get; set; }
+        public int? RepostsCount { get; set; }
 
         [JsonPropertyName("downloadable")]
-        public bool Downloadable { get; set; }
+        public bool? Downloadable { get; set; }
 
         [JsonPropertyName("access")]
         public string? Access { get; set; }
@@ -155,7 +158,7 @@ namespace Cubase.Hub.Services.Distributers.SoundCloud
         public string? AvatarUrl { get; set; }
 
         [JsonPropertyName("id")]
-        public long Id { get; set; }
+        public long? Id { get; set; }
 
         [JsonPropertyName("urn")]
         public string? Urn { get; set; }
@@ -200,19 +203,19 @@ namespace Cubase.Hub.Services.Distributers.SoundCloud
         public string? Country { get; set; }
 
         [JsonPropertyName("track_count")]
-        public int TrackCount { get; set; }
+        public int? TrackCount { get; set; }
 
         [JsonPropertyName("public_favorites_count")]
-        public int PublicFavoritesCount { get; set; }
+        public int? PublicFavoritesCount { get; set; }
 
         [JsonPropertyName("reposts_count")]
-        public int RepostsCount { get; set; }
+        public int? RepostsCount { get; set; }
 
         [JsonPropertyName("followers_count")]
-        public int FollowersCount { get; set; }
+        public int? FollowersCount { get; set; }
 
         [JsonPropertyName("followings_count")]
-        public int FollowingsCount { get; set; }
+        public int? FollowingsCount { get; set; }
 
         [JsonPropertyName("plan")]
         public string? Plan { get; set; }
@@ -230,16 +233,16 @@ namespace Cubase.Hub.Services.Distributers.SoundCloud
         public string? Website { get; set; }
 
         [JsonPropertyName("comments_count")]
-        public int CommentsCount { get; set; }
+        public int? CommentsCount { get; set; }
 
         [JsonPropertyName("online")]
-        public bool Online { get; set; }
+        public bool? Online { get; set; }
 
         [JsonPropertyName("likes_count")]
-        public int LikesCount { get; set; }
+        public int? LikesCount { get; set; }
 
         [JsonPropertyName("playlist_count")]
-        public int PlaylistCount { get; set; }
+        public int? PlaylistCount { get; set; }
 
         [JsonPropertyName("subscriptions")]
         public List<SoundCloudSubscription>? Subscriptions { get; set; }

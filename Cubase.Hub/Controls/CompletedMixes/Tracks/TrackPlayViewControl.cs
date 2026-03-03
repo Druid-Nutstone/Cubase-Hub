@@ -1,4 +1,5 @@
 ﻿using Cubase.Hub.Controls.Media.Play;
+using Cubase.Hub.Forms.Distributers;
 using Cubase.Hub.Services.Models;
 using Cubase.Hub.Services.Track;
 using Microsoft.Extensions.DependencyInjection;
@@ -20,6 +21,8 @@ namespace Cubase.Hub.Controls.CompletedMixes.Tracks
 
         private readonly ITrackService trackService;
 
+        private readonly IDistributerForm? distributerForm;
+
         private MixDown mixDown;
 
         public TrackPlayViewControl()
@@ -27,10 +30,11 @@ namespace Cubase.Hub.Controls.CompletedMixes.Tracks
             InitializeComponent();
         }
 
-        public TrackPlayViewControl(MixDown mixDown, IServiceProvider serviceProvider, PlayTrackControl playTrackControl)
+        public TrackPlayViewControl(MixDown mixDown, IServiceProvider serviceProvider, PlayTrackControl playTrackControl, IDistributerForm? distributerForm)
         {
             this.serviceProvider = serviceProvider;
             this.playTrackControl = playTrackControl;
+            this.distributerForm = distributerForm;
             this.trackService = serviceProvider.GetService<ITrackService>();
             this.mixDown = mixDown;
             InitializeComponent();

@@ -1,4 +1,5 @@
 ﻿using Cubase.Hub.Forms.BaseForm;
+using Cubase.Hub.Forms.Distributers;
 using Cubase.Hub.Services.Album;
 using Cubase.Hub.Services.Models;
 using Cubase.Hub.Services.Track;
@@ -22,6 +23,8 @@ namespace Cubase.Hub.Controls.CompletedMixes
 
         private readonly ITrackService trackService;
 
+        private readonly IDistributerForm? distributerForm;
+
         private AlbumLocation albumLocation;
 
         private MixDownCollection tracks;
@@ -31,11 +34,12 @@ namespace Cubase.Hub.Controls.CompletedMixes
             InitializeComponent();
         }
 
-        public AlbumPlayerControl(IServiceProvider serviceProvider)
+        public AlbumPlayerControl(IServiceProvider serviceProvider, IDistributerForm? distributerForm)
         {
             InitializeComponent();
             ThemeApplier.ApplyDarkTheme(this);
             this.serviceProvider = serviceProvider;
+            this.distributerForm = distributerForm;
             this.albumService = this.serviceProvider.GetService<IAlbumService>();
             this.trackService = this.serviceProvider.GetService<ITrackService>();
             this.PlayTrackControl.TrackService = this.trackService;
@@ -43,12 +47,22 @@ namespace Cubase.Hub.Controls.CompletedMixes
             this.AlbumArt.OnClicked = this.ChangeAlbumArt;
             this.PlayAllButton.Click += PlayAllButton_Click;
             this.SelectAllTracks.CheckedChanged += SelectAllTracks_CheckedChanged;
+            if (distributerForm != null)
+            {
+                this.DistributerPanel.Controls.Clear();
+                var distributerMainControl = this.distributerForm.MainControl;
+                if (distributerMainControl != null)
+                {
+                    distributerMainControl.Dock = DockStyle.Fill;
+                    this.DistributerPanel.Controls.Add(distributerMainControl);
+                }
+            }
         }
 
         private void SelectAllTracks_CheckedChanged(object? sender, EventArgs e)
         {
             this.tracks.SelectDeSelectMixes(this.SelectAllTracks.Checked);
-            this.TrackPlayView.ShowMixes(tracks, this.serviceProvider, this.PlayTrackControl);
+            this.TrackPlayView.ShowMixes(tracks, this.serviceProvider, this.PlayTrackControl, this.distributerForm);
         }
 
         private void PlayAllButton_Click(object? sender, EventArgs e)
@@ -85,7 +99,8 @@ namespace Cubase.Hub.Controls.CompletedMixes
             AlbumGenre.Bind(nameof(AlbumConfiguration.Genre), albumDetail);
             AlbumComments.Bind(nameof(AlbumConfiguration.Comments), albumDetail);
             this.tracks = this.trackService.GetFinalMixesForAlbum(albumLocation);
-            this.TrackPlayView.ShowMixes(tracks, this.serviceProvider, this.PlayTrackControl);
+            this.TrackPlayView.ShowMixes(tracks, this.serviceProvider, this.PlayTrackControl, this.distributerForm);
+            this.distributerForm?.SetAlbum(albumDetail, this.tracks);
         }
 
         private void GetAlbumArt()

@@ -6,6 +6,8 @@ namespace Cubase.Hub.Services.Models
 {
     public enum DistributionProvider
     {
-       SoundCloud
+       SoundCloud,
+       WhatsApp,
+       None,
     }
 }

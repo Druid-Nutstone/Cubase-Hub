@@ -190,6 +190,20 @@ namespace Cubase.Hub.Services.Models
 
         public int SampleRate { get; set; }
 
+        public string GetContentType()
+        {
+            switch (this._audioType.ToLower())
+            {
+                default:
+                case "wav":
+                    return "audio/wav";
+                case "mp3":
+                    return "audio/mpeg";
+                case "flac":
+                    return "audio/flac";
+            }
+        }
+
         public static MixDown CreateFromFile(string file)
         {
             return new MixDown

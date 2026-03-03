@@ -21,6 +21,24 @@ namespace Cubase.Hub.Services.Distributers.SoundCloud
             }
         }
 
+        public static string GetMimeType(this string fullPath)
+        {
+            var mimeExt = Path.GetExtension(fullPath)?.ToLowerInvariant();
+
+            switch (mimeExt)
+            {
+                case ".jpg":
+                case ".jpeg":
+                    return "image/jpeg";
+
+                case ".png":
+                    return "image/png";
+
+                default:
+                    return "application/octet-stream";
+            }
+        }
+
         public static string GetErrorResponse(this HttpResponseMessage message)
         {
             return message.Content.ReadAsStringAsync().Result;  

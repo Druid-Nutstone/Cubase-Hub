@@ -18,5 +18,17 @@ namespace Cubase.Hub.Services.Distributers.SoundCloud
 
         [JsonPropertyName("refresh_token")]
         public string RefreshToken { get; set; }
+
+        [JsonIgnore]
+        public DateTime ExpiresAt { get; set; }
+
+        [JsonIgnore]
+        public bool HasExpired => ExpiresAt <= DateTime.UtcNow;
+
+        public void SetExpires() 
+        { 
+           this.ExpiresAt = DateTime.UtcNow.AddSeconds(ExpiresIn);  
+        } 
+    
     }
 }

@@ -26,6 +26,7 @@ namespace Cubase.Hub.Services.Config
 
         public string? GetFinalMixLocationFromAlbumName(string albumName)
         {
+            this.EnsureThereisAConfiguration();
             var albumLocation = this.Configuration.AlbumExports.FirstOrDefault(x => x.Name == albumName);
             if (albumLocation != null)
             {
@@ -58,6 +59,16 @@ namespace Cubase.Hub.Services.Config
             this.LastModified = this.GetLastModifiedFromFile();
         }
 
+        private void EnsureThereisAConfiguration()
+        {
+            if (this.configuration == null)
+            {
+                this.LoadConfiguration(() => 
+                {
+                    this.configuration = new CubaseHubConfiguration(); 
+                });
+            }
+        }
 
         private DateTime GetLastModifiedFromFile()
         {

@@ -1,10 +1,12 @@
 ﻿using Cubase.Hub.Controls.CompletedMixes;
 using Cubase.Hub.Forms.BaseForm;
+using Cubase.Hub.Forms.Distributers;
 using Cubase.Hub.Services.Album;
 using Cubase.Hub.Services.Config;
 using Cubase.Hub.Services.Messages;
 using Cubase.Hub.Services.Models;
 using Cubase.Hub.Services.Track;
+using Microsoft.Extensions.DependencyInjection;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -27,6 +29,10 @@ namespace Cubase.Hub.Forms.CompletedMixes
 
         private readonly IServiceProvider serviceProvider;
 
+        private DistributionProvider distributionProviderType = DistributionProvider.None; 
+
+        private IDistributerForm distributerForm;   
+
         public CompletedMixesForm()
         {
             InitializeComponent();
@@ -45,6 +51,8 @@ namespace Cubase.Hub.Forms.CompletedMixes
             this.serviceProvider = serviceProvider;
             this.configurationService = configurationService;
             ThemeApplier.ApplyDarkTheme(this);
+            this.Distributer.EnumType = typeof(DistributionProvider);
+            this.Distributer.OnEnumSelected = this.DistributerSelected; 
         }
 
         public void InitialiseMixes()
@@ -52,6 +60,22 @@ namespace Cubase.Hub.Forms.CompletedMixes
             this.LoadPosition();
             this.LoadCompletedMixes();
             ThemeApplier.ApplyDarkTheme(this);
+        }
+
+        private void DistributerSelected(object distributionProviderEnum)
+        {
+            this.distributionProviderType = (DistributionProvider)distributionProviderEnum;
+            this.distributerForm = this.serviceProvider.GetKeyedService<IDistributerForm>(this.distributionProviderType);
+            if (distributerForm != null)
+            {
+                distributerForm.Initialise();
+                this.LoadCompletedMixes();
+                ThemeApplier.ApplyDarkTheme(this);
+            }
+            else
+            {
+                this.messageService.ShowError($"Cannot initialise distribution provider for {this.distributionProviderType}");
+            }
         }
 
         private void LoadCompletedMixes()
@@ -72,7 +96,7 @@ namespace Cubase.Hub.Forms.CompletedMixes
         {
             this.trackService.StopTrack(); // stop any existing tracks playing !!
             this.DataPanel.Controls.Clear();
-            var albumPlayer = new AlbumPlayerControl(this.serviceProvider);
+            var albumPlayer = new AlbumPlayerControl(this.serviceProvider, this.distributerForm);
             albumPlayer.Dock = DockStyle.Fill;
             this.DataPanel.Controls.Add(albumPlayer);
             albumPlayer.Play(albumLocation);
