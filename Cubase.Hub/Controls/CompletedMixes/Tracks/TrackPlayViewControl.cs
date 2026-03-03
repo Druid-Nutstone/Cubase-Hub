@@ -23,6 +23,8 @@ namespace Cubase.Hub.Controls.CompletedMixes.Tracks
 
         private readonly IDistributerForm? distributerForm;
 
+        private IDistributerTrackControl? distributerTrackControl;
+
         private MixDown mixDown;
 
         public TrackPlayViewControl()
@@ -40,6 +42,19 @@ namespace Cubase.Hub.Controls.CompletedMixes.Tracks
             InitializeComponent();
             this.InitialiseMixDown();
             this.ContextMenuStrip = new TrackPlayViewControlContextMenu(this, mixDown, serviceProvider); ;
+            if (this.distributerForm != null)
+            {
+                this.DistributerPanel.Controls.Clear();
+                var trackPanel = this.distributerForm.TrackControl;
+                trackPanel.Dock = DockStyle.Fill;
+                this.DistributerPanel.Controls.Add(trackPanel);
+                this.distributerTrackControl = (IDistributerTrackControl)trackPanel;
+                this.distributerTrackControl.SetMix(this.mixDown);
+            }
+            else
+            {
+                this.DistributerPanel.Visible = false;
+            }
         }
 
         public void Reload()

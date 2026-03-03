@@ -5,6 +5,7 @@ using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
+using System.Diagnostics;
 using System.Drawing;
 using System.Text;
 using System.Windows.Forms;
@@ -34,13 +35,52 @@ namespace Cubase.Hub.Forms.Distributers.SoundCloud
             this.parentForm = parentForm;
             this.UploadSelected.Click += UploadSelected_Click;
             this.OpenDistribution.Click += OpenDistribution_Click;
-            this.CreateAlbum.Click += CreateAlbum_Click;
+            this.DeleteSelected.Click += DeleteSelected_Click;
+            this.OpenAlbumLink.Click += OpenAlbumLink_Click;
+            this.CopyLink.GetClipBoardText = this.CopyLinkClick;
             ThemeApplier.ApplyDarkTheme(this);  
         }
 
-        private void CreateAlbum_Click(object? sender, EventArgs e)
+        private string CopyLinkClick()
         {
-            this.parentForm.CreateAlbum();
+            return this.GetAlbumUrl();
+        }
+
+        private void OpenAlbumLink_Click(object? sender, EventArgs e)
+        {
+            var url = GetAlbumUrl();
+            if (!string.IsNullOrEmpty(url))
+            {
+                Process p = new Process()
+                {
+                    StartInfo = new ProcessStartInfo()
+                    {
+                        FileName = url,
+                        UseShellExecute = true,
+                    }
+                };
+                p.Start();
+            }
+        }
+
+        private string? GetAlbumUrl()
+        {
+            var playLists = this.soundCloud.GetPlayLists((err) => { });
+            if (playLists != null)
+            {
+                var album = playLists.GetAlbum(this.albumConfiguration.Title);
+                if (album != null)
+                {
+                    return album.PermalinkUrl;
+                }
+                return null;
+            }
+            return null;
+        }
+
+        private void DeleteSelected_Click(object? sender, EventArgs e)
+        {
+            this.parentForm.DeleteSelected();
         }
 
         private void OpenDistribution_Click(object? sender, EventArgs e)
@@ -59,7 +99,7 @@ namespace Cubase.Hub.Forms.Distributers.SoundCloud
         {
             this.albumConfiguration = albumConfiguration;
             this.mixDowns = mixDowns;
-            this.CreateAlbum.Visible = !playLists.HaveAlbum(albumConfiguration.Title);
+            this.OpenAlbumLink.Text = $"Open {albumConfiguration.Title} on SoundCloud";
         }
     }
 }

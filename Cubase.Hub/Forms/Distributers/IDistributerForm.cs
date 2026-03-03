@@ -12,5 +12,7 @@ namespace Cubase.Hub.Forms.Distributers
         UserControl MainControl { get; }
 
         void SetAlbum(AlbumConfiguration albumConfiguration, MixDownCollection mixDowns); 
+    
+        UserControl TrackControl { get; }
     }
 }

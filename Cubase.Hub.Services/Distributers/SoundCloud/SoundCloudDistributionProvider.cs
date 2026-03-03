@@ -50,6 +50,63 @@ namespace Cubase.Hub.Services.Distributers.SoundCloud
             this.trackService = trackService;
         }
 
+        public bool OrderAlbumTracks(string albumName, Action<string> onError, Action<string> onProgress)
+        {
+            onProgress.Invoke("Locading Tracks ..");
+            var tracks = this.GetTracks(onError);
+            if (tracks != null)
+            {
+                onProgress.Invoke("Loading PlayLists ..");
+                var playlists = this.GetPlayLists(onError);
+                if (playlists != null)
+                {
+                    return false;
+                }
+                var playListAlbum = playlists.GetAlbum(albumName);
+                if (playListAlbum != null)
+                {
+                    onProgress.Invoke($"Locating Album {albumName}");
+
+                    // get all albums 
+                    var allMixAlbums = this.albumService.GetAlbumList(onError);
+                    if (allMixAlbums != null)
+                    {
+                        onProgress.Invoke("Re-ordering tracks in the album ..");
+                        var targetAlbum = allMixAlbums.FirstOrDefault(x => x.AlbumName == albumName);
+                        if (targetAlbum != null)
+                        {
+                            var trackRefs = new List<TrackRef>();
+                            foreach (var item in this.albumService.GetMixesForAlbum(targetAlbum))
+                            {
+                                var playListTrack = tracks.FirstOrDefault(x => x.Title == item.Title); 
+                                if (playListTrack != null)
+                                {
+                                    trackRefs.Add(new TrackRef() { Urn = playListTrack.Urn });
+                                } 
+                            }
+                            var trackRequest = new UpdatePlaylistRequest()
+                            {
+                                Playlist = new PlaylistUpdate()
+                                {
+                                    Tracks = trackRefs
+                                }
+                            };
+                            var response = this.PutAsJsonAsync<UpdatePlaylistRequest>($"/playlists/{playListAlbum.Urn}", trackRequest).Result;
+                            if (!response.IsSuccessStatusCode)
+                            {
+                                onError.Invoke(response.GetErrorResponse());
+                                return false;
+                            }
+                            return true;
+                        }
+                    }
+                    
+                }
+            }
+            return false;
+        }
+
+
         public SoundCloudTrack? UploadTrack(MixDown mixDown, Action<string> onError)
         {
             if (!this.EnsureConnectionAndToken(onError))
@@ -130,6 +187,17 @@ namespace Cubase.Hub.Services.Distributers.SoundCloud
             }
             return newTrack;
         }
+
+        public SoundCloudPlaylist? GetAlbum(MixDown mixDown, Action<string> onError)
+        {
+            var playlists = this.GetPlayLists(onError);
+            if (playlists == null)
+            {
+                return null;
+            }
+            return playLists.GetAlbum(mixDown.Album);
+        }
+
         
         public SoundCloudPlaylist? AddTrackToAlbum(SoundCloudPlaylist album, SoundCloudTrack track, Action<string> onError)
         {

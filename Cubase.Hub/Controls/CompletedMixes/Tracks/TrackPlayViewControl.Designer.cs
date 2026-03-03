@@ -38,6 +38,7 @@
             MixPerformers = new Cubase.Hub.Controls.BoundControls.BoundLabel();
             MixCover = new Cubase.Hub.Controls.Media.TrackCover.TrackCoverControl();
             MixSelected = new Cubase.Hub.Controls.BoundControls.BoundCheckbox();
+            DistributerPanel = new Panel();
             ((System.ComponentModel.ISupportInitialize)MixCover).BeginInit();
             SuspendLayout();
             // 
@@ -115,7 +116,7 @@
             // 
             // MixCover
             // 
-            MixCover.ImageLocation = "C:\\Users\\david\\AppData\\Local\\Microsoft\\VisualStudio\\18.0_113ede53\\WinFormsDesigner\\qifkpeev.tzi\\NoImage.png";
+            MixCover.ImageLocation = "C:\\Users\\david\\AppData\\Local\\Microsoft\\VisualStudio\\18.0_113ede53\\WinFormsDesigner\\2s5dswas.53h\\NoImage.png";
             MixCover.Location = new Point(96, 16);
             MixCover.Name = "MixCover";
             MixCover.Size = new Size(65, 62);
@@ -132,10 +133,19 @@
             MixSelected.TabIndex = 10;
             MixSelected.UseVisualStyleBackColor = true;
             // 
+            // DistributerPanel
+            // 
+            DistributerPanel.Anchor = AnchorStyles.Top | AnchorStyles.Left | AnchorStyles.Right;
+            DistributerPanel.Location = new Point(893, 16);
+            DistributerPanel.Name = "DistributerPanel";
+            DistributerPanel.Size = new Size(132, 61);
+            DistributerPanel.TabIndex = 11;
+            // 
             // TrackPlayViewControl
             // 
             AutoScaleDimensions = new SizeF(8F, 20F);
             AutoScaleMode = AutoScaleMode.Font;
+            Controls.Add(DistributerPanel);
             Controls.Add(MixSelected);
             Controls.Add(MixCover);
             Controls.Add(MixPerformers);
@@ -147,7 +157,7 @@
             Controls.Add(MixTrackNo);
             Controls.Add(MixTitle);
             Name = "TrackPlayViewControl";
-            Size = new Size(1013, 92);
+            Size = new Size(1046, 92);
             ((System.ComponentModel.ISupportInitialize)MixCover).EndInit();
             ResumeLayout(false);
             PerformLayout();
@@ -165,5 +175,6 @@
         private BoundControls.BoundLabel MixPerformers;
         private Media.TrackCover.TrackCoverControl MixCover;
         private BoundControls.BoundCheckbox MixSelected;
+        private Panel DistributerPanel;
     }
 }

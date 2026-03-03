@@ -28,12 +28,13 @@ namespace Cubase.Hub.Services.Album
             this.directoryService = directoryService;
         }
         
-        public List<AlbumLocation> GetAlbumList(Action<string> onError)
+        public List<AlbumLocation>? GetAlbumList(Action<string> onError)
         {
             var result = this.directoryService.GetCubaseAlbums(this.configurationService.Configuration.SourceCubaseFolders);
             if (result == null || result.Count == 0)
             {
                 onError.Invoke($"There are no albums defined in the cubase directories");
+                return null;
             }
             return result;
         }
