@@ -66,7 +66,7 @@ namespace Cubase.Hub.Controls.CompletedMixes
         {
             if (albumCommandType == AlbumCommandType.RefreshTracks)
             {
-                
+
                 this.Play(this.albumLocation);
             }
         }
@@ -79,9 +79,9 @@ namespace Cubase.Hub.Controls.CompletedMixes
 
         private void PlayAllButton_Click(object? sender, EventArgs e)
         {
-            if (this.tracks  != null)
+            if (this.tracks != null)
             {
-                this.PlayTrackControl.PlayTracks(this.tracks);  
+                this.PlayTrackControl.PlayTracks(this.tracks);
             }
         }
 
@@ -124,6 +124,5 @@ namespace Cubase.Hub.Controls.CompletedMixes
                 AlbumArt.RefreshImage();
             }
         }
-
     }
 }

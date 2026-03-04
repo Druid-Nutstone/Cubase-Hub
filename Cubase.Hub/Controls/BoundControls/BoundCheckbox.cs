@@ -12,6 +12,7 @@ namespace Cubase.Hub.Controls.BoundControls
 
         public void Bind(string propertyName, object dataSource)
         {
+            this.DataBindings.Clear();
             this.DataBindings.Add(new Binding("Checked", dataSource, propertyName, true, DataSourceUpdateMode.OnPropertyChanged));
         }
     }

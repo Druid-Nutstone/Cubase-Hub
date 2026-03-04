@@ -142,7 +142,7 @@ namespace Cubase.Hub.Forms.Albums
 
         private void ManageMixesButton_Click(object? sender, EventArgs e)
         {
-            this.mixesForm.Initialise(this.CurrentMixes.GetSelectedMixes());
+            this.mixesForm.Initialise(this.CurrentMixes.GetSelectedMixes(), this.CurrentAlbum);
             this.mixesForm.ShowDialog();
         }
 
@@ -266,7 +266,7 @@ namespace Cubase.Hub.Forms.Albums
                     this.SetMixExportLocation(albumLocation);
                 }
             }
-            this.AlbumExportLocation.Text = albumLocation ?? string.Empty;
+            this.AlbumExportLocation.Text = albumLocation ?? null;
         }
 
         private void LoadTracks()

@@ -27,9 +27,9 @@ namespace Cubase.Hub.Services.Track
         public AudioFileReader? Audio => this.audio;
 
         public TrackService(IConfigurationService configurationService,
-                            IDirectoryService directoryService,  
-                            IAudioService audioService) 
-        { 
+                            IDirectoryService directoryService,
+                            IAudioService audioService)
+        {
             this.audioService = audioService;
             this.directoryService = directoryService;
             this.configurationService = configurationService;
@@ -102,14 +102,11 @@ namespace Cubase.Hub.Services.Track
             if (finalMixes != null)
             {
                 List<MixDown> mixes = new List<MixDown>();
-                foreach (var validExt in CubaseHubConstants.ValidAudioExtensions)
+                var audioFiles = Directory.GetFiles(finalMixes, "*.*");
+                foreach (var audioFile in audioFiles)
                 {
-                    var audioFiles = Directory.GetFiles(finalMixes, "*.*");
-                    foreach (var audioFile in audioFiles)
-                    {
-                        var mixdown = this.audioService.AudioPopulateTagsFromFile(audioFile);
-                        mixes.Add(mixdown);
-                    }
+                    var mixdown = this.audioService.AudioPopulateTagsFromFile(audioFile);
+                    mixes.Add(mixdown);
                 }
                 return new MixDownCollection(mixes.OrderBy(x => x.TrackNumber));
             }
@@ -130,10 +127,10 @@ namespace Cubase.Hub.Services.Track
             var trackArtLocation = Path.Combine(root, CubaseHubConstants.TrackArt);
 
             var allTrackArt = Directory.GetFiles(trackArtLocation, $"{mixDown.Title}.*");
-             
+
             if (allTrackArt.Length == 0)
             {
-                return null; 
+                return null;
             }
 
             return allTrackArt.First();
@@ -150,12 +147,12 @@ namespace Cubase.Hub.Services.Track
             var trackArtLocation = Path.Combine(root, CubaseHubConstants.TrackArt);
 
             var existingArt = Directory.GetFiles(trackArtLocation, $"{mixDown.Title}.*");
-            foreach ( var delFile in existingArt )
+            foreach (var delFile in existingArt)
             {
-                File.Delete(delFile); 
+                File.Delete(delFile);
             }
 
-            File.Copy(targetart, Path.Combine(trackArtLocation, $"{ mixDown.Title}{Path.GetExtension(targetart)}"), true);
+            File.Copy(targetart, Path.Combine(trackArtLocation, $"{mixDown.Title}{Path.GetExtension(targetart)}"), true);
 
             return true;
         }

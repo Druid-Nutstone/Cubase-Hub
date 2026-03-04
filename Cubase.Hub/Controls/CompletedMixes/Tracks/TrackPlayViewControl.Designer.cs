@@ -45,7 +45,7 @@
             // MixTitle
             // 
             MixTitle.AutoSize = true;
-            MixTitle.Location = new Point(187, 38);
+            MixTitle.Location = new Point(176, 38);
             MixTitle.Name = "MixTitle";
             MixTitle.Size = new Size(67, 20);
             MixTitle.TabIndex = 0;
@@ -116,10 +116,10 @@
             // 
             // MixCover
             // 
-            MixCover.ImageLocation = "C:\\Users\\david\\AppData\\Local\\Microsoft\\VisualStudio\\18.0_113ede53\\WinFormsDesigner\\2s5dswas.53h\\NoImage.png";
+            MixCover.ImageLocation = "C:\\Users\\david\\AppData\\Local\\Microsoft\\VisualStudio\\18.0_113ede53\\WinFormsDesigner\\5owebtsc.3xc\\NoImage.png";
             MixCover.Location = new Point(96, 16);
             MixCover.Name = "MixCover";
-            MixCover.Size = new Size(65, 62);
+            MixCover.Size = new Size(62, 62);
             MixCover.SizeMode = PictureBoxSizeMode.StretchImage;
             MixCover.TabIndex = 8;
             MixCover.TabStop = false;

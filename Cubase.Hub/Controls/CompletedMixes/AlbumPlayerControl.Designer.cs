@@ -30,6 +30,7 @@
         {
             TopPanel = new Panel();
             CommandPanel = new Panel();
+            DistributerPanel = new Panel();
             SelectAllTracks = new CheckBox();
             PlayAllButton = new Button();
             AlbumComments = new Cubase.Hub.Controls.BoundControls.BoundLabel();
@@ -48,7 +49,6 @@
             TrackPlayView = new Cubase.Hub.Controls.CompletedMixes.Tracks.TrackPlayView();
             PlayerPanel = new Panel();
             PlayTrackControl = new Cubase.Hub.Controls.Media.Play.PlayTrackControl();
-            DistributerPanel = new Panel();
             TopPanel.SuspendLayout();
             CommandPanel.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)AlbumArt).BeginInit();
@@ -87,6 +87,14 @@
             CommandPanel.Name = "CommandPanel";
             CommandPanel.Size = new Size(702, 52);
             CommandPanel.TabIndex = 12;
+            // 
+            // DistributerPanel
+            // 
+            DistributerPanel.Anchor = AnchorStyles.Top | AnchorStyles.Left | AnchorStyles.Right;
+            DistributerPanel.Location = new Point(294, 5);
+            DistributerPanel.Name = "DistributerPanel";
+            DistributerPanel.Size = new Size(250, 41);
+            DistributerPanel.TabIndex = 3;
             // 
             // SelectAllTracks
             // 
@@ -190,10 +198,10 @@
             // 
             // AlbumArt
             // 
-            AlbumArt.ImageLocation = "C:\\Users\\david\\AppData\\Local\\Microsoft\\VisualStudio\\18.0_113ede53\\WinFormsDesigner\\p2mtmkxw.mcq\\NoImage.png";
+            AlbumArt.ImageLocation = "C:\\Users\\david\\AppData\\Local\\Microsoft\\VisualStudio\\18.0_113ede53\\WinFormsDesigner\\5owebtsc.3xc\\NoImage.png";
             AlbumArt.Location = new Point(33, 14);
             AlbumArt.Name = "AlbumArt";
-            AlbumArt.Size = new Size(125, 104);
+            AlbumArt.Size = new Size(104, 104);
             AlbumArt.SizeMode = PictureBoxSizeMode.StretchImage;
             AlbumArt.TabIndex = 3;
             AlbumArt.TabStop = false;
@@ -249,6 +257,8 @@
             TrackPlayView.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 100F));
             TrackPlayView.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 100F));
             TrackPlayView.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 100F));
+            TrackPlayView.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 100F));
+            TrackPlayView.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 100F));
             TrackPlayView.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 50F));
             TrackPlayView.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 50F));
             TrackPlayView.Dock = DockStyle.Top;
@@ -277,14 +287,6 @@
             PlayTrackControl.Name = "PlayTrackControl";
             PlayTrackControl.Size = new Size(702, 113);
             PlayTrackControl.TabIndex = 0;
-            // 
-            // DistributerPanel
-            // 
-            DistributerPanel.Anchor = AnchorStyles.Top | AnchorStyles.Left | AnchorStyles.Right;
-            DistributerPanel.Location = new Point(294, 5);
-            DistributerPanel.Name = "DistributerPanel";
-            DistributerPanel.Size = new Size(250, 41);
-            DistributerPanel.TabIndex = 3;
             // 
             // AlbumPlayerControl
             // 

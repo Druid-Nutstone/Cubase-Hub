@@ -463,21 +463,24 @@ namespace Cubase.Hub.Services.Distributers.SoundCloud
 
         public bool Connect(Action<string> onError)
         {
-            this.BaseAddress = new Uri(BaseAddressString);
+            if (!this.Connected)
+            {
+                this.BaseAddress = new Uri(BaseAddressString);
 
-            this.AuthCode = this.ConnectToSoundCloudOAuth(onError);
-            if (this.AuthCode == null) return false;
+                this.AuthCode = this.ConnectToSoundCloudOAuth(onError);
+                if (this.AuthCode == null) return false;
 
-            this.AccessToken = this.GetToken(onError);
-            if (this.AccessToken == null) return false;
+                this.AccessToken = this.GetToken(onError);
+                if (this.AccessToken == null) return false;
 
-            this.DefaultRequestHeaders.Authorization =
-                new System.Net.Http.Headers.AuthenticationHeaderValue("OAuth", this.AccessToken);
+                this.DefaultRequestHeaders.Authorization =
+                    new System.Net.Http.Headers.AuthenticationHeaderValue("OAuth", this.AccessToken);
 
-            this.DefaultRequestHeaders.Accept.Clear();
-            this.DefaultRequestHeaders.Accept.Add(
-                new MediaTypeWithQualityHeaderValue("application/json"));
-            this.Connected = true;
+                this.DefaultRequestHeaders.Accept.Clear();
+                this.DefaultRequestHeaders.Accept.Add(
+                    new MediaTypeWithQualityHeaderValue("application/json"));
+                this.Connected = true;
+            }
             return true;
         }
 
