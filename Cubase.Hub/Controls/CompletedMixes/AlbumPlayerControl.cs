@@ -1,4 +1,5 @@
-﻿using Cubase.Hub.Forms.BaseForm;
+﻿using Cubase.Hub.Controls.Album.Manage;
+using Cubase.Hub.Forms.BaseForm;
 using Cubase.Hub.Forms.Distributers;
 using Cubase.Hub.Services.Album;
 using Cubase.Hub.Services.Models;
@@ -56,6 +57,17 @@ namespace Cubase.Hub.Controls.CompletedMixes
                     distributerMainControl.Dock = DockStyle.Fill;
                     this.DistributerPanel.Controls.Add(distributerMainControl);
                 }
+            }
+            // global event monitor for commands from distributer controls  
+            AlbumCommands.Instance.RegisterForAlbumCommand(this.WaitForAlbumCommands);
+        }
+
+        private void WaitForAlbumCommands(AlbumCommandType albumCommandType)
+        {
+            if (albumCommandType == AlbumCommandType.RefreshTracks)
+            {
+                
+                this.Play(this.albumLocation);
             }
         }
 

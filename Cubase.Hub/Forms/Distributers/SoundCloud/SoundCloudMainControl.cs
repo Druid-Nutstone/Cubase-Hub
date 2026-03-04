@@ -37,8 +37,14 @@ namespace Cubase.Hub.Forms.Distributers.SoundCloud
             this.OpenDistribution.Click += OpenDistribution_Click;
             this.DeleteSelected.Click += DeleteSelected_Click;
             this.OpenAlbumLink.Click += OpenAlbumLink_Click;
+            this.DeleteAlbum.Click += DeleteAlbum_Click;
             this.CopyLink.GetClipBoardText = this.CopyLinkClick;
             ThemeApplier.ApplyDarkTheme(this);  
+        }
+
+        private void DeleteAlbum_Click(object? sender, EventArgs e)
+        {
+            this.parentForm.DeleteAlbum();
         }
 
         private string CopyLinkClick()

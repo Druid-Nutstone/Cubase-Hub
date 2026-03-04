@@ -61,6 +61,13 @@ namespace Cubase.Hub.Services.Models
                 this.Add(MixDown.CreateFromFile(file));
             }
         }
+
+        public static MixDownCollection CreateFromSingleMix(MixDown mixDown)
+        {
+            var tempCollection = new MixDownCollection();
+            tempCollection.Add(mixDown);
+            return tempCollection;
+        }
     }
 
     public class MixDown : INotifyPropertyChanged

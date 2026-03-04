@@ -20,7 +20,9 @@ namespace Cubase.Hub.Forms.Distributers.SoundCloud
 
         private SoundCloudTrackCollection soundCloudTracks;
 
-        private SoundCloudTrack? soundCloudTrack; 
+        private SoundCloudTrack? soundCloudTrack;
+
+        private SoundCloudDistributer mainControl;
 
         private MixDown mixDown;
 
@@ -29,13 +31,13 @@ namespace Cubase.Hub.Forms.Distributers.SoundCloud
             InitializeComponent();
         }
 
-        public SoundCloudTrackControl(SoundCloudDistributionProvider soundCloudProvider, IServiceProvider serviceProvider, SoundCloudTrackCollection soundCloudTracks)
+        public SoundCloudTrackControl(SoundCloudDistributionProvider soundCloudProvider, IServiceProvider serviceProvider, SoundCloudTrackCollection soundCloudTracks, SoundCloudDistributer parent)
         {
             InitializeComponent();
             this.soundCloudProvider = soundCloudProvider;
             this.serviceProvider = serviceProvider;
             this.soundCloudTracks = soundCloudTracks;
-
+            this.mainControl = parent;
             ThemeApplier.ApplyDarkTheme(this);
         }
 
@@ -60,12 +62,12 @@ namespace Cubase.Hub.Forms.Distributers.SoundCloud
 
         private void DeleteTrack_Click(object? sender, EventArgs e)
         {
-            throw new NotImplementedException();
+            this.mainControl.DeleteSingleTrack(this.mixDown);
         }
 
         private void ReUploadTrack_Click(object? sender, EventArgs e)
         {
-            throw new NotImplementedException();
+            this.mainControl.UploadSingleTrack(this.mixDown);   
         }
 
         private string CopyLinkClick()

@@ -37,13 +37,11 @@ namespace Cubase.Hub.Services.Distributers.SoundCloud
 
         private SoundCloudTokenResponse? AccessTokenResponse;
 
-        private SoundCloudPlaylistCollection playLists;
-
         private static string BaseAddressString = "https://api.soundcloud.com";
 
         public bool Connected { get; set; } = false;
 
-        public SoundCloudDistributionProvider(IAlbumService albumService, 
+        public SoundCloudDistributionProvider(IAlbumService albumService,
                                               ITrackService trackService)
         {
             this.albumService = albumService;
@@ -58,7 +56,7 @@ namespace Cubase.Hub.Services.Distributers.SoundCloud
             {
                 onProgress.Invoke("Loading PlayLists ..");
                 var playlists = this.GetPlayLists(onError);
-                if (playlists != null)
+                if (playlists == null)
                 {
                     return false;
                 }
@@ -78,11 +76,11 @@ namespace Cubase.Hub.Services.Distributers.SoundCloud
                             var trackRefs = new List<TrackRef>();
                             foreach (var item in this.albumService.GetMixesForAlbum(targetAlbum))
                             {
-                                var playListTrack = tracks.FirstOrDefault(x => x.Title == item.Title); 
+                                var playListTrack = tracks.FirstOrDefault(x => x.Title == item.Title);
                                 if (playListTrack != null)
                                 {
                                     trackRefs.Add(new TrackRef() { Urn = playListTrack.Urn });
-                                } 
+                                }
                             }
                             var trackRequest = new UpdatePlaylistRequest()
                             {
@@ -100,7 +98,7 @@ namespace Cubase.Hub.Services.Distributers.SoundCloud
                             return true;
                         }
                     }
-                    
+
                 }
             }
             return false;
@@ -116,7 +114,7 @@ namespace Cubase.Hub.Services.Distributers.SoundCloud
 
             // delete track if already exists 
             this.DeleteTrack(mixDown, onError);
-               
+
 
             // upload the track 
 
@@ -139,7 +137,7 @@ namespace Cubase.Hub.Services.Distributers.SoundCloud
 
             var newTrack = response.GetModel<SoundCloudTrack>(onError);
 
-            if (newTrack == null) 
+            if (newTrack == null)
             {
                 return null;
             }
@@ -151,12 +149,12 @@ namespace Cubase.Hub.Services.Distributers.SoundCloud
             if (newTrack == null)
             {
                 return null;
-            } 
-            
+            }
+
             // update cover art 
 
             var trackArt = this.trackService.GetTrackCoverArt(mixDown);
-            
+
             if (trackArt != null)
             {
                 newTrack = this.UploadTrackArtWork(newTrack, trackArt, onError);
@@ -164,12 +162,12 @@ namespace Cubase.Hub.Services.Distributers.SoundCloud
 
             // add trackref to album
 
-            var playlists = this.GetPlayLists(onError, true);
+            var playlists = this.GetPlayLists(onError);
 
             if (playlists != null)
             {
-                var playListAlbum = playlists.GetAlbum(mixDown.Album); 
-                if (playListAlbum  == null)
+                var playListAlbum = playlists.GetAlbum(mixDown.Album);
+                if (playListAlbum == null)
                 {
                     onError.Invoke($"Cannot find album {mixDown.Album} so cannot add this track to it");
                     return null;
@@ -179,7 +177,7 @@ namespace Cubase.Hub.Services.Distributers.SoundCloud
                 {
                     return null;
                 }
-                this.playLists.AddOrUpdatePlayList(updatedPlaylist);
+                playlists.AddOrUpdatePlayList(updatedPlaylist);
             }
             else
             {
@@ -195,17 +193,17 @@ namespace Cubase.Hub.Services.Distributers.SoundCloud
             {
                 return null;
             }
-            return playLists.GetAlbum(mixDown.Album);
+            return playlists.GetAlbum(mixDown.Album);
         }
 
-        
+
         public SoundCloudPlaylist? AddTrackToAlbum(SoundCloudPlaylist album, SoundCloudTrack track, Action<string> onError)
         {
             var trackRequest = new UpdatePlaylistRequest()
             {
                 Playlist = new PlaylistUpdate()
                 {
-                    Tracks = album.Tracks.Select(x => new TrackRef() { Urn = x.Urn}).ToList()
+                    Tracks = album.Tracks.Select(x => new TrackRef() { Urn = x.Urn }).ToList()
                 }
             };
 
@@ -213,7 +211,7 @@ namespace Cubase.Hub.Services.Distributers.SoundCloud
             {
 
                 trackRequest.Playlist.Tracks.Add(new TrackRef() { Urn = track.Urn });
-                
+
                 var response = this.PutAsJsonAsync<UpdatePlaylistRequest>($"/playlists/{album.Urn}", trackRequest).Result;
 
                 if (!response.IsSuccessStatusCode)
@@ -275,19 +273,20 @@ namespace Cubase.Hub.Services.Distributers.SoundCloud
             var postData = CreatePlaylistRequest.CreateFromAlbum(albumConfiguration);
 
             var albumArtLocation = this.albumService.GetAlbumArt(albumConfiguration);
-            
+
             var newPlayList = this.PostAndGetSync<SoundCloudPlaylist, CreatePlaylistRequest>("/playlists", postData, onError);
-        
+
             if (!string.IsNullOrEmpty(albumArtLocation))
             {
-                var checkPlayList = this.UploadPlaylistArtwork(newPlayList.Id.Value, albumArtLocation, onError); 
+                var checkPlayList = this.UploadPlaylistArtwork(newPlayList.Id.Value, albumArtLocation, onError);
                 if (checkPlayList != null)
                 {
                     newPlayList = checkPlayList;
                 }
             }
-            this.playLists.AddOrUpdatePlayList(newPlayList);
-            return newPlayList;      
+            var playLists = this.GetPlayLists(onError);
+            playLists.AddOrUpdatePlayList(newPlayList);
+            return newPlayList;
         }
 
         public SoundCloudTrack? UploadTrackArtWork(SoundCloudTrack soundCloudTrack, string artworkPath, Action<string> onError)
@@ -302,7 +301,7 @@ namespace Cubase.Hub.Services.Distributers.SoundCloud
 
             form.Add(artworkContent, "track[artwork_data]", Path.GetFileName(artworkPath));
 
-            var response = this.PutAsync($"/tracks/{soundCloudTrack.Id}",form).Result;
+            var response = this.PutAsync($"/tracks/{soundCloudTrack.Id}", form).Result;
 
             if (response.IsSuccessStatusCode)
             {
@@ -313,7 +312,7 @@ namespace Cubase.Hub.Services.Distributers.SoundCloud
                 onError.Invoke(response.GetErrorResponse());
                 return null;
             }
-        } 
+        }
 
         public SoundCloudPlaylist? UploadPlaylistArtwork(
                   long playlistId,
@@ -370,7 +369,7 @@ namespace Cubase.Hub.Services.Distributers.SoundCloud
             if (!response.IsSuccessStatusCode)
             {
                 onError.Invoke(response.GetErrorResponse());
-                return false; 
+                return false;
             }
             if (deleteTracks)
             {
@@ -416,32 +415,24 @@ namespace Cubase.Hub.Services.Distributers.SoundCloud
             return true;
         }
 
-        public SoundCloudPlaylistCollection? GetPlayLists(Action<string> onError, bool force = false)
+        public SoundCloudPlaylistCollection? GetPlayLists(Action<string> onError)
         {
             if (!this.EnsureConnectionAndToken(onError))
             {
                 return null;
             }
-            
-            if (force)
-            {
-                this.playLists = null;
-            }
 
-            if (playLists == null)
+            var response = this.GetSync("/me/playlists");
+            if (!response.IsSuccessStatusCode)
             {
-
-                var response = this.GetSync("/me/playlists");
-                if (!response.IsSuccessStatusCode)
-                {
-                    onError(response.GetErrorResponse());
-                    return null;
-                }
-                this.playLists = response.GetModel<SoundCloudPlaylistCollection>(onError);
+                onError(response.GetErrorResponse());
+                return null;
             }
-            return this.playLists;
+            var playLists = response.GetModel<SoundCloudPlaylistCollection>(onError);
+
+            return playLists;
         }
-        
+
         public SoundCloudTrackCollection? GetTracks(Action<string> onError)
         {
             if (!this.EnsureConnectionAndToken(onError))
@@ -456,15 +447,15 @@ namespace Cubase.Hub.Services.Distributers.SoundCloud
             }
 
             string error = string.Empty;
-            var soundCloudCollection = response.GetModel<SoundCloudTrackCollection>((err) => 
+            var soundCloudCollection = response.GetModel<SoundCloudTrackCollection>((err) =>
             {
                 error = err;
             });
-            
+
             if (soundCloudCollection == null)
             {
                 onError(error);
-                return null;    
+                return null;
             }
 
             return soundCloudCollection;
@@ -473,20 +464,20 @@ namespace Cubase.Hub.Services.Distributers.SoundCloud
         public bool Connect(Action<string> onError)
         {
             this.BaseAddress = new Uri(BaseAddressString);
-            
+
             this.AuthCode = this.ConnectToSoundCloudOAuth(onError);
             if (this.AuthCode == null) return false;
-            
+
             this.AccessToken = this.GetToken(onError);
             if (this.AccessToken == null) return false;
-            
+
             this.DefaultRequestHeaders.Authorization =
                 new System.Net.Http.Headers.AuthenticationHeaderValue("OAuth", this.AccessToken);
 
             this.DefaultRequestHeaders.Accept.Clear();
             this.DefaultRequestHeaders.Accept.Add(
                 new MediaTypeWithQualityHeaderValue("application/json"));
-            this.Connected = true;  
+            this.Connected = true;
             return true;
         }
 
@@ -526,9 +517,9 @@ namespace Cubase.Hub.Services.Distributers.SoundCloud
         {
             string? code = null;
 
-            Task.Run(() => 
+            Task.Run(() =>
             {
-                this.StartCallbackListener((result) => 
+                this.StartCallbackListener((result) =>
                 {
                     code = result;
                 });
@@ -549,14 +540,14 @@ namespace Cubase.Hub.Services.Distributers.SoundCloud
                    "&code_challenge_method=S256" +
                    "&state=" + state;
 
-            var startBrowser = new Process() 
-            { 
-               StartInfo = new ProcessStartInfo()
-               {
-                  FileName = authorizeUrl,
-                  UseShellExecute = true,
-                  WindowStyle = ProcessWindowStyle.Maximized
-               }
+            var startBrowser = new Process()
+            {
+                StartInfo = new ProcessStartInfo()
+                {
+                    FileName = authorizeUrl,
+                    UseShellExecute = true,
+                    WindowStyle = ProcessWindowStyle.Maximized
+                }
             };
             startBrowser.Start();
             var count = 0;
@@ -567,13 +558,13 @@ namespace Cubase.Hub.Services.Distributers.SoundCloud
                 if (count > 30)
                 {
                     onError("Could not get authentication code");
-                    break; 
+                    break;
                 }
             }
             return code;
         }
 
-        private void StartCallbackListener(Action<string> OnCode) 
+        private void StartCallbackListener(Action<string> OnCode)
         {
             var listener = new HttpListener();
             listener.Prefixes.Add("http://localhost:5111/");

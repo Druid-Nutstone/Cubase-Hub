@@ -1,4 +1,5 @@
-﻿using Cubase.Hub.Forms.BaseForm;
+﻿using Cubase.Hub.Controls.Album.Manage;
+using Cubase.Hub.Forms.BaseForm;
 using Cubase.Hub.Services.Album;
 using Cubase.Hub.Services.Distributers.SoundCloud;
 using Cubase.Hub.Services.Messages;
@@ -59,6 +60,7 @@ namespace Cubase.Hub.Forms.Distributers.SoundCloud
 
         public void SetAlbum(AlbumConfiguration albumConfiguration, MixDownCollection mixDowns)
         {
+            this.RefreshTrackList();
             this.albumConfiguration = albumConfiguration; 
             this.mixDowns = mixDowns;
             this.mainControl.SetAlbum(albumConfiguration, mixDowns);
@@ -80,8 +82,18 @@ namespace Cubase.Hub.Forms.Distributers.SoundCloud
         {
             get
             {
-                return new SoundCloudTrackControl(this.soundCloud, this.serviceProvider, this.soundCloudTracks);
+                return new SoundCloudTrackControl(this.soundCloud, this.serviceProvider, this.soundCloudTracks, this);
             }
+        }
+
+        public void DeleteSingleTrack(MixDown mixDown)
+        {
+            this.DeleteSelected(mixDown);
+        }
+
+        public void UploadSingleTrack(MixDown mixDown)
+        {
+            this.UploadSelected(mixDown);   
         }
 
         public void Initialise()
@@ -89,13 +101,25 @@ namespace Cubase.Hub.Forms.Distributers.SoundCloud
             if (this.soundCloud.Connect(this.ShowSoundCloudError))
             {
                 this.mainControl = new SoundCloudMainControl(this, this.soundCloud, this.soundCloudAlbums);
-                this.soundCloudTracks = this.soundCloud.GetTracks(this.ShowSoundCloudError);
+                this.RefreshTrackList();
             }
         }
 
-        public void UploadSelected()
+        private void RefreshTrackList()
         {
-            var selectedMixes = this.mixDowns.GetSelectedMixes();
+            this.soundCloudTracks = this.soundCloud.GetTracks(this.ShowSoundCloudError);
+        }
+
+        private void RefreshAllTracks()
+        {
+            this.RefreshTrackList();
+            AlbumCommands.Instance.RefreshTracks();
+        }
+
+        public void UploadSelected(MixDown? singleTrack = null)
+        {
+            var selectedMixes = singleTrack != null ? MixDownCollection.CreateFromSingleMix(singleTrack)
+                                                    : this.mixDowns.GetSelectedMixes();
             if (selectedMixes.Count == 0)
             {
                 this.messageService.ShowError($"No tracks have been selected");
@@ -132,6 +156,7 @@ namespace Cubase.Hub.Forms.Distributers.SoundCloud
             {
                 this.soundCloud.OrderAlbumTracks(targetPlayListAlbum, this.ShowSoundCloudError, this.MsgHandler.ShowMessage);
                 this.MsgHandler?.Close();
+                this.RefreshAllTracks();
             }
         }
 
@@ -140,9 +165,31 @@ namespace Cubase.Hub.Forms.Distributers.SoundCloud
 
         }
 
-        public void DeleteSelected()
+        public void DeleteAlbum()
         {
-            var selectedMixes = this.mixDowns.GetSelectedMixes();
+            this.MsgHandler = new SoundCloudMessageForm();
+            this.MsgHandler.Show();
+
+            var album = this.soundCloud.GetAlbum(new MixDown() { Album = this.albumConfiguration.Title }, this.ShowSoundCloudError);
+            if (album != null)
+            {
+                this.soundCloud.DeleteAlbum(album, this.ShowSoundCloudError, true);
+            }
+            else
+            {
+                this.ShowSoundCloudError($"{this.albumConfiguration.Title} does not exist on sound cloud");
+            }
+            if (this.MsgHandler != null)
+            {
+                this.MsgHandler.Close();
+            }
+            this.RefreshAllTracks();
+        }
+
+        public void DeleteSelected(MixDown? singleTrack = null)
+        {
+            var selectedMixes = singleTrack != null ? MixDownCollection.CreateFromSingleMix(singleTrack)
+                                        : this.mixDowns.GetSelectedMixes();
             if (selectedMixes.Count == 0)
             {
                 this.messageService.ShowError($"No tracks have been selected");
@@ -156,6 +203,7 @@ namespace Cubase.Hub.Forms.Distributers.SoundCloud
             }
             this.soundCloud.OrderAlbumTracks(targetPlayListAlbum, this.ShowSoundCloudError, this.MsgHandler.ShowMessage);
             this.MsgHandler.Close();
+            this.RefreshAllTracks();
         }
 
 
