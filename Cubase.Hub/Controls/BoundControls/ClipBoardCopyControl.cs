@@ -25,7 +25,7 @@ namespace Cubase.Hub.Controls.BoundControls
         protected override void OnClick(EventArgs e)
         {
             base.OnClick(e);
-            Clipboard.SetText(this.GetClipBoardText() ?? string.Empty);
+            Clipboard.SetText(this.GetClipBoardText() ?? "There was no text copied");
             this.tooltip.Show("Copied to clipboard", this);
 
         }
