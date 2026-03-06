@@ -25,6 +25,31 @@ namespace Cubase.Hub.Services.Models
             }
         }
 
+        public MixDownCollection OrderByTrack()
+        {
+            return new MixDownCollection(this.OrderBy(x => x.TrackNumber));
+        }
+
+        public MixDownCollection OrderByDate()
+        {
+            return new MixDownCollection(this.OrderBy(x => x.LastModified)); 
+        }
+
+        public MixDownCollection OrderByType()
+        {
+            return new MixDownCollection(this.OrderBy(x => x.AudioType));
+        }
+
+        public MixDownCollection OrderByDuration()
+        {
+            return new MixDownCollection(this.OrderBy(x => x.Duration));
+        }
+
+        public MixDownCollection OrderBySize()
+        {
+            return new MixDownCollection(this.OrderBy(x => x.Size));
+        }
+
         public void SetMixdownExportLocation(string location)
         {
             foreach (var item in this)

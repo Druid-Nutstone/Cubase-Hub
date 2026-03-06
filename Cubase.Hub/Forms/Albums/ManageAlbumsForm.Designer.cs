@@ -41,6 +41,8 @@
             AlbumConfigurationControl = new Cubase.Hub.Controls.Album.AlbumConfigurationControl();
             TracksPanel = new Panel();
             TracksControlPanel = new Panel();
+            label3 = new Label();
+            OrderBy = new ComboBox();
             RefreshTracksButton = new Button();
             SetSelectedTracksTitleButton = new Button();
             SelectDeselectAllMixes = new CheckBox();
@@ -71,13 +73,13 @@
             TopPanel.Dock = DockStyle.Top;
             TopPanel.Location = new Point(0, 0);
             TopPanel.Name = "TopPanel";
-            TopPanel.Size = new Size(1382, 102);
+            TopPanel.Size = new Size(1549, 102);
             TopPanel.TabIndex = 0;
             // 
             // OpenExportDirectory
             // 
             OpenExportDirectory.Anchor = AnchorStyles.Top | AnchorStyles.Right;
-            OpenExportDirectory.Location = new Point(1259, 42);
+            OpenExportDirectory.Location = new Point(1426, 42);
             OpenExportDirectory.Name = "OpenExportDirectory";
             OpenExportDirectory.Size = new Size(94, 29);
             OpenExportDirectory.TabIndex = 6;
@@ -87,7 +89,7 @@
             // BrowseExportLocationButton
             // 
             BrowseExportLocationButton.Anchor = AnchorStyles.Top | AnchorStyles.Right;
-            BrowseExportLocationButton.Location = new Point(1159, 42);
+            BrowseExportLocationButton.Location = new Point(1326, 42);
             BrowseExportLocationButton.Name = "BrowseExportLocationButton";
             BrowseExportLocationButton.Size = new Size(94, 29);
             BrowseExportLocationButton.TabIndex = 5;
@@ -99,7 +101,7 @@
             AlbumExportLocation.Anchor = AnchorStyles.Top | AnchorStyles.Left | AnchorStyles.Right;
             AlbumExportLocation.Location = new Point(486, 42);
             AlbumExportLocation.Name = "AlbumExportLocation";
-            AlbumExportLocation.Size = new Size(667, 27);
+            AlbumExportLocation.Size = new Size(834, 27);
             AlbumExportLocation.TabIndex = 4;
             // 
             // label2
@@ -145,7 +147,7 @@
             AlbumPanel.Dock = DockStyle.Top;
             AlbumPanel.Location = new Point(0, 102);
             AlbumPanel.Name = "AlbumPanel";
-            AlbumPanel.Size = new Size(1382, 248);
+            AlbumPanel.Size = new Size(1549, 248);
             AlbumPanel.TabIndex = 1;
             // 
             // AlbumConfigurationControl
@@ -153,7 +155,7 @@
             AlbumConfigurationControl.Dock = DockStyle.Top;
             AlbumConfigurationControl.Location = new Point(0, 0);
             AlbumConfigurationControl.Name = "AlbumConfigurationControl";
-            AlbumConfigurationControl.Size = new Size(1382, 248);
+            AlbumConfigurationControl.Size = new Size(1549, 248);
             AlbumConfigurationControl.TabIndex = 0;
             // 
             // TracksPanel
@@ -162,11 +164,13 @@
             TracksPanel.Dock = DockStyle.Top;
             TracksPanel.Location = new Point(0, 350);
             TracksPanel.Name = "TracksPanel";
-            TracksPanel.Size = new Size(1382, 54);
+            TracksPanel.Size = new Size(1549, 54);
             TracksPanel.TabIndex = 2;
             // 
             // TracksControlPanel
             // 
+            TracksControlPanel.Controls.Add(label3);
+            TracksControlPanel.Controls.Add(OrderBy);
             TracksControlPanel.Controls.Add(RefreshTracksButton);
             TracksControlPanel.Controls.Add(SetSelectedTracksTitleButton);
             TracksControlPanel.Controls.Add(SelectDeselectAllMixes);
@@ -176,26 +180,45 @@
             TracksControlPanel.Dock = DockStyle.Top;
             TracksControlPanel.Location = new Point(0, 0);
             TracksControlPanel.Name = "TracksControlPanel";
-            TracksControlPanel.Size = new Size(1382, 43);
+            TracksControlPanel.Size = new Size(1549, 43);
             TracksControlPanel.TabIndex = 0;
+            // 
+            // label3
+            // 
+            label3.Anchor = AnchorStyles.Top | AnchorStyles.Right;
+            label3.AutoSize = true;
+            label3.Location = new Point(923, 12);
+            label3.Name = "label3";
+            label3.Size = new Size(47, 20);
+            label3.TabIndex = 8;
+            label3.Text = "Order";
+            // 
+            // OrderBy
+            // 
+            OrderBy.Anchor = AnchorStyles.Top | AnchorStyles.Right;
+            OrderBy.FormattingEnabled = true;
+            OrderBy.Location = new Point(974, 9);
+            OrderBy.Name = "OrderBy";
+            OrderBy.Size = new Size(151, 28);
+            OrderBy.TabIndex = 7;
             // 
             // RefreshTracksButton
             // 
             RefreshTracksButton.Anchor = AnchorStyles.Top | AnchorStyles.Right;
             RefreshTracksButton.Image = Properties.Resources.refresh;
             RefreshTracksButton.ImageAlign = ContentAlignment.MiddleLeft;
-            RefreshTracksButton.Location = new Point(955, 8);
+            RefreshTracksButton.Location = new Point(1131, 1);
             RefreshTracksButton.Name = "RefreshTracksButton";
-            RefreshTracksButton.Size = new Size(131, 29);
+            RefreshTracksButton.Size = new Size(131, 43);
             RefreshTracksButton.TabIndex = 6;
             RefreshTracksButton.Text = "Refresh";
             RefreshTracksButton.UseVisualStyleBackColor = true;
             // 
             // SetSelectedTracksTitleButton
             // 
-            SetSelectedTracksTitleButton.Location = new Point(602, 8);
+            SetSelectedTracksTitleButton.Location = new Point(602, 0);
             SetSelectedTracksTitleButton.Name = "SetSelectedTracksTitleButton";
-            SetSelectedTracksTitleButton.Size = new Size(265, 29);
+            SetSelectedTracksTitleButton.Size = new Size(265, 43);
             SetSelectedTracksTitleButton.TabIndex = 5;
             SetSelectedTracksTitleButton.Text = "Set Selected Titles To Track Name";
             SetSelectedTracksTitleButton.UseVisualStyleBackColor = true;
@@ -213,18 +236,18 @@
             // DeleteSelectedButton
             // 
             DeleteSelectedButton.BackColor = Color.IndianRed;
-            DeleteSelectedButton.Location = new Point(431, 8);
+            DeleteSelectedButton.Location = new Point(431, 0);
             DeleteSelectedButton.Name = "DeleteSelectedButton";
-            DeleteSelectedButton.Size = new Size(156, 29);
+            DeleteSelectedButton.Size = new Size(156, 43);
             DeleteSelectedButton.TabIndex = 3;
             DeleteSelectedButton.Text = "Delete Selected";
             DeleteSelectedButton.UseVisualStyleBackColor = false;
             // 
             // ManageMixesButton
             // 
-            ManageMixesButton.Location = new Point(146, 8);
+            ManageMixesButton.Location = new Point(146, 0);
             ManageMixesButton.Name = "ManageMixesButton";
-            ManageMixesButton.Size = new Size(266, 29);
+            ManageMixesButton.Size = new Size(266, 43);
             ManageMixesButton.TabIndex = 2;
             ManageMixesButton.Text = "Manage Mixes (Convert, Copy etc)";
             ManageMixesButton.UseVisualStyleBackColor = true;
@@ -234,9 +257,9 @@
             RereshFromAblumButton.Anchor = AnchorStyles.Top | AnchorStyles.Right;
             RereshFromAblumButton.Image = Properties.Resources.refresh;
             RereshFromAblumButton.ImageAlign = ContentAlignment.MiddleLeft;
-            RereshFromAblumButton.Location = new Point(1101, 8);
+            RereshFromAblumButton.Location = new Point(1268, 0);
             RereshFromAblumButton.Name = "RereshFromAblumButton";
-            RereshFromAblumButton.Size = new Size(269, 29);
+            RereshFromAblumButton.Size = new Size(269, 43);
             RereshFromAblumButton.TabIndex = 0;
             RereshFromAblumButton.Text = "Refresh Tags From Album";
             RereshFromAblumButton.UseVisualStyleBackColor = true;
@@ -247,7 +270,7 @@
             PlayPanel.Dock = DockStyle.Bottom;
             PlayPanel.Location = new Point(0, 590);
             PlayPanel.Name = "PlayPanel";
-            PlayPanel.Size = new Size(1382, 113);
+            PlayPanel.Size = new Size(1549, 113);
             PlayPanel.TabIndex = 3;
             // 
             // PlayTrack
@@ -255,7 +278,7 @@
             PlayTrack.Dock = DockStyle.Fill;
             PlayTrack.Location = new Point(0, 0);
             PlayTrack.Name = "PlayTrack";
-            PlayTrack.Size = new Size(1382, 113);
+            PlayTrack.Size = new Size(1549, 113);
             PlayTrack.TabIndex = 0;
             // 
             // MixdownPanel
@@ -265,7 +288,7 @@
             MixdownPanel.Dock = DockStyle.Fill;
             MixdownPanel.Location = new Point(0, 404);
             MixdownPanel.Name = "MixdownPanel";
-            MixdownPanel.Size = new Size(1382, 186);
+            MixdownPanel.Size = new Size(1549, 186);
             MixdownPanel.TabIndex = 4;
             // 
             // mixdownControl
@@ -273,6 +296,9 @@
             mixdownControl.AutoSize = true;
             mixdownControl.AutoSizeMode = AutoSizeMode.GrowAndShrink;
             mixdownControl.ColumnCount = 2;
+            mixdownControl.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 100F));
+            mixdownControl.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 100F));
+            mixdownControl.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 100F));
             mixdownControl.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 100F));
             mixdownControl.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 100F));
             mixdownControl.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 100F));
@@ -285,14 +311,14 @@
             mixdownControl.RowCount = 2;
             mixdownControl.RowStyles.Add(new RowStyle(SizeType.Percent, 50F));
             mixdownControl.RowStyles.Add(new RowStyle(SizeType.Percent, 50F));
-            mixdownControl.Size = new Size(1382, 20);
+            mixdownControl.Size = new Size(1549, 20);
             mixdownControl.TabIndex = 0;
             // 
             // ManageAlbumsForm
             // 
             AutoScaleDimensions = new SizeF(8F, 20F);
             AutoScaleMode = AutoScaleMode.Font;
-            ClientSize = new Size(1382, 703);
+            ClientSize = new Size(1549, 703);
             Controls.Add(MixdownPanel);
             Controls.Add(PlayPanel);
             Controls.Add(TracksPanel);
@@ -338,5 +364,7 @@
         private Panel MixdownPanel;
         private Controls.Album.Manage.MixdownControl mixdownControl;
         private Controls.Media.Play.PlayTrackControl PlayTrack;
+        private Label label3;
+        private ComboBox OrderBy;
     }
 }

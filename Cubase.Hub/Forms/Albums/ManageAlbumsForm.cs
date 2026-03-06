@@ -80,11 +80,39 @@ namespace Cubase.Hub.Forms.Albums
             this.BrowseExportLocationButton.Click += BrowseExportLocationButton_Click;
             this.OpenExportDirectory.Click += OpenExportDirectory_Click;
             this.RefreshTracksButton.Click += RefreshTracksButton_Click;
+            this.OrderBy.Items.Clear();
+            this.OrderBy.Items.AddRange(["Track", "Date", "Type", "Duration", "Size"]);
+            this.OrderBy.SelectedIndex = 0;
+            this.OrderBy.SelectedIndexChanged += OrderBy_SelectedIndexChanged;
             this.AutoScaleMode = AutoScaleMode.Dpi;
             // register static event class and wait for commands comming in 
             AlbumCommands.Instance.RegisterForAlbumCommand(this.OnAlbumCommandReceived);
             this.PlayTrack.TrackService = this.trackService;
             this.PlayTrack.ShowPlay = false;
+        }
+
+        private void OrderBy_SelectedIndexChanged(object? sender, EventArgs e)
+        {
+            switch (this.OrderBy.SelectedItem.ToString())
+            {
+                case "Track":
+                    this.CurrentMixes = this.CurrentMixes.OrderByTrack();
+                    break;
+                case "Date":
+                    this.CurrentMixes = this.CurrentMixes.OrderByDate();
+                    break;
+                case "Type":
+                    this.CurrentMixes = this.CurrentMixes.OrderByType();
+                    break;
+                case "Duration":
+                    this.CurrentMixes = this.CurrentMixes.OrderByDuration();
+                    break;
+                case "Size":
+                    this.CurrentMixes = this.CurrentMixes.OrderBySize();
+                    break;
+                
+            }
+            this.ShowMixes();
         }
 
         private void RefreshTracksButton_Click(object? sender, EventArgs e)
