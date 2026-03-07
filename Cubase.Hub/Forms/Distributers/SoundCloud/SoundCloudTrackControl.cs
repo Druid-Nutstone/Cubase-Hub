@@ -1,4 +1,5 @@
-﻿using Cubase.Hub.Forms.BaseForm;
+﻿using Cubase.Hub.Controls.CompletedMixes.Tracks;
+using Cubase.Hub.Forms.BaseForm;
 using Cubase.Hub.Services.Distributers.SoundCloud;
 using Cubase.Hub.Services.Models;
 using System;
@@ -20,11 +21,13 @@ namespace Cubase.Hub.Forms.Distributers.SoundCloud
 
         private SoundCloudTrackCollection soundCloudTracks;
 
-        private SoundCloudTrack? soundCloudTrack;
+        private SoundCloudTrack? soundCloudTrack; 
 
         private SoundCloudDistributer mainControl;
 
         private MixDown mixDown;
+
+        private TrackPlayViewControl trackPlayViewControl;
 
         public SoundCloudTrackControl()
         {
@@ -88,10 +91,19 @@ namespace Cubase.Hub.Forms.Distributers.SoundCloud
             p.Start();
         }
 
-        public void SetMix(MixDown mixDown)
+        public void SetMix(MixDown mixDown, TrackPlayViewControl trackPlayViewControl)
         {
             this.mixDown = mixDown;
+            this.trackPlayViewControl = trackPlayViewControl;   
             this.soundCloudTrack = this.soundCloudTracks.GetTrackByTitle(this.mixDown.Title);
+            if (this.soundCloudTrack != null)
+            {
+                if (this.soundCloudTrack.isUploadDateOlderThan(this.mixDown.LastModified))
+                {
+                    this.trackPlayViewControl.BackColor = Color.FromArgb(169, 68, 68);
+                }
+            }
+            
             this.InitialiseControls();
         }
     }

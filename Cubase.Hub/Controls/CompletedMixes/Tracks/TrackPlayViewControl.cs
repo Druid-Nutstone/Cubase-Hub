@@ -49,7 +49,7 @@ namespace Cubase.Hub.Controls.CompletedMixes.Tracks
                 trackPanel.Dock = DockStyle.Fill;
                 this.DistributerPanel.Controls.Add(trackPanel);
                 this.distributerTrackControl = (IDistributerTrackControl)trackPanel;
-                this.distributerTrackControl.SetMix(this.mixDown);
+                this.distributerTrackControl.SetMix(this.mixDown, this);
             }
             else
             {

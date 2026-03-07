@@ -101,7 +101,7 @@ namespace Cubase.Hub.Services.Distributers.SoundCloud
         public int? ReleaseDay { get; set; }
 
         [JsonPropertyName("user")]
-        public SoundCloudUser? User { get; set; }
+        public SoundCloudTrack.SoundCloudUser User { get; set; }
 
         [JsonPropertyName("tracks")]
         public List<SoundCloudTrack>? Tracks { get; set; }

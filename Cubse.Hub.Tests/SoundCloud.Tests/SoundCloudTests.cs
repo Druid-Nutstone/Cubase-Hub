@@ -27,6 +27,23 @@ namespace Cubse.Hub.Tests.SoundCloud.Tests
         }
 
         [TestMethod]
+        public void Can_Compare_dates()
+        {
+            if (this.soundCloudDistributionProvider.Connect(this.OnError))
+            {
+                var tacks = this.soundCloudDistributionProvider.GetTracks(this.OnError);
+                /*
+                var playLists = this.soundCloudDistributionProvider.GetPlayLists(this.OnError);
+                var playList = playLists.GetAlbum("In Progress");
+                if (playList !=null)
+                {
+                    
+                }
+                */
+            }
+        }
+
+        [TestMethod]
         public void Can_Create_Album()
         {
             if (this.soundCloudDistributionProvider.Connect(this.OnError))

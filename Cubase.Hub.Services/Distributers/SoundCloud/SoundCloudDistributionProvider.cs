@@ -128,14 +128,23 @@ namespace Cubase.Hub.Services.Distributers.SoundCloud
 
             content?.Add(fileContent, "track[asset_data]", Path.GetFileName(mixDown.FileName));
 
-            var response = this.PostAsync("/tracks", content).Result;
-            if (!response.IsSuccessStatusCode)
-            {
-                onError.Invoke(response.GetErrorResponse());
-                return null;
-            }
+            HttpResponseMessage? response = null;
 
-            var newTrack = response.GetModel<SoundCloudTrack>(onError);
+            try
+            {
+                response = this.PostAsync("/tracks", content).Result;
+                if (!response.IsSuccessStatusCode)
+                {
+                    onError.Invoke(response.GetErrorResponse());
+                    return null;
+                }
+            } catch (Exception e)
+            {
+                onError($"Error uploading track {mixDown.Title} {e.Message} ");
+                return null;    
+            } 
+
+            var newTrack = response?.GetModel<SoundCloudTrack>(onError);
 
             if (newTrack == null)
             {
@@ -463,15 +472,31 @@ namespace Cubase.Hub.Services.Distributers.SoundCloud
 
         public bool Connect(Action<string> onError)
         {
+            this.BaseAddress = new Uri(BaseAddressString);
+
             if (!this.Connected)
             {
-                this.BaseAddress = new Uri(BaseAddressString);
+                this.AccessTokenResponse = SoundCloudTokenResponse.Load();
 
-                this.AuthCode = this.ConnectToSoundCloudOAuth(onError);
-                if (this.AuthCode == null) return false;
+                if (this.AccessTokenResponse == null)
+                {
 
-                this.AccessToken = this.GetToken(onError);
-                if (this.AccessToken == null) return false;
+                    this.AuthCode = this.ConnectToSoundCloudOAuth(onError);
+                    if (this.AuthCode == null) return false;
+
+                    this.AccessToken = this.GetToken(onError);
+                    if (this.AccessToken == null) return false;
+
+                }
+                else
+                {
+                    if (this.AccessTokenResponse.HasExpired)
+                        this.AccessToken = this.RefreshAccessToken(this.AccessTokenResponse.RefreshToken, onError);
+                    else
+                        this.AccessToken = this.AccessTokenResponse.AccessToken;
+                }
+
+
 
                 this.DefaultRequestHeaders.Authorization =
                     new System.Net.Http.Headers.AuthenticationHeaderValue("OAuth", this.AccessToken);
@@ -486,6 +511,7 @@ namespace Cubase.Hub.Services.Distributers.SoundCloud
 
         private string? GetToken(Action<string> onError)
         {
+
             var content = new FormUrlEncodedContent(new[]
             {
                new KeyValuePair<string, string>("grant_type", "authorization_code"),
@@ -507,6 +533,7 @@ namespace Cubase.Hub.Services.Distributers.SoundCloud
             {
                 this.AccessTokenResponse = response.GetModel<SoundCloudTokenResponse>((err) => { });
                 this.AccessTokenResponse.SetExpires();
+                this.AccessTokenResponse.Save();
                 return this.AccessTokenResponse.AccessToken;
             }
             else
@@ -516,6 +543,32 @@ namespace Cubase.Hub.Services.Distributers.SoundCloud
             }
         }
 
+        private string? RefreshAccessToken(string refreshToken, Action<string> onError)
+        {
+            var content = new FormUrlEncodedContent(new[]
+            {
+               new KeyValuePair<string, string>("grant_type", "refresh_token"),
+               new KeyValuePair<string, string>("client_id", ClientID),
+               new KeyValuePair<string, string>("client_secret", ClientSecret),
+               new KeyValuePair<string, string>("refresh_token", refreshToken)
+            });
+
+            var response = this.PostAsync("https://secure.soundcloud.com/oauth/token", content).Result;
+
+            if (!response.IsSuccessStatusCode)
+            {
+                onError(response.GetErrorResponse());
+                return null;
+            }
+
+            var tokenResponse = response.GetModel<SoundCloudTokenResponse>(onError);
+            tokenResponse.SetExpires();
+            this.AccessTokenResponse = tokenResponse;
+            this.AccessTokenResponse.Save();
+            this.AccessToken = tokenResponse.AccessToken;
+
+            return this.AccessToken;
+        }
         private string? ConnectToSoundCloudOAuth(Action<string> onError)
         {
             string? code = null;
@@ -610,19 +663,30 @@ namespace Cubase.Hub.Services.Distributers.SoundCloud
 
         private bool EnsureConnectionAndToken(Action<string> onError)
         {
-            if (!this.Connected)
+            if (!this.Connected || this.AccessTokenResponse == null)
             {
                 onError("The connection to Soundcloud has not been initiated");
                 return false;
             }
+
             if (this.AccessTokenResponse.HasExpired)
             {
-                // todo - refresh the access token !!!!
-                onError("The access token has expired. Re-connect or refresh the token");
-                return false;
+                var newToken = this.RefreshAccessToken(this.AccessTokenResponse.RefreshToken, onError);
+
+                if (newToken == null)
+                {
+                    SoundCloudTokenResponse.Delete();
+                    this.Connected = false;
+                    return false;
+                }
+
+                this.DefaultRequestHeaders.Authorization =
+                    new AuthenticationHeaderValue("OAuth", newToken);
             }
+
             return true;
         }
+
 
 
     }
