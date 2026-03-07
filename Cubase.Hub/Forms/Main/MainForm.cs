@@ -1,10 +1,13 @@
 ﻿using Cubase.Hub.Controls.MainFormControls.ProjectsForm;
 using Cubase.Hub.Forms.BaseForm;
 using Cubase.Hub.Forms.Config;
+using Cubase.Hub.Forms.Distributers;
 using Cubase.Hub.Forms.Main.Menu;
 using Cubase.Hub.Services.Config;
+using Cubase.Hub.Services.Distributers;
 using Cubase.Hub.Services.Messages;
 using Cubase.Hub.Services.Models;
+using Microsoft.Extensions.DependencyInjection;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -25,6 +28,8 @@ namespace Cubase.Hub.Forms.Main
 
         private readonly ConfigurationForm configurationForm;
 
+        private readonly IServiceProvider serviceProvider;
+
         private MenuContent menuContent;
 
         private bool startMinimised = false;
@@ -33,6 +38,7 @@ namespace Cubase.Hub.Forms.Main
                         ConfigurationForm configurationForm,
                         IConfigurationService configurationService,
                         MenuContent menuContent,
+                        IServiceProvider serviceProvider,
                         ProjectsControl projectsControl)
         {
             InitializeComponent();
@@ -40,6 +46,7 @@ namespace Cubase.Hub.Forms.Main
             this.menuContent = menuContent;
             this.configurationService = configurationService;
             this.configurationForm = configurationForm;
+            this.serviceProvider = serviceProvider;
             messageService.RegisterForMessages(this.OnMessageReceived);
             this.messageService = messageService;
             this.MainMenu.Renderer = new DarkToolStripRenderer();
@@ -69,6 +76,7 @@ namespace Cubase.Hub.Forms.Main
                 if (result == DialogResult.OK)
                 {
                     this.SetLocation();
+
                 }
                 else
                 {
@@ -78,6 +86,19 @@ namespace Cubase.Hub.Forms.Main
             if (configState)
             {
                 this.SetLocation();
+                this.StartDistributionServiceIfAny();
+            }
+        }
+
+        private void StartDistributionServiceIfAny()
+        {
+            if (this.configurationService?.Configuration?.DistributionConfiguration?.DistributionProvider != DistributionProvider.None)
+            {
+                var distributionService = this.serviceProvider.GetKeyedService<IDistributerAutoDiscoveryService>(this.configurationService.Configuration.DistributionConfiguration.DistributionProvider);
+                if (distributionService != null)
+                {
+                    distributionService.StartAutoDiscovery();
+                }
             }
         }
 

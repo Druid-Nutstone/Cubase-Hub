@@ -20,6 +20,8 @@ namespace Cubase.Hub.Services.Models
 
         public WindowSettings? PlayWindowLocation { get; set; }
 
+        public DistributionConfiguration? DistributionConfiguration { get; set; } = new DistributionConfiguration();    
+
         public string? AlbumExportLocation { get; set; } 
 
         public string? LastExportFolderLocation { get; set; }

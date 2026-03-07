@@ -1,7 +1,8 @@
 {
   "profiles": {
     "Cubase.Hub": {
-      "commandName": "Project"
+      "commandName": "Project",
+      "commandLineArgs": "minimise"
     }
   }
 }

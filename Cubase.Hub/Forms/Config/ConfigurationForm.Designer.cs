@@ -35,6 +35,7 @@
             SourceCubaseFolders = new TextBox();
             AddSourceFolderButton = new Button();
             panel2 = new Panel();
+            BrowseAlbumExportLocation = new Button();
             AlbumExportLocation = new TextBox();
             label5 = new Label();
             BrowseCubaseTemplateButton = new Button();
@@ -46,7 +47,8 @@
             BrowseCubaseExeButton = new Button();
             CubaseExeLocation = new TextBox();
             label2 = new Label();
-            BrowseAlbumExportLocation = new Button();
+            label6 = new Label();
+            AutoDiscoveryService = new Cubase.Hub.Controls.BoundControls.BoundEnumComboBox();
             panel1.SuspendLayout();
             panel2.SuspendLayout();
             SuspendLayout();
@@ -55,7 +57,7 @@
             // 
             panel1.Controls.Add(ButtonSave);
             panel1.Dock = DockStyle.Bottom;
-            panel1.Location = new Point(0, 483);
+            panel1.Location = new Point(0, 568);
             panel1.Name = "panel1";
             panel1.Size = new Size(800, 52);
             panel1.TabIndex = 0;
@@ -97,6 +99,8 @@
             // 
             // panel2
             // 
+            panel2.Controls.Add(AutoDiscoveryService);
+            panel2.Controls.Add(label6);
             panel2.Controls.Add(BrowseAlbumExportLocation);
             panel2.Controls.Add(AlbumExportLocation);
             panel2.Controls.Add(label5);
@@ -115,8 +119,17 @@
             panel2.Dock = DockStyle.Fill;
             panel2.Location = new Point(0, 0);
             panel2.Name = "panel2";
-            panel2.Size = new Size(800, 483);
+            panel2.Size = new Size(800, 568);
             panel2.TabIndex = 4;
+            // 
+            // BrowseAlbumExportLocation
+            // 
+            BrowseAlbumExportLocation.Location = new Point(694, 409);
+            BrowseAlbumExportLocation.Name = "BrowseAlbumExportLocation";
+            BrowseAlbumExportLocation.Size = new Size(94, 29);
+            BrowseAlbumExportLocation.TabIndex = 15;
+            BrowseAlbumExportLocation.Text = "Browse";
+            BrowseAlbumExportLocation.UseVisualStyleBackColor = true;
             // 
             // AlbumExportLocation
             // 
@@ -214,20 +227,29 @@
             label2.TabIndex = 4;
             label2.Text = "Cubase Exe Location";
             // 
-            // BrowseAlbumExportLocation
+            // label6
             // 
-            BrowseAlbumExportLocation.Location = new Point(694, 409);
-            BrowseAlbumExportLocation.Name = "BrowseAlbumExportLocation";
-            BrowseAlbumExportLocation.Size = new Size(94, 29);
-            BrowseAlbumExportLocation.TabIndex = 15;
-            BrowseAlbumExportLocation.Text = "Browse";
-            BrowseAlbumExportLocation.UseVisualStyleBackColor = true;
+            label6.AutoSize = true;
+            label6.Font = new Font("Segoe UI", 9F, FontStyle.Bold);
+            label6.Location = new Point(22, 473);
+            label6.Name = "label6";
+            label6.Size = new Size(178, 20);
+            label6.TabIndex = 16;
+            label6.Text = "Distributer Auto Service";
+            // 
+            // AutoDiscoveryService
+            // 
+            AutoDiscoveryService.FormattingEnabled = true;
+            AutoDiscoveryService.Location = new Point(28, 498);
+            AutoDiscoveryService.Name = "AutoDiscoveryService";
+            AutoDiscoveryService.Size = new Size(151, 28);
+            AutoDiscoveryService.TabIndex = 17;
             // 
             // ConfigurationForm
             // 
             AutoScaleDimensions = new SizeF(8F, 20F);
             AutoScaleMode = AutoScaleMode.Font;
-            ClientSize = new Size(800, 535);
+            ClientSize = new Size(800, 620);
             Controls.Add(panel2);
             Controls.Add(panel1);
             Icon = (Icon)resources.GetObject("$this.Icon");
@@ -259,5 +281,7 @@
         private Label label5;
         private TextBox AlbumExportLocation;
         private Button BrowseAlbumExportLocation;
+        private Controls.BoundControls.BoundEnumComboBox AutoDiscoveryService;
+        private Label label6;
     }
 }

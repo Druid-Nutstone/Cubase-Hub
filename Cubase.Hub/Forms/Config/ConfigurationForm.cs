@@ -33,7 +33,15 @@ namespace Cubase.Hub.Forms.Config
             this.BrowseUserTemplateLocationButton.Click += BrowseUserTemplateLocationButton_Click;
             this.BrowseCubaseTemplateButton.Click += BrowseCubaseTemplateButton_Click;
             this.BrowseAlbumExportLocation.Click += BrowseAlbumExportLocation_Click;
+            this.AutoDiscoveryService.EnumType = typeof(DistributionProvider);
+            this.AutoDiscoveryService.OnEnumSelected = this.AutoDiscoveryServiceSelected;
+
             ThemeApplier.ApplyDarkTheme(this);
+        }
+
+        private void AutoDiscoveryServiceSelected(object discoveryEnum)
+        {
+            this.configurationService.Configuration.DistributionConfiguration.DistributionProvider = (DistributionProvider)discoveryEnum;
         }
 
         private void BrowseAlbumExportLocation_Click(object? sender, EventArgs e)
@@ -124,7 +132,11 @@ namespace Cubase.Hub.Forms.Config
             CubaseExeLocation.Text = this.Configuration.CubaseExeLocation;
             CubaseUserTemplateLocation.Text = this.Configuration.CubaseUserTemplateLocation;
             CubaseTemplateLocation.Text = this.Configuration.CubaseTemplateLocation;
-            AlbumExportLocation.Text = this.Configuration.AlbumExportLocation;  
+            AlbumExportLocation.Text = this.Configuration.AlbumExportLocation;
+            if (this.configurationService.Configuration.DistributionConfiguration != null)
+            {
+                this.AutoDiscoveryService.SelectedItem = this.configurationService.Configuration.DistributionConfiguration.DistributionProvider.ToString();
+            }
         }
 
     }

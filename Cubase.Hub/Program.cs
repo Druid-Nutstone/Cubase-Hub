@@ -143,11 +143,12 @@ namespace Cubase.Hub
                 .AddSingleton<IDirectoryService, DirectoryService>()
                 .AddSingleton<ICubaseService, CubaseService>()
                 .AddSingleton<IAudioService, AudioService>()
-                .AddSingleton<CompletedMixesForm,  CompletedMixesForm>()
+                .AddSingleton<CompletedMixesForm, CompletedMixesForm>()
                 .AddTransient<IAlbumService, AlbumService>()
                 .AddTransient<ITrackService, TrackService>()
                 .AddSingleton<IJumpListService, JumpListService>()
                 .AddKeyedTransient<IDistributer, RouteNoteDistributer>(Distributers.RouteNote)
+                .AddKeyedSingleton<IDistributerAutoDiscoveryService, SoundCloudAutoDiscoveryService>(DistributionProvider.SoundCloud)
                 .AddSingleton<IProjectService, ProjectService>();
                 
             var provider = serviceCollection.BuildServiceProvider();
