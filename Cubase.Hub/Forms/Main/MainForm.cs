@@ -86,19 +86,6 @@ namespace Cubase.Hub.Forms.Main
             if (configState)
             {
                 this.SetLocation();
-                this.StartDistributionServiceIfAny();
-            }
-        }
-
-        private void StartDistributionServiceIfAny()
-        {
-            if (this.configurationService?.Configuration?.DistributionConfiguration?.DistributionProvider != DistributionProvider.None)
-            {
-                var distributionService = this.serviceProvider.GetKeyedService<IDistributerAutoDiscoveryService>(this.configurationService.Configuration.DistributionConfiguration.DistributionProvider);
-                if (distributionService != null)
-                {
-                    distributionService.StartAutoDiscovery();
-                }
             }
         }
 

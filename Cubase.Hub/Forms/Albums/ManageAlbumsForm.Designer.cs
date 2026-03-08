@@ -30,6 +30,7 @@
         {
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(ManageAlbumsForm));
             TopPanel = new Panel();
+            OpenMixes = new Button();
             OpenExportDirectory = new Button();
             BrowseExportLocationButton = new Button();
             AlbumExportLocation = new TextBox();
@@ -63,6 +64,7 @@
             // 
             // TopPanel
             // 
+            TopPanel.Controls.Add(OpenMixes);
             TopPanel.Controls.Add(OpenExportDirectory);
             TopPanel.Controls.Add(BrowseExportLocationButton);
             TopPanel.Controls.Add(AlbumExportLocation);
@@ -76,20 +78,30 @@
             TopPanel.Size = new Size(1549, 102);
             TopPanel.TabIndex = 0;
             // 
+            // OpenMixes
+            // 
+            OpenMixes.Anchor = AnchorStyles.Top | AnchorStyles.Right;
+            OpenMixes.Location = new Point(1371, 42);
+            OpenMixes.Name = "OpenMixes";
+            OpenMixes.Size = new Size(166, 29);
+            OpenMixes.TabIndex = 7;
+            OpenMixes.Text = "Open Distribution";
+            OpenMixes.UseVisualStyleBackColor = true;
+            // 
             // OpenExportDirectory
             // 
             OpenExportDirectory.Anchor = AnchorStyles.Top | AnchorStyles.Right;
-            OpenExportDirectory.Location = new Point(1426, 42);
+            OpenExportDirectory.Location = new Point(1222, 42);
             OpenExportDirectory.Name = "OpenExportDirectory";
-            OpenExportDirectory.Size = new Size(94, 29);
+            OpenExportDirectory.Size = new Size(131, 29);
             OpenExportDirectory.TabIndex = 6;
-            OpenExportDirectory.Text = "Open";
+            OpenExportDirectory.Text = "Open Folder";
             OpenExportDirectory.UseVisualStyleBackColor = true;
             // 
             // BrowseExportLocationButton
             // 
             BrowseExportLocationButton.Anchor = AnchorStyles.Top | AnchorStyles.Right;
-            BrowseExportLocationButton.Location = new Point(1326, 42);
+            BrowseExportLocationButton.Location = new Point(1108, 42);
             BrowseExportLocationButton.Name = "BrowseExportLocationButton";
             BrowseExportLocationButton.Size = new Size(94, 29);
             BrowseExportLocationButton.TabIndex = 5;
@@ -101,7 +113,7 @@
             AlbumExportLocation.Anchor = AnchorStyles.Top | AnchorStyles.Left | AnchorStyles.Right;
             AlbumExportLocation.Location = new Point(486, 42);
             AlbumExportLocation.Name = "AlbumExportLocation";
-            AlbumExportLocation.Size = new Size(834, 27);
+            AlbumExportLocation.Size = new Size(616, 27);
             AlbumExportLocation.TabIndex = 4;
             // 
             // label2
@@ -302,6 +314,10 @@
             mixdownControl.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 100F));
             mixdownControl.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 100F));
             mixdownControl.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 100F));
+            mixdownControl.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 100F));
+            mixdownControl.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 100F));
+            mixdownControl.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 100F));
+            mixdownControl.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 100F));
             mixdownControl.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 50F));
             mixdownControl.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 50F));
             mixdownControl.Dock = DockStyle.Top;
@@ -366,5 +382,6 @@
         private Controls.Media.Play.PlayTrackControl PlayTrack;
         private Label label3;
         private ComboBox OrderBy;
+        private Button OpenMixes;
     }
 }

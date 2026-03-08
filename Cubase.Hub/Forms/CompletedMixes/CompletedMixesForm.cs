@@ -29,8 +29,6 @@ namespace Cubase.Hub.Forms.CompletedMixes
 
         private readonly IServiceProvider serviceProvider;
 
-        private DistributionProvider distributionProviderType = DistributionProvider.None; 
-
         private IDistributerForm distributerForm;   
 
         public CompletedMixesForm()
@@ -51,30 +49,24 @@ namespace Cubase.Hub.Forms.CompletedMixes
             this.serviceProvider = serviceProvider;
             this.configurationService = configurationService;
             ThemeApplier.ApplyDarkTheme(this);
-            this.Distributer.EnumType = typeof(DistributionProvider);
-            this.Distributer.OnEnumSelected = this.DistributerSelected; 
+            if (this.configurationService?.Configuration?.DistributionConfiguration?.DistributionProvider  != DistributionProvider.None)
+            {
+                this.distributerForm = this.serviceProvider.GetKeyedService<IDistributerForm>(this.configurationService?.Configuration?.DistributionConfiguration?.DistributionProvider);
+                if (distributerForm != null)
+                {
+                    distributerForm.Initialise();
+                }
+            }
         }
 
-        public void InitialiseMixes()
+        public void InitialiseMixes(AlbumLocation? albumLocation = null)
         {
             this.LoadPosition();
             this.LoadCompletedMixes();
             ThemeApplier.ApplyDarkTheme(this);
-        }
-
-        private void DistributerSelected(object distributionProviderEnum)
-        {
-            this.distributionProviderType = (DistributionProvider)distributionProviderEnum;
-            this.distributerForm = this.serviceProvider.GetKeyedService<IDistributerForm>(this.distributionProviderType);
-            if (distributerForm != null)
+            if (albumLocation != null)
             {
-                distributerForm.Initialise();
-                this.LoadCompletedMixes();
-                ThemeApplier.ApplyDarkTheme(this);
-            }
-            else
-            {
-                this.messageService.ShowError($"Cannot initialise distribution provider for {this.distributionProviderType}");
+                this.LoadAlbumData(albumLocation);
             }
         }
 

@@ -25,6 +25,24 @@ namespace Cubase.Hub.Services.Models
             }
         }
 
+        public IEnumerable<MixDown> ThatHaveMixDownAsTitle()
+        {
+            return this.Where(x => x.Title == CubaseHubConstants.MixdownDirectory);
+        }
+
+        public void SelectSelectedForDistribution(List<MixDown> selectedTracks)
+        {
+            var lookup = this.ToDictionary(x => x.FileName);
+
+            foreach (var item in selectedTracks)
+            {
+                if (lookup.TryGetValue(item.FileName, out var track))
+                {
+                    track.MarkForDistribution = true;
+                }
+            }
+        }
+
         public MixDownCollection OrderByTrack()
         {
             return new MixDownCollection(this.OrderBy(x => x.TrackNumber));
@@ -132,6 +150,7 @@ namespace Cubase.Hub.Services.Models
 
         // ID tags
 
+
         private string _title;
         public string Title
         {
@@ -216,6 +235,13 @@ namespace Cubase.Hub.Services.Models
             set => SetProperty(ref _comment, value);
         }
 
+        private bool _markForDistribution;
+        public bool MarkForDistribution
+        {
+            get => _markForDistribution;
+            set => SetProperty(ref _markForDistribution, value);
+        }
+
         public string ExportLocation { get; set; }
         
         public DateTime LastModified { get; set; }
@@ -234,6 +260,22 @@ namespace Cubase.Hub.Services.Models
                 case "flac":
                     return "audio/flac";
             }
+        }
+
+        public void UpdateFromAnotherMix(MixDown mix)
+        {
+            this._title = mix.Title;    
+            this._album = mix.Album;
+            this._artist = mix.Artist;
+            this._audioType = mix.AudioType;
+            this._bitRate = mix.BitRate;
+            this._comment = mix.Comment;
+            this._duration = mix.Duration;
+            this._genre = mix.Genre;
+            this._performers = mix.Performers;
+            this._trackNumber = mix.TrackNumber;
+            this.ExportLocation = mix.ExportLocation;
+            this._markForDistribution = mix.MarkForDistribution;
         }
 
         public static MixDown CreateFromFile(string file)

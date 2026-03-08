@@ -2,6 +2,7 @@
 using System.ComponentModel;
 using System.Runtime.CompilerServices;
 using System.Text.Json;
+using System.Text.Json.Serialization;
 
 namespace Cubase.Hub.Services.Models
 {
@@ -13,6 +14,61 @@ namespace Cubase.Hub.Services.Models
         private string _genre = "Unknown";
         private string _comments;
 
+        private string _sourceLocation = null;
+
+        [JsonIgnore]
+        public Action<MixDown>? DistributionChanged { get; set; }
+
+        public void AddForDistribution(MixDown mixDown)
+        {
+            if (!this.DistributionMixes.Any(x => x.FileName == mixDown.FileName))
+            {
+                this.DistributionMixes.Add(mixDown);
+            }
+            else
+            {
+                this.DistributionMixes[this.DistributionMixes.FindIndex(x => x.FileName == mixDown.FileName)] = mixDown;
+            }
+            this.SaveToDirectory(this._sourceLocation);
+            DistributionChanged?.Invoke(mixDown);
+        }
+
+        public MixDown? FindMixDown(MixDown mixDown)
+        {
+            return this.DistributionMixes.FirstOrDefault(x => x.FileName == mixDown.FileName); 
+        } 
+
+        public void UpdateMixDistribution(MixDown mixDown)
+        {
+            if (this.DistributionMixes.Any(_ => _.FileName == mixDown.FileName && mixDown.MarkForDistribution)) 
+            {
+                this.AddForDistribution(mixDown);   
+            }   
+        }
+
+        public void CheckForUpdatedDistributionMixes(List<MixDown> mixDowns)
+        {
+            foreach (var item in this.DistributionMixes)
+            {
+                var newMixDown = mixDowns.FirstOrDefault(x => x.FileName == item.FileName);
+                if (newMixDown != null)
+                {
+                    if (newMixDown.LastModified != item.LastModified)
+                    {
+                        DistributionChanged?.Invoke(newMixDown);
+                    }
+                }
+            }
+        }
+
+        public void RemoveFromDistribution(MixDown mixDown) 
+        {
+            if (this.DistributionMixes.Any(x => x.FileName == mixDown.FileName))
+            {
+                this.DistributionMixes.RemoveAt(this.DistributionMixes.FindIndex(x => x.FileName == mixDown.FileName));
+                this.SaveToDirectory(this._sourceLocation);
+            }
+        } 
 
         public event PropertyChangedEventHandler PropertyChanged;
 
@@ -112,9 +168,13 @@ namespace Cubase.Hub.Services.Models
         {
             if (File.Exists(fileName))
             {
-                return JsonSerializer.Deserialize<AlbumConfiguration>(File.ReadAllText(fileName)); 
+                var albumConfig = JsonSerializer.Deserialize<AlbumConfiguration>(File.ReadAllText(fileName));
+                albumConfig._sourceLocation = Path.GetDirectoryName(fileName);
+                return albumConfig;
             }
             return null;
         }
+
+        public List<MixDown> DistributionMixes { get; set; } = new List<MixDown>(); 
     }
 }

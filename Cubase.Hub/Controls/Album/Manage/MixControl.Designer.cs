@@ -53,19 +53,21 @@
             MixSampleRate = new Cubase.Hub.Controls.BoundControls.BoundLabel();
             label11 = new Label();
             MixArtist = new Cubase.Hub.Controls.BoundControls.BoundLabel();
+            label12 = new Label();
+            MixMarkForDistribution = new Cubase.Hub.Controls.BoundControls.BoundCheckbox();
             ((System.ComponentModel.ISupportInitialize)Play).BeginInit();
             SuspendLayout();
             // 
             // MixTitle
             // 
-            MixTitle.Location = new Point(100, 48);
+            MixTitle.Location = new Point(180, 48);
             MixTitle.Name = "MixTitle";
             MixTitle.Size = new Size(182, 27);
             MixTitle.TabIndex = 0;
             // 
             // MixPerformers
             // 
-            MixPerformers.Location = new Point(388, 47);
+            MixPerformers.Location = new Point(468, 47);
             MixPerformers.Name = "MixPerformers";
             MixPerformers.Size = new Size(195, 27);
             MixPerformers.TabIndex = 2;
@@ -73,7 +75,7 @@
             // MixDuration
             // 
             MixDuration.AutoSize = true;
-            MixDuration.Location = new Point(814, 50);
+            MixDuration.Location = new Point(894, 50);
             MixDuration.Name = "MixDuration";
             MixDuration.Size = new Size(31, 20);
             MixDuration.TabIndex = 3;
@@ -82,7 +84,7 @@
             // label1
             // 
             label1.AutoSize = true;
-            label1.Location = new Point(100, 25);
+            label1.Location = new Point(180, 25);
             label1.Name = "label1";
             label1.Size = new Size(38, 20);
             label1.TabIndex = 6;
@@ -91,7 +93,7 @@
             // label2
             // 
             label2.AutoSize = true;
-            label2.Location = new Point(299, 25);
+            label2.Location = new Point(379, 25);
             label2.Name = "label2";
             label2.Size = new Size(67, 20);
             label2.TabIndex = 7;
@@ -100,7 +102,7 @@
             // Performers
             // 
             Performers.AutoSize = true;
-            Performers.Location = new Point(388, 25);
+            Performers.Location = new Point(468, 25);
             Performers.Name = "Performers";
             Performers.Size = new Size(80, 20);
             Performers.TabIndex = 8;
@@ -109,7 +111,7 @@
             // label3
             // 
             label3.AutoSize = true;
-            label3.Location = new Point(814, 25);
+            label3.Location = new Point(894, 25);
             label3.Name = "label3";
             label3.Size = new Size(42, 20);
             label3.TabIndex = 9;
@@ -118,7 +120,7 @@
             // label4
             // 
             label4.AutoSize = true;
-            label4.Location = new Point(598, 25);
+            label4.Location = new Point(678, 25);
             label4.Name = "label4";
             label4.Size = new Size(80, 20);
             label4.TabIndex = 10;
@@ -126,7 +128,7 @@
             // 
             // MixComments
             // 
-            MixComments.Location = new Point(598, 47);
+            MixComments.Location = new Point(678, 47);
             MixComments.Name = "MixComments";
             MixComments.Size = new Size(198, 27);
             MixComments.TabIndex = 11;
@@ -143,7 +145,7 @@
             // MixSelected
             // 
             MixSelected.AutoSize = true;
-            MixSelected.Location = new Point(45, 53);
+            MixSelected.Location = new Point(47, 53);
             MixSelected.Name = "MixSelected";
             MixSelected.Size = new Size(18, 17);
             MixSelected.TabIndex = 14;
@@ -152,7 +154,7 @@
             // label6
             // 
             label6.AutoSize = true;
-            label6.Location = new Point(876, 25);
+            label6.Location = new Point(956, 25);
             label6.Name = "label6";
             label6.Size = new Size(40, 20);
             label6.TabIndex = 15;
@@ -161,7 +163,7 @@
             // MixType
             // 
             MixType.AutoSize = true;
-            MixType.Location = new Point(878, 50);
+            MixType.Location = new Point(958, 50);
             MixType.Name = "MixType";
             MixType.Size = new Size(38, 20);
             MixType.TabIndex = 16;
@@ -170,7 +172,7 @@
             // label7
             // 
             label7.AutoSize = true;
-            label7.Location = new Point(935, 25);
+            label7.Location = new Point(1015, 25);
             label7.Name = "label7";
             label7.Size = new Size(53, 20);
             label7.TabIndex = 17;
@@ -179,7 +181,7 @@
             // MixBitRate
             // 
             MixBitRate.AutoSize = true;
-            MixBitRate.Location = new Point(935, 51);
+            MixBitRate.Location = new Point(1015, 51);
             MixBitRate.Name = "MixBitRate";
             MixBitRate.Size = new Size(53, 20);
             MixBitRate.TabIndex = 18;
@@ -188,7 +190,7 @@
             // label9
             // 
             label9.AutoSize = true;
-            label9.Location = new Point(1016, 25);
+            label9.Location = new Point(1096, 25);
             label9.Name = "label9";
             label9.Size = new Size(36, 20);
             label9.TabIndex = 20;
@@ -197,7 +199,7 @@
             // MixDownSize
             // 
             MixDownSize.AutoSize = true;
-            MixDownSize.Location = new Point(1016, 51);
+            MixDownSize.Location = new Point(1096, 51);
             MixDownSize.Name = "MixDownSize";
             MixDownSize.Size = new Size(36, 20);
             MixDownSize.TabIndex = 21;
@@ -206,7 +208,7 @@
             // label8
             // 
             label8.AutoSize = true;
-            label8.Location = new Point(1301, 25);
+            label8.Location = new Point(1381, 25);
             label8.Name = "label8";
             label8.Size = new Size(100, 20);
             label8.TabIndex = 22;
@@ -215,7 +217,7 @@
             // MixdownLastModified
             // 
             MixdownLastModified.AutoSize = true;
-            MixdownLastModified.Location = new Point(1301, 51);
+            MixdownLastModified.Location = new Point(1381, 51);
             MixdownLastModified.Name = "MixdownLastModified";
             MixdownLastModified.Size = new Size(96, 20);
             MixdownLastModified.TabIndex = 23;
@@ -223,7 +225,7 @@
             // 
             // MixTrackNo
             // 
-            MixTrackNo.Location = new Point(305, 47);
+            MixTrackNo.Location = new Point(385, 47);
             MixTrackNo.Name = "MixTrackNo";
             MixTrackNo.Size = new Size(37, 27);
             MixTrackNo.TabIndex = 24;
@@ -233,7 +235,7 @@
             Play.Anchor = AnchorStyles.Top | AnchorStyles.Right;
             Play.Cursor = Cursors.Hand;
             Play.Image = Properties.Resources.Play;
-            Play.Location = new Point(1449, 39);
+            Play.Location = new Point(1565, 39);
             Play.Name = "Play";
             Play.Size = new Size(24, 24);
             Play.SizeMode = PictureBoxSizeMode.StretchImage;
@@ -243,7 +245,7 @@
             // label10
             // 
             label10.AutoSize = true;
-            label10.Location = new Point(1099, 25);
+            label10.Location = new Point(1179, 25);
             label10.Name = "label10";
             label10.Size = new Size(89, 20);
             label10.TabIndex = 26;
@@ -252,7 +254,7 @@
             // MixSampleRate
             // 
             MixSampleRate.AutoSize = true;
-            MixSampleRate.Location = new Point(1099, 51);
+            MixSampleRate.Location = new Point(1179, 51);
             MixSampleRate.Name = "MixSampleRate";
             MixSampleRate.Size = new Size(89, 20);
             MixSampleRate.TabIndex = 27;
@@ -261,7 +263,7 @@
             // label11
             // 
             label11.AutoSize = true;
-            label11.Location = new Point(1194, 25);
+            label11.Location = new Point(1274, 25);
             label11.Name = "label11";
             label11.Size = new Size(44, 20);
             label11.TabIndex = 28;
@@ -270,16 +272,36 @@
             // MixArtist
             // 
             MixArtist.AutoSize = true;
-            MixArtist.Location = new Point(1194, 50);
+            MixArtist.Location = new Point(1274, 50);
             MixArtist.Name = "MixArtist";
             MixArtist.Size = new Size(44, 20);
             MixArtist.TabIndex = 29;
             MixArtist.Text = "Artist";
             // 
+            // label12
+            // 
+            label12.AutoSize = true;
+            label12.Location = new Point(95, 25);
+            label12.Name = "label12";
+            label12.Size = new Size(74, 20);
+            label12.TabIndex = 30;
+            label12.Text = "Distribute";
+            // 
+            // MixMarkForDistribution
+            // 
+            MixMarkForDistribution.AutoSize = true;
+            MixMarkForDistribution.Location = new Point(118, 53);
+            MixMarkForDistribution.Name = "MixMarkForDistribution";
+            MixMarkForDistribution.Size = new Size(18, 17);
+            MixMarkForDistribution.TabIndex = 31;
+            MixMarkForDistribution.UseVisualStyleBackColor = true;
+            // 
             // MixControl
             // 
             AutoScaleDimensions = new SizeF(8F, 20F);
             AutoScaleMode = AutoScaleMode.Font;
+            Controls.Add(MixMarkForDistribution);
+            Controls.Add(label12);
             Controls.Add(MixArtist);
             Controls.Add(label11);
             Controls.Add(MixSampleRate);
@@ -306,7 +328,7 @@
             Controls.Add(MixPerformers);
             Controls.Add(MixTitle);
             Name = "MixControl";
-            Size = new Size(1553, 109);
+            Size = new Size(1669, 109);
             ((System.ComponentModel.ISupportInitialize)Play).EndInit();
             ResumeLayout(false);
             PerformLayout();
@@ -339,5 +361,7 @@
         private BoundControls.BoundLabel MixSampleRate;
         private Label label11;
         private BoundControls.BoundLabel MixArtist;
+        private Label label12;
+        private BoundControls.BoundCheckbox MixMarkForDistribution;
     }
 }

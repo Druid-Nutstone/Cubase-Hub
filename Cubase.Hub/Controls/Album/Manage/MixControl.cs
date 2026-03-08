@@ -19,7 +19,7 @@ namespace Cubase.Hub.Controls.Album.Manage
         public Action<MixDown, string> OnMixChanged { get; set; }
 
         [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
-        public Action<MixDown>? OnPlay { get; set; } 
+        public Action<MixDown>? OnPlay { get; set; }
 
         private MixDown Mix;
 
@@ -30,16 +30,16 @@ namespace Cubase.Hub.Controls.Album.Manage
             InitializeComponent();
         }
 
-        public MixControl(MixDown mixDown, 
+        public MixControl(MixDown mixDown,
                           IServiceProvider serviceProvider,
-                          ITrackService trackService, 
+                          ITrackService trackService,
                           IMessageService messageService)
         {
             InitializeComponent();
             this.Initialise(mixDown, trackService);
             this.messageService = messageService;
             this.ContextMenuStrip = new MixControlContextMenu(mixDown, serviceProvider);
-            
+
         }
 
         public void Initialise(MixDown mixDown, ITrackService trackService)
@@ -53,13 +53,14 @@ namespace Cubase.Hub.Controls.Album.Manage
             this.Play.Click += Play_Click;
             this.MixComments.Bind(nameof(MixDown.Comment), mixDown);
             this.MixBitRate.Bind(nameof(MixDown.BitRate), mixDown);
-            this.MixDownSize.Bind(nameof(MixDown.Size), mixDown);   
-            this.MixSelected.Bind(nameof(MixDown.Selected),mixDown);
+            this.MixDownSize.Bind(nameof(MixDown.Size), mixDown);
+            this.MixSelected.Bind(nameof(MixDown.Selected), mixDown);
             this.MixSampleRate.Bind(nameof(MixDown.SampleRate), mixDown);
             this.MixArtist.Bind(nameof(MixDown.Artist), mixDown);
             this.MixdownLastModified.Text = this.GetLastModified(mixDown);
+            this.MixMarkForDistribution.Bind(nameof(MixDown.MarkForDistribution), mixDown);
             this.MixType.Text = mixDown.AudioType.ToUpper();
-            
+
         }
 
         private void Play_Click(object? sender, EventArgs e)
@@ -76,13 +77,15 @@ namespace Cubase.Hub.Controls.Album.Manage
             if (mixDown.LastModified.Date == DateTime.Now.AddDays(-1).Date)
             {
                 return $"Yesterday {mixDown.LastModified.ToString("t")}";
-            }   
-            return mixDown.LastModified.ToString("g");  
-        }    
+            }
+            return mixDown.LastModified.ToString("g");
+        }
 
         private void MixDown_PropertyChanged(object? sender, PropertyChangedEventArgs e)
         {
             this.OnMixChanged?.Invoke(this.Mix, e.PropertyName);
         }
+
+
     }
 }

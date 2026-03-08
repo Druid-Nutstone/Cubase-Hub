@@ -95,7 +95,6 @@ namespace Cubase.Hub.Services.Audio
         public void AudioPopulateMixdownFromTags(MixDown mixDown)
         {
             var tags = TagLib.File.Create(mixDown.FileName);
-
             mixDown.Title = tags.Tag.Title ?? mixDown.ParentDirectory;
             mixDown.Album = tags.Tag.Album;
             mixDown.Genre = tags.Tag.FirstGenre;
