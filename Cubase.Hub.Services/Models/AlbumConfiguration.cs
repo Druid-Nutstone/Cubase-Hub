@@ -13,6 +13,7 @@ namespace Cubase.Hub.Services.Models
         private uint _year = (uint)DateTime.Now.Year;
         private string _genre = "Unknown";
         private string _comments;
+        private string _label;
 
         private string _sourceLocation = null;
 
@@ -46,8 +47,9 @@ namespace Cubase.Hub.Services.Models
             }   
         }
 
-        public void CheckForUpdatedDistributionMixes(List<MixDown> mixDowns)
+        public MixDownCollection CheckForUpdatedDistributionMixes(List<MixDown> mixDowns)
         {
+            var mixdownCollection = new MixDownCollection();
             foreach (var item in this.DistributionMixes)
             {
                 var newMixDown = mixDowns.FirstOrDefault(x => x.FileName == item.FileName);
@@ -55,10 +57,14 @@ namespace Cubase.Hub.Services.Models
                 {
                     if (newMixDown.LastModified != item.LastModified)
                     {
+                        mixdownCollection.Add(newMixDown);
                         DistributionChanged?.Invoke(newMixDown);
+                        item.LastModified = newMixDown.LastModified;
+                        SaveToDirectory(this._sourceLocation);
                     }
                 }
             }
+            return mixdownCollection;
         }
 
         public void RemoveFromDistribution(MixDown mixDown) 
@@ -91,6 +97,26 @@ namespace Cubase.Hub.Services.Models
         {
             get => _title;
             set => SetProperty(ref _title, value);
+        }
+
+        private string _engineer;
+        public string Engineer
+        {
+            get => _engineer;
+            set => SetProperty(ref _engineer, value);
+        }
+
+        private string _producer;
+        public string Producer
+        {
+            get => _producer;
+            set => SetProperty(ref _producer, value);
+        }
+
+        public string Label
+        {
+            get => _label;
+            set => SetProperty(ref _label, value);
         }
 
         public string Artist
@@ -175,6 +201,6 @@ namespace Cubase.Hub.Services.Models
             return null;
         }
 
-        public List<MixDown> DistributionMixes { get; set; } = new List<MixDown>(); 
+        public MixDownCollection DistributionMixes { get; set; } = new MixDownCollection(); 
     }
 }

@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Globalization;
+using System.Text.Json;
 using System.Text.Json.Serialization;
 
 
@@ -12,6 +13,22 @@ namespace Cubase.Hub.Services.Distributers.SoundCloud
         public SoundCloudTrack? GetTrackByTitle(string title)
         {
             return this.FirstOrDefault(x => x.Title == title);
+        }
+
+        public void Save(string fileName)
+        {
+            if (File.Exists(fileName))
+            {
+                File.Delete(fileName);  
+            }
+            var asText = JsonSerializer.Serialize(this);    
+            File.WriteAllText(fileName, asText);    
+        }
+
+        public static SoundCloudTrackCollection LoadFrom(string fileName)
+        {
+            var scText = File.ReadAllText(fileName);
+            return JsonSerializer.Deserialize<SoundCloudTrackCollection>(scText);
         }
     }
 

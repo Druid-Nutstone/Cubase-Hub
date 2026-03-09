@@ -272,14 +272,14 @@ namespace Cubase.Hub.Services.Distributers.SoundCloud
         }
 
 
-        public SoundCloudPlaylist? CreateAlbum(AlbumConfiguration albumConfiguration, Action<string> onError)
+        public SoundCloudPlaylist? CreateAlbum(AlbumConfiguration albumConfiguration, string description, Action<string> onError)
         {
             if (!this.EnsureConnectionAndToken(onError))
             {
                 return null;
             }
 
-            var postData = CreatePlaylistRequest.CreateFromAlbum(albumConfiguration);
+            var postData = CreatePlaylistRequest.CreateFromAlbum(albumConfiguration, description);
 
             var albumArtLocation = this.albumService.GetAlbumArt(albumConfiguration);
 

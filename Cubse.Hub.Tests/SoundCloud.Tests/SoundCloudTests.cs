@@ -27,6 +27,24 @@ namespace Cubse.Hub.Tests.SoundCloud.Tests
         }
 
         [TestMethod]
+        public void TestAlbum_Creation()
+        {
+            this.configurationService.LoadConfiguration(() => { });
+            var albumLoc = this.albumService.GetAlbumList(this.OnError).FirstOrDefault(x => x.AlbumName == "Martin");
+            var albumConfiguration = this.albumService.GetAlbumConfigurationFromAlbumLocation(albumLoc);
+            var mixDowns = this.trackService.GetMixesForAlbum(albumLoc);
+            var allContributers = string.Join(" ",(string.Join(' ', mixDowns.Select(x => string.Join(" ",x.Performers.Split(';'))))).Split(" ").Distinct());
+            var performers = string.Join(" ", string.Join("", allContributers).Split(";").Distinct());
+            var x = string.Join(Environment.NewLine, new[]
+            {
+               $"Performed  by: {performers}",
+               $"Engineered by: {albumConfiguration.Engineer}",
+               $"Produced   by: {albumConfiguration.Producer}",
+               $"{albumConfiguration.Comments}"
+            });
+        }
+
+        [TestMethod]
         public void Can_Compare_dates()
         {
             if (this.soundCloudDistributionProvider.Connect(this.OnError))
@@ -63,7 +81,7 @@ namespace Cubse.Hub.Tests.SoundCloud.Tests
                     Genre = "Punk",
                     Artist = "David",
                 };
-                var response = this.soundCloudDistributionProvider.CreateAlbum(albumConfig, this.OnError);
+                var response = this.soundCloudDistributionProvider.CreateAlbum(albumConfig, "", this.OnError);
 
                 var track = this.trackService.PopulateTagsFromFile(this.trackLocation);
 

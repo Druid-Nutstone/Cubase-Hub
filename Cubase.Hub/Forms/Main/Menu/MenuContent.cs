@@ -3,6 +3,7 @@ using Cubase.Hub.Forms.CompletedMixes;
 using Cubase.Hub.Forms.Config;
 using Cubase.Hub.Forms.Tracks;
 using Cubase.Hub.Services;
+using Cubase.Hub.Services.Background;
 using Cubase.Hub.Services.Config;
 using Microsoft.Extensions.DependencyInjection;
 using System;
@@ -74,8 +75,11 @@ namespace Cubase.Hub.Forms.Main.Menu
         protected override void OnClick(EventArgs e)
         {
             var mixesForm = this.ServiceProvider.GetService<CompletedMixesForm>();
-            mixesForm.InitialiseMixes();
+            var backgroundService = this.ServiceProvider.GetService<IBackgroundService>();
+            backgroundService?.Pause();
+            mixesForm?.InitialiseMixes();
             mixesForm?.ShowDialog();
+            backgroundService?.Resume();
         }
     }
 
@@ -147,8 +151,11 @@ namespace Cubase.Hub.Forms.Main.Menu
         protected override void OnClick(EventArgs e)
         {
             var manageAlbumForm = this.ServiceProvider.GetService<ManageAlbumsForm>();
+            var backgroundService = this.ServiceProvider.GetService<IBackgroundService>();
+            backgroundService?.Pause();
             manageAlbumForm?.Initialise();
             manageAlbumForm?.ShowDialog();
+            backgroundService?.Resume();
         }
     }
 

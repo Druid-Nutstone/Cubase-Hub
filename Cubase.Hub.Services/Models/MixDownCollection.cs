@@ -1,6 +1,8 @@
-﻿using System;
+﻿using Cubase.Hub.Services.Track;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel;
+using System.Diagnostics;
 using System.Runtime.CompilerServices;
 using System.Text;
 
@@ -27,7 +29,8 @@ namespace Cubase.Hub.Services.Models
 
         public IEnumerable<MixDown> ThatHaveMixDownAsTitle()
         {
-            return this.Where(x => x.Title == CubaseHubConstants.MixdownDirectory);
+            return this.Where(x => x.Title == CubaseHubConstants.MixdownDirectory 
+                                              || string.IsNullOrEmpty(x.Title));
         }
 
         public void SelectSelectedForDistribution(List<MixDown> selectedTracks)
@@ -39,6 +42,17 @@ namespace Cubase.Hub.Services.Models
                 if (lookup.TryGetValue(item.FileName, out var track))
                 {
                     track.MarkForDistribution = true;
+                } 
+            }
+        }
+
+        public void EnsureAlbumEntries(AlbumConfiguration albumConfiguration, ITrackService trackService)
+        {
+            foreach (var item in this)
+            {
+                if (item.SetAlbumInformation(albumConfiguration))
+                {
+                    trackService.SetTagsFromMixDowm(item);
                 }
             }
         }
@@ -268,14 +282,40 @@ namespace Cubase.Hub.Services.Models
             this._album = mix.Album;
             this._artist = mix.Artist;
             this._audioType = mix.AudioType;
-            this._bitRate = mix.BitRate;
             this._comment = mix.Comment;
-            this._duration = mix.Duration;
             this._genre = mix.Genre;
             this._performers = mix.Performers;
             this._trackNumber = mix.TrackNumber;
             this.ExportLocation = mix.ExportLocation;
             this._markForDistribution = mix.MarkForDistribution;
+        }
+
+
+        public bool SetAlbumInformation(AlbumConfiguration albumConfiguration)
+        {
+            var result = false;
+            if (string.IsNullOrEmpty(this.Album))
+            {
+                this.Album = albumConfiguration.Title;
+                result = true;
+            }
+            
+            if (string.IsNullOrEmpty(this.Artist))
+            {
+                this.Artist = albumConfiguration.Artist;
+                result = true;
+            }
+            if (string.IsNullOrEmpty(this.Genre))
+            {
+                this.Genre = albumConfiguration.Genre;
+                result = true;
+            }
+            if (this.Year == 0)
+            {
+                this.Year = albumConfiguration.Year;
+                result = true;
+            }
+            return result;
         }
 
         public static MixDown CreateFromFile(string file)

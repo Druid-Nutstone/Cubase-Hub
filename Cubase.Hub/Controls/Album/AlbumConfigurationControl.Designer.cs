@@ -40,7 +40,13 @@
             label1 = new Label();
             Holder = new TableLayoutPanel();
             panel1 = new Panel();
+            label8 = new Label();
+            label7 = new Label();
+            AlbumLabel = new Cubase.Hub.Controls.BoundControls.BoundTextBox();
+            label2 = new Label();
             panel2 = new Panel();
+            AlbumEngineer = new Cubase.Hub.Controls.BoundControls.BoundTextBox();
+            AlbumProducer = new Cubase.Hub.Controls.BoundControls.BoundTextBox();
             Holder.SuspendLayout();
             panel1.SuspendLayout();
             panel2.SuspendLayout();
@@ -59,16 +65,16 @@
             // AlbumComments
             // 
             AlbumComments.Anchor = AnchorStyles.Top | AnchorStyles.Left | AnchorStyles.Right;
-            AlbumComments.Location = new Point(25, 182);
+            AlbumComments.Location = new Point(26, 166);
             AlbumComments.Name = "AlbumComments";
-            AlbumComments.Size = new Size(747, 27);
+            AlbumComments.Size = new Size(343, 27);
             AlbumComments.TabIndex = 20;
             // 
             // label6
             // 
             label6.AutoSize = true;
             label6.Font = new Font("Segoe UI", 9F, FontStyle.Bold);
-            label6.Location = new Point(25, 159);
+            label6.Location = new Point(26, 143);
             label6.Name = "label6";
             label6.Size = new Size(136, 20);
             label6.TabIndex = 19;
@@ -151,11 +157,17 @@
             Holder.Name = "Holder";
             Holder.RowCount = 1;
             Holder.RowStyles.Add(new RowStyle(SizeType.Percent, 50F));
-            Holder.Size = new Size(798, 145);
+            Holder.Size = new Size(798, 226);
             Holder.TabIndex = 22;
             // 
             // panel1
             // 
+            panel1.Controls.Add(AlbumProducer);
+            panel1.Controls.Add(AlbumEngineer);
+            panel1.Controls.Add(label8);
+            panel1.Controls.Add(label7);
+            panel1.Controls.Add(AlbumLabel);
+            panel1.Controls.Add(label2);
             panel1.Controls.Add(label1);
             panel1.Controls.Add(AlbumTitle);
             panel1.Controls.Add(label4);
@@ -163,28 +175,79 @@
             panel1.Dock = DockStyle.Fill;
             panel1.Location = new Point(3, 3);
             panel1.Name = "panel1";
-            panel1.Size = new Size(393, 139);
+            panel1.Size = new Size(393, 220);
             panel1.TabIndex = 0;
+            // 
+            // label8
+            // 
+            label8.AutoSize = true;
+            label8.Font = new Font("Segoe UI", 9F, FontStyle.Bold);
+            label8.Location = new Point(197, 143);
+            label8.Name = "label8";
+            label8.Size = new Size(97, 20);
+            label8.TabIndex = 21;
+            label8.Text = "Produced By";
+            // 
+            // label7
+            // 
+            label7.AutoSize = true;
+            label7.Font = new Font("Segoe UI", 9F, FontStyle.Bold);
+            label7.Location = new Point(22, 143);
+            label7.Name = "label7";
+            label7.Size = new Size(70, 20);
+            label7.TabIndex = 20;
+            label7.Text = "Engineer";
+            // 
+            // AlbumLabel
+            // 
+            AlbumLabel.Location = new Point(197, 92);
+            AlbumLabel.Name = "AlbumLabel";
+            AlbumLabel.Size = new Size(188, 27);
+            AlbumLabel.TabIndex = 19;
+            // 
+            // label2
+            // 
+            label2.AutoSize = true;
+            label2.Font = new Font("Segoe UI", 9F, FontStyle.Bold);
+            label2.Location = new Point(197, 69);
+            label2.Name = "label2";
+            label2.Size = new Size(134, 20);
+            label2.TabIndex = 18;
+            label2.Text = "Released By Label";
             // 
             // panel2
             // 
             panel2.Controls.Add(label3);
+            panel2.Controls.Add(AlbumComments);
             panel2.Controls.Add(AlbumGenre);
+            panel2.Controls.Add(label6);
             panel2.Controls.Add(AlbumArtist);
             panel2.Controls.Add(label5);
             panel2.Dock = DockStyle.Fill;
             panel2.Location = new Point(402, 3);
             panel2.Name = "panel2";
-            panel2.Size = new Size(393, 139);
+            panel2.Size = new Size(393, 220);
             panel2.TabIndex = 1;
+            // 
+            // AlbumEngineer
+            // 
+            AlbumEngineer.Location = new Point(22, 166);
+            AlbumEngineer.Name = "AlbumEngineer";
+            AlbumEngineer.Size = new Size(125, 27);
+            AlbumEngineer.TabIndex = 22;
+            // 
+            // AlbumProducer
+            // 
+            AlbumProducer.Location = new Point(197, 166);
+            AlbumProducer.Name = "AlbumProducer";
+            AlbumProducer.Size = new Size(185, 27);
+            AlbumProducer.TabIndex = 23;
             // 
             // AlbumConfigurationControl
             // 
             AutoScaleDimensions = new SizeF(8F, 20F);
             AutoScaleMode = AutoScaleMode.Font;
             Controls.Add(Holder);
-            Controls.Add(AlbumComments);
-            Controls.Add(label6);
             Name = "AlbumConfigurationControl";
             Size = new Size(798, 229);
             Holder.ResumeLayout(false);
@@ -193,7 +256,6 @@
             panel2.ResumeLayout(false);
             panel2.PerformLayout();
             ResumeLayout(false);
-            PerformLayout();
         }
 
         #endregion
@@ -211,5 +273,11 @@
         private TableLayoutPanel Holder;
         private Panel panel1;
         private Panel panel2;
+        private BoundControls.BoundTextBox AlbumLabel;
+        private Label label2;
+        private Label label8;
+        private Label label7;
+        private BoundControls.BoundTextBox AlbumEngineer;
+        private BoundControls.BoundTextBox AlbumProducer;
     }
 }

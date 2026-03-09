@@ -11,17 +11,17 @@ namespace Cubase.Hub.Services.Distributers.SoundCloud
         [JsonPropertyName("playlist")]
         public PlaylistCreateData Playlist { get; set; }
     
-        public static CreatePlaylistRequest CreateFromAlbum(AlbumConfiguration albumConfiguration)
+        public static CreatePlaylistRequest CreateFromAlbum(AlbumConfiguration albumConfiguration, string description)
         {
             return new CreatePlaylistRequest()
             {
                 Playlist = new PlaylistCreateData()
                 {
                     Title = albumConfiguration.Title,
-                    Description = albumConfiguration.Comments,
+                    Description = description,
                     ReleaseDate = $"01/01/{ albumConfiguration.Year }",
                     Genre = albumConfiguration.Genre,
-                    LabelName = albumConfiguration.Artist,
+                    LabelName = albumConfiguration.Label ?? albumConfiguration.Artist,
                     TagList = albumConfiguration.Artist
                 }
             };

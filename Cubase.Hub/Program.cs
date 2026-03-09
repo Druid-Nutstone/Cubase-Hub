@@ -16,6 +16,7 @@ using Cubase.Hub.Forms.Mixes;
 using Cubase.Hub.Forms.Tracks;
 using Cubase.Hub.Services.Album;
 using Cubase.Hub.Services.Audio;
+using Cubase.Hub.Services.Background;
 using Cubase.Hub.Services.Config;
 using Cubase.Hub.Services.Cubase;
 using Cubase.Hub.Services.Distributers;
@@ -51,23 +52,30 @@ namespace Cubase.Hub
             Application.SetCompatibleTextRenderingDefault(false);
             var serviceProvider = InstallServices();
             var cubaseService = serviceProvider.GetRequiredService<ICubaseService>();   
-            var configurationService = serviceProvider.GetRequiredService<IConfigurationService>(); 
-            if (!ProcessAnyCommands(args, cubaseService, configurationService, serviceProvider))
+            var configurationService = serviceProvider.GetRequiredService<IConfigurationService>();
+            var haveConfiguration = configurationService.LoadConfiguration(() =>
             {
-                var form = serviceProvider.GetRequiredService<MainForm>();
-                var jumpListService = serviceProvider.GetRequiredService<IJumpListService>();
-                jumpListService.Initialise();
-                Application.Run(form);
+                var configForm = serviceProvider.GetRequiredService<ConfigurationForm>();
+                Application.Run(configForm);    
+            });
+            if (haveConfiguration)
+            {
+
+                if (!ProcessAnyCommands(args, cubaseService, configurationService, serviceProvider))
+                {
+                    // start the background service only if main program 
+                    var backgroundService = serviceProvider.GetRequiredService<IBackgroundService>();
+                    backgroundService.Start();
+                    var form = serviceProvider.GetRequiredService<MainForm>();
+                    var jumpListService = serviceProvider.GetRequiredService<IJumpListService>();
+                    jumpListService.Initialise();
+                    Application.Run(form);
+                }
             }
         }
 
         static bool ProcessAnyCommands(string[] args, ICubaseService cubaseService, IConfigurationService configurationService, IServiceProvider serviceProvider)
         {
-            configurationService.LoadConfiguration(() => 
-            { 
-                MessageBox.Show("Error loading configuration. Please check your configuration file.", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
-            });
-
             if (args.Length > 0)
             {
                 if (args[0] == "open")
@@ -148,7 +156,7 @@ namespace Cubase.Hub
                 .AddTransient<ITrackService, TrackService>()
                 .AddSingleton<IJumpListService, JumpListService>()
                 .AddKeyedTransient<IDistributer, RouteNoteDistributer>(Distributers.RouteNote)
-                .AddKeyedSingleton<IDistributerAutoDiscoveryService, SoundCloudAutoDiscoveryService>(DistributionProvider.SoundCloud)
+                .AddSingleton<IBackgroundService, BackgroundService>() 
                 .AddSingleton<IProjectService, ProjectService>();
                 
             var provider = serviceCollection.BuildServiceProvider();

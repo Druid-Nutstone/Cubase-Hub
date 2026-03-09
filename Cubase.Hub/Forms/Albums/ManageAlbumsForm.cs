@@ -333,6 +333,8 @@ namespace Cubase.Hub.Forms.Albums
         private void LoadTracks()
         {
             this.CurrentMixes = this.albumService.GetMixesForAlbum(this.CurrentAlbum);
+            // if not set .. set the album defaults on each track 
+            this.CurrentMixes.EnsureAlbumEntries(this.CurrentAlbumConfiguration, this.trackService);
             this.InitialiseAlbumExportLocation();
             // check for any mixes that have the cubase default 'Mixdown' as the title ... 
             foreach (var item in CurrentMixes.ThatHaveMixDownAsTitle())
@@ -342,14 +344,16 @@ namespace Cubase.Hub.Forms.Albums
                 {
                     // reset a selected distribution mix to the saved info 
                     // it has been refreshed by cubase as a new mixdown 
+                    item.SetAlbumInformation(this.CurrentAlbumConfiguration);
                     item.UpdateFromAnotherMix(haveSavedMixdown);
-                    this.SetMixFromAlbum(this.CurrentAlbumConfiguration, item);
+
                 }
                 else // not saved but set some defaults !
                 {
                     item.Title = item.Title = Path.GetFileNameWithoutExtension(item.FileName);
-                    this.SetMixFromAlbum(this.CurrentAlbumConfiguration, item);
+                    item.SetAlbumInformation(this.CurrentAlbumConfiguration);
                 }
+                this.trackService.SetTagsFromMixDowm(item);
             }
 
             // mark any mixes as marked for distribution here ... 

@@ -15,6 +15,8 @@ namespace Cubase.Hub.Services
         public static string TrackArt = nameof(TrackArt);
 
         public static string DefaultAlbumArt => "NoImage.png";
+
+        public static string DistributionLogFilePrefix = "Distribution-Log";
             
         public static string UserAppDataFolderPath =
             System.IO.Path.Combine(
@@ -27,6 +29,10 @@ namespace Cubase.Hub.Services
         public static IEnumerable<string> ValidAudioExtensions => [".mp3", ".flac", ".wav"];
 
         public static string ConfigurationFileName = Path.Combine(UserAppDataFolderPath, "CubaseHub.json");
+
+        public static string LogPath = Path.Combine(UserAppDataFolderPath, "Logs");
+
+        public static string CachePath = Path.Combine(UserAppDataFolderPath, "Cache");
 
         public static string CubaseFileExtension = ".cpr";
 

@@ -23,6 +23,9 @@ namespace Cubse.Hub.Tests
         protected IServiceProvider serviceProvider;
 
         protected ITrackService trackService;
+
+        protected IAlbumService albumService;
+
         
         protected SoundCloudDistributionProvider soundCloudDistributionProvider;
 
@@ -44,6 +47,7 @@ namespace Cubse.Hub.Tests
             this.configurationService = serviceProvider.GetRequiredService<IConfigurationService>();   
             this.projectService = serviceProvider.GetRequiredService<IProjectService>();
             this.trackService = serviceProvider.GetRequiredService<ITrackService>();
+            this.albumService = serviceProvider.GetRequiredService<IAlbumService>();    
             this.soundCloudDistributionProvider = serviceProvider.GetRequiredService<SoundCloudDistributionProvider>();
         }
     }

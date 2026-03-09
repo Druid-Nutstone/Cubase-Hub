@@ -142,7 +142,7 @@ namespace Cubase.Hub.Forms.Distributers.SoundCloud
                         return;
                     }
                     var albumConfig = this.albumService.GetAlbumConfigurationFromAlbumLocation(targetAlbum);
-                    album = this.soundCloud.CreateAlbum(albumConfig, this.ShowSoundCloudError);
+                    album = this.soundCloud.CreateAlbum(albumConfig, this.CreateAlbumComments(albumConfig), this.ShowSoundCloudError);
                     if (album == null)
                     {
                         return;
@@ -158,6 +158,18 @@ namespace Cubase.Hub.Forms.Distributers.SoundCloud
                 this.MsgHandler?.Close();
                 this.RefreshAllTracks();
             }
+        }
+
+        private string CreateAlbumComments(AlbumConfiguration albumConfiguration)
+        {
+            var performers = string.Join(" ", (string.Join(' ', this.mixDowns.Select(x => string.Join(" ", x.Performers.Split(';'))))).Split(" ").Distinct());
+            return string.Join(Environment.NewLine, new[] 
+            { 
+               $"Performed  by: {performers}",
+               $"Engineered by: {albumConfiguration.Engineer}",
+               $"Produced   by: {albumConfiguration.Producer}",
+               $"{albumConfiguration.Comments}"
+            });
         }
 
         public void OpenForm()

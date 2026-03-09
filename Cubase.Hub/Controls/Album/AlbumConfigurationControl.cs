@@ -42,6 +42,9 @@ namespace Cubase.Hub.Controls.Album
             this.AlbumGenre.AutoCompleteCustomSource.Clear();
             this.AlbumGenre.AutoCompleteCustomSource.AddRange(CubaseHubConstants.TagGenres);
             this.AlbumGenre.Bind(nameof(AlbumConfiguration.Genre), AlbumConfiguration);
+            this.AlbumLabel.Bind(nameof(AlbumConfiguration.Label), AlbumConfiguration);
+            this.AlbumEngineer.Bind(nameof(AlbumConfiguration.Engineer), AlbumConfiguration);
+            this.AlbumProducer.Bind(nameof(AlbumConfiguration.Producer), AlbumConfiguration);
             this.AlbumConfiguration.PropertyChanged += AlbumConfiguration_PropertyChanged;
             this.OnAlbumChanged = onAlbumChanged;
         }
@@ -50,7 +53,5 @@ namespace Cubase.Hub.Controls.Album
         {
             this.OnAlbumChanged?.Invoke(this.AlbumConfiguration, e.PropertyName);
         }
-
-
     }
 }
