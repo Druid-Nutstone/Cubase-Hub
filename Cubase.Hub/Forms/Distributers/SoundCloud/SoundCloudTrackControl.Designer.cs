@@ -30,16 +30,18 @@
         {
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(SoundCloudTrackControl));
             groupBox1 = new GroupBox();
+            LastUploaded = new Cubase.Hub.Controls.BoundControls.BoundLabel();
+            CopyLink = new Cubase.Hub.Controls.BoundControls.ClipBoardCopyControl();
             DeleteTrack = new Button();
             ReUploadTrack = new Button();
             TrackOnSoundCloud = new LinkLabel();
-            CopyLink = new Cubase.Hub.Controls.BoundControls.ClipBoardCopyControl();
             groupBox1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)CopyLink).BeginInit();
             SuspendLayout();
             // 
             // groupBox1
             // 
+            groupBox1.Controls.Add(LastUploaded);
             groupBox1.Controls.Add(CopyLink);
             groupBox1.Controls.Add(DeleteTrack);
             groupBox1.Controls.Add(ReUploadTrack);
@@ -51,6 +53,25 @@
             groupBox1.TabIndex = 0;
             groupBox1.TabStop = false;
             groupBox1.Text = "Sound Cloud ";
+            // 
+            // LastUploaded
+            // 
+            LastUploaded.AutoSize = true;
+            LastUploaded.Location = new Point(221, 23);
+            LastUploaded.Name = "LastUploaded";
+            LastUploaded.Size = new Size(101, 20);
+            LastUploaded.TabIndex = 5;
+            LastUploaded.Text = "LastUploaded";
+            // 
+            // CopyLink
+            // 
+            CopyLink.Image = (Image)resources.GetObject("CopyLink.Image");
+            CopyLink.Location = new Point(13, 23);
+            CopyLink.Name = "CopyLink";
+            CopyLink.Size = new Size(22, 22);
+            CopyLink.SizeMode = PictureBoxSizeMode.AutoSize;
+            CopyLink.TabIndex = 4;
+            CopyLink.TabStop = false;
             // 
             // DeleteTrack
             // 
@@ -86,16 +107,6 @@
             TrackOnSoundCloud.TabStop = true;
             TrackOnSoundCloud.Text = "Not on SoundCloud";
             // 
-            // CopyLink
-            // 
-            CopyLink.Image = (Image)resources.GetObject("CopyLink.Image");
-            CopyLink.Location = new Point(13, 23);
-            CopyLink.Name = "CopyLink";
-            CopyLink.Size = new Size(22, 22);
-            CopyLink.SizeMode = PictureBoxSizeMode.AutoSize;
-            CopyLink.TabIndex = 4;
-            CopyLink.TabStop = false;
-            // 
             // SoundCloudTrackControl
             // 
             AutoScaleDimensions = new SizeF(8F, 20F);
@@ -116,5 +127,6 @@
         private Button DeleteTrack;
         private Button ReUploadTrack;
         private Controls.BoundControls.ClipBoardCopyControl CopyLink;
+        private Controls.BoundControls.BoundLabel LastUploaded;
     }
 }

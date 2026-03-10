@@ -176,7 +176,11 @@ namespace Cubase.Hub.Services.Background
         private void SoundCloudDistributer()
         {
             // don't log on here !
-            if (!SoundCloudTokenResponse.TokenExists()) return;
+            if (!SoundCloudTokenResponse.TokenExists())
+            {
+                this.Log("There is no soundcloud token - wait for ui to logon");
+                return;
+            }
             
             var soundCloud = this.serviceProvider.GetService<SoundCloudDistributionProvider>();
             var soundCloudCache = SoundCloudCache.Create();
@@ -213,6 +217,7 @@ namespace Cubase.Hub.Services.Background
                 var albumMixes = this.albumService.GetAlbumConfigurationFromAlbumLocation(album);
                 allAlbumaMixes.AddRange(albumMixes.DistributionMixes);
             }
+            this.Log($"Checking {allAlbumaMixes.Count} distribnution mixes for updates");
             // compare last_modified
             foreach (var localMixDown in allAlbumaMixes)
             {

@@ -30,6 +30,7 @@ namespace Cubase.Hub.Services.Models
             {
                 this.DistributionMixes[this.DistributionMixes.FindIndex(x => x.FileName == mixDown.FileName)] = mixDown;
             }
+            this.DistributionMixes = this.DistributionMixes.OrderByTrack();
             this.SaveToDirectory(this._sourceLocation);
             DistributionChanged?.Invoke(mixDown);
         }

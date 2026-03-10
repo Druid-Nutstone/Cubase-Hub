@@ -21,7 +21,7 @@ namespace Cubase.Hub.Forms.Distributers.SoundCloud
 
         private SoundCloudTrackCollection soundCloudTracks;
 
-        private SoundCloudTrack? soundCloudTrack; 
+        private SoundCloudTrack? soundCloudTrack;
 
         private SoundCloudDistributer mainControl;
 
@@ -51,6 +51,7 @@ namespace Cubase.Hub.Forms.Distributers.SoundCloud
                 this.TrackOnSoundCloud.Text = $"{this.mixDown.Title} link";
                 this.TrackOnSoundCloud.ForeColor = Color.LightBlue;
                 this.TrackOnSoundCloud.Click += TrackOnSoundCloud_Click;
+                this.LastUploaded.Text = DateTime.Parse(this.soundCloudTrack.CreatedAt).ToString();
                 this.CopyLink.GetClipBoardText = this.CopyLinkClick;
                 this.ReUploadTrack.Click += ReUploadTrack_Click;
                 this.DeleteTrack.Click += DeleteTrack_Click;
@@ -70,7 +71,7 @@ namespace Cubase.Hub.Forms.Distributers.SoundCloud
 
         private void ReUploadTrack_Click(object? sender, EventArgs e)
         {
-            this.mainControl.UploadSingleTrack(this.mixDown);   
+            this.mainControl.UploadSingleTrack(this.mixDown);
         }
 
         private string CopyLinkClick()
@@ -94,7 +95,7 @@ namespace Cubase.Hub.Forms.Distributers.SoundCloud
         public void SetMix(MixDown mixDown, TrackPlayViewControl trackPlayViewControl)
         {
             this.mixDown = mixDown;
-            this.trackPlayViewControl = trackPlayViewControl;   
+            this.trackPlayViewControl = trackPlayViewControl;
             this.soundCloudTrack = this.soundCloudTracks.GetTrackByTitle(this.mixDown.Title);
             if (this.soundCloudTrack != null)
             {
@@ -103,7 +104,7 @@ namespace Cubase.Hub.Forms.Distributers.SoundCloud
                     this.trackPlayViewControl.BackColor = Color.FromArgb(169, 68, 68);
                 }
             }
-            
+
             this.InitialiseControls();
         }
     }

@@ -92,7 +92,6 @@ namespace Cubase.Hub.Controls.CompletedMixes.Tracks
             this.MixBitrate.Bind(nameof(MixDown.BitRate), this.mixDown);
             this.MixSampleRate.Bind(nameof(MixDown.SampleRate), this.mixDown);
             this.MixSize.Bind(nameof(MixDown.Size), this.mixDown);
-            this.MixPerformers.Bind(nameof(MixDown.Performers), this.mixDown);
             this.MixCover.TrackCoverFileName = this.GetTrackCover();
             this.MixCover.OnClicked = this.ChangeTrackCoverArt;
         }

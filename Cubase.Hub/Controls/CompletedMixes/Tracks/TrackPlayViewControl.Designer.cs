@@ -35,7 +35,6 @@
             MixBitrate = new Cubase.Hub.Controls.BoundControls.BoundLabel();
             MixSampleRate = new Cubase.Hub.Controls.BoundControls.BoundLabel();
             MixSize = new Cubase.Hub.Controls.BoundControls.BoundLabel();
-            MixPerformers = new Cubase.Hub.Controls.BoundControls.BoundLabel();
             MixCover = new Cubase.Hub.Controls.Media.TrackCover.TrackCoverControl();
             MixSelected = new Cubase.Hub.Controls.BoundControls.BoundCheckbox();
             DistributerPanel = new Panel();
@@ -105,18 +104,9 @@
             MixSize.TabIndex = 6;
             MixSize.Text = "Size";
             // 
-            // MixPerformers
-            // 
-            MixPerformers.AutoSize = true;
-            MixPerformers.Location = new Point(770, 38);
-            MixPerformers.Name = "MixPerformers";
-            MixPerformers.Size = new Size(104, 20);
-            MixPerformers.TabIndex = 7;
-            MixPerformers.Text = "MixPerformers";
-            // 
             // MixCover
             // 
-            MixCover.ImageLocation = "C:\\Users\\david\\AppData\\Local\\Microsoft\\VisualStudio\\18.0_113ede53\\WinFormsDesigner\\5owebtsc.3xc\\NoImage.png";
+            MixCover.ImageLocation = "C:\\Users\\david\\AppData\\Local\\Microsoft\\VisualStudio\\18.0_113ede53\\WinFormsDesigner\\3dli15bx.5tx\\NoImage.png";
             MixCover.Location = new Point(96, 16);
             MixCover.Name = "MixCover";
             MixCover.Size = new Size(62, 62);
@@ -136,9 +126,9 @@
             // DistributerPanel
             // 
             DistributerPanel.Anchor = AnchorStyles.Top | AnchorStyles.Left | AnchorStyles.Right;
-            DistributerPanel.Location = new Point(893, 16);
+            DistributerPanel.Location = new Point(762, 16);
             DistributerPanel.Name = "DistributerPanel";
-            DistributerPanel.Size = new Size(132, 61);
+            DistributerPanel.Size = new Size(263, 61);
             DistributerPanel.TabIndex = 11;
             // 
             // TrackPlayViewControl
@@ -148,7 +138,6 @@
             Controls.Add(DistributerPanel);
             Controls.Add(MixSelected);
             Controls.Add(MixCover);
-            Controls.Add(MixPerformers);
             Controls.Add(MixSize);
             Controls.Add(MixSampleRate);
             Controls.Add(MixBitrate);
@@ -172,7 +161,6 @@
         private BoundControls.BoundLabel MixBitrate;
         private BoundControls.BoundLabel MixSampleRate;
         private BoundControls.BoundLabel MixSize;
-        private BoundControls.BoundLabel MixPerformers;
         private Media.TrackCover.TrackCoverControl MixCover;
         private BoundControls.BoundCheckbox MixSelected;
         private Panel DistributerPanel;
