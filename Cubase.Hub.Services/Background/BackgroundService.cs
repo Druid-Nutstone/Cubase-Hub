@@ -223,6 +223,7 @@ namespace Cubase.Hub.Services.Background
                     {
                         this.Log($"Upload {localMixDown.Title} to soundcloud..");
                         soundCloud?.UploadTrack(localMixDown, this.OnError);
+                        soundCloud?.OrderAlbumTracks(localMixDown.Album, this.OnError, (progress) => { });
                         soundCloudCache.AddUpdatedAlbum(albums.FirstOrDefault(x => x.AlbumName == localMixDown.Album));
                     }
                 }

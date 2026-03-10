@@ -46,8 +46,12 @@ namespace Cubase.Hub.Controls.Album.Manage
         {
             this.Mix = mixDown;
             mixDown.PropertyChanged += MixDown_PropertyChanged;
+            this.MixTitle.ToolTipText = "The Title of the track";
             this.MixTitle.Bind(nameof(MixDown.Title), mixDown, DataSourceUpdateMode.OnValidation);
+            
             this.MixTrackNo.Bind(nameof(MixDown.TrackNumber), mixDown);
+
+            this.MixPerformers.ToolTipText = "The names of performers on this track SEPERATED by a semicolon (;)";
             this.MixPerformers.Bind(nameof(MixDown.Performers), mixDown, DataSourceUpdateMode.OnValidation);
             this.MixDuration.Bind(nameof(MixDown.Duration), mixDown);
             this.Play.Click += Play_Click;
