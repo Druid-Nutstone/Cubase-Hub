@@ -1,5 +1,6 @@
 ﻿using Cubase.Hub.Services.Album;
 using Cubase.Hub.Services.Models;
+using Cubase.Hub.Services.Track;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
@@ -11,7 +12,7 @@ using System.Reflection.Metadata;
 using System.Runtime.InteropServices;
 using System.Text;
 using TagLib.Matroska;
-using Cubase.Hub.Services.Track;
+using static System.Runtime.InteropServices.JavaScript.JSType;
 
 namespace Cubase.Hub.Services.Distributers.SoundCloud
 {
@@ -138,11 +139,12 @@ namespace Cubase.Hub.Services.Distributers.SoundCloud
                     onError.Invoke(response.GetErrorResponse());
                     return null;
                 }
-            } catch (Exception e)
+            }
+            catch (Exception e)
             {
                 onError($"Error uploading track {mixDown.Title} {e.Message} ");
-                return null;    
-            } 
+                return null;
+            }
 
             var newTrack = response?.GetModel<SoundCloudTrack>(onError);
 
@@ -281,22 +283,86 @@ namespace Cubase.Hub.Services.Distributers.SoundCloud
 
             var postData = CreatePlaylistRequest.CreateFromAlbum(albumConfiguration, description);
 
-            var albumArtLocation = this.albumService.GetAlbumArt(albumConfiguration);
-
             var newPlayList = this.PostAndGetSync<SoundCloudPlaylist, CreatePlaylistRequest>("/playlists", postData, onError);
 
-            if (!string.IsNullOrEmpty(albumArtLocation))
-            {
-                var checkPlayList = this.UploadPlaylistArtwork(newPlayList.Id.Value, albumArtLocation, onError);
-                if (checkPlayList != null)
-                {
-                    newPlayList = checkPlayList;
-                }
-            }
+            newPlayList = this.UpdateAlbumArtWork(newPlayList, albumConfiguration, onError);
+            
             var playLists = this.GetPlayLists(onError);
             playLists.AddOrUpdatePlayList(newPlayList);
             return newPlayList;
         }
+
+        public SoundCloudPlaylist? UpdateAlbumArtWork(SoundCloudPlaylist soundCloudPlaylist, AlbumConfiguration albumConfiguration, Action<string> onError)
+        {
+            var albumArtLocation = this.albumService.GetAlbumArt(albumConfiguration);
+            if (!string.IsNullOrEmpty(albumArtLocation))
+            {
+                var updatedPlayList = this.UploadPlaylistArtwork(soundCloudPlaylist.Id.Value, albumArtLocation, onError);
+                if (updatedPlayList != null)
+                {
+                    return updatedPlayList;
+                }
+            }
+            return soundCloudPlaylist;
+        } 
+
+        public bool UpdateAlbum(SoundCloudPlaylist soundCloudPlaylist, AlbumConfiguration albumConfiguration, string description, Action<string> onError)
+        {
+            var postData = CreatePlaylistRequest.CreateFromAlbum(albumConfiguration, description);
+            var newPlayList = this.PutAsJsonAsync($"/playlists/{soundCloudPlaylist.Urn}", postData).Result;
+            if (!newPlayList.IsSuccessStatusCode)
+            {
+                onError(newPlayList.GetErrorResponse());
+                return false;
+            }
+            this.UpdateAlbumArtWork(soundCloudPlaylist, albumConfiguration, onError);
+            return true;
+        }
+
+
+        /*
+        public string CreateAlbumComments(AlbumConfiguration albumConfiguration, MixDownCollection mixDowns)
+        {
+            var performers = string.Join(", ",
+                (string.Join(' ', mixDowns.Select(x => string.Join(" ", x.Performers.Split(';')))))
+                .Split(" ")
+                .Distinct());
+
+            string Format(string label, string value)
+                => $"{(label + ":").PadRight(15)} {value}";
+
+            return string.Join(Environment.NewLine, new[]
+            {
+                 Format("Performed by", performers),
+                 Format("Engineered by", albumConfiguration.Engineer),
+                 Format("Produced by", albumConfiguration.Producer),
+                 albumConfiguration.Comments
+            });
+        }
+        */
+
+        public string CreateAlbumComments(AlbumConfiguration albumConfiguration, MixDownCollection mixDowns)
+        {
+            var performers = string.Join(", ",
+                (string.Join(' ', mixDowns.Select(x => string.Join(" ", x.Performers.Split(';')))))
+                .Split(" ")
+                .Distinct());
+
+            string Format(string label, string value)
+            {
+                return $"{label.PadRight(13)} │ {value}";
+            }
+
+            return string.Join(Environment.NewLine, new[]
+            {
+                Format("Performers", performers),
+                Format("Engineered", albumConfiguration.Engineer),
+                Format("Produceers", albumConfiguration.Producer),
+                " ",
+                albumConfiguration.Comments
+            });
+        }
+
 
         public SoundCloudTrack? UploadTrackArtWork(SoundCloudTrack soundCloudTrack, string artworkPath, Action<string> onError)
         {
@@ -640,6 +706,7 @@ namespace Cubase.Hub.Services.Distributers.SoundCloud
             context.Response.OutputStream.Close();
 
             listener.Stop();
+            listener.Close();
 
             OnCode.Invoke(code);
         }

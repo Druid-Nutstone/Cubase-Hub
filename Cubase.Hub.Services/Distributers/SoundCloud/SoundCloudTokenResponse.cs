@@ -59,5 +59,10 @@ namespace Cubase.Hub.Services.Distributers.SoundCloud
             }
         }
 
+        public static bool TokenExists()
+        {
+            return File.Exists(SoundCloudTokenLocation);
+        }
+
     }
 }

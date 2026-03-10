@@ -9,6 +9,7 @@ using Microsoft.Extensions.DependencyInjection;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.IO;
 using System.Text;
 
 namespace Cubase.Hub.Forms.Main.Menu
@@ -30,6 +31,7 @@ namespace Cubase.Hub.Forms.Main.Menu
             menuStrip.Items.Add(new TrackMenu(mainForm, this.serviceProvider));
             menuStrip.Items.Add(new OptionsMenu(mainForm, this.serviceProvider));
             menuStrip.Items.Add(new PlayMenu(mainForm, this.serviceProvider));
+            menuStrip.Items.Add(new LogMenu(mainForm, this.serviceProvider));
         }
     }
 
@@ -62,6 +64,40 @@ namespace Cubase.Hub.Forms.Main.Menu
         {
             this.Text = "Play and Deploy";
             this.DropDownItems.Add(new PlayMixesMenu(mainForm, this.ServiceProvider));
+        }
+    }
+
+    public class LogMenu : BaseToolStripMenuItem
+    {
+        public LogMenu(MainForm mainForm, IServiceProvider serviceProvider) : base(mainForm, serviceProvider)
+        {
+            this.Text = "Logs";
+            this.DropDownItems.Add(new LogBackground(mainForm, this.ServiceProvider));
+        }
+    }
+
+    public class LogBackground : BaseToolStripMenuItem
+    {
+        public LogBackground(MainForm mainForm, IServiceProvider serviceProvider) : base(mainForm, serviceProvider)
+        {
+            this.Text = "Background Log";
+        }
+
+        protected override void OnClick(EventArgs e)
+        {
+            var logFiles = Directory.GetFiles(CubaseHubConstants.LogPath, $"{CubaseHubConstants.DistributionLogFilePrefix}-*.*");
+            var latestLog = logFiles
+                .Select(f => new FileInfo(f))
+                .OrderByDescending(f => f.LastWriteTime) // or CreationTime
+                .FirstOrDefault();
+            if (latestLog != null)
+            {
+                Process p = new Process()
+                {
+                   StartInfo = new ProcessStartInfo() { Arguments = latestLog.FullName, FileName = "notepad", UseShellExecute = true }
+                };
+                p.Start();
+            }
         }
     }
 

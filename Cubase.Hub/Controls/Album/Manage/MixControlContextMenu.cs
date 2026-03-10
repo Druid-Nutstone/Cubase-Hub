@@ -17,12 +17,14 @@ namespace Cubase.Hub.Controls.Album.Manage
     public class MixControlContextMenu : DarkContextMenu
     {
         private MixDown MixDown;
-        private IServiceProvider ServiceProvider; 
+        private IServiceProvider ServiceProvider;
+        private MixControl mixControl;
 
 
-        public MixControlContextMenu(MixDown mixDown, IServiceProvider serviceProvider) : base()
+        public MixControlContextMenu(MixDown mixDown, IServiceProvider serviceProvider, MixControl mixControl) : base()
         {
             this.MixDown = mixDown; 
+            this.mixControl = mixControl;
             this.ServiceProvider = serviceProvider;
             // hack 
             this.Items.Add(new ToolStripMenuItem("Loading...") { Enabled = false });    
@@ -32,29 +34,31 @@ namespace Cubase.Hub.Controls.Album.Manage
         {
             base.OnOpening(e);
             this.Items.Clear();
-            this.Items.Add(new EditMix(MixDown, this.ServiceProvider));
+            this.Items.Add(new EditMix(MixDown, this.ServiceProvider, mixControl));
             if (MixDown.AudioType.ToLower() == "wav")
             {
-                this.Items.Add(new DistributerMenu(MixDown, this.ServiceProvider));
-                this.Items.Add(new ConvertToMp3MenuItem(MixDown, this.ServiceProvider));
-                this.Items.Add(new ConvertToFlacMenuItem(MixDown, this.ServiceProvider));
+                this.Items.Add(new DistributerMenu(MixDown, this.ServiceProvider, mixControl));
+                this.Items.Add(new ConvertToMp3MenuItem(MixDown, this.ServiceProvider, mixControl));
+                this.Items.Add(new ConvertToFlacMenuItem(MixDown, this.ServiceProvider, mixControl));
             }
-            this.Items.Add(new SetTitleFromFileName(MixDown, this.ServiceProvider));
+            this.Items.Add(new SetTitleFromFileName(MixDown, this.ServiceProvider, mixControl));
             if (!string.IsNullOrEmpty(MixDown.ExportLocation))
             {
-                this.Items.Add(new CopyToExportDirectory(MixDown, this.ServiceProvider));
+                this.Items.Add(new CopyToExportDirectory(MixDown, this.ServiceProvider, mixControl));
             }
-            this.Items.Add(new DeleteMix(MixDown, this.ServiceProvider));
+            this.Items.Add(new DeleteMix(MixDown, this.ServiceProvider, mixControl));
         }
     }
 
     public class BaseMixdownMenuItem : ToolStripMenuItem
     {
-        protected MixDown MixDown;
+        protected MixDown MixDown { get; set; }
         protected IServiceProvider ServiceProvider;
-        public BaseMixdownMenuItem(string text, MixDown mixDown, IServiceProvider serviceProvider) : base(text)
+        protected MixControl mixControl;
+        public BaseMixdownMenuItem(string text, MixDown mixDown, IServiceProvider serviceProvider, MixControl mixControl) : base(text)
         {
             this.MixDown = mixDown;
+            this.mixControl = mixControl;
             this.ServiceProvider = serviceProvider;
         }
 
@@ -76,18 +80,18 @@ namespace Cubase.Hub.Controls.Album.Manage
 
     public class DistributerMenu : BaseMixdownMenuItem
     {
-        public DistributerMenu(MixDown mixDown, IServiceProvider serviceProvider) : base($"Convert For Distributer", mixDown, serviceProvider)
+        public DistributerMenu(MixDown mixDown, IServiceProvider serviceProvider, MixControl mixControl) : base($"Convert For Distributer", mixDown, serviceProvider, mixControl)
         {
             foreach (var distro in Distributers.DistroNames)
             {
-                this.DropDownItems.Add(new DistroMenu(distro, mixDown, serviceProvider));
+                this.DropDownItems.Add(new DistroMenu(distro, mixDown, serviceProvider, mixControl));
             }
         }
     }
 
     public class DistroMenu : BaseMixdownMenuItem
     {
-        public DistroMenu(string name, MixDown mixdown, IServiceProvider serviceProvider) : base(name, mixdown, serviceProvider)
+        public DistroMenu(string name, MixDown mixdown, IServiceProvider serviceProvider, MixControl mixControl) : base(name, mixdown, serviceProvider, mixControl)
         {
 
         }
@@ -110,7 +114,7 @@ namespace Cubase.Hub.Controls.Album.Manage
 
     public class DeleteMix : BaseMixdownMenuItem
     {
-        public DeleteMix(MixDown mixDown, IServiceProvider serviceProvider) : base($"Delete {Path.GetFileNameWithoutExtension(mixDown.FileName)}", mixDown, serviceProvider)
+        public DeleteMix(MixDown mixDown, IServiceProvider serviceProvider, MixControl mixControl) : base($"Delete {Path.GetFileNameWithoutExtension(mixDown.FileName)}", mixDown, serviceProvider, mixControl)
         {
 
         }
@@ -124,7 +128,7 @@ namespace Cubase.Hub.Controls.Album.Manage
 
     public class EditMix : BaseMixdownMenuItem
     {
-        public EditMix(MixDown mixDown, IServiceProvider serviceProvider) : base($"Edit Mix", mixDown, serviceProvider)
+        public EditMix(MixDown mixDown, IServiceProvider serviceProvider, MixControl mixControl) : base($"Edit Mix", mixDown, serviceProvider, mixControl)
         {
 
         }
@@ -132,13 +136,15 @@ namespace Cubase.Hub.Controls.Album.Manage
         protected override void OnClick(EventArgs e)
         {
             this.EditTrack.Initialise(this.MixDown.FileName);
-            this.EditTrack.ShowDialog();
+            var trackService = ServiceProvider.GetService<ITrackService>();
+            MixDown = trackService.PopulateTagsFromFile(this.MixDown.FileName);
+            this.mixControl.MenuMixChanged(MixDown);
         }
     }
 
     public class SetTitleFromFileName : BaseMixdownMenuItem
     {
-        public SetTitleFromFileName(MixDown mixDown, IServiceProvider serviceProvider) : base($"Set title to {Path.GetFileNameWithoutExtension(mixDown.FileName)}", mixDown, serviceProvider)
+        public SetTitleFromFileName(MixDown mixDown, IServiceProvider serviceProvider, MixControl mixControl) : base($"Set title to {Path.GetFileNameWithoutExtension(mixDown.FileName)}", mixDown, serviceProvider, mixControl)
         {
 
         }
@@ -153,7 +159,7 @@ namespace Cubase.Hub.Controls.Album.Manage
 
     public class CopyToExportDirectory : BaseMixdownMenuItem
     {
-        public CopyToExportDirectory(MixDown mixDown, IServiceProvider serviceProvider) : base($"Copy to export directory", mixDown, serviceProvider)
+        public CopyToExportDirectory(MixDown mixDown, IServiceProvider serviceProvider, MixControl mixControl) : base($"Copy to export directory", mixDown, serviceProvider, mixControl)
         {
 
         }
@@ -169,7 +175,7 @@ namespace Cubase.Hub.Controls.Album.Manage
 
     public class ConvertToMp3MenuItem : BaseMixdownMenuItem
     {
-        public ConvertToMp3MenuItem(MixDown mixDown, IServiceProvider serviceProvider) : base("Convert to MP3", mixDown, serviceProvider)
+        public ConvertToMp3MenuItem(MixDown mixDown, IServiceProvider serviceProvider, MixControl mixControl) : base("Convert to MP3", mixDown, serviceProvider, mixControl)
         {
 
         }
@@ -185,7 +191,7 @@ namespace Cubase.Hub.Controls.Album.Manage
 
     public class ConvertToFlacMenuItem : BaseMixdownMenuItem
     {
-        public ConvertToFlacMenuItem(MixDown mixDown, IServiceProvider serviceProvider) : base("Convert to Flac", mixDown, serviceProvider)
+        public ConvertToFlacMenuItem(MixDown mixDown, IServiceProvider serviceProvider, MixControl mixControl) : base("Convert to Flac", mixDown, serviceProvider, mixControl)
         {
 
         }

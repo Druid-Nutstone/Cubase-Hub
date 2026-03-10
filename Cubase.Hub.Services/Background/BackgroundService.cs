@@ -23,7 +23,7 @@ namespace Cubase.Hub.Services.Background
 
     public class BackgroundService : IBackgroundService
     {
-        private static string SoundCloudCacheFileName => "SoundCloudCache.json";
+
 
         private BackgroundProcessState _state = BackgroundProcessState.Run;
 
@@ -58,11 +58,7 @@ namespace Cubase.Hub.Services.Background
             {
                 Directory.CreateDirectory(CubaseHubConstants.CachePath);
             }
-            var soundCloud = Path.Combine(CubaseHubConstants.CachePath, SoundCloudCacheFileName);
-            if (File.Exists(soundCloud))
-            {
-                File.Delete(soundCloud);
-            }
+            SoundCloudCache.RemoveCache();
         }
 
         public void Pause()
@@ -88,7 +84,7 @@ namespace Cubase.Hub.Services.Background
                             this.Monitor();
                             break;
                     }
-                    Task.Delay(200).Wait();
+                    Task.Delay(TimeSpan.FromSeconds(60)).Wait();
                 }
 
             });
@@ -179,70 +175,82 @@ namespace Cubase.Hub.Services.Background
 
         private void SoundCloudDistributer()
         {
-            var cachedLocation = Path.Combine(CubaseHubConstants.CachePath, SoundCloudCacheFileName);
+            // don't log on here !
+            if (!SoundCloudTokenResponse.TokenExists()) return;
+            
             var soundCloud = this.serviceProvider.GetService<SoundCloudDistributionProvider>();
-            if (soundCloud != null)
+            var soundCloudCache = SoundCloudCache.Create();
+            List<AlbumLocation>? albums = null;
+
+            if (!soundCloudCache.CacheExists())
             {
-                if (!CacheExists())
+                if (soundCloud != null)
                 {
                     if (Connect())
                     {
-                        var loadTracks = soundCloud.GetTracks(this.OnError);
-                        if (loadTracks == null)
+                        if (!soundCloudCache.CreateCache(soundCloud, OnError))
                         {
-                            this.Log($"Cannot load any tracks from soundcloud");
-                            return;
+                            return; 
                         }
-                        loadTracks.Save(cachedLocation);
                     }
                     else
                     {
+                        this.Log($"Could not connect to soundcloud");
                         return;
                     }
                 }
-
-                var allTracks = SoundCloudTrackCollection.LoadFrom(cachedLocation);
-
-                // get all mixes for all albums that have been selected for distribution
-                var allAlbumaMixes = new MixDownCollection();
-                var albums = this.albumService.GetAlbumList(this.OnError);
-                foreach (var album in albums)
+                else
                 {
-                    var albumMixes = this.albumService.GetAlbumConfigurationFromAlbumLocation(album);
-                    allAlbumaMixes.AddRange(albumMixes.DistributionMixes);
+                    this.Log($"Could not get soundcloud from the service provider");
+                    return;
                 }
-                // compare last_modified
-                foreach (var localMixDown in allAlbumaMixes)
+            }
+            // get all mixes for all albums that have been selected for distribution
+            var allAlbumaMixes = new MixDownCollection();
+            albums = this.albumService.GetAlbumList(this.OnError);
+            foreach (var album in albums)
+            {
+                var albumMixes = this.albumService.GetAlbumConfigurationFromAlbumLocation(album);
+                allAlbumaMixes.AddRange(albumMixes.DistributionMixes);
+            }
+            // compare last_modified
+            foreach (var localMixDown in allAlbumaMixes)
+            {
+                if (Connect())
                 {
-                    if (Connect())
+                    var remoteMixDown = soundCloudCache.Tracks.FirstOrDefault(x => x.Title == localMixDown.Title);
+                    if (remoteMixDown == null || remoteMixDown.isUploadDateOlderThan(localMixDown.LastModified))
                     {
-                        var remoteMixDown = allTracks.FirstOrDefault(x => x.Title == localMixDown.Title);
-                        if (remoteMixDown != null)
+                        this.Log($"Upload {localMixDown.Title} to soundcloud..");
+                        soundCloud?.UploadTrack(localMixDown, this.OnError);
+                        soundCloudCache.AddUpdatedAlbum(albums.FirstOrDefault(x => x.AlbumName == localMixDown.Album));
+                    }
+                }
+                else
+                {
+                    this.Log("Cannot connect to sound cloud");
+                    return;
+                }
+            }
+            
+            // update any albums 
+            if (soundCloudCache.UpdatedAlbums.Count > 0)
+            {
+                foreach (var updatedAlbum in soundCloudCache.UpdatedAlbums)
+                {
+                    var albumConfig = this.albumService.GetAlbumConfigurationFromAlbumLocation(updatedAlbum);
+                    var album = soundCloudCache.Albums.GetAlbum(albumConfig.Title);
+                    if (album != null)
+                    {
+                        var soundCloudAlbumUpdated = soundCloud.UpdateAlbum(album, albumConfig, soundCloud.CreateAlbumComments(albumConfig, albumConfig.DistributionMixes), OnError);
+                        if (!soundCloudAlbumUpdated)
                         {
-                            // local is newer than remote .... upload 
-                            if (remoteMixDown.isUploadDateOlderThan(localMixDown.LastModified))
-                            {
-                                this.Log($"Upload {localMixDown.Title} to soundcloud..");
-                                soundCloud.UploadTrack(localMixDown, this.OnError);
-                            }
-                        }
-                        else
-                        {
-                            // not upload yet - so have to upload it 
-                            this.Log($"Upload New track {localMixDown.Title} to soundcloud..");
-                            soundCloud.UploadTrack(localMixDown, this.OnError);
+                            this.Log($"Could not updated album metadata. see previous error");
                         }
                     }
                 }
-            }
-            else
-            {
-                this.Log($"Cannot find soundCloud provider");
-            }
-
-            bool CacheExists()
-            {
-                return File.Exists(cachedLocation);
+                // and now update the cache - otherwise we will be updating multiple times 
+                soundCloudCache.CreateCache(soundCloud, OnError);
             }
 
             bool Connect()

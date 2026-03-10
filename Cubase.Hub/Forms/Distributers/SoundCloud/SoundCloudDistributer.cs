@@ -126,50 +126,56 @@ namespace Cubase.Hub.Forms.Distributers.SoundCloud
             }
             this.MsgHandler = new SoundCloudMessageForm();
             this.MsgHandler.Show();
+            
+            SoundCloudPlaylist? album = null;
+            
             var targetPlayListAlbum = selectedMixes.First().Album;
             foreach (var selectedTrack in selectedMixes)
             {
                 this.MsgHandler.ShowMessage($"Locating album {selectedTrack.Album}");
-                var album = this.soundCloud.GetAlbum(selectedTrack, this.ShowSoundCloudError);
+                album = this.soundCloud.GetAlbum(selectedTrack, this.ShowSoundCloudError);
                 if (album == null)
                 {
                     this.MsgHandler.ShowMessage($"Creating album {selectedTrack.Album}");
-                    var allAlbums = this.albumService.GetAlbumList(this.ShowSoundCloudError);
-                    var targetAlbum = allAlbums.FirstOrDefault(x => x.AlbumName == selectedTrack.Album);
-                    if (targetAlbum == null)
+                    var albumConfig = GetAlbumConfiguration(selectedTrack.Album);
+                    if (albumConfig == null)
                     {
-                        this.ShowSoundCloudError($"Album {selectedTrack.Album} is not an album created in cubase");
                         return;
                     }
-                    var albumConfig = this.albumService.GetAlbumConfigurationFromAlbumLocation(targetAlbum);
-                    album = this.soundCloud.CreateAlbum(albumConfig, this.CreateAlbumComments(albumConfig), this.ShowSoundCloudError);
+                    album = this.soundCloud.CreateAlbum(albumConfig, this.soundCloud.CreateAlbumComments(albumConfig, this.mixDowns), this.ShowSoundCloudError);
                     if (album == null)
                     {
                         return;
                     }
-
                 }
                 this.MsgHandler.ShowMessage($"Uploading {selectedTrack.Title} this.may take some time");
                 this.soundCloud.UploadTrack(selectedTrack, this.ShowSoundCloudError);
             }
             if (this.MsgHandler != null)
             {
+                // reorder tracks in track order 
                 this.soundCloud.OrderAlbumTracks(targetPlayListAlbum, this.ShowSoundCloudError, this.MsgHandler.ShowMessage);
+                // refresh artist list on 
+                if (album != null)
+                {
+                    var albumConfig = GetAlbumConfiguration(album?.Title);
+                    this.soundCloud.UpdateAlbum(album, albumConfig, this.soundCloud.CreateAlbumComments(albumConfig, this.mixDowns), this.ShowSoundCloudError);
+                }
                 this.MsgHandler?.Close();
                 this.RefreshAllTracks();
             }
-        }
 
-        private string CreateAlbumComments(AlbumConfiguration albumConfiguration)
-        {
-            var performers = string.Join(" ", (string.Join(' ', this.mixDowns.Select(x => string.Join(" ", x.Performers.Split(';'))))).Split(" ").Distinct());
-            return string.Join(Environment.NewLine, new[] 
-            { 
-               $"Performed  by: {performers}",
-               $"Engineered by: {albumConfiguration.Engineer}",
-               $"Produced   by: {albumConfiguration.Producer}",
-               $"{albumConfiguration.Comments}"
-            });
+            AlbumConfiguration? GetAlbumConfiguration(string albumName)
+            {
+                var allAlbums = this.albumService.GetAlbumList(this.ShowSoundCloudError);
+                var targetAlbum = allAlbums.FirstOrDefault(x => x.AlbumName == albumName);
+                if (targetAlbum == null)
+                {
+                    this.ShowSoundCloudError($"Album {albumName} is not an album created in cubase");
+                    return null;
+                }
+                return this.albumService.GetAlbumConfigurationFromAlbumLocation(targetAlbum);
+            }
         }
 
         public void OpenForm()

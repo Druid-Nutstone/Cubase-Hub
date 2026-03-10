@@ -38,7 +38,7 @@ namespace Cubase.Hub.Controls.Album.Manage
             InitializeComponent();
             this.Initialise(mixDown, trackService);
             this.messageService = messageService;
-            this.ContextMenuStrip = new MixControlContextMenu(mixDown, serviceProvider);
+            this.ContextMenuStrip = new MixControlContextMenu(mixDown, serviceProvider, this);
 
         }
 
@@ -46,12 +46,12 @@ namespace Cubase.Hub.Controls.Album.Manage
         {
             this.Mix = mixDown;
             mixDown.PropertyChanged += MixDown_PropertyChanged;
-            this.MixTitle.Bind(nameof(MixDown.Title), mixDown);
+            this.MixTitle.Bind(nameof(MixDown.Title), mixDown, DataSourceUpdateMode.OnValidation);
             this.MixTrackNo.Bind(nameof(MixDown.TrackNumber), mixDown);
-            this.MixPerformers.Bind(nameof(MixDown.Performers), mixDown);
+            this.MixPerformers.Bind(nameof(MixDown.Performers), mixDown, DataSourceUpdateMode.OnValidation);
             this.MixDuration.Bind(nameof(MixDown.Duration), mixDown);
             this.Play.Click += Play_Click;
-            this.MixComments.Bind(nameof(MixDown.Comment), mixDown);
+            this.MixComments.Bind(nameof(MixDown.Comment), mixDown, DataSourceUpdateMode.OnValidation);
             this.MixBitRate.Bind(nameof(MixDown.BitRate), mixDown);
             this.MixDownSize.Bind(nameof(MixDown.Size), mixDown);
             this.MixSelected.Bind(nameof(MixDown.Selected), mixDown);
@@ -86,6 +86,9 @@ namespace Cubase.Hub.Controls.Album.Manage
             this.OnMixChanged?.Invoke(this.Mix, e.PropertyName);
         }
 
-
+        public void MenuMixChanged(MixDown mixDown)
+        {
+            this.OnMixChanged?.Invoke(mixDown, string.Empty);
+        }
     }
 }

@@ -11,10 +11,10 @@ namespace Cubase.Hub.Controls.BoundControls
 
         }
 
-        public void Bind(string propertyName, object dataSource)
+        public void Bind(string propertyName, object dataSource, DataSourceUpdateMode propertyUpdateType = DataSourceUpdateMode.OnPropertyChanged)
         {
             this.DataBindings.Clear();
-            this.DataBindings.Add(new Binding("Text", dataSource, propertyName, true, DataSourceUpdateMode.OnPropertyChanged));
+            this.DataBindings.Add(new Binding("Text", dataSource, propertyName, true, propertyUpdateType));
         }
     }
 }
