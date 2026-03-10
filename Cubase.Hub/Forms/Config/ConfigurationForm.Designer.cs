@@ -35,6 +35,9 @@
             SourceCubaseFolders = new TextBox();
             AddSourceFolderButton = new Button();
             panel2 = new Panel();
+            label7 = new Label();
+            AutoDiscoveryService = new Cubase.Hub.Controls.BoundControls.BoundEnumComboBox();
+            label6 = new Label();
             BrowseAlbumExportLocation = new Button();
             AlbumExportLocation = new TextBox();
             label5 = new Label();
@@ -47,8 +50,7 @@
             BrowseCubaseExeButton = new Button();
             CubaseExeLocation = new TextBox();
             label2 = new Label();
-            label6 = new Label();
-            AutoDiscoveryService = new Cubase.Hub.Controls.BoundControls.BoundEnumComboBox();
+            EnableBackgroundServices = new Cubase.Hub.Controls.BoundControls.BoundCheckbox();
             panel1.SuspendLayout();
             panel2.SuspendLayout();
             SuspendLayout();
@@ -99,6 +101,8 @@
             // 
             // panel2
             // 
+            panel2.Controls.Add(EnableBackgroundServices);
+            panel2.Controls.Add(label7);
             panel2.Controls.Add(AutoDiscoveryService);
             panel2.Controls.Add(label6);
             panel2.Controls.Add(BrowseAlbumExportLocation);
@@ -121,6 +125,34 @@
             panel2.Name = "panel2";
             panel2.Size = new Size(800, 568);
             panel2.TabIndex = 4;
+            // 
+            // label7
+            // 
+            label7.AutoSize = true;
+            label7.Font = new Font("Segoe UI", 9F, FontStyle.Bold);
+            label7.Location = new Point(245, 473);
+            label7.Name = "label7";
+            label7.Size = new Size(204, 20);
+            label7.TabIndex = 18;
+            label7.Text = "Enable Background Services";
+            // 
+            // AutoDiscoveryService
+            // 
+            AutoDiscoveryService.FormattingEnabled = true;
+            AutoDiscoveryService.Location = new Point(28, 498);
+            AutoDiscoveryService.Name = "AutoDiscoveryService";
+            AutoDiscoveryService.Size = new Size(151, 28);
+            AutoDiscoveryService.TabIndex = 17;
+            // 
+            // label6
+            // 
+            label6.AutoSize = true;
+            label6.Font = new Font("Segoe UI", 9F, FontStyle.Bold);
+            label6.Location = new Point(22, 473);
+            label6.Name = "label6";
+            label6.Size = new Size(178, 20);
+            label6.TabIndex = 16;
+            label6.Text = "Distributer Auto Service";
             // 
             // BrowseAlbumExportLocation
             // 
@@ -227,23 +259,15 @@
             label2.TabIndex = 4;
             label2.Text = "Cubase Exe Location";
             // 
-            // label6
+            // EnableBackgroundServices
             // 
-            label6.AutoSize = true;
-            label6.Font = new Font("Segoe UI", 9F, FontStyle.Bold);
-            label6.Location = new Point(22, 473);
-            label6.Name = "label6";
-            label6.Size = new Size(178, 20);
-            label6.TabIndex = 16;
-            label6.Text = "Distributer Auto Service";
-            // 
-            // AutoDiscoveryService
-            // 
-            AutoDiscoveryService.FormattingEnabled = true;
-            AutoDiscoveryService.Location = new Point(28, 498);
-            AutoDiscoveryService.Name = "AutoDiscoveryService";
-            AutoDiscoveryService.Size = new Size(151, 28);
-            AutoDiscoveryService.TabIndex = 17;
+            EnableBackgroundServices.AutoSize = true;
+            EnableBackgroundServices.Location = new Point(250, 500);
+            EnableBackgroundServices.Name = "EnableBackgroundServices";
+            EnableBackgroundServices.Size = new Size(215, 24);
+            EnableBackgroundServices.TabIndex = 19;
+            EnableBackgroundServices.Text = "Enable Auto Deploy Service";
+            EnableBackgroundServices.UseVisualStyleBackColor = true;
             // 
             // ConfigurationForm
             // 
@@ -283,5 +307,7 @@
         private Button BrowseAlbumExportLocation;
         private Controls.BoundControls.BoundEnumComboBox AutoDiscoveryService;
         private Label label6;
+        private Label label7;
+        private Controls.BoundControls.BoundCheckbox EnableBackgroundServices;
     }
 }

@@ -36,6 +36,7 @@ namespace Cubase.Hub.Forms.Config
             this.AutoDiscoveryService.EnumType = typeof(DistributionProvider);
             this.AutoDiscoveryService.OnEnumSelected = this.AutoDiscoveryServiceSelected;
 
+
             ThemeApplier.ApplyDarkTheme(this);
         }
 
@@ -132,6 +133,7 @@ namespace Cubase.Hub.Forms.Config
             CubaseExeLocation.Text = this.Configuration.CubaseExeLocation;
             CubaseUserTemplateLocation.Text = this.Configuration.CubaseUserTemplateLocation;
             CubaseTemplateLocation.Text = this.Configuration.CubaseTemplateLocation;
+            this.EnableBackgroundServices.Bind(nameof(Configuration.EnableBackGroundServices), this.Configuration);
             AlbumExportLocation.Text = this.Configuration.AlbumExportLocation;
             if (this.configurationService.Configuration.DistributionConfiguration != null)
             {

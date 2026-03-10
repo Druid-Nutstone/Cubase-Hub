@@ -29,6 +29,8 @@ namespace Cubase.Hub.Services.Models
         public AlbumExportCollection? AlbumExports { get; set; } = new AlbumExportCollection();
 
         public IEnumerable<string>? RecentProjects { get; set; } = new List<string>();
+
+        public bool EnableBackGroundServices { get; set; } = true; 
     }
 
     public class WindowSettings

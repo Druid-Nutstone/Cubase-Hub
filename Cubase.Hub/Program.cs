@@ -64,8 +64,11 @@ namespace Cubase.Hub
                 if (!ProcessAnyCommands(args, cubaseService, configurationService, serviceProvider))
                 {
                     // start the background service only if main program 
-                    var backgroundService = serviceProvider.GetRequiredService<IBackgroundService>();
-                    backgroundService.Start();
+                    if (configurationService.Configuration.EnableBackGroundServices)
+                    {
+                        var backgroundService = serviceProvider.GetRequiredService<IBackgroundService>();
+                        backgroundService.Start();
+                    }
                     var form = serviceProvider.GetRequiredService<MainForm>();
                     var jumpListService = serviceProvider.GetRequiredService<IJumpListService>();
                     jumpListService.Initialise();
