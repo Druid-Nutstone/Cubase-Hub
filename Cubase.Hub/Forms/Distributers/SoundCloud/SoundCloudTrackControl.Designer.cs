@@ -49,7 +49,7 @@
             groupBox1.Dock = DockStyle.Fill;
             groupBox1.Location = new Point(0, 0);
             groupBox1.Name = "groupBox1";
-            groupBox1.Size = new Size(694, 61);
+            groupBox1.Size = new Size(678, 61);
             groupBox1.TabIndex = 0;
             groupBox1.TabStop = false;
             groupBox1.Text = "Sound Cloud ";
@@ -78,7 +78,7 @@
             DeleteTrack.Anchor = AnchorStyles.Top | AnchorStyles.Right;
             DeleteTrack.Image = Properties.Resources.close;
             DeleteTrack.ImageAlign = ContentAlignment.MiddleLeft;
-            DeleteTrack.Location = new Point(555, 15);
+            DeleteTrack.Location = new Point(539, 15);
             DeleteTrack.Name = "DeleteTrack";
             DeleteTrack.Size = new Size(123, 36);
             DeleteTrack.TabIndex = 3;
@@ -90,7 +90,7 @@
             ReUploadTrack.Anchor = AnchorStyles.Top | AnchorStyles.Right;
             ReUploadTrack.Image = Properties.Resources.arrow_up;
             ReUploadTrack.ImageAlign = ContentAlignment.MiddleLeft;
-            ReUploadTrack.Location = new Point(426, 15);
+            ReUploadTrack.Location = new Point(410, 15);
             ReUploadTrack.Name = "ReUploadTrack";
             ReUploadTrack.Size = new Size(123, 36);
             ReUploadTrack.TabIndex = 2;
@@ -113,7 +113,7 @@
             AutoScaleMode = AutoScaleMode.Font;
             Controls.Add(groupBox1);
             Name = "SoundCloudTrackControl";
-            Size = new Size(694, 61);
+            Size = new Size(678, 61);
             groupBox1.ResumeLayout(false);
             groupBox1.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)CopyLink).EndInit();

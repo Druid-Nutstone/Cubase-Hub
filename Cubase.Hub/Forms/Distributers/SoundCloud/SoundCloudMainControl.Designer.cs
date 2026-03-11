@@ -35,6 +35,7 @@
             OpenAlbumLink = new LinkLabel();
             CopyLink = new Cubase.Hub.Controls.BoundControls.ClipBoardCopyControl();
             DeleteAlbum = new Button();
+            UpdateAlbum = new Button();
             ((System.ComponentModel.ISupportInitialize)CopyLink).BeginInit();
             SuspendLayout();
             // 
@@ -43,7 +44,7 @@
             UploadSelected.Anchor = AnchorStyles.Top | AnchorStyles.Right;
             UploadSelected.Image = Properties.Resources.arrow_up;
             UploadSelected.ImageAlign = ContentAlignment.MiddleLeft;
-            UploadSelected.Location = new Point(419, 2);
+            UploadSelected.Location = new Point(607, 2);
             UploadSelected.Name = "UploadSelected";
             UploadSelected.Size = new Size(179, 41);
             UploadSelected.TabIndex = 0;
@@ -55,7 +56,7 @@
             OpenDistribution.Anchor = AnchorStyles.Top | AnchorStyles.Right;
             OpenDistribution.Image = Properties.Resources.zoomin;
             OpenDistribution.ImageAlign = ContentAlignment.MiddleLeft;
-            OpenDistribution.Location = new Point(231, 2);
+            OpenDistribution.Location = new Point(231, 3);
             OpenDistribution.Name = "OpenDistribution";
             OpenDistribution.Size = new Size(182, 41);
             OpenDistribution.TabIndex = 1;
@@ -67,7 +68,7 @@
             DeleteSelected.Anchor = AnchorStyles.Top | AnchorStyles.Right;
             DeleteSelected.Image = Properties.Resources.close;
             DeleteSelected.ImageAlign = ContentAlignment.MiddleLeft;
-            DeleteSelected.Location = new Point(604, 2);
+            DeleteSelected.Location = new Point(792, 2);
             DeleteSelected.Name = "DeleteSelected";
             DeleteSelected.Size = new Size(172, 41);
             DeleteSelected.TabIndex = 2;
@@ -99,17 +100,30 @@
             DeleteAlbum.Anchor = AnchorStyles.Top | AnchorStyles.Right;
             DeleteAlbum.Image = Properties.Resources.close;
             DeleteAlbum.ImageAlign = ContentAlignment.MiddleLeft;
-            DeleteAlbum.Location = new Point(782, 2);
+            DeleteAlbum.Location = new Point(970, 2);
             DeleteAlbum.Name = "DeleteAlbum";
             DeleteAlbum.Size = new Size(172, 41);
             DeleteAlbum.TabIndex = 5;
             DeleteAlbum.Text = "Delete Album";
             DeleteAlbum.UseVisualStyleBackColor = true;
             // 
+            // UpdateAlbum
+            // 
+            UpdateAlbum.Anchor = AnchorStyles.Top | AnchorStyles.Right;
+            UpdateAlbum.Image = Properties.Resources.arrow_up;
+            UpdateAlbum.ImageAlign = ContentAlignment.MiddleLeft;
+            UpdateAlbum.Location = new Point(419, 3);
+            UpdateAlbum.Name = "UpdateAlbum";
+            UpdateAlbum.Size = new Size(182, 41);
+            UpdateAlbum.TabIndex = 6;
+            UpdateAlbum.Text = "Upload Album";
+            UpdateAlbum.UseVisualStyleBackColor = true;
+            // 
             // SoundCloudMainControl
             // 
             AutoScaleDimensions = new SizeF(8F, 20F);
             AutoScaleMode = AutoScaleMode.Font;
+            Controls.Add(UpdateAlbum);
             Controls.Add(DeleteAlbum);
             Controls.Add(CopyLink);
             Controls.Add(OpenAlbumLink);
@@ -117,7 +131,7 @@
             Controls.Add(OpenDistribution);
             Controls.Add(UploadSelected);
             Name = "SoundCloudMainControl";
-            Size = new Size(969, 52);
+            Size = new Size(1157, 52);
             ((System.ComponentModel.ISupportInitialize)CopyLink).EndInit();
             ResumeLayout(false);
             PerformLayout();
@@ -131,5 +145,6 @@
         private LinkLabel OpenAlbumLink;
         private Controls.BoundControls.ClipBoardCopyControl CopyLink;
         private Button DeleteAlbum;
+        private Button UpdateAlbum;
     }
 }

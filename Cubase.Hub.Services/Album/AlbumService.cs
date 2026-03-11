@@ -108,6 +108,12 @@ namespace Cubase.Hub.Services.Album
             return this.configurationService?.Configuration?.AlbumExports?.FirstOrDefault(x => x.Name.Equals(albumLocation.AlbumName))?.Location;
          }
 
+        public string GetAlbumExportLocationForAlbum(string albumName)
+        {
+            return this.configurationService?.Configuration?.AlbumExports?.FirstOrDefault(x => x.Name.Equals(albumName))?.Location;
+
+        }
+
         public void InitialiseAlbumArt(string albumExportLocation)
         {
             this.directoryService.MakeSureDirectoryExists(Path.Combine(albumExportLocation, CubaseHubConstants.AlbumArt));

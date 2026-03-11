@@ -23,6 +23,8 @@ namespace Cubase.Hub.Services.Album
 
         string AlbumExportLocation(AlbumLocation albumLocation);
 
+        string GetAlbumExportLocationForAlbum(string albumName);
+
         void InitialiseAlbumArt(string albumExportLocation);
 
         string InitialiseAlbumExportLocation(AlbumLocation albumLocation, Action<string> onError);

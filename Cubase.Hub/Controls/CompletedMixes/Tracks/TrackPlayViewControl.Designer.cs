@@ -106,7 +106,7 @@
             // 
             // MixCover
             // 
-            MixCover.ImageLocation = "C:\\Users\\david\\AppData\\Local\\Microsoft\\VisualStudio\\18.0_113ede53\\WinFormsDesigner\\3dli15bx.5tx\\NoImage.png";
+            MixCover.ImageLocation = "C:\\Users\\david\\AppData\\Local\\Microsoft\\VisualStudio\\18.0_113ede53\\WinFormsDesigner\\5r12bvpy.eoo\\NoImage.png";
             MixCover.Location = new Point(96, 16);
             MixCover.Name = "MixCover";
             MixCover.Size = new Size(62, 62);
@@ -126,9 +126,9 @@
             // DistributerPanel
             // 
             DistributerPanel.Anchor = AnchorStyles.Top | AnchorStyles.Left | AnchorStyles.Right;
-            DistributerPanel.Location = new Point(762, 16);
+            DistributerPanel.Location = new Point(796, 16);
             DistributerPanel.Name = "DistributerPanel";
-            DistributerPanel.Size = new Size(263, 61);
+            DistributerPanel.Size = new Size(229, 61);
             DistributerPanel.TabIndex = 11;
             // 
             // TrackPlayViewControl

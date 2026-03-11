@@ -1,6 +1,7 @@
 ﻿using Cubase.Hub.Controls.Album.Manage;
 using Cubase.Hub.Forms.BaseForm;
 using Cubase.Hub.Services.Album;
+using Cubase.Hub.Services.Background;
 using Cubase.Hub.Services.Distributers.SoundCloud;
 using Cubase.Hub.Services.Messages;
 using Cubase.Hub.Services.Models;
@@ -123,48 +124,51 @@ namespace Cubase.Hub.Forms.Distributers.SoundCloud
             if (selectedMixes.Count == 0)
             {
                 this.messageService.ShowError($"No tracks have been selected");
+                return; 
             }
             this.MsgHandler = new SoundCloudMessageForm();
             this.MsgHandler.Show();
             
             SoundCloudPlaylist? album = null;
-            
-            var targetPlayListAlbum = selectedMixes.First().Album;
-            foreach (var selectedTrack in selectedMixes)
+
+            if (selectedMixes.Count > 0)
             {
-                this.MsgHandler.ShowMessage($"Locating album {selectedTrack.Album}");
-                album = this.soundCloud.GetAlbum(selectedTrack, this.ShowSoundCloudError);
-                if (album == null)
+                var targetPlayListAlbum = selectedMixes.First().Album;
+                foreach (var selectedTrack in selectedMixes)
                 {
-                    this.MsgHandler.ShowMessage($"Creating album {selectedTrack.Album}");
-                    var albumConfig = GetAlbumConfiguration(selectedTrack.Album);
-                    if (albumConfig == null)
-                    {
-                        return;
-                    }
-                    album = this.soundCloud.CreateAlbum(albumConfig, this.soundCloud.CreateAlbumComments(albumConfig, this.mixDowns), this.ShowSoundCloudError);
+                    this.MsgHandler.ShowMessage($"Locating album {selectedTrack.Album}");
+                    album = this.soundCloud.GetAlbum(selectedTrack, this.ShowSoundCloudError);
                     if (album == null)
                     {
-                        return;
+                        this.MsgHandler.ShowMessage($"Creating album {selectedTrack.Album}");
+                        var albumConfig = GetAlbumConfiguration(selectedTrack.Album);
+                        if (albumConfig == null)
+                        {
+                            return;
+                        }
+                        album = this.soundCloud.CreateAlbum(albumConfig, this.soundCloud.CreateAlbumComments(albumConfig, this.mixDowns), this.ShowSoundCloudError);
+                        if (album == null)
+                        {
+                            return;
+                        }
                     }
+                    this.MsgHandler.ShowMessage($"Uploading {selectedTrack.Title} this.may take some time");
+                    this.soundCloud.UploadTrack(selectedTrack, this.ShowSoundCloudError);
                 }
-                this.MsgHandler.ShowMessage($"Uploading {selectedTrack.Title} this.may take some time");
-                this.soundCloud.UploadTrack(selectedTrack, this.ShowSoundCloudError);
-            }
-            if (this.MsgHandler != null)
-            {
-                // reorder tracks in track order 
-                this.soundCloud.OrderAlbumTracks(targetPlayListAlbum, this.ShowSoundCloudError, this.MsgHandler.ShowMessage);
-                // refresh artist list on 
-                if (album != null)
+                if (this.MsgHandler != null)
                 {
-                    var albumConfig = GetAlbumConfiguration(album?.Title);
-                    this.soundCloud.UpdateAlbum(album, albumConfig, this.soundCloud.CreateAlbumComments(albumConfig, this.mixDowns), this.ShowSoundCloudError);
+                    // reorder tracks in track order 
+                    this.soundCloud.OrderAlbumTracks(targetPlayListAlbum, this.ShowSoundCloudError, this.MsgHandler.ShowMessage);
+                    // refresh artist list on 
+                    if (album != null)
+                    {
+                        var albumConfig = GetAlbumConfiguration(album?.Title);
+                        this.soundCloud.UpdateAlbum(album, albumConfig, this.soundCloud.CreateAlbumComments(albumConfig, this.mixDowns), this.ShowSoundCloudError);
+                    }
+                    this.MsgHandler?.Close();
+                    this.RefreshAllTracks();
                 }
-                this.MsgHandler?.Close();
-                this.RefreshAllTracks();
             }
-
             AlbumConfiguration? GetAlbumConfiguration(string albumName)
             {
                 var allAlbums = this.albumService.GetAlbumList(this.ShowSoundCloudError);
@@ -181,6 +185,37 @@ namespace Cubase.Hub.Forms.Distributers.SoundCloud
         public void OpenForm()
         {
 
+        }
+
+        public void UpdateAlbum()
+        {
+            this.MsgHandler = new SoundCloudMessageForm();
+            this.MsgHandler.Show();
+            this.MsgHandler.ShowMessage($"Updating {this.albumConfiguration.Title}");
+            var album = this.soundCloud.GetAlbum(new MixDown() { Album = this.albumConfiguration.Title }, this.ShowSoundCloudError);
+            if (album != null)
+            {
+                UpdateAlbumArt(album);
+            }
+            else
+            {
+                album = this.soundCloud.CreateAlbum(this.albumConfiguration, this.albumConfiguration.Comments, this.ShowSoundCloudError);
+                if (album == null)
+                {
+                    this.MsgHandler.Close();
+                    this.MsgHandler = null;
+                    return;
+                }
+                UpdateAlbumArt(album);
+            }
+
+            this.MsgHandler.Close();
+        
+            void UpdateAlbumArt(SoundCloudPlaylist soundCloudPlaylist)
+            {
+                this.soundCloud?.OrderAlbumTracks(soundCloudPlaylist.Title, this.ShowSoundCloudError, (progress) => { });
+                this.soundCloud.UpdateAlbumArtWork(soundCloudPlaylist, this.albumConfiguration, this.ShowSoundCloudError);
+            }
         }
 
         public void DeleteAlbum()

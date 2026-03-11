@@ -29,6 +29,10 @@
         private void InitializeComponent()
         {
             TopPanel = new Panel();
+            AlbumProducer = new Cubase.Hub.Controls.BoundControls.BoundLabel();
+            AlbumEngineer = new Cubase.Hub.Controls.BoundControls.BoundLabel();
+            label7 = new Label();
+            label6 = new Label();
             CommandPanel = new Panel();
             DistributerPanel = new Panel();
             SelectAllTracks = new CheckBox();
@@ -49,6 +53,8 @@
             TrackPlayView = new Cubase.Hub.Controls.CompletedMixes.Tracks.TrackPlayView();
             PlayerPanel = new Panel();
             PlayTrackControl = new Cubase.Hub.Controls.Media.Play.PlayTrackControl();
+            label8 = new Label();
+            AlbumLabel = new Cubase.Hub.Controls.BoundControls.BoundLabel();
             TopPanel.SuspendLayout();
             CommandPanel.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)AlbumArt).BeginInit();
@@ -59,6 +65,12 @@
             // 
             // TopPanel
             // 
+            TopPanel.Controls.Add(AlbumLabel);
+            TopPanel.Controls.Add(label8);
+            TopPanel.Controls.Add(AlbumProducer);
+            TopPanel.Controls.Add(AlbumEngineer);
+            TopPanel.Controls.Add(label7);
+            TopPanel.Controls.Add(label6);
             TopPanel.Controls.Add(CommandPanel);
             TopPanel.Controls.Add(AlbumComments);
             TopPanel.Controls.Add(AlbumGenre);
@@ -74,8 +86,46 @@
             TopPanel.Dock = DockStyle.Top;
             TopPanel.Location = new Point(0, 0);
             TopPanel.Name = "TopPanel";
-            TopPanel.Size = new Size(702, 176);
+            TopPanel.Size = new Size(908, 176);
             TopPanel.TabIndex = 0;
+            // 
+            // AlbumProducer
+            // 
+            AlbumProducer.AutoSize = true;
+            AlbumProducer.Location = new Point(678, 34);
+            AlbumProducer.Name = "AlbumProducer";
+            AlbumProducer.Size = new Size(112, 20);
+            AlbumProducer.TabIndex = 16;
+            AlbumProducer.Text = "AlbumProducer";
+            // 
+            // AlbumEngineer
+            // 
+            AlbumEngineer.AutoSize = true;
+            AlbumEngineer.Location = new Point(555, 34);
+            AlbumEngineer.Name = "AlbumEngineer";
+            AlbumEngineer.Size = new Size(111, 20);
+            AlbumEngineer.TabIndex = 15;
+            AlbumEngineer.Text = "AlbumEngineer";
+            // 
+            // label7
+            // 
+            label7.AutoSize = true;
+            label7.Font = new Font("Segoe UI", 9F, FontStyle.Bold);
+            label7.Location = new Point(678, 14);
+            label7.Name = "label7";
+            label7.Size = new Size(72, 20);
+            label7.TabIndex = 14;
+            label7.Text = "Producer";
+            // 
+            // label6
+            // 
+            label6.AutoSize = true;
+            label6.Font = new Font("Segoe UI", 9F, FontStyle.Bold);
+            label6.Location = new Point(555, 14);
+            label6.Name = "label6";
+            label6.Size = new Size(70, 20);
+            label6.TabIndex = 13;
+            label6.Text = "Engineer";
             // 
             // CommandPanel
             // 
@@ -85,7 +135,7 @@
             CommandPanel.Dock = DockStyle.Bottom;
             CommandPanel.Location = new Point(0, 124);
             CommandPanel.Name = "CommandPanel";
-            CommandPanel.Size = new Size(702, 52);
+            CommandPanel.Size = new Size(908, 52);
             CommandPanel.TabIndex = 12;
             // 
             // DistributerPanel
@@ -93,7 +143,7 @@
             DistributerPanel.Anchor = AnchorStyles.Top | AnchorStyles.Left | AnchorStyles.Right;
             DistributerPanel.Location = new Point(294, 5);
             DistributerPanel.Name = "DistributerPanel";
-            DistributerPanel.Size = new Size(250, 41);
+            DistributerPanel.Size = new Size(456, 41);
             DistributerPanel.TabIndex = 3;
             // 
             // SelectAllTracks
@@ -111,7 +161,7 @@
             PlayAllButton.Anchor = AnchorStyles.Top | AnchorStyles.Right;
             PlayAllButton.Image = Properties.Resources.Play;
             PlayAllButton.ImageAlign = ContentAlignment.MiddleLeft;
-            PlayAllButton.Location = new Point(563, 5);
+            PlayAllButton.Location = new Point(769, 5);
             PlayAllButton.Name = "PlayAllButton";
             PlayAllButton.Size = new Size(125, 41);
             PlayAllButton.TabIndex = 1;
@@ -121,7 +171,7 @@
             // AlbumComments
             // 
             AlbumComments.AutoSize = true;
-            AlbumComments.Location = new Point(402, 94);
+            AlbumComments.Location = new Point(555, 94);
             AlbumComments.Name = "AlbumComments";
             AlbumComments.Size = new Size(124, 20);
             AlbumComments.TabIndex = 11;
@@ -140,7 +190,7 @@
             // 
             label5.AutoSize = true;
             label5.Font = new Font("Segoe UI", 9F, FontStyle.Bold);
-            label5.Location = new Point(402, 74);
+            label5.Location = new Point(555, 74);
             label5.Name = "label5";
             label5.Size = new Size(85, 20);
             label5.TabIndex = 9;
@@ -160,7 +210,7 @@
             // 
             AlbumYear.Anchor = AnchorStyles.Top | AnchorStyles.Right;
             AlbumYear.AutoSize = true;
-            AlbumYear.Location = new Point(607, 34);
+            AlbumYear.Location = new Point(813, 34);
             AlbumYear.Name = "AlbumYear";
             AlbumYear.Size = new Size(81, 20);
             AlbumYear.TabIndex = 7;
@@ -171,7 +221,7 @@
             label3.Anchor = AnchorStyles.Top | AnchorStyles.Right;
             label3.AutoSize = true;
             label3.Font = new Font("Segoe UI", 9F, FontStyle.Bold);
-            label3.Location = new Point(607, 14);
+            label3.Location = new Point(813, 14);
             label3.Name = "label3";
             label3.Size = new Size(39, 20);
             label3.TabIndex = 6;
@@ -198,7 +248,7 @@
             // 
             // AlbumArt
             // 
-            AlbumArt.ImageLocation = "C:\\Users\\david\\AppData\\Local\\Microsoft\\VisualStudio\\18.0_113ede53\\WinFormsDesigner\\5owebtsc.3xc\\NoImage.png";
+            AlbumArt.ImageLocation = "C:\\Users\\david\\AppData\\Local\\Microsoft\\VisualStudio\\18.0_113ede53\\WinFormsDesigner\\hrmdh3et.3up\\NoImage.png";
             AlbumArt.Location = new Point(33, 14);
             AlbumArt.Name = "AlbumArt";
             AlbumArt.Size = new Size(104, 104);
@@ -232,7 +282,7 @@
             DataPanel.Dock = DockStyle.Fill;
             DataPanel.Location = new Point(0, 176);
             DataPanel.Name = "DataPanel";
-            DataPanel.Size = new Size(702, 201);
+            DataPanel.Size = new Size(908, 201);
             DataPanel.TabIndex = 1;
             // 
             // TrackPanel
@@ -242,7 +292,7 @@
             TrackPanel.Dock = DockStyle.Fill;
             TrackPanel.Location = new Point(0, 0);
             TrackPanel.Name = "TrackPanel";
-            TrackPanel.Size = new Size(702, 88);
+            TrackPanel.Size = new Size(908, 88);
             TrackPanel.TabIndex = 1;
             // 
             // TrackPlayView
@@ -250,6 +300,9 @@
             TrackPlayView.AutoSize = true;
             TrackPlayView.AutoSizeMode = AutoSizeMode.GrowAndShrink;
             TrackPlayView.ColumnCount = 2;
+            TrackPlayView.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 100F));
+            TrackPlayView.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 100F));
+            TrackPlayView.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 100F));
             TrackPlayView.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 100F));
             TrackPlayView.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 100F));
             TrackPlayView.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 100F));
@@ -268,7 +321,7 @@
             TrackPlayView.RowCount = 2;
             TrackPlayView.RowStyles.Add(new RowStyle(SizeType.Percent, 50F));
             TrackPlayView.RowStyles.Add(new RowStyle(SizeType.Percent, 50F));
-            TrackPlayView.Size = new Size(702, 20);
+            TrackPlayView.Size = new Size(908, 20);
             TrackPlayView.TabIndex = 0;
             // 
             // PlayerPanel
@@ -277,7 +330,7 @@
             PlayerPanel.Dock = DockStyle.Bottom;
             PlayerPanel.Location = new Point(0, 88);
             PlayerPanel.Name = "PlayerPanel";
-            PlayerPanel.Size = new Size(702, 113);
+            PlayerPanel.Size = new Size(908, 113);
             PlayerPanel.TabIndex = 0;
             // 
             // PlayTrackControl
@@ -285,8 +338,27 @@
             PlayTrackControl.Dock = DockStyle.Fill;
             PlayTrackControl.Location = new Point(0, 0);
             PlayTrackControl.Name = "PlayTrackControl";
-            PlayTrackControl.Size = new Size(702, 113);
+            PlayTrackControl.Size = new Size(908, 113);
             PlayTrackControl.TabIndex = 0;
+            // 
+            // label8
+            // 
+            label8.AutoSize = true;
+            label8.Font = new Font("Segoe UI", 9F, FontStyle.Bold);
+            label8.Location = new Point(402, 74);
+            label8.Name = "label8";
+            label8.Size = new Size(46, 20);
+            label8.TabIndex = 17;
+            label8.Text = "Label";
+            // 
+            // AlbumLabel
+            // 
+            AlbumLabel.AutoSize = true;
+            AlbumLabel.Location = new Point(402, 94);
+            AlbumLabel.Name = "AlbumLabel";
+            AlbumLabel.Size = new Size(89, 20);
+            AlbumLabel.TabIndex = 18;
+            AlbumLabel.Text = "AlbumLabel";
             // 
             // AlbumPlayerControl
             // 
@@ -295,7 +367,7 @@
             Controls.Add(DataPanel);
             Controls.Add(TopPanel);
             Name = "AlbumPlayerControl";
-            Size = new Size(702, 377);
+            Size = new Size(908, 377);
             TopPanel.ResumeLayout(false);
             TopPanel.PerformLayout();
             CommandPanel.ResumeLayout(false);
@@ -331,5 +403,11 @@
         private Button PlayAllButton;
         private CheckBox SelectAllTracks;
         private Panel DistributerPanel;
+        private BoundControls.BoundLabel AlbumProducer;
+        private BoundControls.BoundLabel AlbumEngineer;
+        private Label label7;
+        private Label label6;
+        private BoundControls.BoundLabel AlbumLabel;
+        private Label label8;
     }
 }

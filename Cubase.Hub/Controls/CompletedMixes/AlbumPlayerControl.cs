@@ -110,6 +110,9 @@ namespace Cubase.Hub.Controls.CompletedMixes
             AlbumYear.Bind(nameof(AlbumConfiguration.Year), albumDetail);
             AlbumGenre.Bind(nameof(AlbumConfiguration.Genre), albumDetail);
             AlbumComments.Bind(nameof(AlbumConfiguration.Comments), albumDetail);
+            AlbumEngineer.Bind(nameof(AlbumConfiguration.Engineer), albumDetail);
+            AlbumProducer.Bind(nameof(AlbumConfiguration.Producer), albumDetail);
+            AlbumLabel.Bind(nameof(AlbumConfiguration.Label), albumDetail);
             this.tracks = this.trackService.GetFinalMixesForAlbum(albumLocation);
             this.TrackPlayView.ShowMixes(tracks, this.serviceProvider, this.PlayTrackControl, this.distributerForm);
             this.distributerForm?.SetAlbum(albumDetail, this.tracks);

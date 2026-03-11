@@ -8,17 +8,20 @@ namespace Cubase.Hub.Services.Distributers.SoundCloud
     {
         private static string SoundCloudCacheLocation = Path.Combine(CubaseHubConstants.CachePath, "SoundCloudCache.json");
 
+        /*
         public SoundCloudTrackCollection Tracks { get; set; }
-
+        */
         public SoundCloudPlaylistCollection Albums { get; set; }
 
+        /*
         [JsonIgnore]
         public List<AlbumLocation> UpdatedAlbums { get; set; } = new List<AlbumLocation>(); 
-
+        */
         public SoundCloudCache() 
         { 
         }
 
+        /*
         public void AddUpdatedAlbum(AlbumLocation? album)
         {
             if (album != null)
@@ -29,7 +32,7 @@ namespace Cubase.Hub.Services.Distributers.SoundCloud
                 }
             }
         }
-
+        */
         public bool CreateCache(SoundCloudDistributionProvider soundCloud, Action<string> onError)
         {
             this.Albums = soundCloud.GetPlayLists(onError);
@@ -37,11 +40,13 @@ namespace Cubase.Hub.Services.Distributers.SoundCloud
             {
                 return false;
             }
+            /*
             this.Tracks = soundCloud.GetTracks(onError);
             if (this.Tracks == null)
             {
                 return false;
             }
+            */
             var thisAsText = JsonSerializer.Serialize(this);
             File.WriteAllText(SoundCloudCacheLocation, thisAsText);
             return true;

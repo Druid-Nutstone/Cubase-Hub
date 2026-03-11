@@ -38,8 +38,14 @@ namespace Cubase.Hub.Forms.Distributers.SoundCloud
             this.DeleteSelected.Click += DeleteSelected_Click;
             this.OpenAlbumLink.Click += OpenAlbumLink_Click;
             this.DeleteAlbum.Click += DeleteAlbum_Click;
+            this.UpdateAlbum.Click += UpdateAlbum_Click;
             this.CopyLink.GetClipBoardText = this.CopyLinkClick;
-            ThemeApplier.ApplyDarkTheme(this);  
+            ThemeApplier.ApplyDarkTheme(this);
+        }
+
+        private void UpdateAlbum_Click(object? sender, EventArgs e)
+        {
+            this.parentForm.UpdateAlbum();
         }
 
         private void DeleteAlbum_Click(object? sender, EventArgs e)
@@ -105,7 +111,7 @@ namespace Cubase.Hub.Forms.Distributers.SoundCloud
         {
             this.albumConfiguration = albumConfiguration;
             this.mixDowns = mixDowns;
-            this.OpenAlbumLink.Text = $"Open {albumConfiguration.Title} on SoundCloud";
+            this.OpenAlbumLink.Text = $"Open on SoundCloud";
         }
     }
 }
