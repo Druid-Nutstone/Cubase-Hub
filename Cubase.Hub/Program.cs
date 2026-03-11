@@ -64,16 +64,21 @@ namespace Cubase.Hub
                 if (!ProcessAnyCommands(args, cubaseService, configurationService, serviceProvider))
                 {
                     // start the background service only if main program 
-                    if (configurationService.Configuration.EnableBackGroundServices)
-                    {
-                        var backgroundService = serviceProvider.GetRequiredService<IBackgroundService>();
-                        backgroundService.Start();
-                    }
+                    StartBackgroundService(configurationService, serviceProvider);
                     var form = serviceProvider.GetRequiredService<MainForm>();
                     var jumpListService = serviceProvider.GetRequiredService<IJumpListService>();
                     jumpListService.Initialise();
                     Application.Run(form);
                 }
+            }
+        }
+
+        static void StartBackgroundService(IConfigurationService configurationService, IServiceProvider serviceProvider)
+        {
+            if (configurationService.Configuration.EnableBackGroundServices)
+            {
+                var backgroundService = serviceProvider.GetRequiredService<IBackgroundService>();
+                backgroundService.Start();
             }
         }
 
@@ -110,6 +115,7 @@ namespace Cubase.Hub
 
                 if (args[0] == "minimise")
                 {
+                    StartBackgroundService(configurationService, serviceProvider);
                     var form = serviceProvider.GetRequiredService<MainForm>();
                     form.StartMinimised();
                     Application.Run(form);

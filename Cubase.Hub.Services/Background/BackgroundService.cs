@@ -84,6 +84,8 @@ namespace Cubase.Hub.Services.Background
 
         public void Start()
         {
+            this.Log($"BackgroundService Started at {DateTime.Now}");
+            
             this.SetupWatchers();
 
             Task.Run(() =>
@@ -443,6 +445,7 @@ namespace Cubase.Hub.Services.Background
 
         public void Dispose()
         {
+            this.Log($"Closing Background Service {DateTime.Now}");
             foreach (var watcher in this.fileWatchers)
             {
                 watcher.Dispose();
