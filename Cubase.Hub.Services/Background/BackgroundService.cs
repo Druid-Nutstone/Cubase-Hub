@@ -162,7 +162,15 @@ namespace Cubase.Hub.Services.Background
                     var album = this.FindAlbum(Path.GetDirectoryName(fileName));
                     if (album != null)
                     {
-                        albumQueue.Enqueue(new AlbumWatcher() { Album = album, FileName = fileName });
+                        if (album.IsMixdownForDistribution(fileName))
+                        {
+                            albumQueue.Enqueue(new AlbumWatcher() { Album = album, FileName = fileName });
+                        }
+                        else
+                        {
+                            this.Log($"The mix {fileName} is not marked for distribution");
+                            filePending.Remove(fileName);   
+                        }
                     }
                 }
                 else

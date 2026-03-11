@@ -40,6 +40,11 @@ namespace Cubase.Hub.Services.Models
             return this.DistributionMixes.FirstOrDefault(x => x.FileName == mixDown.FileName); 
         } 
 
+        public bool IsMixdownForDistribution(string fileName)
+        {
+            return this.DistributionMixes.Any(x => x.FileName == fileName && x.MarkForDistribution);
+        }
+
         public void UpdateMixDistribution(MixDown mixDown)
         {
             if (this.DistributionMixes.Any(_ => _.FileName == mixDown.FileName && mixDown.MarkForDistribution)) 
