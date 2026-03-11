@@ -246,26 +246,44 @@ namespace Cubase.Hub.Services.Background
                 }
 
                 this.Log($"Upload {albumWatcher.MixDown.Title} to soundcloud..");
-                soundCloud?.UploadTrack(albumWatcher.MixDown, this.OnError);
-                soundCloud?.OrderAlbumTracks(albumWatcher.Album.Title, this.OnError, (progress) => { });
-                var album = soundCloudCache.Albums.GetAlbum(albumWatcher.Album.Title);
-                if (album == null)
+                var uploadedTrack = soundCloud?.UploadTrack(albumWatcher.MixDown, this.OnError);
+                if (uploadedTrack != null)
                 {
-                    album = soundCloud.CreateAlbum(albumWatcher.Album, GetAlbumComments(), OnError);
-                    if (album != null)
+                    this.Log($"Uploaded {albumWatcher.MixDown.Title} succesfully to soundcloud.. ordering tracks");
+
+                    if (soundCloud.OrderAlbumTracks(albumWatcher.Album.Title, this.OnError, (progress) => 
                     {
-                        soundCloudCache.CreateCache(soundCloud, OnError);
-                    }
-                    else
+                        this.Log($"Upload {albumWatcher.MixDown.Title} {progress}");
+                    }))
                     {
-                        this.Log($"Could not create album {albumWatcher.Album.Title}");
-                        return;
+                        var album = soundCloudCache.Albums.GetAlbum(albumWatcher.Album.Title);
+                        if (album == null)
+                        {
+                            this.Log("Creating album {albumWatcher.Album.Title}");
+                            album = soundCloud.CreateAlbum(albumWatcher.Album, GetAlbumComments(), OnError);
+                            if (album != null)
+                            {
+                                soundCloudCache.CreateCache(soundCloud, OnError);
+                            }
+                            else
+                            {
+                                this.Log($"Could not create album {albumWatcher.Album.Title}");
+                                return;
+                            }
+                        }
+                        this.Log($"Updating {albumWatcher.Album.Title} album with album art");
+                        var soundCloudAlbumUpdated = soundCloud.UpdateAlbum(album, albumWatcher.Album, GetAlbumComments(), OnError);
+                        if (!soundCloudAlbumUpdated)
+                        {
+                            this.Log($"Could not update album metadata. see previous error");
+                        }
+                        this.Log($"Upload is complete");
                     }
                 }
-                var soundCloudAlbumUpdated = soundCloud.UpdateAlbum(album, albumWatcher.Album, GetAlbumComments(), OnError);
-                if (!soundCloudAlbumUpdated)
+                else
                 {
-                    this.Log($"Could not update album metadata. see previous error");
+                    this.Log($"Failed to upload {albumWatcher.MixDown.Title}");
+                    return;
                 }
             }
             string GetAlbumComments()
@@ -274,16 +292,24 @@ namespace Cubase.Hub.Services.Background
             }
         }
 
-        private void HandleFileMixUpdate(AlbumWatcher albumWatcher)
+        private bool HandleFileMixUpdate(AlbumWatcher albumWatcher)
         {
             var track = albumWatcher.FileName;
             var album = albumWatcher.Album;
+
+            this.Log($"Handling update for Mix file {track}");
+
+            if (!this.WaitForFileReady(track))
+            {
+                this.Log($"{track} cannot be opened");
+                return false;
+            }
 
             var distributionMixdown = album.DistributionMixes.FirstOrDefault(x => x.FileName == track);
             if (distributionMixdown == null)
             {
                 this.Log($"Cannot find {Path.GetFileNameWithoutExtension(track)} in the album distribution list");
-                return;
+                return false;
             }
 
             var exportLocation = this.albumService.GetAlbumExportLocationForAlbum(album.Title);
@@ -291,22 +317,62 @@ namespace Cubase.Hub.Services.Background
             if (exportLocation == null)
             {
                 this.Log($"Cannot get album export location {album.Title}");
-                return;
+                return false;
             }
 
             // get the tags from the new file
             var mixdown = this.trackService.PopulateTagsFromFile(track);
             // and then update it with the detail from the saved album definition 
             mixdown.UpdateFromAnotherMix(distributionMixdown);
+            this.Log($"Populated tags {mixdown.Title} {mixdown.Album} {mixdown.AudioType}");
             // then save tags back to disk 
+            this.Log($"Saved tags for {mixdown.Title}");
             this.trackService.SetTagsFromMixDowm(mixdown);
-
+            this.Log($"Updated album config {album.Title} with {mixdown.Title}");
             // then re-save to album config -- should save to disk as well 
             album.AddForDistribution(mixdown);
             // copy it to export location 
-            System.IO.File.Copy(mixdown.FileName, Path.Combine(exportLocation, Path.GetFileName(mixdown.FileName)), true);
+            this.Log($"Copying to exportlocation {exportLocation}");
+            try
+            {
+                System.IO.File.Copy(mixdown.FileName, Path.Combine(exportLocation, Path.GetFileName(mixdown.FileName)), true);
+            }
+            catch (Exception ex)
+            {
+                this.Log($"Could not copy mixdown {mixdown.FileName} to mixdown directory");
+                return false;
+            }
             albumWatcher.SetMixDown(mixdown);
+            return true; 
         }
+
+        public bool WaitForFileReady(string path, TimeSpan? maxWait = null)
+        {
+            if (maxWait == null)
+            {
+                maxWait = TimeSpan.FromMinutes(5);
+            }
+
+            var start = DateTime.UtcNow;
+
+            while (true)
+            {
+                try
+                {
+                    using var stream = System.IO.File.Open(path, FileMode.Open, FileAccess.ReadWrite, FileShare.None);
+                    return true; // file is free
+                }
+                catch (IOException)
+                {
+                    this.Log($"target file {path} is being used by another process.");
+                    if ((DateTime.UtcNow - start).TotalMilliseconds > maxWait.Value.TotalMilliseconds)
+                        return false;
+
+                    Task.Delay(200).Wait();
+                }
+            }
+        }
+
 
         private AlbumConfiguration? FindAlbum(string startDirectory)
         {
@@ -348,7 +414,17 @@ namespace Cubase.Hub.Services.Background
 
         private void Log(string msg)
         {
-            System.IO.File.AppendAllLines(this.GetLogFileName(), new string[] { $"{DateTime.Now} {msg}" });
+            if (this.WaitForFileReady(this.GetLogFileName()))
+            {
+                try
+                {
+                    System.IO.File.AppendAllLines(this.GetLogFileName(), new string[] { $"{DateTime.Now} {msg}" });
+                }
+                catch (Exception ex)
+                {
+                    // nop
+                }
+            }
         }
 
         private string GetLogFileName()

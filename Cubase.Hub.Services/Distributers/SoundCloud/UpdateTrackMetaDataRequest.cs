@@ -1,4 +1,5 @@
 ﻿using Cubase.Hub.Services.Models;
+using Microsoft.VisualBasic;
 using System;
 using System.Collections.Generic;
 using System.Runtime.CompilerServices;
@@ -14,14 +15,16 @@ namespace Cubase.Hub.Services.Distributers.SoundCloud
     
         public static UpdateTrackMetaDataRequest CreateFromMixdown(MixDown mixDown)
         {
+            var year = mixDown.Year == 0 ? DateTime.Now.Year : (int)mixDown.Year;
+
             return new UpdateTrackMetaDataRequest()
             {
-                 Track = new UpdateTrackMetaDataRequestTrack()
+                Track = new UpdateTrackMetaDataRequestTrack()
                  {
                      Title = mixDown.Title,
                      Description = BuildDescription(),
                      Genre = mixDown.Genre ?? "Not Specified",
-                     ReleaseDate = new DateOnly((int)mixDown.Year, 1, 1).ToString("yyyy-MM-dd"),
+                     ReleaseDate = new DateOnly(year, 1, 1).ToString("yyyy-MM-dd"),
                      TagList = $"{mixDown.Artist} {mixDown.Genre} {mixDown.Year}",
                      LabelName = mixDown.Artist ?? string.Empty
                  }
