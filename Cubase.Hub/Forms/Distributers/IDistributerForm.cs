@@ -9,10 +9,14 @@ namespace Cubase.Hub.Forms.Distributers
     {
         void Initialise();
 
+        public string ProviderName { get; }
+
         UserControl MainControl { get; }
 
         void SetAlbum(AlbumConfiguration albumConfiguration, MixDownCollection mixDowns); 
     
         UserControl TrackControl { get; }
+
+        void UploadMixes(MixDownCollection mixDowns);
     }
 }

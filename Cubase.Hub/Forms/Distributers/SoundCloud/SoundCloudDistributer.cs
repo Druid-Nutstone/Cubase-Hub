@@ -42,6 +42,8 @@ namespace Cubase.Hub.Forms.Distributers.SoundCloud
 
         private SoundCloudMessageForm? MsgHandler;
 
+        public string ProviderName => "SoundCloud";
+
         public SoundCloudDistributer()
         {
 
@@ -113,10 +115,14 @@ namespace Cubase.Hub.Forms.Distributers.SoundCloud
 
         public void Initialise()
         {
-            if (this.soundCloud.Connect(this.ShowSoundCloudError))
+            if (!this.soundCloud.Connected)
             {
-                this.mainControl = new SoundCloudMainControl(this, this.soundCloud, this.soundCloudAlbums);
-                this.RefreshTrackList();
+
+                if (this.soundCloud.Connect(this.ShowSoundCloudError))
+                {
+                    this.mainControl = new SoundCloudMainControl(this, this.soundCloud, this.soundCloudAlbums);
+                    this.RefreshTrackList();
+                }
             }
         }
 
@@ -129,6 +135,19 @@ namespace Cubase.Hub.Forms.Distributers.SoundCloud
         {
             this.RefreshTrackList();
             AlbumCommands.Instance.RefreshTracks();
+        }
+
+        public void UploadMixes(MixDownCollection mixDowns)
+        {
+            var saveMixes = this.mixDowns;
+            this.mixDowns = mixDowns;
+            var mixDownCollection = new MixDownCollection(mixDowns);
+            foreach (var item in this.mixDowns)
+            {
+                item.Selected = true;
+            }
+            this.UploadSelected();
+            this.mixDowns = saveMixes;
         }
 
         public void UploadSelected(MixDown? singleTrack = null)
@@ -166,7 +185,7 @@ namespace Cubase.Hub.Forms.Distributers.SoundCloud
                             return;
                         }
                     }
-                    this.MsgHandler.ShowMessage($"Uploading {selectedTrack.Title} this.may take some time");
+                    this.MsgHandler.ShowMessage($"Uploading {selectedTrack.Title}. This may take some time!");
                     this.soundCloud.UploadTrack(selectedTrack, this.ShowSoundCloudError);
                 }
                 if (this.MsgHandler != null)

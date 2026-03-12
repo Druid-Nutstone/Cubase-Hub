@@ -281,11 +281,11 @@
             // label12
             // 
             label12.AutoSize = true;
-            label12.Location = new Point(95, 25);
+            label12.Location = new Point(98, 25);
             label12.Name = "label12";
-            label12.Size = new Size(74, 20);
+            label12.Size = new Size(58, 20);
             label12.TabIndex = 30;
-            label12.Text = "Distribute";
+            label12.Text = "Upload";
             // 
             // MixMarkForDistribution
             // 

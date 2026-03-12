@@ -176,7 +176,7 @@ namespace Cubase.Hub
                 .AddScoped<NewTrackForm>()
                 .AddScoped<ManageAlbumsForm>()
                 .AddScoped<ManageMixesForm>()
-                .AddKeyedScoped<IDistributerForm, SoundCloudDistributer>(DistributionProvider.SoundCloud)
+                .AddKeyedSingleton<IDistributerForm, SoundCloudDistributer>(DistributionProvider.SoundCloud)
                 .AddScoped<EditTrackForm>()
                 .AddTransient<PlayControl>()
                 .AddTransient<ExportProjectControl>()

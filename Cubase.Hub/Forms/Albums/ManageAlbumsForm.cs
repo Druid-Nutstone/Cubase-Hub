@@ -1,6 +1,7 @@
 ﻿using Cubase.Hub.Controls.Album.Manage;
 using Cubase.Hub.Forms.BaseForm;
 using Cubase.Hub.Forms.CompletedMixes;
+using Cubase.Hub.Forms.Distributers;
 using Cubase.Hub.Forms.Message;
 using Cubase.Hub.Forms.Mixes;
 using Cubase.Hub.Services;
@@ -12,6 +13,7 @@ using Cubase.Hub.Services.Messages;
 using Cubase.Hub.Services.Models;
 using Cubase.Hub.Services.Projects;
 using Cubase.Hub.Services.Track;
+using Microsoft.Extensions.DependencyInjection;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -42,6 +44,8 @@ namespace Cubase.Hub.Forms.Albums
         private readonly IAlbumService albumService;
 
         private readonly CompletedMixesForm completedMixesForm;
+
+        private IDistributerForm distributerForm; 
 
 
         [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
@@ -99,6 +103,33 @@ namespace Cubase.Hub.Forms.Albums
             AlbumCommands.Instance.RegisterForAlbumCommand(this.OnAlbumCommandReceived);
             this.PlayTrack.TrackService = this.trackService;
             this.PlayTrack.ShowPlay = false;
+            this.UploadTracks.Visible = false;
+            this.UploadTracks.Click += UploadTracks_Click;
+            this.UploadTracks.Enabled = false;
+            if (this.configurationService?.Configuration?.DistributionConfiguration?.DistributionProvider != DistributionProvider.None)
+            {
+                this.distributerForm = this.serviceProvider.GetKeyedService<IDistributerForm>(this.configurationService?.Configuration?.DistributionConfiguration?.DistributionProvider);
+                if (distributerForm != null)
+                {
+                    distributerForm.Initialise();
+                    this.UploadTracks.Visible = true;
+                    this.UploadTracks.Text = $"Upload to {distributerForm.ProviderName}";
+                }
+            }
+        }
+
+        private void UploadTracks_Click(object? sender, EventArgs e)
+        {
+            this.distributerForm.UploadMixes(this.CurrentAlbumConfiguration.DistributionMixes);
+        }
+
+        private void SetUploadStatus()
+        {
+            this.UploadTracks.Enabled = false;
+            if (this.CurrentAlbumConfiguration != null)
+            {
+                this.UploadTracks.Enabled = this.CurrentAlbumConfiguration.DistributionMixes.Count > 1;
+            }
         }
 
         private void OpenMixes_Click(object? sender, EventArgs e)
@@ -294,7 +325,7 @@ namespace Cubase.Hub.Forms.Albums
                 this.LoadTracks();
                 this.nonBlockingMessage?.Close();
                 this.nonBlockingMessage = null;
-
+                this.SetUploadStatus();
             }
             else
             {
@@ -410,10 +441,12 @@ namespace Cubase.Hub.Forms.Albums
                     {
                         this.CurrentAlbumConfiguration.RemoveFromDistribution(mixDown);
                     }
+                    this.SetUploadStatus();
                     break;
                 default:
                     this.trackService.SetTagsFromMixDown(mixDown);
                     this.CurrentAlbumConfiguration.UpdateMixDistribution(mixDown);
+                    this.SetUploadStatus();
                     break;
             }
         }
