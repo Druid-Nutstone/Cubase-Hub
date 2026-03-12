@@ -529,5 +529,7 @@ namespace Cubase.Hub.Forms.Albums
                 this.messageService.ShowError($"Could not save configuration file. {err}");
             });
         }
+
+
     }
 }

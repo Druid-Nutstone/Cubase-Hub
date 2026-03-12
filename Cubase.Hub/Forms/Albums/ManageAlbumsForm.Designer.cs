@@ -287,6 +287,7 @@
             // 
             // PlayTrack
             // 
+            PlayTrack.AutoSize = true;
             PlayTrack.Dock = DockStyle.Fill;
             PlayTrack.Location = new Point(0, 0);
             PlayTrack.Name = "PlayTrack";
@@ -308,6 +309,9 @@
             mixdownControl.AutoSize = true;
             mixdownControl.AutoSizeMode = AutoSizeMode.GrowAndShrink;
             mixdownControl.ColumnCount = 2;
+            mixdownControl.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 100F));
+            mixdownControl.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 100F));
+            mixdownControl.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 100F));
             mixdownControl.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 100F));
             mixdownControl.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 100F));
             mixdownControl.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 100F));
@@ -351,6 +355,7 @@
             TracksControlPanel.ResumeLayout(false);
             TracksControlPanel.PerformLayout();
             PlayPanel.ResumeLayout(false);
+            PlayPanel.PerformLayout();
             MixdownPanel.ResumeLayout(false);
             MixdownPanel.PerformLayout();
             ResumeLayout(false);

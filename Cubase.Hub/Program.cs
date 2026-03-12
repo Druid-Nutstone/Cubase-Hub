@@ -184,7 +184,7 @@ namespace Cubase.Hub
                 .AddTransient<CubaseProjectItemControl>()
                 .AddTransient<CubaseProjectExtendedPropertiesControl>()
                 .AddTransient<CubaseProjectItemMixesControl>()
-                .AddTransient<SoundCloudDistributionProvider>()
+                .AddSingleton<SoundCloudDistributionProvider>()
                 .AddSingleton<IMessageService, MessageService>()
                 .AddSingleton<IConfigurationService, ConfigurationService>()
                 .AddSingleton<IDirectoryService, DirectoryService>()

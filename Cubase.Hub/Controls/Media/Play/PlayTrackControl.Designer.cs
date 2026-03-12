@@ -101,7 +101,6 @@
             // 
             AutoScaleDimensions = new SizeF(8F, 20F);
             AutoScaleMode = AutoScaleMode.Font;
-            AutoSize = true;
             Controls.Add(label1);
             Controls.Add(TrackName);
             Controls.Add(Stop);

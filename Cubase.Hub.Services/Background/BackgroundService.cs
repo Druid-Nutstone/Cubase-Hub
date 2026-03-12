@@ -91,7 +91,7 @@ namespace Cubase.Hub.Services.Background
         public void Start()
         {
             this.Log($"BackgroundService Started at {DateTime.Now}");
-            
+
             this.SetupWatchers();
 
             Task.Run(() =>
@@ -176,7 +176,7 @@ namespace Cubase.Hub.Services.Background
                         else
                         {
                             this.Log($"The mix {fileName} is not marked for distribution");
-                            filePending.Remove(fileName);   
+                            filePending.Remove(fileName);
                         }
                     }
                 }
@@ -214,13 +214,15 @@ namespace Cubase.Hub.Services.Background
         private void HandleAlbumChange(AlbumWatcher albumWatcher)
         {
             this.Log($"Processing change for album {albumWatcher.Album} and track file {Path.GetFileNameWithoutExtension(albumWatcher.FileName)}");
-            this.HandleFileMixUpdate(albumWatcher);
-            var distroKiddy = this.configurationService?.Configuration?.DistributionConfiguration?.DistributionProvider;
-            if (distroKiddy != null && distroKiddy != DistributionProvider.None)
+            if (this.HandleFileMixUpdate(albumWatcher))
             {
-                if (this.DistributerMethods.ContainsKey(distroKiddy.Value))
+                var distroKiddy = this.configurationService?.Configuration?.DistributionConfiguration?.DistributionProvider;
+                if (distroKiddy != null && distroKiddy != DistributionProvider.None)
                 {
-                    this.DistributerMethods[distroKiddy.Value].Invoke(albumWatcher);
+                    if (this.DistributerMethods.ContainsKey(distroKiddy.Value))
+                    {
+                        this.DistributerMethods[distroKiddy.Value].Invoke(albumWatcher);
+                    }
                 }
             }
         }
@@ -259,50 +261,51 @@ namespace Cubase.Hub.Services.Background
                     this.Log($"Could not get soundcloud from the service provider");
                     return;
                 }
+            }
 
-                this.Log($"Upload {albumWatcher.MixDown.Title} to soundcloud..");
-                var uploadedTrack = soundCloud?.UploadTrack(albumWatcher.MixDown, this.OnError);
-                if (uploadedTrack != null)
+            this.Log($"Upload {albumWatcher.MixDown.Title} to soundcloud..");
+            var uploadedTrack = soundCloud?.UploadTrack(albumWatcher.MixDown, this.OnError);
+            if (uploadedTrack != null)
+            {
+                this.Log($"Uploaded {albumWatcher.MixDown.Title} succesfully to soundcloud.. ordering tracks");
+
+                if (soundCloud.OrderAlbumTracks(albumWatcher.Album.Title, this.OnError, (progress) =>
                 {
-                    this.Log($"Uploaded {albumWatcher.MixDown.Title} succesfully to soundcloud.. ordering tracks");
-
-                    if (soundCloud.OrderAlbumTracks(albumWatcher.Album.Title, this.OnError, (progress) => 
+                    this.Log($"Upload {albumWatcher.MixDown.Title} {progress}");
+                }))
+                {
+                    var album = soundCloudCache.Albums.GetAlbum(albumWatcher.Album.Title);
+                    if (album == null)
                     {
-                        this.Log($"Upload {albumWatcher.MixDown.Title} {progress}");
-                    }))
-                    {
-                        var album = soundCloudCache.Albums.GetAlbum(albumWatcher.Album.Title);
-                        if (album == null)
+                        this.Log("Creating album {albumWatcher.Album.Title}");
+                        album = soundCloud.CreateAlbum(albumWatcher.Album, GetAlbumComments(), OnError);
+                        if (album != null)
                         {
-                            this.Log("Creating album {albumWatcher.Album.Title}");
-                            album = soundCloud.CreateAlbum(albumWatcher.Album, GetAlbumComments(), OnError);
-                            if (album != null)
-                            {
-                                soundCloudCache.CreateCache(soundCloud, OnError);
-                            }
-                            else
-                            {
-                                this.Log($"Could not create album {albumWatcher.Album.Title}");
-                                return;
-                            }
+                            soundCloudCache.CreateCache(soundCloud, OnError);
                         }
-                        this.Log($"Updating {albumWatcher.Album.Title} album with album art");
-                        var soundCloudAlbumUpdated = soundCloud.UpdateAlbum(album, albumWatcher.Album, GetAlbumComments(), OnError);
-                        if (!soundCloudAlbumUpdated)
+                        else
                         {
-                            this.Log($"Could not update album metadata. see previous error");
+                            this.Log($"Could not create album {albumWatcher.Album.Title}");
+                            return;
                         }
-                        // broadcast message
-                        this.synchroniseService.RaiseEvent(SyncEvent.DistributionMixUpload);
-                        this.Log($"Upload is complete");
                     }
-                }
-                else
-                {
-                    this.Log($"Failed to upload {albumWatcher.MixDown.Title}");
-                    return;
+                    this.Log($"Updating {albumWatcher.Album.Title} album with album art");
+                    var soundCloudAlbumUpdated = soundCloud.UpdateAlbum(album, albumWatcher.Album, GetAlbumComments(), OnError);
+                    if (!soundCloudAlbumUpdated)
+                    {
+                        this.Log($"Could not update album metadata. see previous error");
+                    }
+                    // broadcast message
+                    this.synchroniseService.RaiseEvent(SyncEvent.DistributionMixUpload);
+                    this.Log($"Upload is complete");
                 }
             }
+            else
+            {
+                this.Log($"Failed to upload {albumWatcher.MixDown.Title}");
+                return;
+            }
+
             string GetAlbumComments()
             {
                 return soundCloud.CreateAlbumComments(albumWatcher.Album, albumWatcher.Album.DistributionMixes);
@@ -360,7 +363,7 @@ namespace Cubase.Hub.Services.Background
                 return false;
             }
             albumWatcher.SetMixDown(mixdown);
-            return true; 
+            return true;
         }
 
         public bool WaitForFileReady(string path, TimeSpan? maxWait = null)

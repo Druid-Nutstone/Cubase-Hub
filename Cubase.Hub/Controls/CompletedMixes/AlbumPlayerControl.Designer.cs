@@ -29,6 +29,8 @@
         private void InitializeComponent()
         {
             TopPanel = new Panel();
+            AlbumLabel = new Cubase.Hub.Controls.BoundControls.BoundLabel();
+            label8 = new Label();
             AlbumProducer = new Cubase.Hub.Controls.BoundControls.BoundLabel();
             AlbumEngineer = new Cubase.Hub.Controls.BoundControls.BoundLabel();
             label7 = new Label();
@@ -53,8 +55,6 @@
             TrackPlayView = new Cubase.Hub.Controls.CompletedMixes.Tracks.TrackPlayView();
             PlayerPanel = new Panel();
             PlayTrackControl = new Cubase.Hub.Controls.Media.Play.PlayTrackControl();
-            label8 = new Label();
-            AlbumLabel = new Cubase.Hub.Controls.BoundControls.BoundLabel();
             TopPanel.SuspendLayout();
             CommandPanel.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)AlbumArt).BeginInit();
@@ -88,6 +88,25 @@
             TopPanel.Name = "TopPanel";
             TopPanel.Size = new Size(908, 176);
             TopPanel.TabIndex = 0;
+            // 
+            // AlbumLabel
+            // 
+            AlbumLabel.AutoSize = true;
+            AlbumLabel.Location = new Point(402, 94);
+            AlbumLabel.Name = "AlbumLabel";
+            AlbumLabel.Size = new Size(89, 20);
+            AlbumLabel.TabIndex = 18;
+            AlbumLabel.Text = "AlbumLabel";
+            // 
+            // label8
+            // 
+            label8.AutoSize = true;
+            label8.Font = new Font("Segoe UI", 9F, FontStyle.Bold);
+            label8.Location = new Point(402, 74);
+            label8.Name = "label8";
+            label8.Size = new Size(46, 20);
+            label8.TabIndex = 17;
+            label8.Text = "Label";
             // 
             // AlbumProducer
             // 
@@ -248,7 +267,7 @@
             // 
             // AlbumArt
             // 
-            AlbumArt.ImageLocation = "C:\\Users\\david\\AppData\\Local\\Microsoft\\VisualStudio\\18.0_113ede53\\WinFormsDesigner\\hrmdh3et.3up\\NoImage.png";
+            AlbumArt.ImageLocation = "C:\\Users\\david\\AppData\\Local\\Microsoft\\VisualStudio\\18.0_113ede53\\WinFormsDesigner\\phokpfyy.1bb\\NoImage.png";
             AlbumArt.Location = new Point(33, 14);
             AlbumArt.Name = "AlbumArt";
             AlbumArt.Size = new Size(104, 104);
@@ -312,6 +331,7 @@
             TrackPlayView.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 100F));
             TrackPlayView.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 100F));
             TrackPlayView.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 100F));
+            TrackPlayView.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 100F));
             TrackPlayView.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 50F));
             TrackPlayView.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 50F));
             TrackPlayView.Dock = DockStyle.Top;
@@ -340,25 +360,6 @@
             PlayTrackControl.Name = "PlayTrackControl";
             PlayTrackControl.Size = new Size(908, 113);
             PlayTrackControl.TabIndex = 0;
-            // 
-            // label8
-            // 
-            label8.AutoSize = true;
-            label8.Font = new Font("Segoe UI", 9F, FontStyle.Bold);
-            label8.Location = new Point(402, 74);
-            label8.Name = "label8";
-            label8.Size = new Size(46, 20);
-            label8.TabIndex = 17;
-            label8.Text = "Label";
-            // 
-            // AlbumLabel
-            // 
-            AlbumLabel.AutoSize = true;
-            AlbumLabel.Location = new Point(402, 94);
-            AlbumLabel.Name = "AlbumLabel";
-            AlbumLabel.Size = new Size(89, 20);
-            AlbumLabel.TabIndex = 18;
-            AlbumLabel.Text = "AlbumLabel";
             // 
             // AlbumPlayerControl
             // 
