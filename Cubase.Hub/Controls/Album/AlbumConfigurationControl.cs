@@ -35,16 +35,16 @@ namespace Cubase.Hub.Controls.Album
 
         public void Initialise(Action<AlbumConfiguration, string>? onAlbumChanged = null)
         {
-            this.AlbumTitle.Bind(nameof(AlbumConfiguration.Title), AlbumConfiguration);
-            this.AlbumArtist.Bind(nameof(AlbumConfiguration.Artist), AlbumConfiguration);
-            this.AlbumYear.Bind(nameof(AlbumConfiguration.Year), AlbumConfiguration);
-            this.AlbumComments.Bind(nameof(AlbumConfiguration.Comments), AlbumConfiguration);
+            this.AlbumTitle.Bind(nameof(AlbumConfiguration.Title), AlbumConfiguration, DataSourceUpdateMode.OnValidation);
+            this.AlbumArtist.Bind(nameof(AlbumConfiguration.Artist), AlbumConfiguration, DataSourceUpdateMode.OnValidation);
+            this.AlbumYear.Bind(nameof(AlbumConfiguration.Year), AlbumConfiguration, DataSourceUpdateMode.OnValidation);
+            this.AlbumComments.Bind(nameof(AlbumConfiguration.Comments), AlbumConfiguration, DataSourceUpdateMode.OnValidation);
             this.AlbumGenre.AutoCompleteCustomSource.Clear();
             this.AlbumGenre.AutoCompleteCustomSource.AddRange(CubaseHubConstants.TagGenres);
-            this.AlbumGenre.Bind(nameof(AlbumConfiguration.Genre), AlbumConfiguration);
-            this.AlbumLabel.Bind(nameof(AlbumConfiguration.Label), AlbumConfiguration);
-            this.AlbumEngineer.Bind(nameof(AlbumConfiguration.Engineer), AlbumConfiguration);
-            this.AlbumProducer.Bind(nameof(AlbumConfiguration.Producer), AlbumConfiguration);
+            this.AlbumGenre.Bind(nameof(AlbumConfiguration.Genre), AlbumConfiguration, DataSourceUpdateMode.OnValidation);
+            this.AlbumLabel.Bind(nameof(AlbumConfiguration.Label), AlbumConfiguration, DataSourceUpdateMode.OnValidation);
+            this.AlbumEngineer.Bind(nameof(AlbumConfiguration.Engineer), AlbumConfiguration, DataSourceUpdateMode.OnValidation);
+            this.AlbumProducer.Bind(nameof(AlbumConfiguration.Producer), AlbumConfiguration, DataSourceUpdateMode.OnValidation);
             this.AlbumConfiguration.PropertyChanged += AlbumConfiguration_PropertyChanged;
             this.OnAlbumChanged = onAlbumChanged;
         }

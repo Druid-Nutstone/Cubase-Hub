@@ -420,10 +420,21 @@ namespace Cubase.Hub.Forms.Albums
 
         private void OnAlbumChanged(AlbumConfiguration albumConfiguration, string propertyName)
         {
-            albumConfiguration.SaveToDirectory(this.CurrentAlbum.AlbumPath);
-            foreach (var mix in this.CurrentMixes)
+            lock (this)
             {
-                this.SetMixFromAlbum(albumConfiguration, mix);
+                albumConfiguration.SaveToDirectory(this.CurrentAlbum.AlbumPath);
+                switch (propertyName)
+                {
+                    case nameof(AlbumConfiguration.Title):
+                    case nameof(AlbumConfiguration.Year):
+                    case nameof(AlbumConfiguration.Genre):
+                    case nameof(AlbumConfiguration.Artist):
+                        foreach (var mix in this.CurrentMixes)
+                        {
+                            this.SetMixFromAlbum(albumConfiguration, mix);
+                        }
+                        break;
+                }
             }
         }
 

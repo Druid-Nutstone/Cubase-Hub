@@ -19,11 +19,11 @@ namespace Cubase.Hub.Controls.Media.Play
             Single,
             Multiple
         }
-        
-        private TrackType trackType;    
+
+        private TrackType trackType;
 
         [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
-        public ITrackService TrackService {  get; set; }
+        public ITrackService TrackService { get; set; }
 
         [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
         public MixDown MixDown { get; set; }
@@ -112,13 +112,13 @@ namespace Cubase.Hub.Controls.Media.Play
             this.Progress.Value = (int)(percent * this.Progress.Maximum);
         }
 
-        public void PlayTracks(MixDownCollection mixDowns) 
+        public void PlayTracks(MixDownCollection mixDowns)
         {
             this.trackType = TrackType.Multiple;
             currentTrackIndex = 0;
             this.mixDownCollection = mixDowns;
             this.PlayTrack(this.mixDownCollection[0]);
-        
+
         }
 
         public void PlayTrack(MixDown mixDown, Action? onStopped = null)
@@ -129,7 +129,7 @@ namespace Cubase.Hub.Controls.Media.Play
             }
             this.OnStopped = onStopped;
             this.Play.Visible = this.ShowPlay;
-            this.MixDown = mixDown; 
+            this.MixDown = mixDown;
             this.Cursor = Cursors.WaitCursor;
             this.TrackService.PlayTrack(mixDown, PlaybackStopped);
             this.Play.Enabled = false;
@@ -141,18 +141,26 @@ namespace Cubase.Hub.Controls.Media.Play
             {
                 if (this.TrackService.Audio != null)
                 {
-                    this.Volume.Value = (int)(this.TrackService.Player?.Volume * 100 ?? 0);
-                    double progress = this.TrackService.Audio.CurrentTime.TotalSeconds /
-                                      this.TrackService.Audio.TotalTime.TotalSeconds;
+                    if (this.TrackService.Player.PlaybackState == PlaybackState.Playing)
+                    {
+                        this.Volume.Value = (int)(this.TrackService.Player?.Volume * 100 ?? 0);
+                        double progress = this.TrackService.Audio.CurrentTime.TotalSeconds /
+                                          this.TrackService.Audio.TotalTime.TotalSeconds;
 
-                    // progress = 0.0 → 1.0
-                    int value = (int)(progress * Progress.Maximum);
+                        // progress = 0.0 → 1.0
+                        int value = (int)(progress * Progress.Maximum);
 
-                    // Safety clamp
-                    value = Math.Max(Progress.Minimum,
-                            Math.Min(value, Progress.Maximum));
-                    Progress.Value = value;
-                    Progress.DisplayText = this.TrackService.Audio.CurrentTime.ToString(@"mm\:ss");
+                        // Safety clamp
+                        value = Math.Max(Progress.Minimum,
+                                Math.Min(value, Progress.Maximum));
+                        Progress.Value = value;
+                        Progress.DisplayText = this.TrackService.Audio.CurrentTime.ToString(@"mm\:ss");
+                    }
+                    else
+                    {
+                        Progress.Value = 0;
+                        Progress.DisplayText = string.Empty;
+                    }
                 }
             };
             timer.Start();
@@ -178,13 +186,13 @@ namespace Cubase.Hub.Controls.Media.Play
             timer?.Stop();
             Progress.DisplayText = "00:00";
             this.Progress.Value = 0;
-            if (this.OnStopped !=null)
+            if (this.OnStopped != null)
             {
                 this.OnStopped.Invoke();
             }
             if (this.trackType == TrackType.Multiple)
             {
-                if (this.currentTrackIndex < this.mixDownCollection.Count-1) 
+                if (this.currentTrackIndex < this.mixDownCollection.Count - 1)
                 {
                     this.currentTrackIndex++;
                     this.PlayTrack(this.mixDownCollection[this.currentTrackIndex]);
@@ -199,6 +207,8 @@ namespace Cubase.Hub.Controls.Media.Play
                 this.trackType = TrackType.None;
             }
         }
+
+
     }
 
 }

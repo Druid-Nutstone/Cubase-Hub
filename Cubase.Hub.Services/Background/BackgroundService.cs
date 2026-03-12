@@ -2,8 +2,10 @@
 using Cubase.Hub.Services.Config;
 using Cubase.Hub.Services.Distributers.SoundCloud;
 using Cubase.Hub.Services.Models;
+using Cubase.Hub.Services.Synchronise;
 using Cubase.Hub.Services.Track;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Logging;
 using System;
 using System.Collections;
 using System.Collections.Concurrent;
@@ -42,6 +44,10 @@ namespace Cubase.Hub.Services.Background
         private readonly ConcurrentQueue<AlbumWatcher> albumQueue = new();
         private readonly HashSet<string> filePending = new(StringComparer.OrdinalIgnoreCase);
 
+        private readonly ILogger<BackgroundService> logger;
+
+        private readonly ISynchroniseService synchroniseService;
+
         private List<FileSystemWatcher> fileWatchers = new();
 
         private Dictionary<DistributionProvider, Action<AlbumWatcher>> DistributerMethods;
@@ -51,20 +57,20 @@ namespace Cubase.Hub.Services.Background
         public BackgroundService(IAlbumService albumService,
                                  IServiceProvider serviceProvider,
                                  IConfigurationService configurationService,
+                                 ILogger<BackgroundService> logger,
+                                 ISynchroniseService synchroniseService,
                                  ITrackService trackService)
         {
             this.configurationService = configurationService;
             this.albumService = albumService;
             this.serviceProvider = serviceProvider;
+            this.synchroniseService = synchroniseService;
             this.trackService = trackService;
+            this.logger = logger;
             this.DistributerMethods = new Dictionary<DistributionProvider, Action<AlbumWatcher>>()
             {
                 { DistributionProvider.SoundCloud, this.HandleSoundCloudDistributionUpdate }
             };
-            if (!Directory.Exists(CubaseHubConstants.LogPath))
-            {
-                Directory.CreateDirectory(CubaseHubConstants.LogPath);
-            }
             if (!Directory.Exists(CubaseHubConstants.CachePath))
             {
                 Directory.CreateDirectory(CubaseHubConstants.CachePath);
@@ -95,7 +101,6 @@ namespace Cubase.Hub.Services.Background
                     switch (_state)
                     {
                         case BackgroundProcessState.Run:
-                            this.RemoveOldLogs();
                             // this.Monitor();
                             break;
                     }
@@ -287,6 +292,8 @@ namespace Cubase.Hub.Services.Background
                         {
                             this.Log($"Could not update album metadata. see previous error");
                         }
+                        // broadcast message
+                        this.synchroniseService.RaiseEvent(SyncEvent.DistributionMixUpload);
                         this.Log($"Upload is complete");
                     }
                 }
@@ -359,27 +366,45 @@ namespace Cubase.Hub.Services.Background
         public bool WaitForFileReady(string path, TimeSpan? maxWait = null)
         {
             if (maxWait == null)
-            {
                 maxWait = TimeSpan.FromMinutes(5);
-            }
 
             var start = DateTime.UtcNow;
+
+            long lastSize = -1;
+            int stableCount = 0;
 
             while (true)
             {
                 try
                 {
-                    using var stream = System.IO.File.Open(path, FileMode.Open, FileAccess.ReadWrite, FileShare.None);
-                    return true; // file is free
+                    var info = new FileInfo(path);
+                    var size = info.Length;
+
+                    using var stream = System.IO.File.Open(path, FileMode.Open, FileAccess.Read, FileShare.None);
+
+                    if (size == lastSize)
+                    {
+                        stableCount++;
+
+                        if (stableCount >= 2) // size unchanged twice
+                            return true;
+                    }
+                    else
+                    {
+                        stableCount = 0;
+                    }
+
+                    lastSize = size;
                 }
                 catch (IOException)
                 {
                     this.Log($"target file {path} is being used by another process.");
-                    if ((DateTime.UtcNow - start).TotalMilliseconds > maxWait.Value.TotalMilliseconds)
-                        return false;
-
-                    Task.Delay(200).Wait();
                 }
+
+                if (DateTime.UtcNow - start > maxWait)
+                    return false;
+
+                Thread.Sleep(500);
             }
         }
 
@@ -401,22 +426,6 @@ namespace Cubase.Hub.Services.Background
             return null;
         }
 
-        private void RemoveOldLogs()
-        {
-            var logPath = CubaseHubConstants.UserAppDataFolderPath;
-            var logFiles = Directory
-                .GetFiles(logPath, $"{CubaseHubConstants.DistributionLogFilePrefix}*.*")
-                .Select(f => new FileInfo(f))
-                .OrderByDescending(f => f.LastWriteTimeUtc)
-                .Skip(5);
-
-            foreach (var file in logFiles)
-            {
-                Log($"Deleting log {file}");
-                file.Delete();
-            }
-        }
-
         private void OnError(string errorMsg)
         {
             this.Log($"Error: {errorMsg}");
@@ -424,23 +433,7 @@ namespace Cubase.Hub.Services.Background
 
         private void Log(string msg)
         {
-            if (this.WaitForFileReady(this.GetLogFileName()))
-            {
-                try
-                {
-                    System.IO.File.AppendAllLines(this.GetLogFileName(), new string[] { $"{DateTime.Now} {msg}" });
-                }
-                catch (Exception ex)
-                {
-                    // nop
-                }
-            }
-        }
-
-        private string GetLogFileName()
-        {
-            var logFileName = Path.Combine(CubaseHubConstants.LogPath, $"{CubaseHubConstants.DistributionLogFilePrefix}-{DateTime.Now.Year}{DateTime.Now.Month}{DateTime.Now.Day}.txt");
-            return logFileName;
+            this.logger.LogInformation(msg);
         }
 
         public void Dispose()

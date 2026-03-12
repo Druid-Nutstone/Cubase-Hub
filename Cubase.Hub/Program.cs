@@ -14,6 +14,7 @@ using Cubase.Hub.Forms.Main;
 using Cubase.Hub.Forms.Main.Menu;
 using Cubase.Hub.Forms.Mixes;
 using Cubase.Hub.Forms.Tracks;
+using Cubase.Hub.Services;
 using Cubase.Hub.Services.Album;
 using Cubase.Hub.Services.Audio;
 using Cubase.Hub.Services.Background;
@@ -28,10 +29,17 @@ using Cubase.Hub.Services.Messages;
 using Cubase.Hub.Services.Models;
 using Cubase.Hub.Services.Projects;
 using Cubase.Hub.Services.Track;
+using Microsoft.Extensions.Logging;
+using Microsoft.Extensions.Logging.Abstractions;
 using Microsoft.Extensions.DependencyInjection;
+using Serilog;
+using Serilog.Extensions.Logging;
+using Serilog.Sinks.File;
 using System;
+using System.IO;
 using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
+using Cubase.Hub.Services.Synchronise;
 namespace Cubase.Hub
 {
     internal static class Program
@@ -46,6 +54,21 @@ namespace Cubase.Hub
         static void Main(string[] args)
         {
             SetCurrentProcessExplicitAppUserModelID("DavidNuttall.CubaseHub");
+
+            var logPath = Path.Combine(
+                     CubaseHubConstants.LogPath,
+                     $"{CubaseHubConstants.CubaseHubLog}.log");
+
+            Directory.CreateDirectory(Path.GetDirectoryName(logPath)!);
+
+            Log.Logger = new LoggerConfiguration()
+                .MinimumLevel.Debug()
+                .WriteTo.File(
+                  logPath,
+                  rollingInterval: RollingInterval.Day,
+                  retainedFileCountLimit: 10)
+                .CreateLogger();
+
             ApplicationConfiguration.Initialize();
             Application.SetHighDpiMode(HighDpiMode.PerMonitorV2);
             Application.EnableVisualStyles();
@@ -136,6 +159,13 @@ namespace Cubase.Hub
         static IServiceProvider InstallServices()
         {
             var serviceCollection = new ServiceCollection();
+
+            serviceCollection.AddLogging(builder =>
+            {
+                builder.ClearProviders();
+                builder.AddSerilog();
+            });
+
             serviceCollection
                 .AddScoped<MainForm>()
                 .AddScoped<ConfigurationForm>()
@@ -166,8 +196,11 @@ namespace Cubase.Hub
                 .AddSingleton<IJumpListService, JumpListService>()
                 .AddKeyedTransient<IDistributer, RouteNoteDistributer>(Distributers.RouteNote)
                 .AddSingleton<IBackgroundService, BackgroundService>() 
+                .AddSingleton<ISynchroniseService, SynchroniseService>()
                 .AddSingleton<IProjectService, ProjectService>();
-                
+
+
+
             var provider = serviceCollection.BuildServiceProvider();
             return provider;
         }

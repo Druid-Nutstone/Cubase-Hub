@@ -85,7 +85,7 @@ namespace Cubase.Hub.Forms.Main.Menu
 
         protected override void OnClick(EventArgs e)
         {
-            var logFiles = Directory.GetFiles(CubaseHubConstants.LogPath, $"{CubaseHubConstants.DistributionLogFilePrefix}-*.*");
+            var logFiles = Directory.GetFiles(CubaseHubConstants.LogPath, $"{CubaseHubConstants.CubaseHubLog}*.*");
             var latestLog = logFiles
                 .Select(f => new FileInfo(f))
                 .OrderByDescending(f => f.LastWriteTime) // or CreationTime

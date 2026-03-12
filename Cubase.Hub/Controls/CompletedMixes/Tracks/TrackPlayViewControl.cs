@@ -1,6 +1,7 @@
 ﻿using Cubase.Hub.Controls.Media.Play;
 using Cubase.Hub.Forms.Distributers;
 using Cubase.Hub.Services.Models;
+using Cubase.Hub.Services.Synchronise;
 using Cubase.Hub.Services.Track;
 using Microsoft.Extensions.DependencyInjection;
 using System;
@@ -42,6 +43,28 @@ namespace Cubase.Hub.Controls.CompletedMixes.Tracks
             InitializeComponent();
             this.InitialiseMixDown();
             this.ContextMenuStrip = new TrackPlayViewControlContextMenu(this, mixDown, serviceProvider); ;
+            this.LoadDistributerForm();
+            var syncService = this.serviceProvider.GetService<ISynchroniseService>();
+            syncService?.RegisterForEvent(this.WaitForSyncEvent);
+        }
+
+        private void WaitForSyncEvent(SyncEvent syncEvent)
+        {
+            if (syncEvent == SyncEvent.DistributionMixUpload)
+            {
+                if (this.InvokeRequired)
+                {
+                    this.Invoke(new Action(LoadDistributerForm));
+                }
+                else
+                {
+                    LoadDistributerForm();
+                }
+            }
+        }
+
+        private void LoadDistributerForm()
+        {
             if (this.distributerForm != null)
             {
                 this.DistributerPanel.Controls.Clear();

@@ -5,6 +5,7 @@ using Cubase.Hub.Services.Background;
 using Cubase.Hub.Services.Distributers.SoundCloud;
 using Cubase.Hub.Services.Messages;
 using Cubase.Hub.Services.Models;
+using Cubase.Hub.Services.Synchronise;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -21,6 +22,8 @@ namespace Cubase.Hub.Forms.Distributers.SoundCloud
 
         private readonly IServiceProvider serviceProvider;
         
+        private readonly ISynchroniseService synchroniseService;
+
         private SoundCloudDistributionProvider soundCloud;
 
         private IMessageService messageService;
@@ -49,6 +52,7 @@ namespace Cubase.Hub.Forms.Distributers.SoundCloud
             IMessageService messageService,    
             IAlbumService albumService,
             IServiceProvider serviceProvider,
+            ISynchroniseService synchroniseService,
             SoundCloudDistributionProvider soundCloud) 
         {
             InitializeComponent();
@@ -56,7 +60,17 @@ namespace Cubase.Hub.Forms.Distributers.SoundCloud
             this.messageService = messageService;
             this.albumService = albumService;
             this.serviceProvider = serviceProvider;
+            this.synchroniseService = synchroniseService;
+            this.synchroniseService.RegisterForEvent(this.SoundCloudHasBeenUpdated);
             ThemeApplier.ApplyDarkTheme(this);
+        }
+
+        private void SoundCloudHasBeenUpdated(SyncEvent syncEvent)
+        {
+            if (syncEvent == SyncEvent.DistributionMixUpload)
+            {
+                this.RefreshTrackList();
+            }
         }
 
         public void SetAlbum(AlbumConfiguration albumConfiguration, MixDownCollection mixDowns)
@@ -257,6 +271,7 @@ namespace Cubase.Hub.Forms.Distributers.SoundCloud
             this.soundCloud.OrderAlbumTracks(targetPlayListAlbum, this.ShowSoundCloudError, this.MsgHandler.ShowMessage);
             this.MsgHandler.Close();
             this.RefreshAllTracks();
+            this.synchroniseService.RaiseEvent(SyncEvent.DistributionMixUpload);
         }
 
 

@@ -16,7 +16,7 @@ namespace Cubase.Hub.Services
 
         public static string DefaultAlbumArt => "NoImage.png";
 
-        public static string DistributionLogFilePrefix = "Distribution-Log";
+        public static string CubaseHubLog = "CubaseHubLog-";
             
         public static string UserAppDataFolderPath =
             System.IO.Path.Combine(
