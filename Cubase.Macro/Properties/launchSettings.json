@@ -1,0 +1,8 @@
+{
+  "profiles": {
+    "Cubase.Macro": {
+      "commandName": "Project",
+      "commandLineArgs": "settings"
+    }
+  }
+}

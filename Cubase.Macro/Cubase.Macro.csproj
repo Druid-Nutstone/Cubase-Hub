@@ -6,6 +6,7 @@
     <Nullable>enable</Nullable>
     <UseWindowsForms>true</UseWindowsForms>
     <ImplicitUsings>enable</ImplicitUsings>
+	<UseWPF>true</UseWPF>
   </PropertyGroup>
 
   <ItemGroup>
@@ -17,11 +18,28 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="Models\" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <Compile Update="BaseWindows11Form.cs">
+    <Compile Update="BoundControls\BoundCheckbox.cs">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Update="BoundControls\BoundComboBox.cs">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Update="BoundControls\BoundEnumComboBox.cs">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Update="BoundControls\BoundLabel.cs">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Update="BoundControls\BoundNumericTextBox.cs">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Update="BoundControls\BoundNumericUpDown.cs">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Update="BoundControls\BoundTextBox.cs">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Update="Forms\BaseWindows11Form.cs">
       <SubType>Form</SubType>
     </Compile>
   </ItemGroup>

@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Runtime.InteropServices;
 using System.Text;
 
-namespace Cubase.Macro
+namespace Cubase.Macro.Forms
 {
     public partial class BaseWindows11Form : Form
     {

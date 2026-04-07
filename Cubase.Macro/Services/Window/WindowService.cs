@@ -27,14 +27,14 @@ namespace Cubase.Macro.Services.Window
             {
                 var process = Process.GetProcessById((int)pid);
 
-                Debug.WriteLine($"Active process: {process.ProcessName} (PID: {pid})");
+                // Debug.WriteLine($"Active process: {process.ProcessName} (PID: {pid})");
 
                 // Check process name (no .exe)
                 return process.ProcessName.StartsWith("Cubase", StringComparison.OrdinalIgnoreCase);
             }
             catch (Exception ex)
             {
-                Debug.WriteLine(ex);
+                // Debug.WriteLine(ex);
                 return false;
             }
         }

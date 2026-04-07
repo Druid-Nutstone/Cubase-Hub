@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Text;
+using System.IO;
 
 namespace Cubase.Macro
 {
@@ -16,5 +17,7 @@ namespace Cubase.Macro
                 UserAppDataFolderName);
 
         public static string LogPath = Path.Combine(UserAppDataFolderPath, "Logs");
+
+        public static string ConfigurationFileName = Path.Combine(UserAppDataFolderPath, "CubaseMacro.json");
     }
 }
