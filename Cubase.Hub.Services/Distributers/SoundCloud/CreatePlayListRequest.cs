@@ -11,7 +11,7 @@ namespace Cubase.Hub.Services.Distributers.SoundCloud
         [JsonPropertyName("playlist")]
         public PlaylistCreateData Playlist { get; set; }
     
-        public static CreatePlaylistRequest CreateFromAlbum(AlbumConfiguration albumConfiguration, string description)
+        public static CreatePlaylistRequest CreateFromAlbum(AlbumConfiguration albumConfiguration, string description, PlayListType playListType = PlayListType.album)
         {
             return new CreatePlaylistRequest()
             {
@@ -22,10 +22,17 @@ namespace Cubase.Hub.Services.Distributers.SoundCloud
                     ReleaseDate = $"01/01/{ albumConfiguration.Year }",
                     Genre = albumConfiguration.Genre,
                     LabelName = albumConfiguration.Label ?? albumConfiguration.Artist,
-                    TagList = albumConfiguration.Artist
+                    TagList = albumConfiguration.Artist,
+                    SetType = playListType.ToString()
                 }
             };
         }
+    }
+
+    public enum PlayListType
+    {
+        album = 0,
+        playlist = 1
     }
 
     public class PlaylistCreateData

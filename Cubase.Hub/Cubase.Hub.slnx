@@ -1,5 +1,6 @@
 <Solution>
   <Project Path="../Cubase.Hub.Services/Cubase.Hub.Services.csproj" />
+  <Project Path="../Cubase.Macro/Cubase.Macro.csproj" Id="0fb9dceb-76d5-4447-a5ec-c369e6a94677" />
   <Project Path="../Cubse.Hub.Tests/Cubse.Hub.Tests.csproj" />
   <Project Path="Cubase.Hub.csproj" />
 </Solution>
