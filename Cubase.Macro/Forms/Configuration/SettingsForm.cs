@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
+using System.Diagnostics;
 using System.Drawing;
 using System.Text;
 using System.Windows.Forms;
@@ -17,6 +18,16 @@ namespace Cubase.Macro.Forms.Configuration
             InitializeComponent();
             ThemeApplier.ApplyDarkTheme(this);
             this.settingsMainControl = settingsMainControl;
+            this.OpenConfig.Click += OpenConfig_Click;
+
+            this.Initialise();
+        }
+
+        private void OpenConfig_Click(object? sender, EventArgs e)
+        {
+            Process p = new Process() { StartInfo = new ProcessStartInfo() { FileName = CubaseMacroConstants.ConfigurationFileName, UseShellExecute = true } };
+            p.Start();
+            p.WaitForExit();
             this.Initialise();
         }
 

@@ -37,6 +37,7 @@ namespace Cubase.Macro.Forms.Configuration.KeyEditors
         private void BindControls()
         {
             this.KeySelectorControl.Initialise(this.macro.ToggleOnKeys);
+            this.ReturnToParentMenuAfterExecution.Bind(nameof(CubaseMacro.ReturnToParentMenuAfterExecution), this.macro);
         }
     }
 }

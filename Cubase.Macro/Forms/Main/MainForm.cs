@@ -30,7 +30,17 @@ namespace Cubase.Macro
             this.WindowState = FormWindowState.Minimized;
             ThemeApplier.ApplyDarkTheme(this);
             this.macros = CubaseMacroCollection.Load();
-            this.mainMenuControl.Initialise(this.macros.First()?.Macros, MacroClicked);
+            this.mainMenuControl.Initialise(this.macros.First(), MacroClicked, this.OnBackClicked);
+        }
+
+        private void OnBackClicked(CubaseMacro currentMacro)
+        {
+            if (currentMacro.ParentId == null)
+            {
+                return;
+            }
+            var parentMenu = this.macros.FindParentIdRecursive(this.macros.First(), currentMacro.ParentId.Value);
+            this.mainMenuControl.Initialise(parentMenu, MacroClicked, this.OnBackClicked);
         }
 
         private void MacroClicked(CubaseMacro macro)
@@ -42,23 +52,31 @@ namespace Cubase.Macro
                     if (macro.ToggleState != CubaseMacroToggleState.On)
                     {
                         macro.ToggleState = CubaseMacroToggleState.On;
-                        RunMacro(macro.ToggleOnKeys);
+                        RunMacro(macro.ToggleOnKeys, macro);
                     }
                     else
                     {
                         macro.ToggleState = CubaseMacroToggleState.Off;
-                        RunMacro(macro.ToggleOffKeys);
+                        RunMacro(macro.ToggleOffKeys, macro);
                     }
+                }
+                else
+                {
+                    RunMacro(macro.ToggleOnKeys, macro);
                 }
                 this.CloseWindow();
             }
             else if (macro.MacroType == CubaseMacroType.Menu)
             {
-               // todo invoke new menu 
+                if (macro.ToggleOnKeys.Count > 0)
+                {
+                    RunMacro(macro.ToggleOnKeys, macro);
+                }
+                this.mainMenuControl.Initialise(macro, MacroClicked, this.OnBackClicked);
             }
         }
 
-        private void RunMacro(List<CubaseKeyCommand> macros)
+        private void RunMacro(List<CubaseKeyCommand> macros, CubaseMacro macro)
         {
             HaveError = false;
             bool okToContinue = true;
@@ -76,8 +94,20 @@ namespace Cubase.Macro
                         this.TopMost = true;
                         this.BringToFront();
                         MessageBox.Show(err);
+                        return;
                     });
                 }
+            }
+            if (macro.ReturnToParentMenuAfterExecution)
+            {
+                if (macro.ParentId != null)
+                {
+                    if (macro.MacroType == CubaseMacroType.KeyCommand)
+                    {
+                        macro = this.macros.FindParentIdRecursive(this.macros.First(), macro.ParentId.Value);
+                    }
+                }
+                this.OnBackClicked(macro);
             }
         }
 

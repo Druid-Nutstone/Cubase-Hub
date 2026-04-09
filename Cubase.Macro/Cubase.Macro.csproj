@@ -48,4 +48,8 @@
     <Folder Include="Services\Keys\" />
   </ItemGroup>
 
+  <ItemGroup>
+    <ProjectReference Include="..\Cubase.Hub\Cubase.Hub.csproj" />
+  </ItemGroup>
+
 </Project>

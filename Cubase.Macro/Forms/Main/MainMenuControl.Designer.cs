@@ -30,10 +30,13 @@
         {
             NavPanel = new Panel();
             MainPanel = new Panel();
+            ButtonBack = new Button();
+            NavPanel.SuspendLayout();
             SuspendLayout();
             // 
             // NavPanel
             // 
+            NavPanel.Controls.Add(ButtonBack);
             NavPanel.Dock = DockStyle.Top;
             NavPanel.Location = new Point(0, 0);
             NavPanel.Name = "NavPanel";
@@ -49,6 +52,15 @@
             MainPanel.Size = new Size(200, 453);
             MainPanel.TabIndex = 1;
             // 
+            // ButtonBack
+            // 
+            ButtonBack.Location = new Point(14, 17);
+            ButtonBack.Name = "ButtonBack";
+            ButtonBack.Size = new Size(46, 29);
+            ButtonBack.TabIndex = 0;
+            ButtonBack.Text = "<<";
+            ButtonBack.UseVisualStyleBackColor = true;
+            // 
             // MainMenuControl
             // 
             AutoScaleDimensions = new SizeF(8F, 20F);
@@ -57,6 +69,7 @@
             Controls.Add(NavPanel);
             Name = "MainMenuControl";
             Size = new Size(200, 514);
+            NavPanel.ResumeLayout(false);
             ResumeLayout(false);
         }
 
@@ -64,5 +77,6 @@
 
         private Panel NavPanel;
         private Panel MainPanel;
+        private Button ButtonBack;
     }
 }

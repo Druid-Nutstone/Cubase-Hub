@@ -24,6 +24,13 @@ namespace Cubase.Macro.Forms.Main.Menus
             Padding = new Padding(10);
         }
 
+        public void ClearMacros()
+        {
+            this.Controls.Clear();
+            this.RowStyles.Clear();
+            this.RowCount = 0;
+        }
+
         public void AddMacro(CubaseMacro macro, Action<CubaseMacro> OnMacroClicked)
         {
             var buttonControl = new MacroButtonPanel(macro, OnMacroClicked);

@@ -30,36 +30,47 @@
         {
             menuStrip1 = new MenuStrip();
             DataPanel = new Panel();
+            OpenConfig = new ToolStripMenuItem();
+            menuStrip1.SuspendLayout();
             SuspendLayout();
             // 
             // menuStrip1
             // 
             menuStrip1.ImageScalingSize = new Size(20, 20);
+            menuStrip1.Items.AddRange(new ToolStripItem[] { OpenConfig });
             menuStrip1.Location = new Point(0, 0);
             menuStrip1.Name = "menuStrip1";
-            menuStrip1.Size = new Size(1152, 24);
+            menuStrip1.Size = new Size(1221, 28);
             menuStrip1.TabIndex = 0;
             menuStrip1.Text = "menuStrip1";
             // 
             // DataPanel
             // 
             DataPanel.Dock = DockStyle.Fill;
-            DataPanel.Location = new Point(0, 24);
+            DataPanel.Location = new Point(0, 28);
             DataPanel.Name = "DataPanel";
-            DataPanel.Size = new Size(1152, 631);
+            DataPanel.Size = new Size(1221, 627);
             DataPanel.TabIndex = 1;
+            // 
+            // OpenConfig
+            // 
+            OpenConfig.Name = "OpenConfig";
+            OpenConfig.Size = new Size(154, 24);
+            OpenConfig.Text = "Open Configuration";
             // 
             // SettingsForm
             // 
             AutoScaleDimensions = new SizeF(8F, 20F);
             AutoScaleMode = AutoScaleMode.Font;
-            ClientSize = new Size(1152, 655);
+            ClientSize = new Size(1221, 655);
             Controls.Add(DataPanel);
             Controls.Add(menuStrip1);
             MainMenuStrip = menuStrip1;
             Name = "SettingsForm";
             StartPosition = FormStartPosition.CenterScreen;
             Text = "Settings";
+            menuStrip1.ResumeLayout(false);
+            menuStrip1.PerformLayout();
             ResumeLayout(false);
             PerformLayout();
         }
@@ -68,5 +79,6 @@
 
         private MenuStrip menuStrip1;
         private Panel DataPanel;
+        private ToolStripMenuItem OpenConfig;
     }
 }

@@ -37,7 +37,7 @@ namespace Cubase.Macro.Forms.Configuration
 
         protected override void OnClick(EventArgs e)
         {
-            var newMacro = CubaseMacro.CreateKeyCommandMacro("New Macro");
+            var newMacro = CubaseMacro.CreateKeyCommandMacro("New Macro", this.Macro.Id);
             this.Macro.Macros.Add(newMacro);
             var editControl = new EditMacroControl(this.Macros, newMacro, this.MacroUpdatedEventHandler);
             this.DataPanel.Controls.Clear();
@@ -70,9 +70,34 @@ namespace Cubase.Macro.Forms.Configuration
         protected override void OnClick(EventArgs e)
         {
             this.DataPanel.Controls.Clear();
-            this.Macros.Remove(this.Macro);
-            this.MacroUpdatedEventHandler.Invoke();
+
+            foreach (var macro in this.Macros)
+            {
+                RemoveMacroRecursive(macro, this.Macro);
+            }
+
+            this.MacroUpdatedEventHandler?.Invoke();
         }
+
+        private bool RemoveMacroRecursive(CubaseMacro parent, CubaseMacro target)
+        {
+            if (parent.Macros == null)
+                return false;
+
+            // Try remove directly
+            if (parent.Macros.Remove(target))
+                return true;
+
+            // Otherwise search children
+            foreach (var child in parent.Macros)
+            {
+                if (RemoveMacroRecursive(child, target))
+                    return true;
+            }
+
+            return false;
+        }
+
     }
 
     public class NewMenuTreeViewMenuItem : ToolStripMenuItem
@@ -96,7 +121,7 @@ namespace Cubase.Macro.Forms.Configuration
 
         protected override void OnClick(EventArgs e)
         {
-            var newMacro = CubaseMacro.CreateNewMenuMacro();
+            var newMacro = CubaseMacro.CreateNewMenuMacro(this.Macro.Id);
             this.Macro.Macros.Add(newMacro);
             var editControl = new EditMacroControl(this.Macros, newMacro, this.MacroUpdatedEventHandler);
             this.DataPanel.Controls.Clear();

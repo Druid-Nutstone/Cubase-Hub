@@ -33,11 +33,17 @@
             MacroTitle = new Cubase.Macro.BoundControls.BoundTextBox();
             panel1 = new Panel();
             panel2 = new Panel();
+            ToggleForgroundColour = new Cubase.Macro.Forms.Configuration.ColourPicker.ColourPickerControl();
+            ToggleBackgroundColour = new Cubase.Macro.Forms.Configuration.ColourPicker.ColourPickerControl();
+            ForegroundColour = new Cubase.Macro.Forms.Configuration.ColourPicker.ColourPickerControl();
+            BackgroundColour = new Cubase.Macro.Forms.Configuration.ColourPicker.ColourPickerControl();
+            MacroTitleToggled = new Cubase.Macro.BoundControls.BoundTextBox();
+            label5 = new Label();
             MacroButtonType = new Cubase.Macro.BoundControls.BoundEnumComboBox();
             label4 = new Label();
-            label3 = new Label();
-            label2 = new Label();
             ContentPanel = new Panel();
+            ExampleSingle = new Button();
+            ExampleToggled = new Button();
             panel1.SuspendLayout();
             panel2.SuspendLayout();
             SuspendLayout();
@@ -45,7 +51,7 @@
             // UpdateButton
             // 
             UpdateButton.Anchor = AnchorStyles.Bottom | AnchorStyles.Right;
-            UpdateButton.Location = new Point(575, 12);
+            UpdateButton.Location = new Point(826, 12);
             UpdateButton.Name = "UpdateButton";
             UpdateButton.Size = new Size(93, 29);
             UpdateButton.TabIndex = 0;
@@ -75,68 +81,119 @@
             panel1.Dock = DockStyle.Bottom;
             panel1.Location = new Point(0, 436);
             panel1.Name = "panel1";
-            panel1.Size = new Size(683, 55);
+            panel1.Size = new Size(934, 55);
             panel1.TabIndex = 3;
             // 
             // panel2
             // 
+            panel2.Controls.Add(ExampleToggled);
+            panel2.Controls.Add(ExampleSingle);
+            panel2.Controls.Add(ToggleForgroundColour);
+            panel2.Controls.Add(ToggleBackgroundColour);
+            panel2.Controls.Add(ForegroundColour);
+            panel2.Controls.Add(BackgroundColour);
+            panel2.Controls.Add(MacroTitleToggled);
+            panel2.Controls.Add(label5);
             panel2.Controls.Add(MacroButtonType);
             panel2.Controls.Add(label4);
-            panel2.Controls.Add(label3);
-            panel2.Controls.Add(label2);
             panel2.Controls.Add(label1);
             panel2.Controls.Add(MacroTitle);
             panel2.Dock = DockStyle.Top;
             panel2.Location = new Point(0, 0);
             panel2.Name = "panel2";
-            panel2.Size = new Size(683, 262);
+            panel2.Size = new Size(934, 262);
             panel2.TabIndex = 4;
+            // 
+            // ToggleForgroundColour
+            // 
+            ToggleForgroundColour.Location = new Point(708, 88);
+            ToggleForgroundColour.Name = "ToggleForgroundColour";
+            ToggleForgroundColour.Size = new Size(211, 68);
+            ToggleForgroundColour.TabIndex = 12;
+            // 
+            // ToggleBackgroundColour
+            // 
+            ToggleBackgroundColour.Location = new Point(473, 88);
+            ToggleBackgroundColour.Name = "ToggleBackgroundColour";
+            ToggleBackgroundColour.Size = new Size(211, 68);
+            ToggleBackgroundColour.TabIndex = 11;
+            // 
+            // ForegroundColour
+            // 
+            ForegroundColour.Location = new Point(256, 88);
+            ForegroundColour.Name = "ForegroundColour";
+            ForegroundColour.Size = new Size(211, 68);
+            ForegroundColour.TabIndex = 10;
+            // 
+            // BackgroundColour
+            // 
+            BackgroundColour.Location = new Point(23, 88);
+            BackgroundColour.Name = "BackgroundColour";
+            BackgroundColour.Size = new Size(211, 68);
+            BackgroundColour.TabIndex = 9;
+            // 
+            // MacroTitleToggled
+            // 
+            MacroTitleToggled.Location = new Point(230, 38);
+            MacroTitleToggled.Name = "MacroTitleToggled";
+            MacroTitleToggled.Size = new Size(168, 27);
+            MacroTitleToggled.TabIndex = 8;
+            // 
+            // label5
+            // 
+            label5.AutoSize = true;
+            label5.Font = new Font("Segoe UI", 9F, FontStyle.Bold);
+            label5.Location = new Point(230, 15);
+            label5.Name = "label5";
+            label5.Size = new Size(100, 20);
+            label5.TabIndex = 7;
+            label5.Text = "Title Toggled";
             // 
             // MacroButtonType
             // 
+            MacroButtonType.Anchor = AnchorStyles.Top | AnchorStyles.Right;
             MacroButtonType.FormattingEnabled = true;
-            MacroButtonType.Location = new Point(227, 38);
+            MacroButtonType.Location = new Point(768, 38);
             MacroButtonType.Name = "MacroButtonType";
             MacroButtonType.Size = new Size(151, 28);
             MacroButtonType.TabIndex = 6;
             // 
             // label4
             // 
+            label4.Anchor = AnchorStyles.Top | AnchorStyles.Right;
             label4.AutoSize = true;
             label4.Font = new Font("Segoe UI", 9F, FontStyle.Bold);
-            label4.Location = new Point(227, 15);
+            label4.Location = new Point(768, 15);
             label4.Name = "label4";
             label4.Size = new Size(95, 20);
             label4.TabIndex = 5;
             label4.Text = "Button Type";
-            // 
-            // label3
-            // 
-            label3.AutoSize = true;
-            label3.Font = new Font("Segoe UI", 9F, FontStyle.Bold);
-            label3.Location = new Point(244, 88);
-            label3.Name = "label3";
-            label3.Size = new Size(142, 20);
-            label3.TabIndex = 4;
-            label3.Text = "Button Text Colour";
-            // 
-            // label2
-            // 
-            label2.AutoSize = true;
-            label2.Font = new Font("Segoe UI", 9F, FontStyle.Bold);
-            label2.Location = new Point(23, 88);
-            label2.Name = "label2";
-            label2.Size = new Size(196, 20);
-            label2.TabIndex = 3;
-            label2.Text = "Button Background Colour";
             // 
             // ContentPanel
             // 
             ContentPanel.Dock = DockStyle.Fill;
             ContentPanel.Location = new Point(0, 262);
             ContentPanel.Name = "ContentPanel";
-            ContentPanel.Size = new Size(683, 174);
+            ContentPanel.Size = new Size(934, 174);
             ContentPanel.TabIndex = 5;
+            // 
+            // ExampleSingle
+            // 
+            ExampleSingle.Location = new Point(39, 173);
+            ExampleSingle.Name = "ExampleSingle";
+            ExampleSingle.Size = new Size(157, 51);
+            ExampleSingle.TabIndex = 13;
+            ExampleSingle.Text = "Not Toggled";
+            ExampleSingle.UseVisualStyleBackColor = true;
+            // 
+            // ExampleToggled
+            // 
+            ExampleToggled.Location = new Point(485, 173);
+            ExampleToggled.Name = "ExampleToggled";
+            ExampleToggled.Size = new Size(157, 51);
+            ExampleToggled.TabIndex = 14;
+            ExampleToggled.Text = "Toggled";
+            ExampleToggled.UseVisualStyleBackColor = true;
             // 
             // EditMacroControl
             // 
@@ -146,7 +203,7 @@
             Controls.Add(panel2);
             Controls.Add(panel1);
             Name = "EditMacroControl";
-            Size = new Size(683, 491);
+            Size = new Size(934, 491);
             panel1.ResumeLayout(false);
             panel2.ResumeLayout(false);
             panel2.PerformLayout();
@@ -161,9 +218,15 @@
         private Panel panel1;
         private Panel panel2;
         private Panel ContentPanel;
-        private Label label3;
-        private Label label2;
         private BoundControls.BoundEnumComboBox MacroButtonType;
         private Label label4;
+        private BoundControls.BoundTextBox MacroTitleToggled;
+        private Label label5;
+        private ColourPicker.ColourPickerControl BackgroundColour;
+        private ColourPicker.ColourPickerControl ForegroundColour;
+        private ColourPicker.ColourPickerControl ToggleForgroundColour;
+        private ColourPicker.ColourPickerControl ToggleBackgroundColour;
+        private Button ExampleSingle;
+        private Button ExampleToggled;
     }
 }

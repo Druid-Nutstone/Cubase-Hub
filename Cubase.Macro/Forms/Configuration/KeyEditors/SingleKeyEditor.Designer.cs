@@ -30,6 +30,7 @@
         {
             label1 = new Label();
             KeySelectorControl = new MacroKeySelectorControl();
+            ReturnToParentMenuAfterExecution = new Cubase.Hub.Controls.BoundControls.BoundCheckbox();
             SuspendLayout();
             // 
             // label1
@@ -49,14 +50,25 @@
             KeySelectorControl.Size = new Size(451, 135);
             KeySelectorControl.TabIndex = 1;
             // 
+            // ReturnToParentMenuAfterExecution
+            // 
+            ReturnToParentMenuAfterExecution.AutoSize = true;
+            ReturnToParentMenuAfterExecution.Location = new Point(26, 191);
+            ReturnToParentMenuAfterExecution.Name = "ReturnToParentMenuAfterExecution";
+            ReturnToParentMenuAfterExecution.Size = new Size(180, 24);
+            ReturnToParentMenuAfterExecution.TabIndex = 2;
+            ReturnToParentMenuAfterExecution.Text = "Return To Parent Menu";
+            ReturnToParentMenuAfterExecution.UseVisualStyleBackColor = true;
+            // 
             // SingleKeyEditor
             // 
             AutoScaleDimensions = new SizeF(8F, 20F);
             AutoScaleMode = AutoScaleMode.Font;
+            Controls.Add(ReturnToParentMenuAfterExecution);
             Controls.Add(KeySelectorControl);
             Controls.Add(label1);
             Name = "SingleKeyEditor";
-            Size = new Size(527, 219);
+            Size = new Size(527, 244);
             ResumeLayout(false);
             PerformLayout();
         }
@@ -65,5 +77,6 @@
 
         private Label label1;
         private MacroKeySelectorControl KeySelectorControl;
+        private Hub.Controls.BoundControls.BoundCheckbox ReturnToParentMenuAfterExecution;
     }
 }

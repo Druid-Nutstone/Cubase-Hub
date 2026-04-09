@@ -9,14 +9,15 @@ namespace Cubase.Macro.Forms.Main.Buttons
     {
         public MacroButtonPanel(CubaseMacro macro, Action<CubaseMacro> OnMacroClicked) : base()
         {
+
+            // apply theme now so buttons can override colour
+            ThemeApplier.ApplyDarkTheme(this);
             this.Dock = DockStyle.Fill; // 👈 key
 
             var button = new MacroButton(macro, OnMacroClicked);
             button.Dock = DockStyle.Fill; // 👈 key
 
             this.Controls.Add(button);
-
-            ThemeApplier.ApplyDarkTheme(this);
         }
 
     }
