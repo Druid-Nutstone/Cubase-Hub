@@ -71,38 +71,33 @@ namespace Cubase.Macro.Services.Window
 
         public bool BringCubaseToFront()
         {
-            if (!this.IsCubaseActive())
+
+            var processes = Process.GetProcesses().Where(p => p.MainWindowTitle.StartsWith("Cubase Pro Project", StringComparison.OrdinalIgnoreCase) ||
+                     p.MainWindowTitle.StartsWith("Cubase Artist", StringComparison.OrdinalIgnoreCase) ||
+                     p.MainWindowTitle.StartsWith("Cubase LE", StringComparison.OrdinalIgnoreCase) ||
+                     p.MainWindowTitle.StartsWith("Cubase Version", StringComparison.OrdinalIgnoreCase) ||
+                     p.MainWindowTitle.StartsWith("Cubase Elements", StringComparison.OrdinalIgnoreCase)).FirstOrDefault();
+
+            if (processes == null)
+                return false;
+
+            var hWnd = processes == null ? IntPtr.Zero : processes.MainWindowHandle;
+
+            if (hWnd == IntPtr.Zero)
+                return false;
+
+            this.log.LogInformation($"Found Cubase window: {processes.MainWindowTitle} (PID: {processes.Id})");
+
+            SetForegroundWindow(hWnd);
+            var count = 0;
+            while (GetForegroundWindow() != hWnd && count < 100)
             {
-                this.log.LogInformation("Cubase is not active, trying to bring it to front...");
-
-                var processes = Process.GetProcesses().Where(p => p.MainWindowTitle.StartsWith("Cubase Pro Project", StringComparison.OrdinalIgnoreCase) ||
-                         p.MainWindowTitle.StartsWith("Cubase Artist", StringComparison.OrdinalIgnoreCase) ||
-                         p.MainWindowTitle.StartsWith("Cubase LE", StringComparison.OrdinalIgnoreCase) ||
-                         p.MainWindowTitle.StartsWith("Cubase Version", StringComparison.OrdinalIgnoreCase) ||
-                         p.MainWindowTitle.StartsWith("Cubase Elements", StringComparison.OrdinalIgnoreCase)).FirstOrDefault();
-
-                if (processes == null)
-                    return false;
-
-                var hWnd = processes == null ? IntPtr.Zero : processes.MainWindowHandle;
-
-                if (hWnd == IntPtr.Zero)
-                    return false;
-
-                this.log.LogInformation($"Found Cubase window: {processes.MainWindowTitle} (PID: {processes.Id})");
-
-                SetForegroundWindow(hWnd);
-
-                return true;
-
+                this.log.LogInformation("Waiting for Cubase to become foreground...");
+                count++;
+                Thread.Sleep(100);
             }
-            else
-            {
-                var hWnd = GetForegroundWindow();
-                this.log.LogInformation($"Cubase is already active: {hWnd}");
-                ShowWindow(hWnd, 5); // SW_SHOW
-                return true;
-            }
+
+            return count < 100;
         }
 
         public static IEnumerable<Process> GetChildProcesses(Process parent)

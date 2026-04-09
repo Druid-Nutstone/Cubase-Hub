@@ -73,6 +73,8 @@ namespace Cubase.Macro
                     {
                         okToContinue = false;
                         HaveError = true;
+                        this.TopMost = true;
+                        this.BringToFront();
                         MessageBox.Show(err);
                     });
                 }
