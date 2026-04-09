@@ -38,6 +38,13 @@ namespace Cubase.Macro.BoundControls
             Items.AddRange(Enum.GetNames(_enumType));
         }
 
+        public void Bind(object value)
+        {
+            if (_enumType == null || value.GetType() != _enumType)
+                return;
+            SelectedItem = value.ToString();
+        }
+
         protected override void OnSelectedIndexChanged(EventArgs e)
         {
             base.OnSelectedIndexChanged(e);

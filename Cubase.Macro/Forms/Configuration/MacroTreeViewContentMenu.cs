@@ -11,6 +11,7 @@ namespace Cubase.Macro.Forms.Configuration
         {
             this.Items.Add(new NewMenuTreeViewMenuItem(macros, parent, dataPanel, macroUpdatedEventHandler));
             this.Items.Add(new NewCommandTreeViewMenuItem(macros, parent, dataPanel, macroUpdatedEventHandler));
+            this.Items.Add(new DeleteMenuTreeViewMenuItem(macros, parent, dataPanel, macroUpdatedEventHandler));    
         }
     }
 
@@ -43,6 +44,34 @@ namespace Cubase.Macro.Forms.Configuration
             editControl.Dock = DockStyle.Fill;
             this.DataPanel.Controls.Add(editControl);
 
+        }
+    }
+
+
+    public class DeleteMenuTreeViewMenuItem : ToolStripMenuItem
+    {
+        public CubaseMacro Macro { get; private set; }
+
+        public CubaseMacroCollection Macros { get; private set; }
+
+        private Panel DataPanel { get; set; }
+
+        private Action MacroUpdatedEventHandler { get; set; }
+
+        public DeleteMenuTreeViewMenuItem(CubaseMacroCollection macros, CubaseMacro parent, Panel dataPanel, Action macroUpdatedEventHandler)
+        {
+            this.Macro = parent;
+            this.Macros = macros;
+            this.DataPanel = dataPanel;
+            this.MacroUpdatedEventHandler = macroUpdatedEventHandler;
+            this.Text = "Delete";
+        }
+
+        protected override void OnClick(EventArgs e)
+        {
+            this.DataPanel.Controls.Clear();
+            this.Macros.Remove(this.Macro);
+            this.MacroUpdatedEventHandler.Invoke();
         }
     }
 

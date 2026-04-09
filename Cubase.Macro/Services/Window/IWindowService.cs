@@ -6,6 +6,8 @@ namespace Cubase.Macro.Services.Window
 {
     public interface IWindowService
     {
-        bool IsCubaseActive();
+        bool IsCubaseActive(bool log = true);
+
+        bool BringCubaseToFront();
     }
 }

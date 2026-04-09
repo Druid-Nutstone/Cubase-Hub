@@ -1,0 +1,69 @@
+﻿namespace Cubase.Macro.Forms.Configuration.KeyEditors
+{
+    partial class SingleKeyEditor
+    {
+        /// <summary> 
+        /// Required designer variable.
+        /// </summary>
+        private System.ComponentModel.IContainer components = null;
+
+        /// <summary> 
+        /// Clean up any resources being used.
+        /// </summary>
+        /// <param name="disposing">true if managed resources should be disposed; otherwise, false.</param>
+        protected override void Dispose(bool disposing)
+        {
+            if (disposing && (components != null))
+            {
+                components.Dispose();
+            }
+            base.Dispose(disposing);
+        }
+
+        #region Component Designer generated code
+
+        /// <summary> 
+        /// Required method for Designer support - do not modify 
+        /// the contents of this method with the code editor.
+        /// </summary>
+        private void InitializeComponent()
+        {
+            label1 = new Label();
+            KeySelectorControl = new MacroKeySelectorControl();
+            SuspendLayout();
+            // 
+            // label1
+            // 
+            label1.AutoSize = true;
+            label1.Font = new Font("Segoe UI", 9F, FontStyle.Bold);
+            label1.Location = new Point(15, 17);
+            label1.Name = "label1";
+            label1.Size = new Size(42, 20);
+            label1.TabIndex = 0;
+            label1.Text = "Keys";
+            // 
+            // KeySelectorControl
+            // 
+            KeySelectorControl.Location = new Point(15, 40);
+            KeySelectorControl.Name = "KeySelectorControl";
+            KeySelectorControl.Size = new Size(451, 135);
+            KeySelectorControl.TabIndex = 1;
+            // 
+            // SingleKeyEditor
+            // 
+            AutoScaleDimensions = new SizeF(8F, 20F);
+            AutoScaleMode = AutoScaleMode.Font;
+            Controls.Add(KeySelectorControl);
+            Controls.Add(label1);
+            Name = "SingleKeyEditor";
+            Size = new Size(527, 219);
+            ResumeLayout(false);
+            PerformLayout();
+        }
+
+        #endregion
+
+        private Label label1;
+        private MacroKeySelectorControl KeySelectorControl;
+    }
+}

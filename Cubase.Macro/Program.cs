@@ -9,6 +9,7 @@ using System.IO;
     
 using System.Runtime.InteropServices;
 using Cubase.Macro.Forms.Configuration;
+using Cubase.Macro.Forms.Main;
 
 namespace Cubase.Macro
 {
@@ -25,6 +26,10 @@ namespace Cubase.Macro
         {
 
             ApplicationConfiguration.Initialize();
+            Application.SetHighDpiMode(HighDpiMode.PerMonitorV2);
+            Application.EnableVisualStyles();
+            Application.SetCompatibleTextRenderingDefault(false);
+
 
             SetCurrentProcessExplicitAppUserModelID("DavidNuttall.CubaseMacro");
 

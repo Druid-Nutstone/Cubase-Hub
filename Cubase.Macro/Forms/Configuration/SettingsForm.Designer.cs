@@ -37,7 +37,7 @@
             menuStrip1.ImageScalingSize = new Size(20, 20);
             menuStrip1.Location = new Point(0, 0);
             menuStrip1.Name = "menuStrip1";
-            menuStrip1.Size = new Size(800, 24);
+            menuStrip1.Size = new Size(1152, 24);
             menuStrip1.TabIndex = 0;
             menuStrip1.Text = "menuStrip1";
             // 
@@ -46,14 +46,14 @@
             DataPanel.Dock = DockStyle.Fill;
             DataPanel.Location = new Point(0, 24);
             DataPanel.Name = "DataPanel";
-            DataPanel.Size = new Size(800, 426);
+            DataPanel.Size = new Size(1152, 631);
             DataPanel.TabIndex = 1;
             // 
             // SettingsForm
             // 
             AutoScaleDimensions = new SizeF(8F, 20F);
             AutoScaleMode = AutoScaleMode.Font;
-            ClientSize = new Size(800, 450);
+            ClientSize = new Size(1152, 655);
             Controls.Add(DataPanel);
             Controls.Add(menuStrip1);
             MainMenuStrip = menuStrip1;

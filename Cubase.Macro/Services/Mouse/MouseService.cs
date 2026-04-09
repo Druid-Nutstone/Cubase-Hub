@@ -16,6 +16,10 @@ namespace Cubase.Macro.Services.Mouse
         private readonly System.Windows.Forms.Timer mouseTimer;
         private bool isShowing;
 
+        private DateTime lastInsideTime = DateTime.Now;
+        private const int CloseMargin = 20; // pixels
+        private const int CloseDelayMs = 300;
+
         public MouseService(
             MainForm mainForm,
             ILogger<MouseService> log,
@@ -40,13 +44,40 @@ namespace Cubase.Macro.Services.Mouse
 
         private void MouseTimer_Tick(object sender, EventArgs e)
         {
+            var cursor = Control.MousePosition;
+
             if (isShowing)
+            {
+                // Get proper screen bounds of the form
+                var bounds = mainForm.RectangleToScreen(mainForm.ClientRectangle);
+
+                // Add grace margin
+                bounds.Inflate(CloseMargin, CloseMargin);
+
+               
+                if (bounds.Contains(cursor))
+                {
+                    // Cursor still near the form → reset timer
+                    lastInsideTime = DateTime.Now;
+                    return;
+                }
+
+                // Only close if cursor has been away long enough
+                if ((DateTime.Now - lastInsideTime).TotalMilliseconds > CloseDelayMs)
+                {
+                    if (!mainForm.HaveError)
+                    {
+                        mainForm.CloseWindow();
+                        isShowing = false;
+                    }
+                    return;
+                }
+                return;
+            }
+            if (!windowService.IsCubaseActive(false))
                 return;
 
-            if (!windowService.IsCubaseActive())
-                return;
-
-            Point cursor = Cursor.Position;
+            // Point cursor = Cursor.Position;
             Rectangle screen = Screen.PrimaryScreen.Bounds;
 
 
@@ -61,7 +92,7 @@ namespace Cubase.Macro.Services.Mouse
         {
             isShowing = true;
 
-            mouseTimer.Stop();
+            // mouseTimer.Stop();
 
             // Set callback BEFORE showing form
             mainForm.ActionComplete = () =>

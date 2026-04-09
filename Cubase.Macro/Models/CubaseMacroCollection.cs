@@ -33,7 +33,21 @@ namespace Cubase.Macro.Models
     {
         public string Title { get; set; }
 
+        
+        
         public CubaseMacroType MacroType { get; set; }
+
+        public int BackgroundColourARGB { get; set; } = 0;
+
+        public int ForegroundColourARGB { get; set; } = 0;
+
+        public CubaseMacroButtonType ButtonType { get; set; } = CubaseMacroButtonType.NotApplicable;
+
+        public CubaseMacroToggleState ToggleState { get; set; } = CubaseMacroToggleState.NotApplicable;    
+
+        public List<CubaseKeyCommand> ToggleOnKeys { get; set; } = new List<CubaseKeyCommand>();  
+
+        public List<CubaseKeyCommand> ToggleOffKeys { get; set; } = new List<CubaseKeyCommand>();   
 
         public List<CubaseMacro> Macros{ get; set; } = new List<CubaseMacro>();
 
@@ -70,5 +84,19 @@ namespace Cubase.Macro.Models
     {
         Menu = 0,
         KeyCommand = 1,
+    }
+
+    public enum CubaseMacroButtonType
+    {
+        NotApplicable = 0,
+        Single = 1,
+        Toggle = 2
+    }
+
+    public enum CubaseMacroToggleState
+    {
+        NotApplicable = 0,
+        On = 1,
+        Off = 2
     }
 }

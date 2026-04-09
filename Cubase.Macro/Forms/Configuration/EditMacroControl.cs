@@ -1,4 +1,5 @@
-﻿using Cubase.Macro.Models;
+﻿using Cubase.Macro.Forms.Configuration.KeyEditors;
+using Cubase.Macro.Models;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -17,10 +18,6 @@ namespace Cubase.Macro.Forms.Configuration
 
         private Action MacoSavedEventHandler;
 
-        public EditMacroControl()
-        {
-            InitializeComponent();
-        }
 
         public EditMacroControl(CubaseMacroCollection macros, CubaseMacro macroToEdit, Action macroSavedEventHandler)
         {
@@ -28,12 +25,45 @@ namespace Cubase.Macro.Forms.Configuration
             this.cubaseMacros = macros;
             this.macro = macroToEdit;
             this.MacoSavedEventHandler = macroSavedEventHandler;
-            this.UpdateButton.Click += UpdateButton_Click; 
+            this.UpdateButton.Click += UpdateButton_Click;
+            ThemeApplier.ApplyDarkTheme(this);
+            this.BindControls();
+
+        }
+
+        private void BindControls()
+        {
             this.MacroTitle.Bind(nameof(CubaseMacro.Title), this.macro);
-            if (this.macro.MacroType == CubaseMacroType.KeyCommand)
+            this.MacroButtonType.EnumType = typeof(CubaseMacroButtonType);
+            this.MacroButtonType.Bind(this.macro.ButtonType);
+            this.MacroButtonType.OnEnumSelected += (selectedValue) =>
             {
-                To do - Add as new Control to edit the content of the macro   
+                this.macro.ButtonType = (CubaseMacroButtonType)selectedValue;
+                this.LoadEditControlForButtonType();
+            };
+            this.LoadEditControlForButtonType();
+        }
+
+        private void LoadEditControlForButtonType()
+        {
+            switch (this.macro.ButtonType)
+            {
+                case CubaseMacroButtonType.Single:
+                    this.LoadEditControl(new SingleKeyEditor());
+                    break;
+                case CubaseMacroButtonType.Toggle:
+                    this.LoadEditControl(new ToggleKeyEditor());
+                    break;
             }
+        }
+
+        private void LoadEditControl(Control control)
+        {
+
+            this.ContentPanel.Controls.Clear();
+            control.Dock = DockStyle.Fill;   
+            this.ContentPanel.Controls.Add(control);
+            ((IKeyEditor)control).Macro = this.macro;    
         }
 
         private void UpdateButton_Click(object? sender, EventArgs e)

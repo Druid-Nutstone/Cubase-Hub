@@ -45,7 +45,7 @@
             panel1.Dock = DockStyle.Left;
             panel1.Location = new Point(0, 0);
             panel1.Name = "panel1";
-            panel1.Size = new Size(250, 382);
+            panel1.Size = new Size(250, 541);
             panel1.TabIndex = 0;
             // 
             // TreePanel
@@ -53,7 +53,7 @@
             TreePanel.Dock = DockStyle.Fill;
             TreePanel.Location = new Point(0, 72);
             TreePanel.Name = "TreePanel";
-            TreePanel.Size = new Size(250, 310);
+            TreePanel.Size = new Size(250, 469);
             TreePanel.TabIndex = 1;
             // 
             // panel2
@@ -79,7 +79,7 @@
             // 
             splitter1.Location = new Point(250, 0);
             splitter1.Name = "splitter1";
-            splitter1.Size = new Size(4, 382);
+            splitter1.Size = new Size(4, 541);
             splitter1.TabIndex = 1;
             splitter1.TabStop = false;
             // 
@@ -88,7 +88,7 @@
             DataPanel.Dock = DockStyle.Fill;
             DataPanel.Location = new Point(254, 0);
             DataPanel.Name = "DataPanel";
-            DataPanel.Size = new Size(254, 382);
+            DataPanel.Size = new Size(469, 541);
             DataPanel.TabIndex = 2;
             // 
             // SettingsMainControl
@@ -99,7 +99,7 @@
             Controls.Add(splitter1);
             Controls.Add(panel1);
             Name = "SettingsMainControl";
-            Size = new Size(508, 382);
+            Size = new Size(723, 541);
             panel1.ResumeLayout(false);
             panel2.ResumeLayout(false);
             panel2.PerformLayout();

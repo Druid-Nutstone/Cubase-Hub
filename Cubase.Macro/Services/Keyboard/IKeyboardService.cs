@@ -3,5 +3,7 @@
     public interface IKeyboardService
     {
         bool SendKey(string key, Action<string> errHandler);
+
+        bool SendKeyToCubase(string key, Action<string> errHandler);
     }
 }

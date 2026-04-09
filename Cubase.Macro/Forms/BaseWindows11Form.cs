@@ -193,8 +193,13 @@ namespace Cubase.Macro.Forms
 
             if (control is Button btn)
             {
+                btn.UseVisualStyleBackColor = false; // 🔥 REQUIRED
                 btn.FlatStyle = FlatStyle.Flat;
+
                 btn.FlatAppearance.BorderColor = DarkTheme.BorderColor;
+                btn.FlatAppearance.MouseOverBackColor = Color.FromArgb(60, 60, 60);
+                btn.FlatAppearance.MouseDownBackColor = Color.FromArgb(80, 80, 80);
+
                 btn.BackColor = DarkTheme.ControlColor;
                 btn.ForeColor = DarkTheme.TextColor;
             }
