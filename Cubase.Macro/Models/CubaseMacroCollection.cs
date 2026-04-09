@@ -48,7 +48,6 @@ namespace Cubase.Macro.Models
         }
     }
 
-
     public class CubaseMacro
     {
         public string Title { get; set; }

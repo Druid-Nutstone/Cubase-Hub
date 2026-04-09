@@ -7,11 +7,11 @@ namespace Cubase.Macro.Forms.Main.Buttons
 {
     public class MacroButton : Button
     {
-        private Action<CubaseMacro> OnMacroClicked;
+        private Action<CubaseMacro, MacroButton> OnMacroClicked;
 
         private CubaseMacro Macro;
 
-        public MacroButton(CubaseMacro macro, Action<CubaseMacro> OnMacroClicked) : base()
+        public MacroButton(CubaseMacro macro, Action<CubaseMacro, MacroButton> OnMacroClicked) : base()
         {
             this.Macro = macro;
             this.OnMacroClicked = OnMacroClicked;
@@ -24,15 +24,14 @@ namespace Cubase.Macro.Forms.Main.Buttons
         protected override void OnClick(EventArgs e)
         {
             base.OnClick(e);
-            this.Macro.ToggleState = this.Macro.ToggleState == CubaseMacroToggleState.On ? CubaseMacroToggleState.Off : CubaseMacroToggleState.On;
             this.SetColours();
-            this.OnMacroClicked?.Invoke(this.Macro);
+            this.OnMacroClicked?.Invoke(this.Macro, this);
             this.FlatStyle = FlatStyle.Flat;
             this.FlatAppearance.BorderSize = 0;
 
         }
 
-        private void SetColours()
+        public void SetColours()
         {
             if (this.Macro.ToggleState == CubaseMacroToggleState.On)
             {

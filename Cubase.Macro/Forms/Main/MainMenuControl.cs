@@ -1,4 +1,5 @@
-﻿using Cubase.Macro.Forms.Main.Menus;
+﻿using Cubase.Macro.Forms.Main.Buttons;
+using Cubase.Macro.Forms.Main.Menus;
 using Cubase.Macro.Models;
 using System;
 using System.Collections.Generic;
@@ -17,7 +18,7 @@ namespace Cubase.Macro.Forms.Main
 
         private MenuControl menuControl;
 
-        private Action<CubaseMacro> onMacroClicked;
+        private Action<CubaseMacro, MacroButton> onMacroClicked;
 
         private Action<CubaseMacro> onBack;
 
@@ -34,7 +35,7 @@ namespace Cubase.Macro.Forms.Main
             this.onBack?.Invoke(this.menu);
         }
 
-        public void Initialise(CubaseMacro menu, Action<CubaseMacro> onMacroClicked, Action<CubaseMacro> onBack)
+        public void Initialise(CubaseMacro menu, Action<CubaseMacro, MacroButton> onMacroClicked, Action<CubaseMacro> onBack)
         {
             this.menu = menu;
             this.onMacroClicked = onMacroClicked;

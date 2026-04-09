@@ -173,7 +173,13 @@ namespace Cubase.Macro.Services.Keyboard
                    CreateKeyInput(mainKey, false),
                    CreateKeyInput(mainKey, true)
                 };
-                SendInput((uint)keyInputs.Length, keyInputs, Marshal.SizeOf<INPUT>());
+                var rc = SendInput((uint)keyInputs.Length, keyInputs, Marshal.SizeOf<INPUT>());
+
+                if (rc == 0)
+                {
+                    var err = Marshal.GetLastWin32Error();
+                    errHandler($"SendInput failed: {err} - {GetWin32ErrorMessage(err)}");
+                }
 
                 Thread.Sleep(50); // optional small pause
 

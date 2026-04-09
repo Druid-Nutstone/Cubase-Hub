@@ -31,7 +31,7 @@ namespace Cubase.Macro.Forms.Main.Menus
             this.RowCount = 0;
         }
 
-        public void AddMacro(CubaseMacro macro, Action<CubaseMacro> OnMacroClicked)
+        public void AddMacro(CubaseMacro macro, Action<CubaseMacro, MacroButton> OnMacroClicked)
         {
             var buttonControl = new MacroButtonPanel(macro, OnMacroClicked);
             this.Controls.Add(buttonControl, 0, this.RowCount);

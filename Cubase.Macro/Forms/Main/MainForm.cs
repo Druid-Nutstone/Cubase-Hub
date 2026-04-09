@@ -1,5 +1,6 @@
 ﻿using Cubase.Macro.Forms;
 using Cubase.Macro.Forms.Main;
+using Cubase.Macro.Forms.Main.Buttons;
 using Cubase.Macro.Models;
 using Cubase.Macro.Services.Keyboard;
 using System;
@@ -43,7 +44,7 @@ namespace Cubase.Macro
             this.mainMenuControl.Initialise(parentMenu, MacroClicked, this.OnBackClicked);
         }
 
-        private void MacroClicked(CubaseMacro macro)
+        private void MacroClicked(CubaseMacro macro, MacroButton macroButton)
         {
             if (macro.MacroType == CubaseMacroType.KeyCommand)
             {
@@ -64,6 +65,7 @@ namespace Cubase.Macro
                 {
                     RunMacro(macro.ToggleOnKeys, macro);
                 }
+                macroButton.SetColours();
                 this.CloseWindow();
             }
             else if (macro.MacroType == CubaseMacroType.Menu)

@@ -7,7 +7,7 @@ namespace Cubase.Macro.Forms.Main.Buttons
 {
     public class MacroButtonPanel : Panel
     {
-        public MacroButtonPanel(CubaseMacro macro, Action<CubaseMacro> OnMacroClicked) : base()
+        public MacroButtonPanel(CubaseMacro macro, Action<CubaseMacro, MacroButton> OnMacroClicked) : base()
         {
 
             // apply theme now so buttons can override colour
