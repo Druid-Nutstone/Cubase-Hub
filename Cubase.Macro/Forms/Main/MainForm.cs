@@ -53,11 +53,18 @@ namespace Cubase.Macro
             }
             if (currentMacro.MacroType == CubaseMacroType.Menu)
             {
-                if (currentMacro.MenuChangesVisibility)
+                if (!string.IsNullOrEmpty(this.configurationService.Configuration.ResetVisibilityKey))
                 {
-                    RunMacro([CubaseKeyCommand.CreateFromKey(this.configurationService.Configuration.ResetVisibilityKey)], currentMacro);
-                    this.TopMost = true;
-                    this.BringToFront();
+                    if (currentMacro.MenuChangesVisibility)
+                    {
+                        RunMacro([CubaseKeyCommand.CreateFromKey(this.configurationService.Configuration.ResetVisibilityKey)], currentMacro);
+                        this.TopMost = true;
+                        this.BringToFront();
+                    }
+                }
+                else 
+                { 
+                   MessageBox.Show("No Reset Visibility Key configured. Please set a Reset Visibility Key in settings to ensure the menu is visible after navigating back.");
                 }
             }
             var parentMenu = this.macros.FindParentIdRecursive(this.macros.First(), currentMacro.ParentId.Value);

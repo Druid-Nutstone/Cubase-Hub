@@ -8,6 +8,16 @@ namespace Cubase.Macro.Models
 {
     public class CubaseKeyCommandCollection : List<CubaseKeyCommand>    
     {
+        public CubaseKeyCommandCollection() 
+        { 
+        
+        }
+        
+        public CubaseKeyCommandCollection(IEnumerable<CubaseKeyCommand> source)
+        {
+            this.AddRange(source);
+        }
+        
         public List<CubaseKeyCommand> GetAllocated()
         {
             return this.Where(c => !string.IsNullOrWhiteSpace(c.Key)).ToList(); 
@@ -42,6 +52,15 @@ namespace Cubase.Macro.Models
         public List<CubaseKeyCommand> GetByName(string name)
         {
             return this.Where(c => c.Name.Contains(name, StringComparison.OrdinalIgnoreCase)).OrderBy(c => c.Name).ToList();
+        }
+
+        public List<CubaseKeyCommand> GetByCategoryAndKey(string category, string key)
+        {
+            return this.Where(c => c.Category.Equals(category, StringComparison.OrdinalIgnoreCase) && c.Key.Contains(key, StringComparison.OrdinalIgnoreCase)).OrderBy(c => c.Name).ToList();
+        }
+        public CubaseKeyCommandCollection Search(string searchText)
+        {
+            return new CubaseKeyCommandCollection(this.Where(c => c.Name.Contains(searchText, StringComparison.OrdinalIgnoreCase) || c.Key.Contains(searchText, StringComparison.OrdinalIgnoreCase) || c.Category.Contains(searchText, StringComparison.OrdinalIgnoreCase)).OrderBy(c => c.Name).ToList());
         }
 
     }

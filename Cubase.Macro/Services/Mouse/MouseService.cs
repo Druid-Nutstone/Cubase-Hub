@@ -31,7 +31,7 @@ namespace Cubase.Macro.Services.Mouse
 
             mouseTimer = new System.Windows.Forms.Timer
             {
-                Interval = 100 // ms (adjust as needed)
+                Interval = 500 // ms (adjust as needed)
             };
 
             mouseTimer.Tick += MouseTimer_Tick;

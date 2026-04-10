@@ -14,6 +14,8 @@ namespace Cubase.Macro.Forms.Configuration.KeySelector
         [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
         public Action<CubaseKeyCommand> OnKeySelected { get; set; }
 
+        private CubaseKeyCommandCollection allCommands;
+
         public KeyCommandSelectorForm()
         {
             InitializeComponent();
@@ -22,15 +24,32 @@ namespace Cubase.Macro.Forms.Configuration.KeySelector
         public KeyCommandSelectorForm(Action<CubaseKeyCommand> OnKeySelected)
         {
             InitializeComponent();
+            SearchForText.TextChanged += SearchForText_TextChanged;
+            ClearButton.Click += ClearButton_Click; 
             ThemeApplier.ApplyDarkTheme(this);
-            var commands = new CubaseKeyCommandParser().Parse();
-            this.keyCommandListView.Populate(commands);
+            this.allCommands = new CubaseKeyCommandParser().Parse();
+            this.keyCommandListView.Populate(this.allCommands);
             this.OnKeySelected = OnKeySelected;
             this.keyCommandListView.OnKeySelected = (cmd) => 
             { 
                 this.OnKeySelected.Invoke(cmd);
                 this.Close();
             };
+        }
+
+        private void ClearButton_Click(object? sender, EventArgs e)
+        {
+            this.SearchForText.Text = "";
+            this.keyCommandListView.Populate(this.allCommands);    
+        }
+
+        private void SearchForText_TextChanged(object? sender, EventArgs e)
+        {
+            if (SearchForText.Text.Length >= 2)
+            {
+                var filtered = this.allCommands.Search(SearchForText.Text);
+                this.keyCommandListView.Populate(filtered);
+            }
         }
     }
 }
