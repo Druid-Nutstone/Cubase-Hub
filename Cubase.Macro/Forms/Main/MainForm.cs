@@ -55,6 +55,18 @@ namespace Cubase.Macro
             {
                 if (!string.IsNullOrEmpty(this.configurationService.Configuration.ResetVisibilityKey))
                 {
+                    // if there are any togglebuttons that are active - need to execute the eir toggle off 
+                    if (currentMacro.Macros != null)
+                    {
+                        if (currentMacro.Macros.Any(x => x.ToggleState == CubaseMacroToggleState.On))
+                        {
+                            currentMacro.Macros.Where(x => x.ToggleState == CubaseMacroToggleState.On).ToList().ForEach(x =>
+                            {
+                                RunMacro(x.ToggleOffKeys, x);
+                                x.ToggleState = CubaseMacroToggleState.Off;
+                            });
+                        }
+                    }
                     if (currentMacro.MenuChangesVisibility)
                     {
                         RunMacro([CubaseKeyCommand.CreateFromKey(this.configurationService.Configuration.ResetVisibilityKey)], currentMacro);
