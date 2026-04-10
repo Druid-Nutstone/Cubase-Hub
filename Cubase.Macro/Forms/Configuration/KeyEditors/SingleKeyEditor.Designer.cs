@@ -30,7 +30,7 @@
         {
             label1 = new Label();
             KeySelectorControl = new MacroKeySelectorControl();
-            ReturnToParentMenuAfterExecution = new Cubase.Hub.Controls.BoundControls.BoundCheckbox();
+            ReturnToParentMenuAfterExecution = new Cubase.Macro.BoundControls.BoundCheckbox();
             SuspendLayout();
             // 
             // label1
@@ -77,6 +77,6 @@
 
         private Label label1;
         private MacroKeySelectorControl KeySelectorControl;
-        private Hub.Controls.BoundControls.BoundCheckbox ReturnToParentMenuAfterExecution;
+        private Cubase.Macro.BoundControls.BoundCheckbox ReturnToParentMenuAfterExecution;
     }
 }

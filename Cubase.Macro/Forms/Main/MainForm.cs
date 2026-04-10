@@ -35,7 +35,14 @@ namespace Cubase.Macro
             this.WindowState = FormWindowState.Minimized;
             ThemeApplier.ApplyDarkTheme(this);
             this.macros = CubaseMacroCollection.Load();
-            this.mainMenuControl.Initialise(this.macros.First(), MacroClicked, this.OnBackClicked);
+            if (this.macros.Count > 0)
+            {
+                this.mainMenuControl.Initialise(this.macros.First(), MacroClicked, this.OnBackClicked);
+            }
+            else
+            {
+                MessageBox.Show("No macros configured. Please configure macros (Right-click and Open Settings) before using.");
+            }
         }
 
         private void OnBackClicked(CubaseMacro currentMacro)
