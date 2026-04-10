@@ -28,9 +28,10 @@
         /// </summary>
         private void InitializeComponent()
         {
+            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(SettingsForm));
             menuStrip1 = new MenuStrip();
-            DataPanel = new Panel();
             OpenConfig = new ToolStripMenuItem();
+            DataPanel = new Panel();
             menuStrip1.SuspendLayout();
             SuspendLayout();
             // 
@@ -44,6 +45,12 @@
             menuStrip1.TabIndex = 0;
             menuStrip1.Text = "menuStrip1";
             // 
+            // OpenConfig
+            // 
+            OpenConfig.Name = "OpenConfig";
+            OpenConfig.Size = new Size(154, 24);
+            OpenConfig.Text = "Open Configuration";
+            // 
             // DataPanel
             // 
             DataPanel.Dock = DockStyle.Fill;
@@ -52,12 +59,6 @@
             DataPanel.Size = new Size(1221, 627);
             DataPanel.TabIndex = 1;
             // 
-            // OpenConfig
-            // 
-            OpenConfig.Name = "OpenConfig";
-            OpenConfig.Size = new Size(154, 24);
-            OpenConfig.Text = "Open Configuration";
-            // 
             // SettingsForm
             // 
             AutoScaleDimensions = new SizeF(8F, 20F);
@@ -65,6 +66,7 @@
             ClientSize = new Size(1221, 655);
             Controls.Add(DataPanel);
             Controls.Add(menuStrip1);
+            Icon = (Icon)resources.GetObject("$this.Icon");
             MainMenuStrip = menuStrip1;
             Name = "SettingsForm";
             StartPosition = FormStartPosition.CenterScreen;

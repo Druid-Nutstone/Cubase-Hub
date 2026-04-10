@@ -17,33 +17,33 @@ namespace Cubase.Macro.Forms.Main.Buttons
             this.OnMacroClicked = OnMacroClicked;
             this.Text = macro.Title;
             this.Dock = DockStyle.Fill;
-            this.SetColours();
-            this.Font = new Font(this.Font, FontStyle.Bold);
+            this.SetColoursAndTitle();
+            this.Font = new Font(this.Font.FontFamily, this.Font.Size+2, FontStyle.Bold);
         }
 
         protected override void OnClick(EventArgs e)
         {
             base.OnClick(e);
-            this.SetColours();
+            this.SetColoursAndTitle();
             this.OnMacroClicked?.Invoke(this.Macro, this);
             this.FlatStyle = FlatStyle.Flat;
             this.FlatAppearance.BorderSize = 0;
 
         }
 
-        public void SetColours()
+        public void SetColoursAndTitle()
         {
             if (this.Macro.ToggleState == CubaseMacroToggleState.On)
             {
                 this.BackColor = Color.FromArgb(this.Macro.ToggleBackgroundColourARGB);
                 this.ForeColor = Color.FromArgb(this.Macro.ToggleForegroundColourARGB);
-
+                this.Text = this.Macro.TitleToggle;
             }
             else
             {
                 this.BackColor = Color.FromArgb(this.Macro.BackgroundColourARGB);
                 this.ForeColor = Color.FromArgb(this.Macro.ForegroundColourARGB);
-
+                this.Text = this.Macro.Title;
             }
             this.FlatAppearance.MouseOverBackColor = this.BackColor;
             this.FlatAppearance.MouseDownBackColor = this.BackColor;

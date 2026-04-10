@@ -10,6 +10,7 @@ using System.IO;
 using System.Runtime.InteropServices;
 using Cubase.Macro.Forms.Configuration;
 using Cubase.Macro.Forms.Main;
+using Cubase.Macro.Services.Config;
 
 namespace Cubase.Macro
 {
@@ -107,6 +108,7 @@ namespace Cubase.Macro
                 .AddSingleton<IKeyboardService, KeyboardService>()
                 .AddSingleton<IWindowService, WindowService>()
                 .AddSingleton<IMouseService, MouseService>()
+                .AddSingleton<IConfigurationService, ConfigurationService>()
                 .AddScoped<SettingsMainControl>()
                 .AddScoped<SettingsForm>()
                 .AddScoped<MainForm>();

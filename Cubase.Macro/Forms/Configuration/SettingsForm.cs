@@ -25,7 +25,7 @@ namespace Cubase.Macro.Forms.Configuration
 
         private void OpenConfig_Click(object? sender, EventArgs e)
         {
-            Process p = new Process() { StartInfo = new ProcessStartInfo() { FileName = CubaseMacroConstants.ConfigurationFileName, UseShellExecute = true } };
+            Process p = new Process() { StartInfo = new ProcessStartInfo() { FileName = CubaseMacroConstants.MacroConfigurationFileName, UseShellExecute = true } };
             p.Start();
             p.WaitForExit();
             this.Initialise();

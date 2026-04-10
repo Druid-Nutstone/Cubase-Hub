@@ -7,11 +7,11 @@
     <UseWindowsForms>true</UseWindowsForms>
     <ImplicitUsings>enable</ImplicitUsings>
 	<UseWPF>true</UseWPF>
-	<ApplicationIcon>cubaseicon.ico</ApplicationIcon>
+	<ApplicationIcon>CubaseMacro.ico</ApplicationIcon>
   </PropertyGroup>
 
   <ItemGroup>
-    <Content Include="cubaseicon.ico" />
+    <Content Include="CubaseMacro.ico" />
   </ItemGroup>
 
   <ItemGroup>

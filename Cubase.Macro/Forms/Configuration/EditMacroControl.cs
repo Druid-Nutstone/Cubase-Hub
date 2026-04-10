@@ -57,6 +57,7 @@ namespace Cubase.Macro.Forms.Configuration
             this.MacroButtonType.EnumType = typeof(CubaseMacroButtonType);
             this.MacroButtonType.Bind(this.macro.ButtonType);
             this.MacroTitleToggled.Bind(nameof(CubaseMacro.TitleToggle), this.macro);
+            this.MacroMenuChangesVisibility.Bind(nameof(CubaseMacro.MenuChangesVisibility), this.macro);
             this.MacroButtonType.OnEnumSelected += (selectedValue) =>
             {
                 this.macro.ButtonType = (CubaseMacroButtonType)selectedValue;
@@ -94,6 +95,7 @@ namespace Cubase.Macro.Forms.Configuration
                 this.LoadEditControl(new SingleKeyEditor());
             }
             this.MacroTitleToggled.Enabled = this.macro.ButtonType == CubaseMacroButtonType.Toggle;
+            this.MacroMenuChangesVisibility.Enabled = this.macro.MacroType == CubaseMacroType.Menu;
         }
 
         private void LoadEditControl(Control control)

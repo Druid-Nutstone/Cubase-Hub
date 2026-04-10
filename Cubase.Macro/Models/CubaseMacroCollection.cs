@@ -14,14 +14,14 @@ namespace Cubase.Macro.Models
         public void Save()
         {
             var json = JsonSerializer.Serialize(this, new JsonSerializerOptions() { WriteIndented = true });
-            File.WriteAllText(CubaseMacroConstants.ConfigurationFileName, json);
+            File.WriteAllText(CubaseMacroConstants.MacroConfigurationFileName, json);
         } 
         
         public static CubaseMacroCollection Load()
         {
-            if (File.Exists(CubaseMacroConstants.ConfigurationFileName))
+            if (File.Exists(CubaseMacroConstants.MacroConfigurationFileName))
             {
-                return JsonSerializer.Deserialize<CubaseMacroCollection>(File.ReadAllText(CubaseMacroConstants.ConfigurationFileName));  
+                return JsonSerializer.Deserialize<CubaseMacroCollection>(File.ReadAllText(CubaseMacroConstants.MacroConfigurationFileName));  
             }
             else
             {
@@ -29,6 +29,11 @@ namespace Cubase.Macro.Models
             }
         }
 
+        public CubaseMacro FindParentFromBase(Guid id)
+        {
+            return this.FindParentIdRecursive(this.First(), id);
+        }
+        
         public CubaseMacro FindParentIdRecursive(CubaseMacro macro, Guid id)
         {
             if (macro.Id == id)
@@ -79,6 +84,8 @@ namespace Cubase.Macro.Models
         public List<CubaseKeyCommand> ToggleOffKeys { get; set; } = new List<CubaseKeyCommand>();   
 
         public List<CubaseMacro> Macros{ get; set; } = new List<CubaseMacro>();
+
+        public bool MenuChangesVisibility { get; set; } = false;
 
         public static CubaseMacro CreateNewMenuMacro(Guid? parentId = null)
         {

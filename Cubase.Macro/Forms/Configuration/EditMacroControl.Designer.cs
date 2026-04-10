@@ -33,6 +33,10 @@
             MacroTitle = new Cubase.Macro.BoundControls.BoundTextBox();
             panel1 = new Panel();
             panel2 = new Panel();
+            MacroMenuChangesVisibility = new Cubase.Macro.BoundControls.BoundCheckbox();
+            label2 = new Label();
+            ExampleToggled = new Button();
+            ExampleSingle = new Button();
             ToggleForgroundColour = new Cubase.Macro.Forms.Configuration.ColourPicker.ColourPickerControl();
             ToggleBackgroundColour = new Cubase.Macro.Forms.Configuration.ColourPicker.ColourPickerControl();
             ForegroundColour = new Cubase.Macro.Forms.Configuration.ColourPicker.ColourPickerControl();
@@ -42,8 +46,6 @@
             MacroButtonType = new Cubase.Macro.BoundControls.BoundEnumComboBox();
             label4 = new Label();
             ContentPanel = new Panel();
-            ExampleSingle = new Button();
-            ExampleToggled = new Button();
             panel1.SuspendLayout();
             panel2.SuspendLayout();
             SuspendLayout();
@@ -86,6 +88,8 @@
             // 
             // panel2
             // 
+            panel2.Controls.Add(MacroMenuChangesVisibility);
+            panel2.Controls.Add(label2);
             panel2.Controls.Add(ExampleToggled);
             panel2.Controls.Add(ExampleSingle);
             panel2.Controls.Add(ToggleForgroundColour);
@@ -103,6 +107,44 @@
             panel2.Name = "panel2";
             panel2.Size = new Size(934, 262);
             panel2.TabIndex = 4;
+            // 
+            // MacroMenuChangesVisibility
+            // 
+            MacroMenuChangesVisibility.AutoSize = true;
+            MacroMenuChangesVisibility.Location = new Point(432, 40);
+            MacroMenuChangesVisibility.Name = "MacroMenuChangesVisibility";
+            MacroMenuChangesVisibility.Size = new Size(78, 24);
+            MacroMenuChangesVisibility.TabIndex = 16;
+            MacroMenuChangesVisibility.Text = "Yes/No";
+            MacroMenuChangesVisibility.UseVisualStyleBackColor = true;
+            // 
+            // label2
+            // 
+            label2.AutoSize = true;
+            label2.Font = new Font("Segoe UI", 9F, FontStyle.Bold);
+            label2.Location = new Point(432, 15);
+            label2.Name = "label2";
+            label2.Size = new Size(176, 20);
+            label2.TabIndex = 15;
+            label2.Text = "Menu Changes Visibility";
+            // 
+            // ExampleToggled
+            // 
+            ExampleToggled.Location = new Point(485, 173);
+            ExampleToggled.Name = "ExampleToggled";
+            ExampleToggled.Size = new Size(157, 51);
+            ExampleToggled.TabIndex = 14;
+            ExampleToggled.Text = "Toggled";
+            ExampleToggled.UseVisualStyleBackColor = true;
+            // 
+            // ExampleSingle
+            // 
+            ExampleSingle.Location = new Point(39, 173);
+            ExampleSingle.Name = "ExampleSingle";
+            ExampleSingle.Size = new Size(157, 51);
+            ExampleSingle.TabIndex = 13;
+            ExampleSingle.Text = "Not Toggled";
+            ExampleSingle.UseVisualStyleBackColor = true;
             // 
             // ToggleForgroundColour
             // 
@@ -177,24 +219,6 @@
             ContentPanel.Size = new Size(934, 174);
             ContentPanel.TabIndex = 5;
             // 
-            // ExampleSingle
-            // 
-            ExampleSingle.Location = new Point(39, 173);
-            ExampleSingle.Name = "ExampleSingle";
-            ExampleSingle.Size = new Size(157, 51);
-            ExampleSingle.TabIndex = 13;
-            ExampleSingle.Text = "Not Toggled";
-            ExampleSingle.UseVisualStyleBackColor = true;
-            // 
-            // ExampleToggled
-            // 
-            ExampleToggled.Location = new Point(485, 173);
-            ExampleToggled.Name = "ExampleToggled";
-            ExampleToggled.Size = new Size(157, 51);
-            ExampleToggled.TabIndex = 14;
-            ExampleToggled.Text = "Toggled";
-            ExampleToggled.UseVisualStyleBackColor = true;
-            // 
             // EditMacroControl
             // 
             AutoScaleDimensions = new SizeF(8F, 20F);
@@ -228,5 +252,7 @@
         private ColourPicker.ColourPickerControl ToggleBackgroundColour;
         private Button ExampleSingle;
         private Button ExampleToggled;
+        private BoundControls.BoundCheckbox MacroMenuChangesVisibility;
+        private Label label2;
     }
 }

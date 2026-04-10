@@ -53,7 +53,11 @@ namespace Cubase.Macro.Models
         public string Key { get; set; } = string.Empty;
         public string Category {  get; set; } = string.Empty;
 
-
+        public static CubaseKeyCommand CreateFromKey(string key)
+        {
+            return new CubaseKeyCommand() { Key = key };  
+        }
+        
         public static CubaseKeyCommand Create()
         {
             return new CubaseKeyCommand();

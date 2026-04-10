@@ -1,0 +1,36 @@
+﻿using Cubase.Macro.Forms.Configuration.KeySelector;
+using Cubase.Macro.Models;
+using System;
+using System.Collections.Generic;
+using System.ComponentModel;
+using System.Data;
+using System.Drawing;
+using System.Text;
+using System.Windows.Forms;
+
+namespace Cubase.Macro.Forms.Configuration.Config
+{
+    public partial class EditConfigurationControl : UserControl
+    {
+        private readonly CubaseMacroConfiguration cubaseMacroConfiguration;
+
+        public EditConfigurationControl(CubaseMacroConfiguration cubaseMacroConfiguration)
+        {
+            InitializeComponent();
+            this.SelectVisibilityKey.Click += SelectVisibilityKey_Click;
+            this.cubaseMacroConfiguration = cubaseMacroConfiguration;
+            ThemeApplier.ApplyDarkTheme(this);
+            ResetVisibilityKey.Bind(nameof(CubaseMacroConfiguration.ResetVisibilityKey), this.cubaseMacroConfiguration);
+        }
+
+        private void SelectVisibilityKey_Click(object? sender, EventArgs e)
+        {
+            var keySelector = new KeyCommandSelectorForm((cubaseMacro) => 
+            {
+                this.ResetVisibilityKey.Text = cubaseMacro.Key;
+                this.cubaseMacroConfiguration.Save();
+            });
+            keySelector.ShowDialog();
+        }
+    }
+}

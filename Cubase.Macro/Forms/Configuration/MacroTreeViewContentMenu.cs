@@ -11,9 +11,105 @@ namespace Cubase.Macro.Forms.Configuration
         {
             this.Items.Add(new NewMenuTreeViewMenuItem(macros, parent, dataPanel, macroUpdatedEventHandler));
             this.Items.Add(new NewCommandTreeViewMenuItem(macros, parent, dataPanel, macroUpdatedEventHandler));
+            this.Items.Add(new MoveUpCommandTreeViewMenuItem(macros, parent, dataPanel, macroUpdatedEventHandler));
+            this.Items.Add(new MoveDownCommandTreeViewMenuItem(macros, parent, dataPanel, macroUpdatedEventHandler));
             this.Items.Add(new CopyCommandTreeViewMenuItem(macros, parent, dataPanel, macroUpdatedEventHandler));
             this.Items.Add(new PasteCommandTreeViewMenuItem(macros, parent, dataPanel, macroUpdatedEventHandler));
             this.Items.Add(new DeleteMenuTreeViewMenuItem(macros, parent, dataPanel, macroUpdatedEventHandler));
+        }
+    }
+
+    public class MoveDownCommandTreeViewMenuItem : ToolStripMenuItem
+    {
+        public CubaseMacro Macro { get; private set; }
+
+        public CubaseMacroCollection Macros { get; private set; }
+
+        private Panel DataPanel { get; set; }
+
+        private Action MacroUpdatedEventHandler { get; set; }
+
+
+        public MoveDownCommandTreeViewMenuItem(CubaseMacroCollection macros, CubaseMacro parent, Panel dataPanel, Action macroUpdatedEventHandler)
+        {
+            this.Macro = parent;
+            this.Macros = macros;
+            this.DataPanel = dataPanel;
+            this.MacroUpdatedEventHandler = macroUpdatedEventHandler;
+            this.Text = "Move Down";
+        }
+
+        protected override void OnClick(EventArgs e)
+        {
+            if (this.Macro.ParentId == null)
+                return;
+
+            var actualParent = this.Macros.FindParentFromBase(this.Macro.ParentId.Value);
+
+            if (actualParent?.Macros == null)
+                return;
+
+            var siblings = actualParent.Macros;
+
+            var index = siblings.IndexOf(this.Macro);
+
+            // Already at the bottom → do nothing
+            if (index < 0 || index >= siblings.Count - 1)
+                return;
+
+            // Swap with next item
+            var temp = siblings[index + 1];
+            siblings[index + 1] = siblings[index];
+            siblings[index] = temp;
+
+            MacroUpdatedEventHandler();
+        }
+    }
+
+    public class MoveUpCommandTreeViewMenuItem : ToolStripMenuItem
+    {
+        public CubaseMacro Macro { get; private set; }
+
+        public CubaseMacroCollection Macros { get; private set; }
+
+        private Panel DataPanel { get; set; }
+
+        private Action MacroUpdatedEventHandler { get; set; }
+
+
+        public MoveUpCommandTreeViewMenuItem(CubaseMacroCollection macros, CubaseMacro parent, Panel dataPanel, Action macroUpdatedEventHandler)
+        {
+            this.Macro = parent;
+            this.Macros = macros;
+            this.DataPanel = dataPanel;
+            this.MacroUpdatedEventHandler = macroUpdatedEventHandler;
+            this.Text = "Move Up";
+        }
+
+        protected override void OnClick(EventArgs e)
+        {
+            if (this.Macro.ParentId == null)
+                return;
+
+            var actualParent = this.Macros.FindParentFromBase(this.Macro.ParentId.Value);
+
+            if (actualParent?.Macros == null)
+                return;
+
+            var siblings = actualParent.Macros;
+
+            var index = siblings.IndexOf(this.Macro);
+
+            // Already at the top → do nothing
+            if (index <= 0)
+                return;
+
+            // Swap with previous item
+            var temp = siblings[index - 1];
+            siblings[index - 1] = siblings[index];
+            siblings[index] = temp;
+
+            MacroUpdatedEventHandler();
         }
     }
 
@@ -91,6 +187,7 @@ namespace Cubase.Macro.Forms.Configuration
                             newMacro.ToggleState = pasteMacro.ToggleState;
                             newMacro.ToggleOnKeys = pasteMacro.ToggleOnKeys;
                             newMacro.ToggleOffKeys = pasteMacro.ToggleOffKeys;
+                            newMacro.ReturnToParentMenuAfterExecution = pasteMacro.ReturnToParentMenuAfterExecution;
                             this.Macro.Macros.Add(newMacro);
                         }
                         else
@@ -109,6 +206,7 @@ namespace Cubase.Macro.Forms.Configuration
                                 childCopy.ToggleState = child.ToggleState;
                                 childCopy.ToggleOnKeys = child.ToggleOnKeys;
                                 childCopy.ToggleOffKeys = child.ToggleOffKeys;
+                                childCopy.ReturnToParentMenuAfterExecution = child.ReturnToParentMenuAfterExecution;
                                 newMacro.Macros.Add(childCopy);
                             }
                         }

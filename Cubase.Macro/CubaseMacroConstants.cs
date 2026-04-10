@@ -20,6 +20,8 @@ namespace Cubase.Macro
 
         public static string KeyCommandsFileLocation { get; set; } = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData), "Steinberg", "Cubase 15_64", "Key Commands.xml");
 
-        public static string ConfigurationFileName = Path.Combine(UserAppDataFolderPath, "CubaseMacro.json");
+        public static string MacroConfigurationFileName = Path.Combine(UserAppDataFolderPath, "CubaseMacro.json");
+    
+        public static string ConfigurationFileName = Path.Combine(UserAppDataFolderPath, "CubaseMacroConfig.json");
     }
 }

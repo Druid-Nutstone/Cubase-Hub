@@ -2,6 +2,7 @@
 using Cubase.Macro.Forms.Main;
 using Cubase.Macro.Forms.Main.Buttons;
 using Cubase.Macro.Models;
+using Cubase.Macro.Services.Config;
 using Cubase.Macro.Services.Keyboard;
 using System;
 using System.Collections.Generic;
@@ -24,10 +25,13 @@ namespace Cubase.Macro
 
         private readonly IKeyboardService keyboardService;
 
-        public MainForm(IKeyboardService keyboardService)
+        private readonly IConfigurationService configurationService;
+
+        public MainForm(IKeyboardService keyboardService, IConfigurationService configurationService)
         {
             InitializeComponent();
             this.keyboardService = keyboardService;
+            this.configurationService = configurationService;
             this.WindowState = FormWindowState.Minimized;
             ThemeApplier.ApplyDarkTheme(this);
             this.macros = CubaseMacroCollection.Load();
@@ -39,6 +43,15 @@ namespace Cubase.Macro
             if (currentMacro.ParentId == null)
             {
                 return;
+            }
+            if (currentMacro.MacroType == CubaseMacroType.Menu)
+            {
+                if (currentMacro.MenuChangesVisibility)
+                {
+                    RunMacro([CubaseKeyCommand.CreateFromKey(this.configurationService.Configuration.ResetVisibilityKey)], currentMacro);
+                    this.TopMost = true;
+                    this.BringToFront();
+                }
             }
             var parentMenu = this.macros.FindParentIdRecursive(this.macros.First(), currentMacro.ParentId.Value);
             this.mainMenuControl.Initialise(parentMenu, MacroClicked, this.OnBackClicked);
@@ -65,7 +78,7 @@ namespace Cubase.Macro
                 {
                     RunMacro(macro.ToggleOnKeys, macro);
                 }
-                macroButton.SetColours();
+                macroButton.SetColoursAndTitle();
                 this.CloseWindow();
             }
             else if (macro.MacroType == CubaseMacroType.Menu)

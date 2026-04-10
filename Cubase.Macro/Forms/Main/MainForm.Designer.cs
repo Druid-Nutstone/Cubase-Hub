@@ -28,6 +28,7 @@
         /// </summary>
         private void InitializeComponent()
         {
+            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(MainForm));
             Menu = new MenuStrip();
             DataPanel = new Panel();
             mainMenuControl = new Cubase.Macro.Forms.Main.MainMenuControl();
@@ -67,6 +68,7 @@
             ClientSize = new Size(192, 450);
             Controls.Add(DataPanel);
             Controls.Add(Menu);
+            Icon = (Icon)resources.GetObject("$this.Icon");
             MainMenuStrip = Menu;
             Name = "MainForm";
             Text = "MainForm";

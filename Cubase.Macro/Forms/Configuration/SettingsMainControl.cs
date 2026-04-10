@@ -1,4 +1,5 @@
 ﻿using Cubase.Macro.Models;
+using Cubase.Macro.Services.Config;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -13,9 +14,12 @@ namespace Cubase.Macro.Forms.Configuration
     {
         private CubaseMacroCollection macros;
         
-        public SettingsMainControl()
+        private readonly IConfigurationService configurationService;
+
+        public SettingsMainControl(IConfigurationService configurationService)
         {
             InitializeComponent();
+            this.configurationService = configurationService;
             NewMenu.Click += NewMenu_Click;
         }
 
@@ -50,7 +54,7 @@ namespace Cubase.Macro.Forms.Configuration
         private void LoadTreeView()
         {
             this.TreePanel.Controls.Clear();
-            var treeView = new MacroTreeView(this.DataPanel, this.MacroSaved);
+            var treeView = new MacroTreeView(this.DataPanel, this.MacroSaved, this.configurationService.Configuration);
             this.TreePanel.Controls.Add(treeView);
             treeView.Build(this.macros);
         }

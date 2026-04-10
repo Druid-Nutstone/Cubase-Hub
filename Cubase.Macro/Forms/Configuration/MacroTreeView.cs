@@ -1,4 +1,5 @@
-﻿using Cubase.Macro.Models;
+﻿using Cubase.Macro.Forms.Configuration.Config;
+using Cubase.Macro.Models;
 using System;
 using System.Collections.Generic;
 using System.Text;
@@ -13,12 +14,15 @@ namespace Cubase.Macro.Forms.Configuration
 
         private Action macroUpdatedEventHandler;
 
-        public MacroTreeView(Panel DataPanel, Action MacroUpdatedEventHandler)
+        private CubaseMacroConfiguration cubaseMacroConfiguration;
+
+        public MacroTreeView(Panel DataPanel, Action MacroUpdatedEventHandler, CubaseMacroConfiguration cubaseMacroConfiguration)
         {
             this.Dock = DockStyle.Fill;
             ThemeApplier.ApplyDarkTheme(this);
             this.macroUpdatedEventHandler = MacroUpdatedEventHandler;
             this.dataPanel = DataPanel;
+            this.cubaseMacroConfiguration = cubaseMacroConfiguration;   
         }
 
         public void Build(CubaseMacroCollection macros)
@@ -26,7 +30,8 @@ namespace Cubase.Macro.Forms.Configuration
             this.macros = macros;
             this.Nodes.Clear();
             this.Nodes.Add(new PrimaryMacroTreeNode(macros, dataPanel, macroUpdatedEventHandler)); ;
-
+            this.Nodes.Add(new ConfigurationTreeNode(this.cubaseMacroConfiguration));
+            this.ExpandAll();
         }
 
         protected override void OnAfterSelect(TreeViewEventArgs e)
@@ -45,6 +50,13 @@ namespace Cubase.Macro.Forms.Configuration
                 editControl.Dock = DockStyle.Fill;
                 this.dataPanel.Controls.Add(editControl);
             }
+            else if (e.Node is ConfigurationTreeNode)
+            {
+                var editControl = new EditConfigurationControl(this.cubaseMacroConfiguration);
+                this.dataPanel.Controls.Clear();
+                editControl.Dock = DockStyle.Fill;
+                this.dataPanel.Controls.Add(editControl);
+            }
 
         }
 
@@ -52,6 +64,18 @@ namespace Cubase.Macro.Forms.Configuration
         {
             public BaseMacroTreeNode()
             {
+
+            }
+        }
+
+        public class ConfigurationTreeNode : BaseMacroTreeNode
+        {
+            private CubaseMacroConfiguration cubaseMacroConfiguration;
+
+            public ConfigurationTreeNode(CubaseMacroConfiguration cubaseMacroConfiguration)
+            {
+                this.Text = "Configuration";
+                this.cubaseMacroConfiguration = cubaseMacroConfiguration;
 
             }
         }
