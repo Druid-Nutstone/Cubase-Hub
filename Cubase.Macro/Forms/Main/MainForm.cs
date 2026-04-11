@@ -2,6 +2,7 @@
 using Cubase.Macro.Forms.Main;
 using Cubase.Macro.Forms.Main.Buttons;
 using Cubase.Macro.Models;
+using Cubase.Macro.Services;
 using Cubase.Macro.Services.Config;
 using Cubase.Macro.Services.Keyboard;
 using System;
@@ -32,6 +33,7 @@ namespace Cubase.Macro
             InitializeComponent();
             this.keyboardService = keyboardService;
             this.configurationService = configurationService;
+            StaticConfig.Instance.SetConfiguration(this.configurationService.Configuration);
             this.WindowState = FormWindowState.Minimized;
             ThemeApplier.ApplyDarkTheme(this);
             this.macros = CubaseMacroCollection.Load();

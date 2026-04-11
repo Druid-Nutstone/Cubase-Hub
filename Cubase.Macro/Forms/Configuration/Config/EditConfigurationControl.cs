@@ -21,6 +21,15 @@ namespace Cubase.Macro.Forms.Configuration.Config
             this.cubaseMacroConfiguration = cubaseMacroConfiguration;
             ThemeApplier.ApplyDarkTheme(this);
             ResetVisibilityKey.Bind(nameof(CubaseMacroConfiguration.ResetVisibilityKey), this.cubaseMacroConfiguration);
+            MenuHeight.Bind(nameof(CubaseMacroConfiguration.MenuHeight), this.cubaseMacroConfiguration);
+            MenuHeight.LostFocus += SaveConfig;
+            KeyHeight.Bind(nameof(CubaseMacroConfiguration.KeyHeight), this.cubaseMacroConfiguration);
+            KeyHeight.LostFocus += SaveConfig;
+        }
+
+        private void SaveConfig(object? sender, EventArgs e)
+        {
+            this.cubaseMacroConfiguration.Save();
         }
 
         private void SelectVisibilityKey_Click(object? sender, EventArgs e)

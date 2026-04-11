@@ -9,8 +9,12 @@ namespace Cubase.Macro.Models
     public class CubaseMacroConfiguration
     {
 
+
         public string ResetVisibilityKey { get; set; }
 
+        public int MenuHeight { get; set; } = 80;
+
+        public int KeyHeight { get; set; } = 120;
 
         public void Save()
         {

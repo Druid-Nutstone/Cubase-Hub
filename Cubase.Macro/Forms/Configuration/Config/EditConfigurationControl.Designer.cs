@@ -31,6 +31,10 @@
             label1 = new Label();
             ResetVisibilityKey = new Cubase.Macro.BoundControls.BoundTextBox();
             SelectVisibilityKey = new Button();
+            label2 = new Label();
+            MenuHeight = new Cubase.Macro.BoundControls.BoundTextBox();
+            label3 = new Label();
+            KeyHeight = new Cubase.Macro.BoundControls.BoundTextBox();
             SuspendLayout();
             // 
             // label1
@@ -61,10 +65,48 @@
             SelectVisibilityKey.Text = "Select";
             SelectVisibilityKey.UseVisualStyleBackColor = true;
             // 
+            // label2
+            // 
+            label2.AutoSize = true;
+            label2.Font = new Font("Segoe UI", 9F, FontStyle.Bold);
+            label2.Location = new Point(24, 94);
+            label2.Name = "label2";
+            label2.Size = new Size(153, 20);
+            label2.TabIndex = 3;
+            label2.Text = "Menu Button Height";
+            // 
+            // MenuHeight
+            // 
+            MenuHeight.Location = new Point(24, 117);
+            MenuHeight.Name = "MenuHeight";
+            MenuHeight.Size = new Size(125, 27);
+            MenuHeight.TabIndex = 4;
+            // 
+            // label3
+            // 
+            label3.AutoSize = true;
+            label3.Font = new Font("Segoe UI", 9F, FontStyle.Bold);
+            label3.Location = new Point(24, 180);
+            label3.Name = "label3";
+            label3.Size = new Size(139, 20);
+            label3.TabIndex = 5;
+            label3.Text = "Key Button Height";
+            // 
+            // KeyHeight
+            // 
+            KeyHeight.Location = new Point(28, 205);
+            KeyHeight.Name = "KeyHeight";
+            KeyHeight.Size = new Size(125, 27);
+            KeyHeight.TabIndex = 6;
+            // 
             // EditConfigurationControl
             // 
             AutoScaleDimensions = new SizeF(8F, 20F);
             AutoScaleMode = AutoScaleMode.Font;
+            Controls.Add(KeyHeight);
+            Controls.Add(label3);
+            Controls.Add(MenuHeight);
+            Controls.Add(label2);
             Controls.Add(SelectVisibilityKey);
             Controls.Add(ResetVisibilityKey);
             Controls.Add(label1);
@@ -79,5 +121,9 @@
         private Label label1;
         private BoundControls.BoundTextBox ResetVisibilityKey;
         private Button SelectVisibilityKey;
+        private Label label2;
+        private BoundControls.BoundTextBox MenuHeight;
+        private Label label3;
+        private BoundControls.BoundTextBox KeyHeight;
     }
 }
