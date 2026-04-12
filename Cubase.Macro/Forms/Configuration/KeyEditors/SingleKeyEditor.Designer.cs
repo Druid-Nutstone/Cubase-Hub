@@ -47,13 +47,13 @@
             // 
             KeySelectorControl.Location = new Point(15, 40);
             KeySelectorControl.Name = "KeySelectorControl";
-            KeySelectorControl.Size = new Size(451, 135);
+            KeySelectorControl.Size = new Size(451, 157);
             KeySelectorControl.TabIndex = 1;
             // 
             // ReturnToParentMenuAfterExecution
             // 
             ReturnToParentMenuAfterExecution.AutoSize = true;
-            ReturnToParentMenuAfterExecution.Location = new Point(26, 191);
+            ReturnToParentMenuAfterExecution.Location = new Point(15, 203);
             ReturnToParentMenuAfterExecution.Name = "ReturnToParentMenuAfterExecution";
             ReturnToParentMenuAfterExecution.Size = new Size(180, 24);
             ReturnToParentMenuAfterExecution.TabIndex = 2;
@@ -68,7 +68,7 @@
             Controls.Add(KeySelectorControl);
             Controls.Add(label1);
             Name = "SingleKeyEditor";
-            Size = new Size(527, 244);
+            Size = new Size(527, 308);
             ResumeLayout(false);
             PerformLayout();
         }

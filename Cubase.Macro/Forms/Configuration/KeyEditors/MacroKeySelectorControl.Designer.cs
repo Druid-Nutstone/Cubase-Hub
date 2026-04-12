@@ -31,6 +31,8 @@
             MacroCommandListView = new MacroKeyCommandListView();
             ButtonAdd = new Button();
             ButtonDel = new Button();
+            label1 = new Label();
+            AfterKeyWaitTime = new Cubase.Macro.BoundControls.BoundTextBox();
             SuspendLayout();
             // 
             // MacroCommandListView
@@ -64,16 +66,36 @@
             ButtonDel.Text = "Del";
             ButtonDel.UseVisualStyleBackColor = true;
             // 
+            // label1
+            // 
+            label1.AutoSize = true;
+            label1.Font = new Font("Segoe UI", 9F, FontStyle.Bold);
+            label1.Location = new Point(8, 134);
+            label1.Name = "label1";
+            label1.Size = new Size(301, 20);
+            label1.TabIndex = 3;
+            label1.Text = "Time to wait in MS after key has executed";
+            // 
+            // AfterKeyWaitTime
+            // 
+            AfterKeyWaitTime.Location = new Point(8, 157);
+            AfterKeyWaitTime.Name = "AfterKeyWaitTime";
+            AfterKeyWaitTime.Size = new Size(125, 27);
+            AfterKeyWaitTime.TabIndex = 4;
+            // 
             // MacroKeySelectorControl
             // 
             AutoScaleDimensions = new SizeF(8F, 20F);
             AutoScaleMode = AutoScaleMode.Font;
+            Controls.Add(AfterKeyWaitTime);
+            Controls.Add(label1);
             Controls.Add(ButtonDel);
             Controls.Add(ButtonAdd);
             Controls.Add(MacroCommandListView);
             Name = "MacroKeySelectorControl";
-            Size = new Size(441, 128);
+            Size = new Size(441, 245);
             ResumeLayout(false);
+            PerformLayout();
         }
 
         #endregion
@@ -81,5 +103,7 @@
         private MacroKeyCommandListView MacroCommandListView;
         private Button ButtonAdd;
         private Button ButtonDel;
+        private Label label1;
+        private BoundControls.BoundTextBox AfterKeyWaitTime;
     }
 }

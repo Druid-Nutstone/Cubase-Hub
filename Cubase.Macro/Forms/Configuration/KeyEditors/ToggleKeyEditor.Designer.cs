@@ -38,7 +38,7 @@
             // 
             MacroToggleOn.Location = new Point(15, 40);
             MacroToggleOn.Name = "MacroToggleOn";
-            MacroToggleOn.Size = new Size(449, 141);
+            MacroToggleOn.Size = new Size(449, 208);
             MacroToggleOn.TabIndex = 0;
             // 
             // label1
@@ -65,7 +65,7 @@
             // 
             MacroToggleOff.Location = new Point(483, 40);
             MacroToggleOff.Name = "MacroToggleOff";
-            MacroToggleOff.Size = new Size(439, 141);
+            MacroToggleOff.Size = new Size(439, 231);
             MacroToggleOff.TabIndex = 3;
             // 
             // ToggleKeyEditor
@@ -77,7 +77,7 @@
             Controls.Add(label1);
             Controls.Add(MacroToggleOn);
             Name = "ToggleKeyEditor";
-            Size = new Size(1004, 227);
+            Size = new Size(1004, 315);
             ResumeLayout(false);
             PerformLayout();
         }

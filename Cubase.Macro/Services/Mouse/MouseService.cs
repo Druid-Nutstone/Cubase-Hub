@@ -135,7 +135,7 @@ namespace Cubase.Macro.Services.Mouse
                 return;
             }
 
-            if (!windowService.IsCubaseActive(true))
+            if (!windowService.IsCubaseActive(false))
             {
                 lastCursor = cursor;
                 return;

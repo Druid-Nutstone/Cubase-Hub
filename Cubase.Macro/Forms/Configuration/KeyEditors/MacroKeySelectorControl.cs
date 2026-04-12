@@ -19,6 +19,23 @@ namespace Cubase.Macro.Forms.Configuration.KeyEditors
             InitializeComponent();
             ButtonAdd.Click += ButtonAdd_Click;
             ButtonDel.Click += ButtonDel_Click;
+            this.MacroCommandListView.SelectedIndexChanged += MacroCommandListView_SelectedIndexChanged;
+        }
+
+        private void MacroCommandListView_SelectedIndexChanged(object? sender, EventArgs e)
+        {
+            if (this.MacroCommandListView.SelectedItems.Count > 0)
+            {
+                ButtonDel.Enabled = true;
+                if (this.MacroCommandListView.SelectedItems[0] is MacroKeyCommandListViewItem item)
+                {
+                    AfterKeyWaitTime.Bind(nameof(CubaseKeyCommand.ThreadWaitAfterExecutionMs), ((MacroKeyCommandListViewItem)this.MacroCommandListView.SelectedItems[0]).Command);
+                }
+            }
+            else
+            {
+                ButtonDel.Enabled = false;
+            }
         }
 
         private void ButtonDel_Click(object? sender, EventArgs e)

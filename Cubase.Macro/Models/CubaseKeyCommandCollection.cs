@@ -72,6 +72,8 @@ namespace Cubase.Macro.Models
         public string Key { get; set; } = string.Empty;
         public string Category {  get; set; } = string.Empty;
 
+        public int ThreadWaitAfterExecutionMs { get; set; } = 0;
+
         public static CubaseKeyCommand CreateFromKey(string key)
         {
             return new CubaseKeyCommand() { Key = key };  

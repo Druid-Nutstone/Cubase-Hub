@@ -7,6 +7,7 @@ using Cubase.Macro.Services.Config;
 using Cubase.Macro.Services.Keyboard;
 using Cubase.Macro.Services.Mouse;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Logging;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -32,14 +33,17 @@ namespace Cubase.Macro
 
         private readonly IServiceProvider serviceProvider;
 
+        private readonly ILogger<MainForm> logger;
         public MainForm(IKeyboardService keyboardService, 
                         IConfigurationService configurationService,
+                        ILogger<MainForm> log,
                         IServiceProvider serviceProvider)
         {
             InitializeComponent();
             this.keyboardService = keyboardService;
             this.configurationService = configurationService;
             this.serviceProvider = serviceProvider;
+            this.logger = log;
             StaticConfig.Instance.SetConfiguration(this.configurationService.Configuration);
             this.WindowState = FormWindowState.Minimized;
             ThemeApplier.ApplyDarkTheme(this);
@@ -158,6 +162,7 @@ namespace Cubase.Macro
             {
                 if (okToContinue)
                 {
+                    this.logger.LogInformation("Executing command {CommandName} with key {CommandKey}", command.Name, command.Key);
                     okToContinue = this.keyboardService.SendKeyToCubase(command.Key, (err) =>
                     {
                         okToContinue = false;
@@ -167,6 +172,10 @@ namespace Cubase.Macro
                         MessageBox.Show(err);
                         return;
                     });
+                    if (command.ThreadWaitAfterExecutionMs > 0)
+                    {
+                        Thread.Sleep(command.ThreadWaitAfterExecutionMs);
+                    }
                 }
             }
             if (macro.ReturnToParentMenuAfterExecution)
