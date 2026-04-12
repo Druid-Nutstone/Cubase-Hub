@@ -11,6 +11,7 @@ using System.Runtime.InteropServices;
 using Cubase.Macro.Forms.Configuration;
 using Cubase.Macro.Forms.Main;
 using Cubase.Macro.Services.Config;
+using Cubase.Macro.Services.Monitor;
 
 namespace Cubase.Macro
 {
@@ -62,10 +63,10 @@ namespace Cubase.Macro
             {
                 // get main form 
                 var mainForm = services.GetService<MainForm>();
-                mainForm.WindowState = FormWindowState.Minimized;
-                // initialise mouse watcher 
-                var mouseWatcher = services.GetService<IMouseService>();
-                mouseWatcher.Initialise();
+                // mainForm.WindowState = FormWindowState.Minimized;
+                // initialise mouse watcher THIS DOES WEIRD SHIZ to the mouse 
+                //var mouseWatcher = services.GetService<IMouseService>();
+                //mouseWatcher.Initialise();
                 Application.Run(services.GetService<MainForm>());
             }
             else
@@ -107,7 +108,6 @@ namespace Cubase.Macro
             serviceCollection
                 .AddSingleton<IKeyboardService, KeyboardService>()
                 .AddSingleton<IWindowService, WindowService>()
-                .AddSingleton<IMouseService, MouseService>()
                 .AddSingleton<IConfigurationService, ConfigurationService>()
                 .AddScoped<SettingsMainControl>()
                 .AddScoped<SettingsForm>()

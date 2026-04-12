@@ -5,7 +5,9 @@ using Cubase.Macro.Models;
 using Cubase.Macro.Services;
 using Cubase.Macro.Services.Config;
 using Cubase.Macro.Services.Keyboard;
+using Cubase.Macro.Services.Monitor;
 using Cubase.Macro.Services.Mouse;
+using Cubase.Macro.Services.Window;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using System;
@@ -33,9 +35,13 @@ namespace Cubase.Macro
 
         private readonly IServiceProvider serviceProvider;
 
+        private readonly IWindowService windowService;
+
         private readonly ILogger<MainForm> logger;
+        
         public MainForm(IKeyboardService keyboardService, 
                         IConfigurationService configurationService,
+                        IWindowService windowService,
                         ILogger<MainForm> log,
                         IServiceProvider serviceProvider)
         {
@@ -43,25 +49,24 @@ namespace Cubase.Macro
             this.keyboardService = keyboardService;
             this.configurationService = configurationService;
             this.serviceProvider = serviceProvider;
+            this.windowService = windowService;
+
             this.logger = log;
             StaticConfig.Instance.SetConfiguration(this.configurationService.Configuration);
-            this.WindowState = FormWindowState.Minimized;
+            // this.WindowState = FormWindowState.Minimized;
             ThemeApplier.ApplyDarkTheme(this);
             this.macros = CubaseMacroCollection.Load();
             if (this.macros.Count > 0)
             {
-                this.mainMenuControl.Initialise(this.macros.First(), MacroClicked, this.OnBackClicked);
+                this.mainMenuControl.Initialise(this.macros.First(), MacroClicked, this.OnBackClicked, this);
+                this.mainMenuControl.SetColours();
             }
             else
             {
                 MessageBox.Show("No macros configured. Please configure macros (Right-click and Open Settings) before using.");
             }
-        }
+            this.ShowMacros();
 
-        protected override void OnFormClosing(FormClosingEventArgs e)
-        {
-            base.OnFormClosing(e);
-            this.serviceProvider.GetService<IMouseService>()?.Dispose();
         }
 
         private void OnBackClicked(CubaseMacro currentMacro)
@@ -99,7 +104,7 @@ namespace Cubase.Macro
                 }
             }
             var parentMenu = this.macros.FindParentIdRecursive(this.macros.First(), currentMacro.ParentId.Value);
-            this.mainMenuControl.Initialise(parentMenu, MacroClicked, this.OnBackClicked);
+            this.mainMenuControl.Initialise(parentMenu, MacroClicked, this.OnBackClicked, this);
         }
 
         private void MacroClicked(CubaseMacro macro, MacroButton macroButton)
@@ -133,14 +138,12 @@ namespace Cubase.Macro
                     RunMacro(macro.ToggleOnKeys, macro);
                     ToFront();
                 }
-                this.mainMenuControl.Initialise(macro, MacroClicked, this.OnBackClicked);
+                this.mainMenuControl.Initialise(macro, MacroClicked, this.OnBackClicked, this);
             }
         }
 
         private void ToFront()
         {
-            this.TopMost = true;                  // Always on top
-            this.Show();                           // Show the form if hidden
             this.BringToFront();                   // Bring to front
             this.Activate();                       // Give focus to form
             this.Focus();
@@ -149,7 +152,6 @@ namespace Cubase.Macro
         private void ToBack()
         {
             this.TopMost = false;
-            this.SendToBack();
         }
 
         private void RunMacro(List<CubaseKeyCommand> macros, CubaseMacro macro)
@@ -194,11 +196,11 @@ namespace Cubase.Macro
         public void CloseWindow()
         {
             this.TopMost = false;
-            this.WindowState = FormWindowState.Minimized;
-            if (this.ActionComplete != null)
-            {
-                this.ActionComplete.Invoke();
-            }
+        }
+
+        public void PositionCubase()
+        {
+            this.windowService.PositionCubase(this.Width);
         }
 
         public void ShowMacros()
@@ -211,25 +213,16 @@ namespace Cubase.Macro
             this.SuspendLayout();
 
             this.StartPosition = FormStartPosition.Manual;
-            // this.FormBorderStyle = FormBorderStyle.None; // optional (for panel look)
+            this.FormBorderStyle = FormBorderStyle.None; // optional (for panel look)
 
             this.Location = new Point(screen.Left, screen.Top);
             this.Size = new Size(this.Width, screen.Height);
 
             this.ResumeLayout();
 
-            if (this.WindowState == FormWindowState.Minimized)
-                this.WindowState = FormWindowState.Normal;
+            //if (this.WindowState == FormWindowState.Minimized)
+            //    this.WindowState = FormWindowState.Normal;
             ToFront();
-        }
-
-        protected override void OnResize(EventArgs e)
-        {
-            if (this.WindowState == FormWindowState.Minimized)
-            {
-                this.ActionComplete?.Invoke();
-            }
-            base.OnResize(e);
         }
 
     }

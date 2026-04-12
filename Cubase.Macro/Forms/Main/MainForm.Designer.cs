@@ -29,28 +29,18 @@
         private void InitializeComponent()
         {
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(MainForm));
-            Menu = new MenuStrip();
             DataPanel = new Panel();
             mainMenuControl = new Cubase.Macro.Forms.Main.MainMenuControl();
             DataPanel.SuspendLayout();
             SuspendLayout();
             // 
-            // Menu
-            // 
-            Menu.ImageScalingSize = new Size(20, 20);
-            Menu.Location = new Point(0, 0);
-            Menu.Name = "Menu";
-            Menu.Size = new Size(192, 24);
-            Menu.TabIndex = 0;
-            Menu.Text = "menuStrip1";
-            // 
             // DataPanel
             // 
             DataPanel.Controls.Add(mainMenuControl);
             DataPanel.Dock = DockStyle.Fill;
-            DataPanel.Location = new Point(0, 24);
+            DataPanel.Location = new Point(0, 0);
             DataPanel.Name = "DataPanel";
-            DataPanel.Size = new Size(192, 426);
+            DataPanel.Size = new Size(192, 450);
             DataPanel.TabIndex = 1;
             // 
             // mainMenuControl
@@ -58,7 +48,7 @@
             mainMenuControl.Dock = DockStyle.Fill;
             mainMenuControl.Location = new Point(0, 0);
             mainMenuControl.Name = "mainMenuControl";
-            mainMenuControl.Size = new Size(192, 426);
+            mainMenuControl.Size = new Size(192, 450);
             mainMenuControl.TabIndex = 0;
             // 
             // MainForm
@@ -67,19 +57,14 @@
             AutoScaleMode = AutoScaleMode.Font;
             ClientSize = new Size(192, 450);
             Controls.Add(DataPanel);
-            Controls.Add(Menu);
             Icon = (Icon)resources.GetObject("$this.Icon");
-            MainMenuStrip = Menu;
+            MaximizeBox = false;
             Name = "MainForm";
-            Text = "MainForm";
             DataPanel.ResumeLayout(false);
             ResumeLayout(false);
-            PerformLayout();
         }
 
         #endregion
-
-        private MenuStrip Menu;
         private Panel DataPanel;
         private Forms.Main.MainMenuControl mainMenuControl;
     }

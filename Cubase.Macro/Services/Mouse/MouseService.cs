@@ -8,6 +8,7 @@ using System.Windows.Forms;
 
 namespace Cubase.Macro.Services.Mouse
 {
+    [Obsolete("This screws up the pointer..")]
     public class MouseService : IMouseService, IDisposable
     {
         private readonly MainForm mainForm;

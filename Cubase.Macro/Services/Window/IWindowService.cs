@@ -11,5 +11,9 @@ namespace Cubase.Macro.Services.Window
         bool BringCubaseToFront();
 
         Rectangle GetCubaseBounds();
+
+        void PositionCubase(int left);
+
+ 
     }
 }
