@@ -7,5 +7,6 @@ namespace Cubase.Macro.Services.Mouse
     public interface IMouseService
     {
         void Initialise();
+        void Dispose();
     }
 }

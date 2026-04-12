@@ -5,6 +5,8 @@ using Cubase.Macro.Models;
 using Cubase.Macro.Services;
 using Cubase.Macro.Services.Config;
 using Cubase.Macro.Services.Keyboard;
+using Cubase.Macro.Services.Mouse;
+using Microsoft.Extensions.DependencyInjection;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -28,11 +30,16 @@ namespace Cubase.Macro
 
         private readonly IConfigurationService configurationService;
 
-        public MainForm(IKeyboardService keyboardService, IConfigurationService configurationService)
+        private readonly IServiceProvider serviceProvider;
+
+        public MainForm(IKeyboardService keyboardService, 
+                        IConfigurationService configurationService,
+                        IServiceProvider serviceProvider)
         {
             InitializeComponent();
             this.keyboardService = keyboardService;
             this.configurationService = configurationService;
+            this.serviceProvider = serviceProvider;
             StaticConfig.Instance.SetConfiguration(this.configurationService.Configuration);
             this.WindowState = FormWindowState.Minimized;
             ThemeApplier.ApplyDarkTheme(this);
@@ -45,6 +52,12 @@ namespace Cubase.Macro
             {
                 MessageBox.Show("No macros configured. Please configure macros (Right-click and Open Settings) before using.");
             }
+        }
+
+        protected override void OnFormClosing(FormClosingEventArgs e)
+        {
+            base.OnFormClosing(e);
+            this.serviceProvider.GetService<IMouseService>()?.Dispose();
         }
 
         private void OnBackClicked(CubaseMacro currentMacro)
@@ -114,17 +127,32 @@ namespace Cubase.Macro
                 if (macro.ToggleOnKeys.Count > 0)
                 {
                     RunMacro(macro.ToggleOnKeys, macro);
+                    ToFront();
                 }
                 this.mainMenuControl.Initialise(macro, MacroClicked, this.OnBackClicked);
             }
+        }
+
+        private void ToFront()
+        {
+            this.TopMost = true;                  // Always on top
+            this.Show();                           // Show the form if hidden
+            this.BringToFront();                   // Bring to front
+            this.Activate();                       // Give focus to form
+            this.Focus();
+        }
+
+        private void ToBack()
+        {
+            this.TopMost = false;
+            this.SendToBack();
         }
 
         private void RunMacro(List<CubaseKeyCommand> macros, CubaseMacro macro)
         {
             HaveError = false;
             bool okToContinue = true;
-            this.TopMost = false;
-            this.SendToBack();
+            ToBack();   
             Thread.Sleep(100);
             foreach (var command in macros)
             {
@@ -183,13 +211,17 @@ namespace Cubase.Macro
 
             if (this.WindowState == FormWindowState.Minimized)
                 this.WindowState = FormWindowState.Normal;
-
-            this.TopMost = true;                  // Always on top
-            this.Show();                           // Show the form if hidden
-            this.BringToFront();                   // Bring to front
-            this.Activate();                       // Give focus to form
-
-            this.Focus();
+            ToFront();
         }
+
+        protected override void OnResize(EventArgs e)
+        {
+            if (this.WindowState == FormWindowState.Minimized)
+            {
+                this.ActionComplete?.Invoke();
+            }
+            base.OnResize(e);
+        }
+
     }
 }

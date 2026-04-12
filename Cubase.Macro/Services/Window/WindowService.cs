@@ -5,6 +5,7 @@ using System.Diagnostics;
 using System.Diagnostics.Eventing.Reader;
 using System.Runtime.InteropServices;
 using System.Text;
+using System.Windows;
 
 namespace Cubase.Macro.Services.Window
 {
@@ -43,6 +44,18 @@ namespace Cubase.Macro.Services.Window
         [DllImport("kernel32.dll")]
         static extern bool CloseHandle(IntPtr hHandle);
 
+        [DllImport("user32.dll")]
+        private static extern bool GetWindowRect(IntPtr hWnd, out RECT lpRect);
+
+        [DllImport("dwmapi.dll")]
+        private static extern int DwmGetWindowAttribute(
+            IntPtr hwnd,
+            int dwAttribute,
+            out RECT pvAttribute,
+            int cbAttribute);
+
+        private const int DWMWA_EXTENDED_FRAME_BOUNDS = 9;
+
         const uint TH32CS_SNAPPROCESS = 0x00000002;
 
         [StructLayout(LayoutKind.Sequential)]
@@ -62,6 +75,15 @@ namespace Cubase.Macro.Services.Window
             public string szExeFile;
         }
 
+        [StructLayout(LayoutKind.Sequential)]
+        private struct RECT
+        {
+            public int Left;
+            public int Top;
+            public int Right;
+            public int Bottom;
+        }
+
         private readonly ILogger<WindowService> log;
 
         public WindowService(ILogger<WindowService> log)
@@ -69,9 +91,23 @@ namespace Cubase.Macro.Services.Window
             this.log = log;
         }
 
-        public bool BringCubaseToFront()
+        public Rectangle GetCubaseBounds()
         {
+            var handle = GetCubaseHandle();
 
+            if (handle == IntPtr.Zero)
+                return Rectangle.Empty;
+
+            if (DwmGetWindowAttribute(handle, DWMWA_EXTENDED_FRAME_BOUNDS, out RECT rect, Marshal.SizeOf<RECT>()) == 0)
+            {
+                return Rectangle.FromLTRB(rect.Left, rect.Top, rect.Right, rect.Bottom);
+            }
+
+            return Rectangle.Empty;
+        }
+
+        public IntPtr GetCubaseHandle()
+        {
             var processes = Process.GetProcesses().Where(p => p.MainWindowTitle.StartsWith("Cubase Pro Project", StringComparison.OrdinalIgnoreCase) ||
                      p.MainWindowTitle.StartsWith("Cubase Artist", StringComparison.OrdinalIgnoreCase) ||
                      p.MainWindowTitle.StartsWith("Cubase LE", StringComparison.OrdinalIgnoreCase) ||
@@ -79,14 +115,17 @@ namespace Cubase.Macro.Services.Window
                      p.MainWindowTitle.StartsWith("Cubase Elements", StringComparison.OrdinalIgnoreCase)).FirstOrDefault();
 
             if (processes == null)
-                return false;
+                return IntPtr.Zero;
 
-            var hWnd = processes == null ? IntPtr.Zero : processes.MainWindowHandle;
+            return processes == null ? IntPtr.Zero : processes.MainWindowHandle;
+        }
+
+        public bool BringCubaseToFront()
+        {
+            var hWnd = this.GetCubaseHandle();
 
             if (hWnd == IntPtr.Zero)
                 return false;
-
-            this.log.LogInformation($"Found Cubase window: {processes.MainWindowTitle} (PID: {processes.Id})");
 
             SetForegroundWindow(hWnd);
             var count = 0;
