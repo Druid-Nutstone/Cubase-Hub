@@ -50,10 +50,8 @@ namespace Cubase.Macro
             this.configurationService = configurationService;
             this.serviceProvider = serviceProvider;
             this.windowService = windowService;
-
             this.logger = log;
             StaticConfig.Instance.SetConfiguration(this.configurationService.Configuration);
-            // this.WindowState = FormWindowState.Minimized;
             ThemeApplier.ApplyDarkTheme(this);
             this.macros = CubaseMacroCollection.Load();
             if (this.macros.Count > 0)
@@ -65,10 +63,9 @@ namespace Cubase.Macro
                 MessageBox.Show("No macros configured. Please configure macros (Right-click and Open Settings) before using.");
             }
             this.ShowMacros();
-
         }
 
-        private void OnBackClicked(CubaseMacro currentMacro)
+        private void OnBackClicked(CubaseMacro currentMacro, PictureButton pictureButton)
         {
             if (currentMacro.ParentId == null)
             {
@@ -103,6 +100,7 @@ namespace Cubase.Macro
             }
             var parentMenu = this.macros.FindParentIdRecursive(this.macros.First(), currentMacro.ParentId.Value);
             this.mainMenuControl.Initialise(parentMenu, MacroClicked, this.OnBackClicked, this);
+            
             this.ToFront();
         }
 
@@ -115,12 +113,17 @@ namespace Cubase.Macro
                     if (macro.ToggleState != CubaseMacroToggleState.On)
                     {
                         macro.ToggleState = CubaseMacroToggleState.On;
+                        macroButton.SetBlockCursor();
                         RunMacro(macro.ToggleOnKeys, macro);
+                        macroButton.SetDefaultCursor();
+
                     }
                     else
                     {
                         macro.ToggleState = CubaseMacroToggleState.Off;
+                        macroButton.SetBlockCursor();
                         RunMacro(macro.ToggleOffKeys, macro);
+                        macroButton.SetDefaultCursor();
                     }
                 }
                 else
@@ -129,15 +132,20 @@ namespace Cubase.Macro
                 }
                 macroButton.SetColoursAndTitle();
                 this.ToFront();
+                this.windowService.BringCubaseToFront();
             }
             else if (macro.MacroType == CubaseMacroType.Menu)
             {
                 if (macro.ToggleOnKeys.Count > 0)
                 {
+                    macroButton.SetBlockCursor();
                     RunMacro(macro.ToggleOnKeys, macro);
                     ToFront();
+
                 }
                 this.mainMenuControl.Initialise(macro, MacroClicked, this.OnBackClicked, this);
+                macroButton.SetDefaultCursor();
+                this.windowService.BringCubaseToFront();
             }
         }
 
@@ -224,6 +232,7 @@ namespace Cubase.Macro
             {
                 if (okToContinue)
                 {
+                    
                     this.logger.LogInformation("Executing command {CommandName} with key {CommandKey}", command.Name, command.Key);
                     okToContinue = this.keyboardService.SendKeyToCubase(command.Key, (err) =>
                     {
@@ -249,7 +258,7 @@ namespace Cubase.Macro
                         macro = this.macros.FindParentIdRecursive(this.macros.First(), macro.ParentId.Value);
                     }
                 }
-                this.OnBackClicked(macro);
+                this.OnBackClicked(macro, null);
             }
         }
 

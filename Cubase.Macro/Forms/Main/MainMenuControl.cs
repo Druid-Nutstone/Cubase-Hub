@@ -20,7 +20,7 @@ namespace Cubase.Macro.Forms.Main
 
         private Action<CubaseMacro, MacroButton> onMacroClicked;
 
-        private Action<CubaseMacro> onBack;
+        private Action<CubaseMacro, PictureButton> onBack;
 
         private MainForm mainForm;
 
@@ -36,6 +36,7 @@ namespace Cubase.Macro.Forms.Main
             ButtonMinimise.Click += ButtonMinimise_Click;
             ButtonMinimise.HelpText = "Minimise Cubase Macro";
             ButtonPositionCubase.Click += ButtonPositionCubase_Click;
+            ButtonPositionCubase.HelpText = "Position Cubase";
         }
 
         private void ButtonMinimise_Click(object? sender, EventArgs e)
@@ -55,10 +56,12 @@ namespace Cubase.Macro.Forms.Main
 
         private void ButtonBack_Click(object? sender, EventArgs e)
         {
-            this.onBack?.Invoke(this.menu);
+            this.ButtonBack.SetBlockCursor();
+            this.onBack?.Invoke(this.menu, this.ButtonBack);
+            this.ButtonBack.SetDefaultCursor();
         }
 
-        public void Initialise(CubaseMacro menu, Action<CubaseMacro, MacroButton> onMacroClicked, Action<CubaseMacro> onBack, MainForm mainForm)
+        public void Initialise(CubaseMacro menu, Action<CubaseMacro, MacroButton> onMacroClicked, Action<CubaseMacro, PictureButton> onBack, MainForm mainForm)
         {
             this.menu = menu;
             this.mainForm = mainForm;

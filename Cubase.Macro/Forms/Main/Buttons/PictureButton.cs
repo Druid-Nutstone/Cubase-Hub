@@ -21,5 +21,17 @@ namespace Cubase.Macro.Forms.Main.Buttons
             this.Cursor = Cursors.Hand;
             this.SizeMode = PictureBoxSizeMode.StretchImage;
         }
+
+        public void SetBlockCursor()
+        {
+            this.Cursor = Cursors.WaitCursor;
+            this.Update();
+        }
+
+        public void SetDefaultCursor()
+        {
+            this.Cursor = Cursors.Hand;
+            this.Update();
+        }
     }
 }

@@ -30,28 +30,39 @@
         {
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(MainMenuControl));
             NavPanel = new Panel();
+            ButtonBack = new Cubase.Macro.Forms.Main.Buttons.PictureButton();
             ButtonMinimise = new Cubase.Macro.Forms.Main.Buttons.PictureButton();
             ButtonClose = new Cubase.Macro.Forms.Main.Buttons.PictureButton();
-            ButtonPositionCubase = new Button();
             MainPanel = new Panel();
-            ButtonBack = new Cubase.Macro.Forms.Main.Buttons.PictureButton();
+            ButtonPositionCubase = new Cubase.Macro.Forms.Main.Buttons.PictureButton();
             NavPanel.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)ButtonBack).BeginInit();
             ((System.ComponentModel.ISupportInitialize)ButtonMinimise).BeginInit();
             ((System.ComponentModel.ISupportInitialize)ButtonClose).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)ButtonBack).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)ButtonPositionCubase).BeginInit();
             SuspendLayout();
             // 
             // NavPanel
             // 
+            NavPanel.Controls.Add(ButtonPositionCubase);
             NavPanel.Controls.Add(ButtonBack);
             NavPanel.Controls.Add(ButtonMinimise);
             NavPanel.Controls.Add(ButtonClose);
-            NavPanel.Controls.Add(ButtonPositionCubase);
             NavPanel.Dock = DockStyle.Top;
             NavPanel.Location = new Point(0, 0);
             NavPanel.Name = "NavPanel";
             NavPanel.Size = new Size(200, 61);
             NavPanel.TabIndex = 0;
+            // 
+            // ButtonBack
+            // 
+            ButtonBack.Image = (Image)resources.GetObject("ButtonBack.Image");
+            ButtonBack.Location = new Point(3, 3);
+            ButtonBack.Name = "ButtonBack";
+            ButtonBack.Size = new Size(32, 32);
+            ButtonBack.SizeMode = PictureBoxSizeMode.StretchImage;
+            ButtonBack.TabIndex = 8;
+            ButtonBack.TabStop = false;
             // 
             // ButtonMinimise
             // 
@@ -73,18 +84,6 @@
             ButtonClose.TabIndex = 6;
             ButtonClose.TabStop = false;
             // 
-            // ButtonPositionCubase
-            // 
-            ButtonPositionCubase.BackColor = SystemColors.ControlDarkDark;
-            ButtonPositionCubase.Font = new Font("Segoe UI", 9F, FontStyle.Bold);
-            ButtonPositionCubase.ForeColor = SystemColors.ButtonHighlight;
-            ButtonPositionCubase.Location = new Point(56, 3);
-            ButtonPositionCubase.Name = "ButtonPositionCubase";
-            ButtonPositionCubase.Size = new Size(38, 29);
-            ButtonPositionCubase.TabIndex = 2;
-            ButtonPositionCubase.Text = "C";
-            ButtonPositionCubase.UseVisualStyleBackColor = false;
-            // 
             // MainPanel
             // 
             MainPanel.AutoScroll = true;
@@ -94,15 +93,15 @@
             MainPanel.Size = new Size(200, 453);
             MainPanel.TabIndex = 1;
             // 
-            // ButtonBack
+            // ButtonPositionCubase
             // 
-            ButtonBack.Image = (Image)resources.GetObject("ButtonBack.Image");
-            ButtonBack.Location = new Point(3, 3);
-            ButtonBack.Name = "ButtonBack";
-            ButtonBack.Size = new Size(32, 32);
-            ButtonBack.SizeMode = PictureBoxSizeMode.StretchImage;
-            ButtonBack.TabIndex = 8;
-            ButtonBack.TabStop = false;
+            ButtonPositionCubase.Image = (Image)resources.GetObject("ButtonPositionCubase.Image");
+            ButtonPositionCubase.Location = new Point(75, 3);
+            ButtonPositionCubase.Name = "ButtonPositionCubase";
+            ButtonPositionCubase.Size = new Size(32, 32);
+            ButtonPositionCubase.SizeMode = PictureBoxSizeMode.StretchImage;
+            ButtonPositionCubase.TabIndex = 9;
+            ButtonPositionCubase.TabStop = false;
             // 
             // MainMenuControl
             // 
@@ -113,9 +112,10 @@
             Name = "MainMenuControl";
             Size = new Size(200, 514);
             NavPanel.ResumeLayout(false);
+            ((System.ComponentModel.ISupportInitialize)ButtonBack).EndInit();
             ((System.ComponentModel.ISupportInitialize)ButtonMinimise).EndInit();
             ((System.ComponentModel.ISupportInitialize)ButtonClose).EndInit();
-            ((System.ComponentModel.ISupportInitialize)ButtonBack).EndInit();
+            ((System.ComponentModel.ISupportInitialize)ButtonPositionCubase).EndInit();
             ResumeLayout(false);
         }
 
@@ -123,9 +123,9 @@
 
         private Panel NavPanel;
         private Panel MainPanel;
-        private Button ButtonPositionCubase;
         private Buttons.PictureButton ButtonClose;
         private Buttons.PictureButton ButtonMinimise;
         private Buttons.PictureButton ButtonBack;
+        private Buttons.PictureButton ButtonPositionCubase;
     }
 }

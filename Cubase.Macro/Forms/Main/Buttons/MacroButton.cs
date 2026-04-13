@@ -1,5 +1,6 @@
 ﻿using Cubase.Macro.Forms.Configuration.ColourPicker;
 using Cubase.Macro.Models;
+using Microsoft.Windows.Themes;
 using System;
 using System.Collections.Generic;
 using System.Text;
@@ -25,6 +26,9 @@ namespace Cubase.Macro.Forms.Main.Buttons
             this.Dock = DockStyle.Fill;
             this.SetColoursAndTitle();
             this.Font = new Font(this.Font.FontFamily, this.Font.Size+2, FontStyle.Bold);
+            this.Cursor = Cursors.Hand;
+            this.FlatStyle = FlatStyle.Flat;
+            this.FlatAppearance.BorderSize = 1;
         }
 
         protected override void OnClick(EventArgs e)
@@ -32,10 +36,20 @@ namespace Cubase.Macro.Forms.Main.Buttons
             base.OnClick(e);
             this.OnMacroClicked?.Invoke(this.Macro, this);
             this.FlatStyle = FlatStyle.Flat;
-            this.FlatAppearance.BorderSize = 2;
-            this.FlatAppearance.BorderColor = this.BackColor;
 
         }
+
+        public void SetBlockCursor()
+        {
+            this.Cursor = Cursors.WaitCursor;
+            this.Update();
+        }
+
+        public void SetDefaultCursor()
+        {
+            this.Cursor = Cursors.Hand;
+            this.Update();
+        }   
 
         public void SetColoursAndTitle()
         {
@@ -65,6 +79,7 @@ namespace Cubase.Macro.Forms.Main.Buttons
             }
             this.FlatAppearance.MouseOverBackColor = this.BackColor;
             this.FlatAppearance.MouseDownBackColor = this.BackColor;
+            this.FlatAppearance.BorderColor = this.BackColor;
         }
     }
 }

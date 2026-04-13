@@ -25,6 +25,10 @@ namespace Cubase.Macro.Services.Window
         [DllImport("user32.dll")] private static extern int GetWindowLong(IntPtr hWnd, int nIndex);
         [DllImport("user32.dll")] private static extern int SetWindowLong(IntPtr hWnd, int nIndex, int dwNewLong);
 
+
+        [DllImport("user32.dll")]
+        private static extern bool BringWindowToTop(IntPtr hWnd);
+
         [DllImport("user32.dll", SetLastError = true)]
         private static extern bool SetWindowPos(
             IntPtr hWnd,
@@ -154,6 +158,31 @@ namespace Cubase.Macro.Services.Window
 
             if (hWnd == IntPtr.Zero)
                 return false;
+
+
+            uint targetThreadId = GetWindowThreadProcessId(hWnd, out uint processId);
+            uint currentThreadId = GetCurrentThreadId();
+
+            try
+            {
+                // Attach input threads
+                if (currentThreadId != targetThreadId)
+                {
+                    AttachThreadInput(currentThreadId, targetThreadId, true);
+                }
+
+                // Bring to front
+                BringWindowToTop(hWnd);
+                SetForegroundWindow(hWnd);
+            }
+            finally
+            {
+                // Always detach!
+                if (currentThreadId != targetThreadId)
+                {
+                    AttachThreadInput(currentThreadId, targetThreadId, false);
+                }
+            }
 
             SetForegroundWindow(hWnd);
 
