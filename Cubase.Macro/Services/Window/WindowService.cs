@@ -141,13 +141,12 @@ namespace Cubase.Macro.Services.Window
         public IntPtr GetCubaseHandle()
         {
             var process = Process.GetProcesses()
-                .Where(p =>
+                .FirstOrDefault(p =>
                     p.MainWindowTitle.StartsWith("Cubase Pro Project", StringComparison.OrdinalIgnoreCase) ||
                     p.MainWindowTitle.StartsWith("Cubase Artist", StringComparison.OrdinalIgnoreCase) ||
                     p.MainWindowTitle.StartsWith("Cubase LE", StringComparison.OrdinalIgnoreCase) ||
                     p.MainWindowTitle.StartsWith("Cubase Version", StringComparison.OrdinalIgnoreCase) ||
-                    p.MainWindowTitle.StartsWith("Cubase Elements", StringComparison.OrdinalIgnoreCase))
-                .FirstOrDefault();
+                    p.MainWindowTitle.StartsWith("Cubase Elements", StringComparison.OrdinalIgnoreCase));
 
             return process?.MainWindowHandle ?? IntPtr.Zero;
         }
@@ -200,6 +199,12 @@ namespace Cubase.Macro.Services.Window
         public bool IsCubaseActive(bool logit = true)
         {
             return this.GetCubaseHandle() != IntPtr.Zero;   
+        }
+
+        public bool IsCubaseRunning()
+        {
+            var process = Process.GetProcesses().FirstOrDefault(x => x.ProcessName.StartsWith("cubase", StringComparison.OrdinalIgnoreCase));
+            return process != null;
         }
 
         public bool IsCubaseFullscreen(int left)

@@ -8,6 +8,8 @@ namespace Cubase.Macro.Services.Window
     {
         bool IsCubaseActive(bool log = true);
 
+        bool IsCubaseRunning();
+
         bool BringCubaseToFront();
 
         Rectangle GetCubaseBounds();

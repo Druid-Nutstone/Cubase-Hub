@@ -25,6 +25,15 @@ namespace Cubase.Macro
         [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
         public Action ActionComplete { get; set; } = () => { };
 
+        private enum CubaseState
+        {
+            WaitingForActive,
+            WaitingForClosed
+        }
+
+        private CubaseState _state = CubaseState.WaitingForActive;
+        private System.Windows.Forms.Timer _timer;
+
         public bool HaveError { get; private set; }
 
         private CubaseMacroCollection macros;
@@ -38,7 +47,9 @@ namespace Cubase.Macro
         private readonly IWindowService windowService;
 
         private readonly ILogger<MainForm> logger;
-        
+
+        private bool userForcedMinimise = false;
+
         public MainForm(IKeyboardService keyboardService, 
                         IConfigurationService configurationService,
                         IWindowService windowService,
@@ -63,6 +74,7 @@ namespace Cubase.Macro
                 MessageBox.Show("No macros configured. Please configure macros (Right-click and Open Settings) before using.");
             }
             this.ShowMacros();
+            this.StartCubaseWatcher();
         }
 
         private void OnBackClicked(CubaseMacro currentMacro, PictureButton pictureButton)
@@ -149,40 +161,40 @@ namespace Cubase.Macro
             }
         }
 
-        private void WaitForCubaseToBeActive(bool checkIsActive)
+        private void StartCubaseWatcher()
         {
-            var timer = new System.Windows.Forms.Timer();
-            timer.Interval = 1000;
-            timer.Tick += (sender, args) =>
-            {
+            _timer = new System.Windows.Forms.Timer();
+            _timer.Interval = 300;
 
-                if (checkIsActive)
+            _timer.Tick += (s, e) =>
+            {
+                bool isRunning = this.windowService.IsCubaseRunning();
+                bool isActive = this.windowService.IsCubaseActive();
+
+                if (isRunning && isActive)
                 {
-                    if (this.windowService.IsCubaseActive())
+                    // Cubase is foreground → show
+                    if (this.WindowState != FormWindowState.Normal && !userForcedMinimise)
                     {
-                        timer.Stop();
-                        timer.Dispose();
                         this.WindowState = FormWindowState.Normal;
                         this.PositionCubase();
-                        WaitForCubaseToBeActive(false);
                     }
                 }
                 else
                 {
-                    if (!this.windowService.IsCubaseActive())
+                    if (!isRunning)
                     {
-                        timer.Stop();
-                        timer.Dispose();
                         this.WindowState = FormWindowState.Minimized;
-                        WaitForCubaseToBeActive(true);
                     }
                 }
             };
-            timer.Start();
+
+            _timer.Start();
         }
 
         public void Minimise()         {
-            
+
+            userForcedMinimise = true;
             this.WindowState = FormWindowState.Minimized;
             this.MaximiseCubase();
         }
@@ -200,26 +212,20 @@ namespace Cubase.Macro
             this.TopMost = false;
         }
 
-        protected override void OnShown(EventArgs e)
+        protected override void OnFormClosing(FormClosingEventArgs e)
         {
-             this.PositionCubase();
-             base.OnShown(e);
+            base.OnFormClosing(e);
+            this.MaximiseCubase();
         }
 
         protected override void OnResize(EventArgs e)
         {
             base.OnResize(e);
-
             if (this.WindowState == FormWindowState.Normal)
             {
-                this.SetWindowAndCubase();
+                userForcedMinimise = false;
+                this.PositionCubase();
             }
-        }
-
-        protected override void OnFormClosing(FormClosingEventArgs e)
-        {
-            base.OnFormClosing(e);
-            this.MaximiseCubase();
         }
 
         private void RunMacro(List<CubaseKeyCommand> macros, CubaseMacro macro)
@@ -265,23 +271,9 @@ namespace Cubase.Macro
 
         public void PositionCubase()
         {
-            this.windowService.PositionCubase(this.Width);
-        }
-
-        private void SetWindowAndCubase()
-        {
             if (this.windowService != null)
             {
-                if (!this.windowService.IsCubaseActive())
-                {
-                    this.WindowState = FormWindowState.Minimized;
-                    this.WaitForCubaseToBeActive(true);
-                }
-                else
-                {
-                    ToFront();
-                    this.PositionCubase();
-                }
+                this.windowService.PositionCubase(this.Width);
             }
         }
 
