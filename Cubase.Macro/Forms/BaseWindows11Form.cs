@@ -178,6 +178,11 @@ namespace Cubase.Macro.Forms
                 cb.ForeColor = DarkTheme.TextColor;
             }
 
+            if (control is PictureBox pb)
+            {
+                pb.BackColor = Color.Transparent;
+                pb.ForeColor = Color.Transparent;
+            }
 
             if (control is GroupBox group)
             {

@@ -7,6 +7,7 @@ using System.Runtime.InteropServices;
 using System.Threading;
 using System.Drawing;
 using System.Windows.Forms;
+using System.Runtime.InteropServices.ObjectiveC;
 
 namespace Cubase.Macro.Services.Window
 {
@@ -169,32 +170,22 @@ namespace Cubase.Macro.Services.Window
 
         public bool IsCubaseActive(bool logit = true)
         {
-            IntPtr hwnd = GetForegroundWindow();
-
-            if (hwnd == IntPtr.Zero)
-                return false;
-
-            GetWindowThreadProcessId(hwnd, out uint pid);
-
-            try
-            {
-                var process = Process.GetProcessById((int)pid);
-
-                if (logit)
-                    log.LogInformation($"Active process: {process.ProcessName}");
-
-                return process.ProcessName.StartsWith("Cubase", StringComparison.OrdinalIgnoreCase);
-            }
-            catch (Exception ex)
-            {
-                log.LogError(ex, "Error checking active process");
-                return false;
-            }
+            return this.GetCubaseHandle() != IntPtr.Zero;   
         }
 
         public bool IsCubaseFullscreen(int left)
         {
             return GetCubaseBounds().Left == left;  
+        }
+
+        public void MaximiseCubase()
+        {
+            var ptr = this.GetCubaseHandle();
+            if (ptr != IntPtr.Zero)
+            {
+                ShowWindow(ptr, 9); // SW_Restore
+                ShowWindow(ptr, 3); // SW_MAXIMIZE
+            }
         }
     }
 }

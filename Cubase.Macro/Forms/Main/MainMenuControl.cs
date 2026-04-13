@@ -30,15 +30,17 @@ namespace Cubase.Macro.Forms.Main
             this.menuControl = new MenuControl();
             this.MainPanel.Controls.Add(menuControl);
             ButtonBack.Click += ButtonBack_Click;
+            ButtonBack.HelpText = "Go Back To Previous Menu";
             ButtonClose.Click += ButtonClose_Click;
+            ButtonClose.HelpText = "Close Cubase Macro Completely";
+            ButtonMinimise.Click += ButtonMinimise_Click;
+            ButtonMinimise.HelpText = "Minimise Cubase Macro";
             ButtonPositionCubase.Click += ButtonPositionCubase_Click;
         }
 
-        public void SetColours()
+        private void ButtonMinimise_Click(object? sender, EventArgs e)
         {
-            ButtonClose.BackColor = Color.IndianRed;
-
-             
+            this.mainForm.Minimise();
         }
 
         private void ButtonPositionCubase_Click(object? sender, EventArgs e)

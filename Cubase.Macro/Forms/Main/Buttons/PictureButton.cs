@@ -1,0 +1,25 @@
+﻿using System;
+using System.Collections.Generic;
+using System.Text;
+using System.ComponentModel;
+
+namespace Cubase.Macro.Forms.Main.Buttons
+{
+    public class PictureButton : PictureBox
+    {
+        [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
+        public string HelpText
+        {
+            get => this.toolTip.GetToolTip(this);
+            set => this.toolTip.SetToolTip(this, value);
+        }
+
+        private ToolTip toolTip = new ToolTip();
+
+        public PictureButton()
+        {
+            this.Cursor = Cursors.Hand;
+            this.SizeMode = PictureBoxSizeMode.StretchImage;
+        }
+    }
+}

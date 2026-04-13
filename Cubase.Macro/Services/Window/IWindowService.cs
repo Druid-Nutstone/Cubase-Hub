@@ -14,6 +14,6 @@ namespace Cubase.Macro.Services.Window
 
         void PositionCubase(int left);
 
- 
+        void MaximiseCubase();
     }
 }

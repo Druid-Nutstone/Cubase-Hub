@@ -1,7 +1,9 @@
-﻿using Cubase.Macro.Models;
+﻿using Cubase.Macro.Forms.Configuration.ColourPicker;
+using Cubase.Macro.Models;
 using System;
 using System.Collections.Generic;
 using System.Text;
+using Timer = System.Windows.Forms.Timer;
 
 namespace Cubase.Macro.Forms.Main.Buttons
 {
@@ -10,6 +12,10 @@ namespace Cubase.Macro.Forms.Main.Buttons
         private Action<CubaseMacro, MacroButton> OnMacroClicked;
 
         private CubaseMacro Macro;
+
+        private System.Windows.Forms.Timer animate;
+
+        private Color[] borderColours = new Color[] {Color.DarkGreen, Color.White};
 
         public MacroButton(CubaseMacro macro, Action<CubaseMacro, MacroButton> OnMacroClicked) : base()
         {
@@ -24,10 +30,10 @@ namespace Cubase.Macro.Forms.Main.Buttons
         protected override void OnClick(EventArgs e)
         {
             base.OnClick(e);
-            this.SetColoursAndTitle();
             this.OnMacroClicked?.Invoke(this.Macro, this);
             this.FlatStyle = FlatStyle.Flat;
-            this.FlatAppearance.BorderSize = 0;
+            this.FlatAppearance.BorderSize = 2;
+            this.FlatAppearance.BorderColor = this.BackColor;
 
         }
 
@@ -38,12 +44,24 @@ namespace Cubase.Macro.Forms.Main.Buttons
                 this.BackColor = Color.FromArgb(this.Macro.ToggleBackgroundColourARGB);
                 this.ForeColor = Color.FromArgb(this.Macro.ToggleForegroundColourARGB);
                 this.Text = this.Macro.TitleToggle;
+                this.animate = new Timer();
+                this.animate.Interval = 500;
+                var colourIndex = 0;
+                this.animate.Tick += (s, e) =>
+                {
+                    this.FlatAppearance.BorderColor = this.borderColours[colourIndex];
+                    this.Update();
+                    colourIndex = colourIndex == 0 ? 1 : 0;
+                };
+                animate.Start();
             }
             else
             {
                 this.BackColor = Color.FromArgb(this.Macro.BackgroundColourARGB);
                 this.ForeColor = Color.FromArgb(this.Macro.ForegroundColourARGB);
                 this.Text = this.Macro.Title;
+                this.animate?.Stop();
+                this.animate?.Dispose();
             }
             this.FlatAppearance.MouseOverBackColor = this.BackColor;
             this.FlatAppearance.MouseDownBackColor = this.BackColor;

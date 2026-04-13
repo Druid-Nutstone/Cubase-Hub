@@ -28,61 +28,62 @@
         /// </summary>
         private void InitializeComponent()
         {
+            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(MainMenuControl));
             NavPanel = new Panel();
+            ButtonMinimise = new Cubase.Macro.Forms.Main.Buttons.PictureButton();
+            ButtonClose = new Cubase.Macro.Forms.Main.Buttons.PictureButton();
             ButtonPositionCubase = new Button();
-            ButtonClose = new Button();
-            ButtonBack = new Button();
             MainPanel = new Panel();
+            ButtonBack = new Cubase.Macro.Forms.Main.Buttons.PictureButton();
             NavPanel.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)ButtonMinimise).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)ButtonClose).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)ButtonBack).BeginInit();
             SuspendLayout();
             // 
             // NavPanel
             // 
-            NavPanel.Controls.Add(ButtonPositionCubase);
-            NavPanel.Controls.Add(ButtonClose);
             NavPanel.Controls.Add(ButtonBack);
+            NavPanel.Controls.Add(ButtonMinimise);
+            NavPanel.Controls.Add(ButtonClose);
+            NavPanel.Controls.Add(ButtonPositionCubase);
             NavPanel.Dock = DockStyle.Top;
             NavPanel.Location = new Point(0, 0);
             NavPanel.Name = "NavPanel";
             NavPanel.Size = new Size(200, 61);
             NavPanel.TabIndex = 0;
             // 
+            // ButtonMinimise
+            // 
+            ButtonMinimise.Image = (Image)resources.GetObject("ButtonMinimise.Image");
+            ButtonMinimise.Location = new Point(113, 3);
+            ButtonMinimise.Name = "ButtonMinimise";
+            ButtonMinimise.Size = new Size(32, 32);
+            ButtonMinimise.SizeMode = PictureBoxSizeMode.StretchImage;
+            ButtonMinimise.TabIndex = 7;
+            ButtonMinimise.TabStop = false;
+            // 
+            // ButtonClose
+            // 
+            ButtonClose.Image = Properties.Resources.icons8_close_window_32;
+            ButtonClose.Location = new Point(151, 3);
+            ButtonClose.Name = "ButtonClose";
+            ButtonClose.Size = new Size(32, 32);
+            ButtonClose.SizeMode = PictureBoxSizeMode.StretchImage;
+            ButtonClose.TabIndex = 6;
+            ButtonClose.TabStop = false;
+            // 
             // ButtonPositionCubase
             // 
             ButtonPositionCubase.BackColor = SystemColors.ControlDarkDark;
             ButtonPositionCubase.Font = new Font("Segoe UI", 9F, FontStyle.Bold);
             ButtonPositionCubase.ForeColor = SystemColors.ButtonHighlight;
-            ButtonPositionCubase.Location = new Point(99, 3);
+            ButtonPositionCubase.Location = new Point(56, 3);
             ButtonPositionCubase.Name = "ButtonPositionCubase";
             ButtonPositionCubase.Size = new Size(38, 29);
             ButtonPositionCubase.TabIndex = 2;
             ButtonPositionCubase.Text = "C";
             ButtonPositionCubase.UseVisualStyleBackColor = false;
-            // 
-            // ButtonClose
-            // 
-            ButtonClose.Anchor = AnchorStyles.Top | AnchorStyles.Right;
-            ButtonClose.BackColor = Color.IndianRed;
-            ButtonClose.Font = new Font("Segoe UI", 9F, FontStyle.Bold);
-            ButtonClose.ForeColor = SystemColors.ButtonHighlight;
-            ButtonClose.Location = new Point(143, 3);
-            ButtonClose.Name = "ButtonClose";
-            ButtonClose.Size = new Size(45, 29);
-            ButtonClose.TabIndex = 1;
-            ButtonClose.Text = "X";
-            ButtonClose.UseVisualStyleBackColor = false;
-            // 
-            // ButtonBack
-            // 
-            ButtonBack.BackColor = SystemColors.ControlDarkDark;
-            ButtonBack.Font = new Font("Segoe UI", 9F, FontStyle.Bold);
-            ButtonBack.ForeColor = SystemColors.ButtonHighlight;
-            ButtonBack.Location = new Point(12, 3);
-            ButtonBack.Name = "ButtonBack";
-            ButtonBack.Size = new Size(46, 29);
-            ButtonBack.TabIndex = 0;
-            ButtonBack.Text = "<<";
-            ButtonBack.UseVisualStyleBackColor = false;
             // 
             // MainPanel
             // 
@@ -93,6 +94,16 @@
             MainPanel.Size = new Size(200, 453);
             MainPanel.TabIndex = 1;
             // 
+            // ButtonBack
+            // 
+            ButtonBack.Image = (Image)resources.GetObject("ButtonBack.Image");
+            ButtonBack.Location = new Point(3, 3);
+            ButtonBack.Name = "ButtonBack";
+            ButtonBack.Size = new Size(32, 32);
+            ButtonBack.SizeMode = PictureBoxSizeMode.StretchImage;
+            ButtonBack.TabIndex = 8;
+            ButtonBack.TabStop = false;
+            // 
             // MainMenuControl
             // 
             AutoScaleDimensions = new SizeF(8F, 20F);
@@ -102,6 +113,9 @@
             Name = "MainMenuControl";
             Size = new Size(200, 514);
             NavPanel.ResumeLayout(false);
+            ((System.ComponentModel.ISupportInitialize)ButtonMinimise).EndInit();
+            ((System.ComponentModel.ISupportInitialize)ButtonClose).EndInit();
+            ((System.ComponentModel.ISupportInitialize)ButtonBack).EndInit();
             ResumeLayout(false);
         }
 
@@ -109,8 +123,9 @@
 
         private Panel NavPanel;
         private Panel MainPanel;
-        private Button ButtonBack;
-        private Button ButtonClose;
         private Button ButtonPositionCubase;
+        private Buttons.PictureButton ButtonClose;
+        private Buttons.PictureButton ButtonMinimise;
+        private Buttons.PictureButton ButtonBack;
     }
 }
