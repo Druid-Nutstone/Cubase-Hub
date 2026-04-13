@@ -162,8 +162,13 @@ namespace Cubase.Macro.Services.Keyboard
                 foreach (var mod in orderedMods)
                     modInputs.Add(CreateKeyInput(mod, false));
 
+                uint rc = 0;
+
                 if (modInputs.Count > 0)
-                    SendInput((uint)modInputs.Count, modInputs.ToArray(), Marshal.SizeOf<INPUT>());
+                    rc = SendInput((uint)modInputs.Count, modInputs.ToArray(), Marshal.SizeOf<INPUT>());
+
+                if (!CheckForError(rc))
+                    return false;
 
                 Thread.Sleep(50); // let Cubase register modifiers
 
@@ -173,13 +178,10 @@ namespace Cubase.Macro.Services.Keyboard
                    CreateKeyInput(mainKey, false),
                    CreateKeyInput(mainKey, true)
                 };
-                var rc = SendInput((uint)keyInputs.Length, keyInputs, Marshal.SizeOf<INPUT>());
+                rc = SendInput((uint)keyInputs.Length, keyInputs, Marshal.SizeOf<INPUT>());
 
-                if (rc == 0)
-                {
-                    var err = Marshal.GetLastWin32Error();
-                    errHandler($"SendInput failed: {err} - {GetWin32ErrorMessage(err)}");
-                }
+                if (!CheckForError(rc))
+                    return false;
 
                 Thread.Sleep(50); // optional small pause
 
@@ -190,6 +192,17 @@ namespace Cubase.Macro.Services.Keyboard
 
                 if (releaseMods.Count > 0)
                     SendInput((uint)releaseMods.Count, releaseMods.ToArray(), Marshal.SizeOf<INPUT>());
+
+                bool CheckForError(uint result)
+                {
+                    if (result == 0)
+                    {
+                        var err = Marshal.GetLastWin32Error();
+                        errHandler($"SendInput failed: {err} - {GetWin32ErrorMessage(err)}");
+                        return false;
+                    }
+                    return true;
+                }
 
                 return true;
             }

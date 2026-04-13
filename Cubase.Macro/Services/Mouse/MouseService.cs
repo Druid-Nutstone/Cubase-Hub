@@ -118,7 +118,7 @@ namespace Cubase.Macro.Services.Mouse
                     {
                         // log.LogInformation("Mouse left MainForm → closing");
 
-                        mainForm.CloseWindow(); // or Hide()
+                        mainForm.BringToFront(); // or Hide()
                     }
                 }
                 else

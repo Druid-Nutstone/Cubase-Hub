@@ -93,8 +93,7 @@ namespace Cubase.Macro
                     if (currentMacro.MenuChangesVisibility)
                     {
                         RunMacro([CubaseKeyCommand.CreateFromKey(this.configurationService.Configuration.ResetVisibilityKey)], currentMacro);
-                        this.TopMost = true;
-                        this.BringToFront();
+
                     }
                 }
                 else 
@@ -104,6 +103,7 @@ namespace Cubase.Macro
             }
             var parentMenu = this.macros.FindParentIdRecursive(this.macros.First(), currentMacro.ParentId.Value);
             this.mainMenuControl.Initialise(parentMenu, MacroClicked, this.OnBackClicked, this);
+            this.ToFront();
         }
 
         private void MacroClicked(CubaseMacro macro, MacroButton macroButton)
@@ -128,7 +128,7 @@ namespace Cubase.Macro
                     RunMacro(macro.ToggleOnKeys, macro);
                 }
                 macroButton.SetColoursAndTitle();
-                this.CloseWindow();
+                this.ToFront();
             }
             else if (macro.MacroType == CubaseMacroType.Menu)
             {
@@ -181,13 +181,14 @@ namespace Cubase.Macro
 
         private void ToFront()
         {
+            this.TopMost = true;
             this.BringToFront();                   // Bring to front
             this.Activate();                       // Give focus to form
-            this.Focus();
         }
 
         private void ToBack()
         {
+            // this.SendToBack();
             this.TopMost = false;
         }
 
@@ -252,10 +253,6 @@ namespace Cubase.Macro
             }
         }
 
-        public void CloseWindow()
-        {
-            this.TopMost = false;
-        }
 
         public void PositionCubase()
         {
