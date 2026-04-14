@@ -10,6 +10,8 @@ namespace Cubase.Macro.Services.Window
 
         bool IsCubaseRunning();
 
+        bool IsCubaseMainWindowActive();
+
         bool BringCubaseToFront();
 
         Rectangle GetCubaseBounds();
@@ -17,5 +19,7 @@ namespace Cubase.Macro.Services.Window
         void PositionCubase(int left);
 
         void MaximiseCubase();
+
+        ExternalWindowState GetCubaseWindowState();
     }
 }

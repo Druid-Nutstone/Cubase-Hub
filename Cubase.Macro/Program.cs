@@ -63,7 +63,7 @@ namespace Cubase.Macro
             {
                 // get main form 
                 var mainForm = services.GetService<MainForm>();
-                // mainForm.WindowState = FormWindowState.Minimized;
+                mainForm.WindowState = FormWindowState.Minimized;
                 // initialise mouse watcher THIS DOES WEIRD SHIZ to the mouse 
                 //var mouseWatcher = services.GetService<IMouseService>();
                 //mouseWatcher.Initialise();

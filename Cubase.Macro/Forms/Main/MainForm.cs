@@ -48,7 +48,7 @@ namespace Cubase.Macro
 
         private readonly ILogger<MainForm> logger;
 
-        private bool userForcedMinimise = false;
+        private bool userMinimisedWindow = false;
 
         public MainForm(IKeyboardService keyboardService, 
                         IConfigurationService configurationService,
@@ -164,15 +164,24 @@ namespace Cubase.Macro
             _timer.Tick += (s, e) =>
             {
                 bool isRunning = this.windowService.IsCubaseRunning();
-                bool isActive = this.windowService.IsCubaseActive();
+                bool isActive = this.windowService.IsCubaseMainWindowActive();
 
                 if (isRunning && isActive)
                 {
-                    // Cubase is foreground → show
-                    if (this.WindowState != FormWindowState.Normal && !userForcedMinimise)
+                    if (this.WindowState == FormWindowState.Normal)
                     {
-                        this.WindowState = FormWindowState.Normal;
-                        this.PositionCubase();
+                        if (windowService.GetCubaseWindowState() == ExternalWindowState.Maximized)
+                        {
+                            this.PositionCubase();
+                        }
+                        userMinimisedWindow = false;
+                    }
+                    else
+                    {
+                        if (!userMinimisedWindow)
+                        {
+                            this.WindowState = FormWindowState.Normal;
+                        }
                     }
                 }
                 else
@@ -189,9 +198,9 @@ namespace Cubase.Macro
 
         public void Minimise()         {
 
-            userForcedMinimise = true;
             this.WindowState = FormWindowState.Minimized;
             this.MaximiseCubase();
+            this.userMinimisedWindow = true;
         }
 
         private void ToFront()
@@ -216,10 +225,12 @@ namespace Cubase.Macro
         protected override void OnResize(EventArgs e)
         {
             base.OnResize(e);
-            if (this.WindowState == FormWindowState.Normal)
+            if (userMinimisedWindow)
             {
-                userForcedMinimise = false;
-                this.PositionCubase();
+                if (this.WindowState == FormWindowState.Normal)
+                {
+                    this.PositionCubase();
+                }
             }
         }
 
@@ -269,6 +280,7 @@ namespace Cubase.Macro
             if (this.windowService != null)
             {
                 this.windowService.PositionCubase(this.Width);
+                this.windowService.BringCubaseToFront();
             }
         }
 

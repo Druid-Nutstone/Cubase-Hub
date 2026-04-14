@@ -9,11 +9,23 @@ using System.Runtime.InteropServices;
 using System.Runtime.InteropServices.ObjectiveC;
 using System.Text;
 using System.Threading;
+using System.Windows;
 using System.Windows.Forms;
 using static System.Windows.Forms.VisualStyles.VisualStyleElement.TextBox;
 
 namespace Cubase.Macro.Services.Window
 {
+    public enum ExternalWindowState
+    {
+        Hide = 0,
+        Normal = 1,
+        Minimized = 2,
+        Maximized = 3,
+        Show = 5,
+        Restore = 9,
+        Unknown = 99
+    }
+
     public class WindowService : IWindowService
     {
         #region Win32
@@ -57,6 +69,9 @@ namespace Cubase.Macro.Services.Window
 
         [DllImport("user32.dll")]
         private static extern bool GetWindowRect(IntPtr hWnd, out RECT lpRect);
+
+        [DllImport("user32.dll")]
+        private static extern bool GetWindowPlacement(IntPtr hWnd, ref WINDOWPLACEMENT lpwndpl);
 
         [DllImport("dwmapi.dll")]
         private static extern int DwmGetWindowAttribute(
@@ -104,6 +119,17 @@ namespace Cubase.Macro.Services.Window
         {
             public int Style;
             public RECT Rect;
+        }
+
+        [StructLayout(LayoutKind.Sequential)]
+        public struct WINDOWPLACEMENT
+        {
+            public int length;
+            public int flags;
+            public int showCmd;
+            public System.Drawing.Point ptMinPosition;
+            public System.Drawing.Point ptMaxPosition;
+            public Rect rcNormalPosition;
         }
 
         #endregion
@@ -241,6 +267,14 @@ namespace Cubase.Macro.Services.Window
             return this.GetCubaseHandle() != IntPtr.Zero;   
         }
 
+        public bool IsCubaseMainWindowActive()
+        {
+            var cubaseHandle = this.FindCubaseMainWindow();
+            if (cubaseHandle == IntPtr.Zero) return false;
+            var hwnd = Process.GetProcesses().FirstOrDefault(p => p.MainWindowTitle.StartsWith(this.configurationService.Configuration.CubaseProjectWindowName, StringComparison.OrdinalIgnoreCase))?.MainWindowHandle;
+            return hwnd != null;
+        }
+
         public bool IsCubaseRunning()
         {
             var process = Process.GetProcesses().FirstOrDefault(x => x.ProcessName.Equals(this.configurationService.Configuration.CubaseExecutable, StringComparison.OrdinalIgnoreCase));
@@ -260,6 +294,24 @@ namespace Cubase.Macro.Services.Window
                 ShowWindow(ptr, 9); // SW_Restore
                 ShowWindow(ptr, 3); // SW_MAXIMIZE
             }
+        }
+
+        public ExternalWindowState GetCubaseWindowState()
+        {
+            var ptr = this.GetCubaseHandle();
+            if (ptr != IntPtr.Zero)
+            {
+                return GetWindowState(ptr);
+            }
+            return ExternalWindowState.Unknown;
+        }
+
+        private ExternalWindowState GetWindowState(IntPtr hWnd)
+        {
+            WINDOWPLACEMENT placement = new WINDOWPLACEMENT();
+            placement.length = Marshal.SizeOf(placement);
+            GetWindowPlacement(hWnd, ref placement);
+            return Enum.GetValues<ExternalWindowState>().Contains((ExternalWindowState)placement.showCmd) ? (ExternalWindowState)placement.showCmd : ExternalWindowState.Unknown;
         }
     }
 }
