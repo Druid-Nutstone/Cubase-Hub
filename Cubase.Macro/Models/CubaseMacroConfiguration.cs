@@ -16,6 +16,10 @@ namespace Cubase.Macro.Models
 
         public int KeyHeight { get; set; } = 120;
 
+        public string CubaseExecutable { get; set; } = "Cubase15";
+
+        public string CubaseProjectWindowName { get; set; } = "Cubase Pro Project";
+
         public void Save()
         {
             var json = JsonSerializer.Serialize(this, new JsonSerializerOptions() { WriteIndented = true });

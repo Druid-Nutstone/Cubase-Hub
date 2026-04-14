@@ -102,7 +102,6 @@ namespace Cubase.Macro
                     if (currentMacro.MenuChangesVisibility)
                     {
                         RunMacro([CubaseKeyCommand.CreateFromKey(this.configurationService.Configuration.ResetVisibilityKey)], currentMacro);
-
                     }
                 }
                 else 
@@ -112,8 +111,7 @@ namespace Cubase.Macro
             }
             var parentMenu = this.macros.FindParentIdRecursive(this.macros.First(), currentMacro.ParentId.Value);
             this.mainMenuControl.Initialise(parentMenu, MacroClicked, this.OnBackClicked, this);
-            
-            this.ToFront();
+            this.windowService.BringCubaseToFront();
         }
 
         private void MacroClicked(CubaseMacro macro, MacroButton macroButton)
@@ -143,7 +141,6 @@ namespace Cubase.Macro
                     RunMacro(macro.ToggleOnKeys, macro);
                 }
                 macroButton.SetColoursAndTitle();
-                this.ToFront();
                 this.windowService.BringCubaseToFront();
             }
             else if (macro.MacroType == CubaseMacroType.Menu)
@@ -152,8 +149,6 @@ namespace Cubase.Macro
                 {
                     macroButton.SetBlockCursor();
                     RunMacro(macro.ToggleOnKeys, macro);
-                    ToFront();
-
                 }
                 this.mainMenuControl.Initialise(macro, MacroClicked, this.OnBackClicked, this);
                 macroButton.SetDefaultCursor();
@@ -233,7 +228,7 @@ namespace Cubase.Macro
             HaveError = false;
             bool okToContinue = true;
             ToBack();   
-            Thread.Sleep(100);
+            Thread.Sleep(300);
             foreach (var command in macros)
             {
                 if (okToContinue)

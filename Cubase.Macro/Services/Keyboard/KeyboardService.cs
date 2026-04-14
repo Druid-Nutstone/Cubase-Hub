@@ -106,7 +106,7 @@ namespace Cubase.Macro.Services.Keyboard
         {
             if (windowService.BringCubaseToFront())
             {
-                Thread.Sleep(100);
+                Thread.Sleep(150);
                 return SendKey(keyText, errHandler);
             }
             else
@@ -170,7 +170,7 @@ namespace Cubase.Macro.Services.Keyboard
                 if (!CheckForError(rc))
                     return false;
 
-                Thread.Sleep(50); // let Cubase register modifiers
+                Thread.Sleep(20); // let Cubase register modifiers
 
                 // --- PHASE 2: PRESS & RELEASE MAIN KEY ---
                 var keyInputs = new INPUT[]

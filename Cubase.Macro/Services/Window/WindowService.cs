@@ -1,13 +1,16 @@
-﻿using Microsoft.Extensions.Logging;
+﻿using Cubase.Macro.Services.Config;
+using Microsoft.Extensions.Logging;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.Drawing;
 using System.Linq;
 using System.Runtime.InteropServices;
-using System.Threading;
-using System.Drawing;
-using System.Windows.Forms;
 using System.Runtime.InteropServices.ObjectiveC;
+using System.Text;
+using System.Threading;
+using System.Windows.Forms;
+using static System.Windows.Forms.VisualStyles.VisualStyleElement.TextBox;
 
 namespace Cubase.Macro.Services.Window
 {
@@ -25,6 +28,19 @@ namespace Cubase.Macro.Services.Window
         [DllImport("user32.dll")] private static extern int GetWindowLong(IntPtr hWnd, int nIndex);
         [DllImport("user32.dll")] private static extern int SetWindowLong(IntPtr hWnd, int nIndex, int dwNewLong);
 
+        [DllImport("user32.dll")]
+        private static extern bool EnumChildWindows(IntPtr hWndParent, EnumWindowsProc lpEnumFunc, IntPtr lParam);
+
+        delegate bool EnumWindowsProc(IntPtr hWnd, IntPtr lParam);
+
+        [DllImport("user32.dll")] 
+        private static extern bool EnumWindows(EnumWindowsProc lpEnumFunc, IntPtr lParam);
+
+        [DllImport("user32.dll", CharSet = CharSet.Auto)]
+        static extern int GetWindowText(IntPtr hWnd, StringBuilder lpString, int nMaxCount);
+
+        [DllImport("user32.dll")]
+        static extern bool IsWindowVisible(IntPtr hWnd);
 
         [DllImport("user32.dll")]
         private static extern bool BringWindowToTop(IntPtr hWnd);
@@ -96,9 +112,12 @@ namespace Cubase.Macro.Services.Window
 
         private static readonly Dictionary<IntPtr, WindowState> _savedStates = new();
 
-        public WindowService(ILogger<WindowService> log)
+        private readonly IConfigurationService configurationService;
+
+        public WindowService(ILogger<WindowService> log, IConfigurationService configurationService)
         {
             this.log = log;
+            this.configurationService = configurationService;
         }
 
         public void PositionCubase(int leftOffset)
@@ -138,17 +157,40 @@ namespace Cubase.Macro.Services.Window
             return Rectangle.FromLTRB(rect.Left, rect.Top, rect.Right, rect.Bottom);
         }
 
+
+        private IntPtr FindCubaseMainWindow()
+        {
+            IntPtr result = IntPtr.Zero;
+
+            EnumWindows((hWnd, lParam) =>
+            {
+                GetWindowThreadProcessId(hWnd, out uint pid);
+
+                try
+                {
+                    var proc = Process.GetProcessById((int)pid);
+                    if (proc.ProcessName.Equals(this.configurationService.Configuration.CubaseExecutable, StringComparison.OrdinalIgnoreCase))
+                    {
+                        result = hWnd;
+                        return false; // stop enumeration
+                    }
+                }
+                catch { }
+
+                return true;
+            }, IntPtr.Zero);
+
+            return result;
+        }
+
+
         public IntPtr GetCubaseHandle()
         {
-            var process = Process.GetProcesses()
-                .FirstOrDefault(p =>
-                    p.MainWindowTitle.StartsWith("Cubase Pro Project", StringComparison.OrdinalIgnoreCase) ||
-                    p.MainWindowTitle.StartsWith("Cubase Artist", StringComparison.OrdinalIgnoreCase) ||
-                    p.MainWindowTitle.StartsWith("Cubase LE", StringComparison.OrdinalIgnoreCase) ||
-                    p.MainWindowTitle.StartsWith("Cubase Version", StringComparison.OrdinalIgnoreCase) ||
-                    p.MainWindowTitle.StartsWith("Cubase Elements", StringComparison.OrdinalIgnoreCase));
+            var cubaseHandle = this.FindCubaseMainWindow();
+            if (cubaseHandle == IntPtr.Zero) return IntPtr.Zero;
+            var hwnd = Process.GetProcesses().FirstOrDefault(p => p.MainWindowTitle.StartsWith(this.configurationService.Configuration.CubaseProjectWindowName, StringComparison.OrdinalIgnoreCase) && p.MainWindowHandle == cubaseHandle)?.MainWindowHandle;
+            return hwnd ?? cubaseHandle;
 
-            return process?.MainWindowHandle ?? IntPtr.Zero;
         }
 
         public bool BringCubaseToFront()
@@ -183,8 +225,6 @@ namespace Cubase.Macro.Services.Window
                 }
             }
 
-            SetForegroundWindow(hWnd);
-
             var count = 0;
             while (GetForegroundWindow() != hWnd && count < 100)
             {
@@ -203,7 +243,7 @@ namespace Cubase.Macro.Services.Window
 
         public bool IsCubaseRunning()
         {
-            var process = Process.GetProcesses().FirstOrDefault(x => x.ProcessName.StartsWith("cubase", StringComparison.OrdinalIgnoreCase));
+            var process = Process.GetProcesses().FirstOrDefault(x => x.ProcessName.Equals(this.configurationService.Configuration.CubaseExecutable, StringComparison.OrdinalIgnoreCase));
             return process != null;
         }
 

@@ -25,6 +25,11 @@ namespace Cubase.Macro.Forms.Configuration.Config
             MenuHeight.LostFocus += SaveConfig;
             KeyHeight.Bind(nameof(CubaseMacroConfiguration.KeyHeight), this.cubaseMacroConfiguration);
             KeyHeight.LostFocus += SaveConfig;
+            CubaseExecutableName.Bind(nameof(CubaseMacroConfiguration.CubaseExecutable), this.cubaseMacroConfiguration);
+            CubaseExecutableName.LostFocus += SaveConfig;   
+            CubaseProjectWindowStartsWith.Bind(nameof(CubaseMacroConfiguration.CubaseProjectWindowName), this.cubaseMacroConfiguration);
+            CubaseProjectWindowStartsWith.LostFocus += SaveConfig;
+
         }
 
         private void SaveConfig(object? sender, EventArgs e)
