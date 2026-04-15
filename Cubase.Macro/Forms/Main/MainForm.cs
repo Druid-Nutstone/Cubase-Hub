@@ -17,6 +17,7 @@ using System.Data;
 using System.Drawing;
 using System.Text;
 using System.Windows.Forms;
+using System.Windows.Input;
 
 namespace Cubase.Macro
 {
@@ -32,7 +33,10 @@ namespace Cubase.Macro
         }
 
         private CubaseState _state = CubaseState.WaitingForActive;
+        
         private System.Windows.Forms.Timer _timer;
+
+        private System.Windows.Forms.Timer _mouseWatcherTimer;
 
         public bool HaveError { get; private set; }
 
@@ -67,6 +71,7 @@ namespace Cubase.Macro
             LoadMacros();
             this.ShowMacros();
             this.StartCubaseWatcher();
+            this.StartMouseWatcher();
         }
 
         private void LoadMacros()
@@ -161,10 +166,48 @@ namespace Cubase.Macro
             }
         }
 
+        private void StartMouseWatcher()
+        {
+            _mouseWatcherTimer = new System.Windows.Forms.Timer();
+            _mouseWatcherTimer.Interval = 50;
+            _mouseWatcherTimer.Tick += (s, e) =>
+            {
+                if (windowService.IsCubaseRunning())
+                {
+                    if (insideForm())
+                    {
+                        if (!this.TopMost)
+                        {
+                            ToFront();
+                        }
+                    }
+                    else
+                    {
+                        if (this.TopMost)
+                        {
+                            ToBack();
+                            this.windowService.BringCubaseToFront(); 
+                        }
+                    }
+                }
+            };
+            
+            bool insideForm()
+            {
+                Point cursorPosition = System.Windows.Forms.Cursor.Position;
+                return cursorPosition.X >= this.Bounds.Left &&
+                cursorPosition.X <= this.Bounds.Right &&
+                cursorPosition.Y >= this.Bounds.Top &&
+                cursorPosition.Y <= this.Bounds.Bottom;
+            }
+
+            _mouseWatcherTimer.Start();
+        }
+
         private void StartCubaseWatcher()
         {
             _timer = new System.Windows.Forms.Timer();
-            _timer.Interval = 300;
+            _timer.Interval = 50;
 
             _timer.Tick += (s, e) =>
             {
@@ -175,7 +218,7 @@ namespace Cubase.Macro
                 {
                     if (this.WindowState == FormWindowState.Normal)
                     {
-                        if (windowService.GetCubaseWindowState() == ExternalWindowState.Maximized)
+                        if (!windowService.IsCubasePositioned(this.Width))
                         {
                             this.PositionCubase();
                         }
@@ -224,7 +267,6 @@ namespace Cubase.Macro
 
         private void ToBack()
         {
-            // this.SendToBack();
             this.TopMost = false;
         }
 

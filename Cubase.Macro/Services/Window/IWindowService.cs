@@ -20,6 +20,8 @@ namespace Cubase.Macro.Services.Window
 
         void MaximiseCubase();
 
+        bool IsCubasePositioned(int left);
+
         ExternalWindowState GetCubaseWindowState();
     }
 }

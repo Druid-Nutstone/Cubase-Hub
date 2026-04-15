@@ -28,6 +28,8 @@ namespace Cubase.Macro.Services.Window
 
     public class WindowService : IWindowService
     {
+        private int boundsTolerence = SystemInformation.BorderSize.Width * 9;
+
         #region Win32
 
         [DllImport("user32.dll")] private static extern bool SetForegroundWindow(IntPtr hWnd);
@@ -157,15 +159,15 @@ namespace Cubase.Macro.Services.Window
             int width = screen.Right - leftOffset;   // ✅ correct width
             int height = screen.Bottom - screen.Top; // ✅ correct height
 
-            var tolerence = SystemInformation.BorderSize.Width * 9;
+
 
             SetWindowPos(
                 hWnd,
                 HWND_TOP,
-                leftOffset-tolerence,
+                leftOffset-boundsTolerence,
                 screen.Top,
-                width+(tolerence*2),
-                height+tolerence,
+                width+(boundsTolerence * 2),
+                height+ boundsTolerence,
                 SWP_SHOWWINDOW
             );
         }
@@ -183,6 +185,11 @@ namespace Cubase.Macro.Services.Window
             return Rectangle.FromLTRB(rect.Left, rect.Top, rect.Right, rect.Bottom);
         }
 
+        public bool IsCubasePositioned(int left)
+        {
+            var bounds = GetCubaseBounds();
+            return bounds != Rectangle.Empty && (bounds.Left == (left-boundsTolerence));
+        }
 
         private IntPtr FindCubaseMainWindow()
         {
