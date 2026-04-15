@@ -64,6 +64,13 @@ namespace Cubase.Macro
             this.logger = log;
             StaticConfig.Instance.SetConfiguration(this.configurationService.Configuration);
             ThemeApplier.ApplyDarkTheme(this);
+            LoadMacros();
+            this.ShowMacros();
+            this.StartCubaseWatcher();
+        }
+
+        private void LoadMacros()
+        {
             this.macros = CubaseMacroCollection.Load();
             if (this.macros.Count > 0)
             {
@@ -73,8 +80,6 @@ namespace Cubase.Macro
             {
                 MessageBox.Show("No macros configured. Please configure macros (Right-click and Open Settings) before using.");
             }
-            this.ShowMacros();
-            this.StartCubaseWatcher();
         }
 
         private void OnBackClicked(CubaseMacro currentMacro, PictureButton pictureButton)
@@ -201,6 +206,13 @@ namespace Cubase.Macro
             this.WindowState = FormWindowState.Minimized;
             this.MaximiseCubase();
             this.userMinimisedWindow = true;
+        }
+
+        public void ReloadConfiguration()
+        {
+            this.configurationService.ReloadConfiguration();
+            StaticConfig.Instance.SetConfiguration(this.configurationService.Configuration);
+            LoadMacros();
         }
 
         private void ToFront()

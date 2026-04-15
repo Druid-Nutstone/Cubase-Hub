@@ -13,5 +13,10 @@ namespace Cubase.Macro.Services.Config
         {
             
         }
+
+        public void ReloadConfiguration()
+        {
+            this.Configuration = CubaseMacroConfiguration.Load();
+        }
     }
 }

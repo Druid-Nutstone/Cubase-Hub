@@ -37,28 +37,52 @@ namespace Cubase.Macro.Forms.Main
             ButtonMinimise.HelpText = "Minimise Cubase Macro";
             ButtonPositionCubase.Click += ButtonPositionCubase_Click;
             ButtonPositionCubase.HelpText = "Position Cubase";
+            ButtonRefresh.Click += ButtonRefresh_Click;
+            ButtonRefresh.HelpText = "Reload Configuration";
+        }
+
+        private void ButtonRefresh_Click(object? sender, EventArgs e)
+        {
+            ActionMenuClick(this.ButtonRefresh, () =>
+            {
+                if (this.menu.ParentId != null)
+                {
+                    this.ButtonBack_Click(this, null);
+                }
+                this.mainForm.ReloadConfiguration();
+            });
         }
 
         private void ButtonMinimise_Click(object? sender, EventArgs e)
         {
-            this.mainForm.Minimise();
+            ActionMenuClick(this.ButtonMinimise, this.mainForm.Minimise);
+            
         }
 
         private void ButtonPositionCubase_Click(object? sender, EventArgs e)
         {
-            this.mainForm.PositionCubase();
+            ActionMenuClick(this.ButtonPositionCubase, this.mainForm.PositionCubase);
         }
+
+        private void ActionMenuClick(PictureButton pictureButton, Action action)
+        {
+            pictureButton.Cursor = Cursors.WaitCursor;
+            action.Invoke();
+            pictureButton.Cursor= Cursors.Hand;
+        }
+
 
         private void ButtonClose_Click(object? sender, EventArgs e)
         {
-            this.mainForm.Close();
+            this.ActionMenuClick(this.ButtonClose, this.mainForm.Close);
         }
 
         private void ButtonBack_Click(object? sender, EventArgs e)
         {
-            this.ButtonBack.SetBlockCursor();
-            this.onBack?.Invoke(this.menu, this.ButtonBack);
-            this.ButtonBack.SetDefaultCursor();
+            this.ActionMenuClick(this.ButtonBack, () => 
+            {
+                this.onBack?.Invoke(this.menu, this.ButtonBack);
+            });
         }
 
         public void Initialise(CubaseMacro menu, Action<CubaseMacro, MacroButton> onMacroClicked, Action<CubaseMacro, PictureButton> onBack, MainForm mainForm)
