@@ -12,6 +12,7 @@ using Cubase.Macro.Forms.Configuration;
 using Cubase.Macro.Forms.Main;
 using Cubase.Macro.Services.Config;
 using Cubase.Macro.Services.Monitor;
+using Cubase.Macro.Services.Midi;
 
 namespace Cubase.Macro
 {
@@ -64,9 +65,8 @@ namespace Cubase.Macro
                 // get main form 
                 var mainForm = services.GetService<MainForm>();
                 mainForm.WindowState = FormWindowState.Minimized;
-                // initialise mouse watcher THIS DOES WEIRD SHIZ to the mouse 
-                //var mouseWatcher = services.GetService<IMouseService>();
-                //mouseWatcher.Initialise();
+                var midiService = services.GetService<IMidiService>();
+                midiService.Initialise();
                 Application.Run(services.GetService<MainForm>());
             }
             else
@@ -109,6 +109,7 @@ namespace Cubase.Macro
                 .AddSingleton<IKeyboardService, KeyboardService>()
                 .AddSingleton<IWindowService, WindowService>()
                 .AddSingleton<IConfigurationService, ConfigurationService>()
+                .AddSingleton<IMidiService, MidiService>()
                 .AddScoped<SettingsMainControl>()
                 .AddScoped<SettingsForm>()
                 .AddScoped<MainForm>();

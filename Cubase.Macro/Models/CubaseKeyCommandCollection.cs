@@ -70,18 +70,27 @@ namespace Cubase.Macro.Models
     {
         public string Name { get; set; } = string.Empty;
         public string Key { get; set; } = string.Empty;
-        public string Category {  get; set; } = string.Empty;
+        public string Category { get; set; } = string.Empty;
+
+        public int Note { get; set; } = 0;
+
+        public int Channel { get; set; } = 0;
 
         public int ThreadWaitAfterExecutionMs { get; set; } = 0;
 
         public static CubaseKeyCommand CreateFromKey(string key)
         {
-            return new CubaseKeyCommand() { Key = key };  
+            return new CubaseKeyCommand() { Key = key };
         }
-        
+
         public static CubaseKeyCommand Create()
         {
             return new CubaseKeyCommand();
+        }
+
+        public static CubaseKeyCommand CreateMidi(string name, int note, int channel)
+        {
+            return new CubaseKeyCommand() { Name = name, Key = $"[{note}:{channel}]", Note = note, Channel = channel, Category = CubaseMacroConstants.Midi };
         }
     }
 }

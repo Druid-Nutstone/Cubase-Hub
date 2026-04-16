@@ -5,6 +5,7 @@ using Cubase.Macro.Models;
 using Cubase.Macro.Services;
 using Cubase.Macro.Services.Config;
 using Cubase.Macro.Services.Keyboard;
+using Cubase.Macro.Services.Midi;
 using Cubase.Macro.Services.Monitor;
 using Cubase.Macro.Services.Mouse;
 using Cubase.Macro.Services.Window;
@@ -50,6 +51,8 @@ namespace Cubase.Macro
 
         private readonly IWindowService windowService;
 
+        private readonly IMidiService midiService;
+
         private readonly ILogger<MainForm> logger;
 
         private bool userMinimisedWindow = false;
@@ -59,6 +62,7 @@ namespace Cubase.Macro
         public MainForm(IKeyboardService keyboardService, 
                         IConfigurationService configurationService,
                         IWindowService windowService,
+                        IMidiService midiService,
                         ILogger<MainForm> log,
                         IServiceProvider serviceProvider)
         {
@@ -66,6 +70,7 @@ namespace Cubase.Macro
             this.keyboardService = keyboardService;
             this.configurationService = configurationService;
             this.serviceProvider = serviceProvider;
+            this.midiService = midiService;
             this.windowService = windowService;
             this.logger = log;
             StaticConfig.Instance.SetConfiguration(this.configurationService.Configuration);
@@ -304,6 +309,11 @@ namespace Cubase.Macro
             }
         }
 
+        private void RunMidiMacro(CubaseKeyCommand command)
+        {
+            this.midiService.SendMidiMessage(command);
+        }
+
         private void RunMacro(List<CubaseKeyCommand> macros, CubaseMacro macro)
         {
             HaveError = false;
@@ -315,21 +325,28 @@ namespace Cubase.Macro
             {
                 if (okToContinue)
                 {
-                    
-                    this.logger.LogInformation("Executing command {CommandName} with key {CommandKey}", command.Name, command.Key);
-                    okToContinue = this.keyboardService.SendKeyToCubase(command.Key, (err) =>
-                    {
-                        if (!err.ToLower().Contains("the operation completed"))
-                        {
 
-                            okToContinue = false;
-                            HaveError = true;
-                            this.TopMost = true;
-                            this.BringToFront();
-                            MessageBox.Show(err);
-                            return;
-                        }
-                    });
+                    if (command.Category == CubaseMacroConstants.Midi)
+                    {
+                        this.RunMidiMacro(command);
+                    }
+                    else
+                    {
+                        this.logger.LogInformation("Executing command {CommandName} with key {CommandKey}", command.Name, command.Key);
+                        okToContinue = this.keyboardService.SendKeyToCubase(command.Key, (err) =>
+                        {
+                            if (!err.ToLower().Contains("the operation completed"))
+                            {
+
+                                okToContinue = false;
+                                HaveError = true;
+                                this.TopMost = true;
+                                this.BringToFront();
+                                MessageBox.Show(err);
+                                return;
+                            }
+                        });
+                    }
                     if (command.ThreadWaitAfterExecutionMs > 0)
                     {
                         Thread.Sleep(command.ThreadWaitAfterExecutionMs);

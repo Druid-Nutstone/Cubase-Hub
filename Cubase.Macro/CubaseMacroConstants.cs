@@ -11,6 +11,8 @@ namespace Cubase.Macro
 
         public static string CubaseMacroLog = "CubaseMacroLog-";
 
+        public static string Midi = nameof(Midi);
+        
         public static string UserAppDataFolderPath =
             System.IO.Path.Combine(
                 Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData),

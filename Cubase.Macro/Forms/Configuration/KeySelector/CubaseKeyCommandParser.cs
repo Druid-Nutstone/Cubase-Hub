@@ -28,7 +28,13 @@ namespace Cubase.Macro.Forms.Configuration.KeySelector
                     ProcessCatgeories(element, list);
                 }
             }
+            AddMidiCommands(list);
             return list;
+        }
+
+        private void AddMidiCommands(CubaseKeyCommandCollection commands)
+        {
+            commands.Add(CubaseKeyCommand.CreateMidi("Start", 2, 0));
         }
 
         private void ProcessCatgeories(XElement catElement, CubaseKeyCommandCollection commands)
