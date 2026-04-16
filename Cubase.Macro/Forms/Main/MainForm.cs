@@ -54,6 +54,8 @@ namespace Cubase.Macro
 
         private bool userMinimisedWindow = false;
 
+        private bool suspendMonitoring = false;
+
         public MainForm(IKeyboardService keyboardService, 
                         IConfigurationService configurationService,
                         IWindowService windowService,
@@ -89,6 +91,7 @@ namespace Cubase.Macro
 
         private void OnBackClicked(CubaseMacro currentMacro, PictureButton pictureButton)
         {
+            this.suspendMonitoring = true;
             if (currentMacro.ParentId == null)
             {
                 return;
@@ -122,6 +125,7 @@ namespace Cubase.Macro
             var parentMenu = this.macros.FindParentIdRecursive(this.macros.First(), currentMacro.ParentId.Value);
             this.mainMenuControl.Initialise(parentMenu, MacroClicked, this.OnBackClicked, this);
             this.windowService.BringCubaseToFront();
+            this.suspendMonitoring = false;
         }
 
         private void MacroClicked(CubaseMacro macro, MacroButton macroButton)
@@ -172,21 +176,24 @@ namespace Cubase.Macro
             _mouseWatcherTimer.Interval = 50;
             _mouseWatcherTimer.Tick += (s, e) =>
             {
-                if (windowService.IsCubaseRunning())
+                if (!suspendMonitoring)
                 {
-                    if (insideForm())
+                    if (windowService.IsCubaseRunning())
                     {
-                        if (!this.TopMost)
+                        if (insideForm())
                         {
-                            ToFront();
+                            if (!this.TopMost)
+                            {
+                                ToFront();
+                            }
                         }
-                    }
-                    else
-                    {
-                        if (this.TopMost)
+                        else
                         {
-                            ToBack();
-                            this.windowService.BringCubaseToFront(); 
+                            if (this.TopMost)
+                            {
+                                ToBack();
+                                this.windowService.BringCubaseToFront();
+                            }
                         }
                     }
                 }
@@ -211,32 +218,35 @@ namespace Cubase.Macro
 
             _timer.Tick += (s, e) =>
             {
-                bool isRunning = this.windowService.IsCubaseRunning();
-                bool isActive = this.windowService.IsCubaseMainWindowActive();
-
-                if (isRunning && isActive)
+                if (!suspendMonitoring)
                 {
-                    if (this.WindowState == FormWindowState.Normal)
+                    bool isRunning = this.windowService.IsCubaseRunning();
+                    bool isActive = this.windowService.IsCubaseMainWindowActive();
+
+                    if (isRunning && isActive)
                     {
-                        if (!windowService.IsCubasePositioned(this.Width))
+                        if (this.WindowState == FormWindowState.Normal)
                         {
-                            this.PositionCubase();
+                            if (!windowService.IsCubasePositioned(this.Width))
+                            {
+                                this.PositionCubase();
+                            }
+                            userMinimisedWindow = false;
                         }
-                        userMinimisedWindow = false;
+                        else
+                        {
+                            if (!userMinimisedWindow)
+                            {
+                                this.WindowState = FormWindowState.Normal;
+                            }
+                        }
                     }
                     else
                     {
-                        if (!userMinimisedWindow)
+                        if (!isRunning)
                         {
-                            this.WindowState = FormWindowState.Normal;
+                            this.WindowState = FormWindowState.Minimized;
                         }
-                    }
-                }
-                else
-                {
-                    if (!isRunning)
-                    {
-                        this.WindowState = FormWindowState.Minimized;
                     }
                 }
             };
@@ -246,9 +256,11 @@ namespace Cubase.Macro
 
         public void Minimise()         {
 
+            this.suspendMonitoring = true;
             this.WindowState = FormWindowState.Minimized;
             this.MaximiseCubase();
             this.userMinimisedWindow = true;
+            this.suspendMonitoring = false;
         }
 
         public void ReloadConfiguration()
@@ -273,6 +285,10 @@ namespace Cubase.Macro
         protected override void OnFormClosing(FormClosingEventArgs e)
         {
             base.OnFormClosing(e);
+            this._timer.Stop();
+            this._timer.Dispose();
+            this._mouseWatcherTimer.Stop();
+            this._mouseWatcherTimer.Dispose();
             this.MaximiseCubase();
         }
 
@@ -294,6 +310,7 @@ namespace Cubase.Macro
             bool okToContinue = true;
             ToBack();   
             Thread.Sleep(300);
+            this.suspendMonitoring = true;
             foreach (var command in macros)
             {
                 if (okToContinue)
@@ -302,12 +319,16 @@ namespace Cubase.Macro
                     this.logger.LogInformation("Executing command {CommandName} with key {CommandKey}", command.Name, command.Key);
                     okToContinue = this.keyboardService.SendKeyToCubase(command.Key, (err) =>
                     {
-                        okToContinue = false;
-                        HaveError = true;
-                        this.TopMost = true;
-                        this.BringToFront();
-                        MessageBox.Show(err);
-                        return;
+                        if (!err.ToLower().Contains("the operation completed"))
+                        {
+
+                            okToContinue = false;
+                            HaveError = true;
+                            this.TopMost = true;
+                            this.BringToFront();
+                            MessageBox.Show(err);
+                            return;
+                        }
                     });
                     if (command.ThreadWaitAfterExecutionMs > 0)
                     {
@@ -326,6 +347,7 @@ namespace Cubase.Macro
                 }
                 this.OnBackClicked(macro, null);
             }
+            this.suspendMonitoring = false;
         }
 
 
@@ -333,8 +355,10 @@ namespace Cubase.Macro
         {
             if (this.windowService != null)
             {
+                this.suspendMonitoring = true;
                 this.windowService.PositionCubase(this.Width);
                 this.windowService.BringCubaseToFront();
+                this.suspendMonitoring = false;
             }
         }
 
