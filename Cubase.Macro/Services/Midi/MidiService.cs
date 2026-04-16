@@ -83,14 +83,6 @@ namespace Cubase.Macro.Services.Midi
                 string command = Encoding.ASCII.GetString(content.Take(sep).ToArray());
                 string payload = Encoding.ASCII.GetString(content.Skip(sep + 1).ToArray());
                 Debug.WriteLine($"Received Command {command}");
-                if (this.commandProcessors.ContainsKey(command))
-                {
-                    this.commandProcessors[command](payload);
-                }
-                else
-                {
-                    this.logger.LogWarning($"The command {command} does not have an associated processor?? - David!!");
-                }
             }
         }
 

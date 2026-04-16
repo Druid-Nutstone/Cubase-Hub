@@ -177,6 +177,7 @@ namespace Cubase.Macro
 
         private void StartMouseWatcher()
         {
+            return;
             _mouseWatcherTimer = new System.Windows.Forms.Timer();
             _mouseWatcherTimer.Interval = 50;
             _mouseWatcherTimer.Tick += (s, e) =>
@@ -320,7 +321,7 @@ namespace Cubase.Macro
             bool okToContinue = true;
             ToBack();   
             Thread.Sleep(300);
-            this.suspendMonitoring = true;
+            
             foreach (var command in macros)
             {
                 if (okToContinue)
@@ -328,10 +329,12 @@ namespace Cubase.Macro
 
                     if (command.Category == CubaseMacroConstants.Midi)
                     {
+                        this.suspendMonitoring = true;
                         this.RunMidiMacro(command);
                     }
                     else
                     {
+                        this.suspendMonitoring = true;
                         this.logger.LogInformation("Executing command {CommandName} with key {CommandKey}", command.Name, command.Key);
                         okToContinue = this.keyboardService.SendKeyToCubase(command.Key, (err) =>
                         {
@@ -351,6 +354,7 @@ namespace Cubase.Macro
                     {
                         Thread.Sleep(command.ThreadWaitAfterExecutionMs);
                     }
+                    this.suspendMonitoring = false;
                 }
             }
             if (macro.ReturnToParentMenuAfterExecution)
@@ -364,7 +368,7 @@ namespace Cubase.Macro
                 }
                 this.OnBackClicked(macro, null);
             }
-            this.suspendMonitoring = false;
+
         }
 
 

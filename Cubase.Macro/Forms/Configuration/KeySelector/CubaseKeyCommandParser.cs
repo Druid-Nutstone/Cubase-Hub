@@ -35,6 +35,7 @@ namespace Cubase.Macro.Forms.Configuration.KeySelector
         private void AddMidiCommands(CubaseKeyCommandCollection commands)
         {
             commands.Add(CubaseKeyCommand.CreateMidi("Start", 2, 0));
+            commands.Add(CubaseKeyCommand.CreateMidi("Show Guitars", 0, 2));
         }
 
         private void ProcessCatgeories(XElement catElement, CubaseKeyCommandCollection commands)
