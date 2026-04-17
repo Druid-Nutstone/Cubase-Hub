@@ -116,6 +116,9 @@ namespace Cubase.Macro.Services.Midi
           
         }
 
-
+        public void RestartMidi()
+        {
+            this.midiDriver.RestartPort();
+        }
     }
 }

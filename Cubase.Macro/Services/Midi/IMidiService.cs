@@ -12,6 +12,8 @@ namespace Cubase.Macro.Services.Midi
 
         public void VerifyDriver();
 
+        void RestartMidi();
+
         void Dispose();
 
         public Action? OnReadyReceived { get; set; }
