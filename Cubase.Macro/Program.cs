@@ -1,18 +1,20 @@
-using Cubase.Macro.Services.Keyboard;
-using Cubase.Macro.Services.Mouse;
-using Cubase.Macro.Services.Window;
-using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.Logging;
-using Serilog;
-using System.Windows.Shell;
-using System.IO;
-    
-using System.Runtime.InteropServices;
 using Cubase.Macro.Forms.Configuration;
 using Cubase.Macro.Forms.Main;
 using Cubase.Macro.Services.Config;
-using Cubase.Macro.Services.Monitor;
+using Cubase.Macro.Services.Keyboard;
 using Cubase.Macro.Services.Midi;
+using Cubase.Macro.Services.Monitor;
+using Cubase.Macro.Services.Mouse;
+using Cubase.Macro.Services.Window;
+using Cubase.Macro.Services.WindowsServices;
+using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Logging;
+using Serilog;
+using System.Diagnostics;
+using System.IO;
+    
+using System.Runtime.InteropServices;
+using System.Windows.Shell;
 
 namespace Cubase.Macro
 {
@@ -65,8 +67,7 @@ namespace Cubase.Macro
                 // get main form 
                 var mainForm = services.GetService<MainForm>();
                 mainForm.WindowState = FormWindowState.Minimized;
-                var midiService = services.GetService<IMidiService>();
-                midiService.Initialise();
+                StartMidiService(services);
                 Application.Run(services.GetService<MainForm>());
             }
             else
@@ -78,6 +79,34 @@ namespace Cubase.Macro
                     Application.Run(configForm);
                 }
 
+            }
+        }
+
+        static void StartMidiService(IServiceProvider services)
+        {
+            var configurationService = services.GetService<IConfigurationService>();
+            configurationService?.ReloadConfiguration();
+
+            var windowsService = services.GetService<IWindowsControllerService>();
+
+            var shouldReloadWindowsMidiService = false;
+
+            if (configurationService?.Configuration != null)
+            {
+                shouldReloadWindowsMidiService = configurationService.Configuration.ReloadWindowsMidiService;
+
+                if (shouldReloadWindowsMidiService)
+                {
+                    windowsService.StopMidiWindowsService(); 
+                }
+            }
+
+            var midiService = services.GetService<IMidiService>();
+            midiService.Initialise();
+
+            if (shouldReloadWindowsMidiService)
+            {
+                 windowsService.StartMidiWindowsService();
             }
         }
 
@@ -110,6 +139,7 @@ namespace Cubase.Macro
                 .AddSingleton<IWindowService, WindowService>()
                 .AddSingleton<IConfigurationService, ConfigurationService>()
                 .AddSingleton<IMidiService, MidiService>()
+                .AddSingleton<IWindowsControllerService, WindowsControllerService>()
                 .AddScoped<SettingsMainControl>()
                 .AddScoped<SettingsForm>()
                 .AddScoped<MainForm>();
@@ -117,5 +147,6 @@ namespace Cubase.Macro
             var provider = serviceCollection.BuildServiceProvider();
             return provider;
         }
+
     }
 }

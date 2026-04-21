@@ -55,10 +55,6 @@ namespace Cubase.Macro
 
         private readonly ILogger<MainForm> logger;
 
-        private System.Windows.Forms.Timer cubaseWatcher;
-
-        private bool userForcedMinimised = false;
-
         public MainForm(IKeyboardService keyboardService, 
                         IConfigurationService configurationService,
                         IWindowService windowService,
@@ -171,52 +167,54 @@ namespace Cubase.Macro
             }
         }
 
-        private void StartCubaseWatcher()
-        {
-            cubaseWatcher = new System.Windows.Forms.Timer();
-            cubaseWatcher.Interval = 50;
-            bool newProjectLoaded = false;
-            cubaseWatcher.Tick += (s, e) =>
-            {
+        //private void StartCubaseWatcher()
+        //{
+        //    cubaseWatcher = new System.Windows.Forms.Timer();
+        //    cubaseWatcher.Interval = 50;
+        //    bool newProjectLoaded = false;
+        //    cubaseWatcher.Tick += (s, e) =>
+        //    {
 
-                bool isRunning = this.windowService.IsCubaseRunning();
-                bool isActive = this.windowService.IsCubaseMainWindowActive();
+        //        bool isRunning = this.windowService.IsCubaseRunning();
+        //        bool isActive = this.windowService.IsCubaseMainWindowActive();
 
-                if (isRunning && isActive)
-                {
-                    if (!userForcedMinimised)
-                    {
-                        if (this.WindowState == FormWindowState.Minimized)
-                        {
-                            if (!windowService.IsCubasePositioned(this.Width))
-                            {
-                                this.WindowState = FormWindowState.Normal;
-                            }
-                        }
-                    }
-                    if (newProjectLoaded)
-                    {
-                        this.midiService.RestartMidi();
+        //        if (isRunning && isActive)
+        //        {
+        //            if (!userForcedMinimised)
+        //            {
+        //                if (this.WindowState == FormWindowState.Minimized)
+        //                {
+        //                    if (!windowService.IsCubasePositioned(this.Width))
+        //                    {
+        //                        this.WindowState = FormWindowState.Normal;
+        //                    }
+        //                }
+        //            }
+        //            /*
+        //            if (newProjectLoaded)
+        //            {
+        //                this.logger.LogInformation("New Cubase project loaded. Restarting MIDI service to ensure MIDI macros work correctly.");
+        //                this.midiService.RestartMidi();
                         
-                        newProjectLoaded = false;
-                    }
-                }
-                else
-                {
-                    if (!isActive)
-                    {
-                        newProjectLoaded = true;
-                    }
-                }
-            };
+        //                newProjectLoaded = false;
+        //            }
+        //            */
+        //        }
+        //        else
+        //        {
+        //            if (!isActive)
+        //            {
+        //                newProjectLoaded = true;
+        //            }
+        //        }
+        //    };
 
-            cubaseWatcher.Start();
-        }
+        //    cubaseWatcher.Start();
+        //}
 
         public void Minimise()         {
 
             this.WindowState = FormWindowState.Minimized;
-            this.userForcedMinimised = true;
             this.MaximiseCubase();
         }
 
@@ -241,8 +239,32 @@ namespace Cubase.Macro
 
         protected override void OnFormClosing(FormClosingEventArgs e)
         {
+            this.midiService.Dispose();
             base.OnFormClosing(e);
-            this.MaximiseCubase();
+            // this.MaximiseCubase();
+        }
+
+        protected override void OnMouseEnter(EventArgs e)
+        {
+            this.Activate();
+        }
+
+        protected override void OnMouseLeave(EventArgs e)
+        {
+            Point mousePos = System.Windows.Forms.Cursor.Position;
+
+            if (!insideForm())
+            {
+                this.windowService.BringCubaseToFront();
+            }
+
+            bool insideForm()
+            {
+                return mousePos.X >= this.Bounds.Left &&
+                       mousePos.X <= this.Bounds.Right &&
+                       mousePos.Y >= this.Bounds.Top &&
+                       mousePos.Y <= this.Bounds.Bottom;
+            }
         }
 
         protected override void OnResize(EventArgs e)
@@ -253,16 +275,9 @@ namespace Cubase.Macro
             {
                 switch (this.WindowState)
                 {
-                    case FormWindowState.Minimized:
-                        if (cubaseWatcher == null)
-                        {
-                            this.StartCubaseWatcher();
-                        }
-                        break;
                     case FormWindowState.Normal:
                         if (this.windowService.IsCubaseMainWindowActive())
                         {
-                            this.userForcedMinimised = false;
                             this.PositionCubase();
                         }
                         break;

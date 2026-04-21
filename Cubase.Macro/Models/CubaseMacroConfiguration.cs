@@ -20,6 +20,8 @@ namespace Cubase.Macro.Models
 
         public string CubaseProjectWindowName { get; set; } = "Cubase Pro Project";
 
+        public bool ReloadWindowsMidiService { get; set; } = false;
+
         public void Save()
         {
             var json = JsonSerializer.Serialize(this, new JsonSerializerOptions() { WriteIndented = true });

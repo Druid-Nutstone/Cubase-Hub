@@ -29,7 +29,8 @@ namespace Cubase.Macro.Forms.Configuration.Config
             CubaseExecutableName.LostFocus += SaveConfig;   
             CubaseProjectWindowStartsWith.Bind(nameof(CubaseMacroConfiguration.CubaseProjectWindowName), this.cubaseMacroConfiguration);
             CubaseProjectWindowStartsWith.LostFocus += SaveConfig;
-
+            CubaseRestartWindowsMidiService.Bind(nameof(CubaseMacroConfiguration.ReloadWindowsMidiService), this.cubaseMacroConfiguration);
+            CubaseRestartWindowsMidiService.CheckedChanged += SaveConfig;
         }
 
         private void SaveConfig(object? sender, EventArgs e)

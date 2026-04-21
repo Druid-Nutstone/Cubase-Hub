@@ -39,6 +39,7 @@
             CubaseExecutableName = new Cubase.Macro.BoundControls.BoundTextBox();
             CubaseProjectWindowStartsWith = new Cubase.Macro.BoundControls.BoundTextBox();
             label5 = new Label();
+            CubaseRestartWindowsMidiService = new Cubase.Macro.BoundControls.BoundCheckbox();
             SuspendLayout();
             // 
             // label1
@@ -137,10 +138,21 @@
             label5.TabIndex = 9;
             label5.Text = "Cubase Project Window Starts With";
             // 
+            // CubaseRestartWindowsMidiService
+            // 
+            CubaseRestartWindowsMidiService.AutoSize = true;
+            CubaseRestartWindowsMidiService.Location = new Point(24, 324);
+            CubaseRestartWindowsMidiService.Name = "CubaseRestartWindowsMidiService";
+            CubaseRestartWindowsMidiService.Size = new Size(231, 24);
+            CubaseRestartWindowsMidiService.TabIndex = 11;
+            CubaseRestartWindowsMidiService.Text = "Restart Windows Midi Service ";
+            CubaseRestartWindowsMidiService.UseVisualStyleBackColor = true;
+            // 
             // EditConfigurationControl
             // 
             AutoScaleDimensions = new SizeF(8F, 20F);
             AutoScaleMode = AutoScaleMode.Font;
+            Controls.Add(CubaseRestartWindowsMidiService);
             Controls.Add(CubaseProjectWindowStartsWith);
             Controls.Add(label5);
             Controls.Add(CubaseExecutableName);
@@ -171,5 +183,6 @@
         private BoundControls.BoundTextBox CubaseExecutableName;
         private BoundControls.BoundTextBox CubaseProjectWindowStartsWith;
         private Label label5;
+        private BoundControls.BoundCheckbox CubaseRestartWindowsMidiService;
     }
 }
