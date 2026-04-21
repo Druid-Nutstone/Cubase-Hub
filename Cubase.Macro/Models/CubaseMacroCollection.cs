@@ -87,6 +87,18 @@ namespace Cubase.Macro.Models
 
         public bool MenuChangesVisibility { get; set; } = false;
 
+        public string Serialize()
+        {
+            var json = JsonSerializer.Serialize(this, new JsonSerializerOptions() { WriteIndented = false });
+            return Convert.ToBase64String(Encoding.UTF8.GetBytes(json));
+        } 
+
+        public static CubaseMacro Deserialize(string base64String)
+        {
+            var json = Encoding.UTF8.GetString(Convert.FromBase64String(base64String));
+            return JsonSerializer.Deserialize<CubaseMacro>(json);
+        }
+
         public static CubaseMacro CreateNewMenuMacro(Guid? parentId = null)
         {
             return new CubaseMacro()

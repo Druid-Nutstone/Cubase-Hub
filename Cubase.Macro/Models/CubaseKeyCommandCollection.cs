@@ -78,6 +78,18 @@ namespace Cubase.Macro.Models
 
         public int ThreadWaitAfterExecutionMs { get; set; } = 0;
 
+        public string Serialise()
+        {
+            var json = System.Text.Json.JsonSerializer.Serialize(this);
+            return Convert.ToBase64String(Encoding.UTF8.GetBytes(json));
+        }
+
+        public static CubaseKeyCommand Deserialise(string base64)
+        {
+            var json = Encoding.UTF8.GetString(Convert.FromBase64String(base64));
+            return System.Text.Json.JsonSerializer.Deserialize<CubaseKeyCommand>(json);
+        }
+
         public static CubaseKeyCommand CreateFromKey(string key)
         {
             return new CubaseKeyCommand() { Key = key };

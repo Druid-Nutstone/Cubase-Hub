@@ -112,7 +112,7 @@ namespace Cubase.Macro
                     }
                     if (currentMacro.MenuChangesVisibility)
                     {
-                        RunMacro([CubaseKeyCommand.CreateFromKey(this.configurationService.Configuration.ResetVisibilityKey)], currentMacro);
+                        RunMacro([CubaseKeyCommand.Deserialise(this.configurationService.Configuration.ResetVisibilityKey)], currentMacro);
                     }
                 }
                 else 

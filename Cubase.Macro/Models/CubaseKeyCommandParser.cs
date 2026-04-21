@@ -1,11 +1,10 @@
-﻿using Cubase.Macro.Models;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Runtime.CompilerServices;
 using System.Xml.Linq;
 
-namespace Cubase.Macro.Forms.Configuration.KeySelector
+namespace Cubase.Macro.Models
 {
 
     public class CubaseKeyCommandParser
@@ -36,7 +35,24 @@ namespace Cubase.Macro.Forms.Configuration.KeySelector
         {
             commands.Add(CubaseKeyCommand.CreateMidi("Start", 2, 0));
             commands.Add(CubaseKeyCommand.CreateMidi("Show Guitars", 0, 2));
+            commands.Add(CubaseKeyCommand.CreateMidi("Show Keyboards", 1, 2));
+            commands.Add(CubaseKeyCommand.CreateMidi("Show Bass", 2, 2));
+            commands.Add(CubaseKeyCommand.CreateMidi("Show Drums", 3, 2));
+            commands.Add(CubaseKeyCommand.CreateMidi("Show Vocals", 4, 2));
+            commands.Add(CubaseKeyCommand.CreateMidi("Start Recording", 5, 2));
+            commands.Add(CubaseKeyCommand.CreateMidi("Stop Recording", 6, 2));
+            commands.Add(CubaseKeyCommand.CreateMidi("Show All Tracks", 11, 0));
+            commands.Add(CubaseKeyCommand.CreateMidi("Expand Folders", 23, 1));
+            commands.Add(CubaseKeyCommand.CreateMidi("Collapse Folders", 16, 0));
+            commands.Add(CubaseKeyCommand.CreateMidi("Zoom Selected Track", 13, 0));
+            commands.Add(CubaseKeyCommand.CreateMidi("UnZoom Selected Track", 7, 2));
+            commands.Add(CubaseKeyCommand.CreateMidi("Undo Record", 8, 1));
+            commands.Add(CubaseKeyCommand.CreateMidi("Show Tracks With Data", 10, 0));
+            commands.Add(CubaseKeyCommand.CreateMidi("New Track Version", 9, 1));
         }
+
+        /*
+         */
 
         private void ProcessCatgeories(XElement catElement, CubaseKeyCommandCollection commands)
         {

@@ -42,7 +42,7 @@ namespace Cubase.Macro.Forms.Configuration.Config
         {
             var keySelector = new KeyCommandSelectorForm((cubaseMacro) => 
             {
-                this.ResetVisibilityKey.Text = cubaseMacro.Key;
+                this.ResetVisibilityKey.Text = cubaseMacro.Serialise();
                 this.cubaseMacroConfiguration.Save();
             });
             keySelector.ShowDialog();
