@@ -25,7 +25,7 @@ namespace Cubase.Macro.Forms.Main.Buttons
             this.Text = macro.Title;
             this.Dock = DockStyle.Fill;
             this.SetColoursAndTitle();
-            this.Font = new Font(this.Font.FontFamily, this.Font.Size+2, FontStyle.Bold);
+            this.Font = new Font(this.Font.FontFamily, this.Font.Size, FontStyle.Bold);
             this.Cursor = Cursors.Hand;
             this.FlatStyle = FlatStyle.Flat;
             this.FlatAppearance.BorderSize = 1;
@@ -36,7 +36,6 @@ namespace Cubase.Macro.Forms.Main.Buttons
             base.OnClick(e);
             this.OnMacroClicked?.Invoke(this.Macro, this);
             this.FlatStyle = FlatStyle.Flat;
-
         }
 
         public void SetBlockCursor()

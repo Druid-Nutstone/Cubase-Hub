@@ -18,6 +18,8 @@ namespace Cubase.Macro.Forms.Main
 
         private MenuControl menuControl;
 
+        private MenuCommonControl menuCommonControl;
+
         private Action<CubaseMacro, MacroButton> onMacroClicked;
 
         private Action<CubaseMacro, PictureButton> onBack;
@@ -26,9 +28,11 @@ namespace Cubase.Macro.Forms.Main
 
         public MainMenuControl()
         {
-            InitializeComponent(); 
+            InitializeComponent();
             this.menuControl = new MenuControl();
             this.MainPanel.Controls.Add(menuControl);
+            this.menuCommonControl = new MenuCommonControl();
+            this.CommonPanel.Controls.Add(menuCommonControl);
             ButtonBack.Click += ButtonBack_Click;
             ButtonBack.HelpText = "Go Back To Previous Menu";
             ButtonClose.Click += ButtonClose_Click;
@@ -39,6 +43,13 @@ namespace Cubase.Macro.Forms.Main
             ButtonPositionCubase.HelpText = "Position Cubase";
             ButtonRefresh.Click += ButtonRefresh_Click;
             ButtonRefresh.HelpText = "Reload Configuration";
+        }
+
+        protected override void OnResize(EventArgs e)
+        {
+            base.OnResize(e);
+            var mainPanelHeight = this.Height * 0.7;
+            MainPanel.Height = (int)mainPanelHeight;
         }
 
         private void ButtonRefresh_Click(object? sender, EventArgs e)
@@ -56,7 +67,7 @@ namespace Cubase.Macro.Forms.Main
         private void ButtonMinimise_Click(object? sender, EventArgs e)
         {
             ActionMenuClick(this.ButtonMinimise, this.mainForm.Minimise);
-            
+
         }
 
         private void ButtonPositionCubase_Click(object? sender, EventArgs e)
@@ -68,7 +79,7 @@ namespace Cubase.Macro.Forms.Main
         {
             pictureButton.Cursor = Cursors.WaitCursor;
             action.Invoke();
-            pictureButton.Cursor= Cursors.Hand;
+            pictureButton.Cursor = Cursors.Hand;
         }
 
 
@@ -79,13 +90,13 @@ namespace Cubase.Macro.Forms.Main
 
         private void ButtonBack_Click(object? sender, EventArgs e)
         {
-            this.ActionMenuClick(this.ButtonBack, () => 
+            this.ActionMenuClick(this.ButtonBack, () =>
             {
                 this.onBack?.Invoke(this.menu, this.ButtonBack);
             });
         }
 
-        public void Initialise(CubaseMacro menu, Action<CubaseMacro, MacroButton> onMacroClicked, Action<CubaseMacro, PictureButton> onBack, MainForm mainForm)
+        public void InitialiseMain(CubaseMacro menu, Action<CubaseMacro, MacroButton> onMacroClicked, Action<CubaseMacro, PictureButton> onBack, MainForm mainForm)
         {
             this.menu = menu;
             this.mainForm = mainForm;
@@ -98,5 +109,13 @@ namespace Cubase.Macro.Forms.Main
             }
 
         }
+
+        public void InitialiseCommon(List<CubaseMacro> macros, Action<CubaseMacro, MacroButton> onMacroClicked)
+        {
+            foreach (var macro in macros)
+            {
+                this.menuCommonControl.AddMacro(macro, onMacroClicked);
+            }
+            }
     }
 }

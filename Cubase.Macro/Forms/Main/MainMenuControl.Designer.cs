@@ -30,18 +30,20 @@
         {
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(MainMenuControl));
             NavPanel = new Panel();
+            ButtonRefresh = new Cubase.Macro.Forms.Main.Buttons.PictureButton();
             ButtonPositionCubase = new Cubase.Macro.Forms.Main.Buttons.PictureButton();
             ButtonBack = new Cubase.Macro.Forms.Main.Buttons.PictureButton();
             ButtonMinimise = new Cubase.Macro.Forms.Main.Buttons.PictureButton();
             ButtonClose = new Cubase.Macro.Forms.Main.Buttons.PictureButton();
             MainPanel = new Panel();
-            ButtonRefresh = new Cubase.Macro.Forms.Main.Buttons.PictureButton();
+            splitter1 = new Splitter();
+            CommonPanel = new Panel();
             NavPanel.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)ButtonRefresh).BeginInit();
             ((System.ComponentModel.ISupportInitialize)ButtonPositionCubase).BeginInit();
             ((System.ComponentModel.ISupportInitialize)ButtonBack).BeginInit();
             ((System.ComponentModel.ISupportInitialize)ButtonMinimise).BeginInit();
             ((System.ComponentModel.ISupportInitialize)ButtonClose).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)ButtonRefresh).BeginInit();
             SuspendLayout();
             // 
             // NavPanel
@@ -56,6 +58,16 @@
             NavPanel.Name = "NavPanel";
             NavPanel.Size = new Size(200, 61);
             NavPanel.TabIndex = 0;
+            // 
+            // ButtonRefresh
+            // 
+            ButtonRefresh.Image = (Image)resources.GetObject("ButtonRefresh.Image");
+            ButtonRefresh.Location = new Point(44, 3);
+            ButtonRefresh.Name = "ButtonRefresh";
+            ButtonRefresh.Size = new Size(32, 32);
+            ButtonRefresh.SizeMode = PictureBoxSizeMode.StretchImage;
+            ButtonRefresh.TabIndex = 10;
+            ButtonRefresh.TabStop = false;
             // 
             // ButtonPositionCubase
             // 
@@ -100,36 +112,47 @@
             // MainPanel
             // 
             MainPanel.AutoScroll = true;
-            MainPanel.Dock = DockStyle.Fill;
+            MainPanel.Dock = DockStyle.Top;
             MainPanel.Location = new Point(0, 61);
             MainPanel.Name = "MainPanel";
-            MainPanel.Size = new Size(200, 453);
+            MainPanel.Size = new Size(200, 274);
             MainPanel.TabIndex = 1;
             // 
-            // ButtonRefresh
+            // splitter1
             // 
-            ButtonRefresh.Image = (Image)resources.GetObject("ButtonRefresh.Image");
-            ButtonRefresh.Location = new Point(44, 3);
-            ButtonRefresh.Name = "ButtonRefresh";
-            ButtonRefresh.Size = new Size(32, 32);
-            ButtonRefresh.SizeMode = PictureBoxSizeMode.StretchImage;
-            ButtonRefresh.TabIndex = 10;
-            ButtonRefresh.TabStop = false;
+            splitter1.Dock = DockStyle.Top;
+            splitter1.Location = new Point(0, 335);
+            splitter1.Name = "splitter1";
+            splitter1.Size = new Size(200, 4);
+            splitter1.TabIndex = 2;
+            splitter1.TabStop = false;
+            // 
+            // CommonPanel
+            // 
+            CommonPanel.AutoScroll = true;
+            CommonPanel.Dock = DockStyle.Fill;
+            CommonPanel.Location = new Point(0, 339);
+            CommonPanel.Name = "CommonPanel";
+            CommonPanel.Padding = new Padding(0, 0, 0, 10);
+            CommonPanel.Size = new Size(200, 223);
+            CommonPanel.TabIndex = 3;
             // 
             // MainMenuControl
             // 
             AutoScaleDimensions = new SizeF(8F, 20F);
             AutoScaleMode = AutoScaleMode.Font;
+            Controls.Add(CommonPanel);
+            Controls.Add(splitter1);
             Controls.Add(MainPanel);
             Controls.Add(NavPanel);
             Name = "MainMenuControl";
-            Size = new Size(200, 514);
+            Size = new Size(200, 562);
             NavPanel.ResumeLayout(false);
+            ((System.ComponentModel.ISupportInitialize)ButtonRefresh).EndInit();
             ((System.ComponentModel.ISupportInitialize)ButtonPositionCubase).EndInit();
             ((System.ComponentModel.ISupportInitialize)ButtonBack).EndInit();
             ((System.ComponentModel.ISupportInitialize)ButtonMinimise).EndInit();
             ((System.ComponentModel.ISupportInitialize)ButtonClose).EndInit();
-            ((System.ComponentModel.ISupportInitialize)ButtonRefresh).EndInit();
             ResumeLayout(false);
         }
 
@@ -142,5 +165,7 @@
         private Buttons.PictureButton ButtonBack;
         private Buttons.PictureButton ButtonPositionCubase;
         private Buttons.PictureButton ButtonRefresh;
+        private Splitter splitter1;
+        private Panel CommonPanel;
     }
 }

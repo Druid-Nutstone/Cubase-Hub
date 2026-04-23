@@ -26,7 +26,7 @@ namespace Cubase.Macro.Forms.Configuration
         private void NewMenu_Click(object? sender, EventArgs e)
         {
             var newMenuMacro = CubaseMacro.CreateNewMenuMacro();    
-            this.macros.Add(newMenuMacro);
+            this.macros.Macros.Add(newMenuMacro);
             var editMacro = new EditMacroControl(this.macros, newMenuMacro, this.MacroSaved);
             this.LoadDataPanel(editMacro);
         }

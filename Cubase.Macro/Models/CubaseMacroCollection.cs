@@ -8,9 +8,12 @@ using System.Text.Json;
 
 namespace Cubase.Macro.Models
 {
-    public class CubaseMacroCollection : List<CubaseMacro>
+    public class CubaseMacroCollection
     {
-        
+
+        public List<CubaseMacro> Macros { get; set; } = new();
+        public List<CubaseMacro> CommonMacros { get; set; } = new();
+
         public void Save()
         {
             var json = JsonSerializer.Serialize(this, new JsonSerializerOptions() { WriteIndented = true });
@@ -25,13 +28,16 @@ namespace Cubase.Macro.Models
             }
             else
             {
-                return new CubaseMacroCollection();
+                var macroCollection = new CubaseMacroCollection();
+                macroCollection.Macros.Add(CubaseMacro.CreatePrimaryMenu());
+                return macroCollection;
             }
         }
 
+        
         public CubaseMacro FindParentFromBase(Guid id)
         {
-            return this.FindParentIdRecursive(this.First(), id);
+            return this.FindParentIdRecursive(this.Macros?.First(), id);
         }
         
         public CubaseMacro FindParentIdRecursive(CubaseMacro macro, Guid id)
@@ -105,6 +111,16 @@ namespace Cubase.Macro.Models
             {
                 MacroType = CubaseMacroType.Menu,
                 ParentId = parentId,
+            };
+        }
+
+        public static CubaseMacro CreatePrimaryMenu()
+        {
+            return new CubaseMacro()
+            {
+                MacroType = CubaseMacroType.Menu,
+                Title = "Primary Menu",
+                Id = Guid.NewGuid(),
             };
         }
 

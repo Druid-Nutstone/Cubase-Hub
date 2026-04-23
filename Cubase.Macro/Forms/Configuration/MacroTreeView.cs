@@ -29,7 +29,8 @@ namespace Cubase.Macro.Forms.Configuration
         {
             this.macros = macros;
             this.Nodes.Clear();
-            this.Nodes.Add(new PrimaryMacroTreeNode(macros, dataPanel, macroUpdatedEventHandler)); ;
+            this.Nodes.Add(new PrimaryMacroTreeNode(macros, dataPanel, macroUpdatedEventHandler)); 
+            this.Nodes.Add(new CommonMacrosTreeNode(macros, dataPanel, macroUpdatedEventHandler));
             this.Nodes.Add(new ConfigurationTreeNode(this.cubaseMacroConfiguration));
             this.ExpandAll();
         }
@@ -80,12 +81,25 @@ namespace Cubase.Macro.Forms.Configuration
             }
         }
 
+        public class CommonMacrosTreeNode : BaseMacroTreeNode
+        {
+            public CommonMacrosTreeNode(CubaseMacroCollection macros, Panel DataPanel, Action MacroUpdatedEventHandler)
+            {
+                this.Text = "Common Macros";
+                foreach (var macro in macros.CommonMacros)
+                {
+                    this.Nodes.Add(new KeyCommandMacroTreeNode(macro, macros, DataPanel, MacroUpdatedEventHandler));
+                }
+                this.ContextMenuStrip = new MacroTreeViewContentMenu(macros, DataPanel, MacroUpdatedEventHandler);
+            }
+        }
+
         public class PrimaryMacroTreeNode : BaseMacroTreeNode
         {
             public PrimaryMacroTreeNode(CubaseMacroCollection macros, Panel DataPanel, Action MacroUpdatedEventHandler)
             {
                 this.Text = "Macros";
-                foreach (var macro in macros)
+                foreach (var macro in macros.Macros)
                 {
                     if (macro.MacroType == CubaseMacroType.Menu)
                     {

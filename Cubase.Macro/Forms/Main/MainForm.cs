@@ -78,9 +78,13 @@ namespace Cubase.Macro
         private void LoadMacros()
         {
             this.macros = CubaseMacroCollection.Load();
-            if (this.macros.Count > 0)
+            if (this.macros.Macros.Count > 0)
             {
-                this.mainMenuControl.Initialise(this.macros.First(), MacroClicked, this.OnBackClicked, this);
+                this.mainMenuControl.InitialiseMain(this.macros.Macros.First(), MacroClicked, this.OnBackClicked, this);
+                if (this.macros.CommonMacros.Count > 0)
+                {
+                    this.mainMenuControl.InitialiseCommon(this.macros.CommonMacros, MacroClicked);
+                }
             }
             else
             {
@@ -120,8 +124,8 @@ namespace Cubase.Macro
                    MessageBox.Show("No Reset Visibility Key configured. Please set a Reset Visibility Key in settings to ensure the menu is visible after navigating back.");
                 }
             }
-            var parentMenu = this.macros.FindParentIdRecursive(this.macros.First(), currentMacro.ParentId.Value);
-            this.mainMenuControl.Initialise(parentMenu, MacroClicked, this.OnBackClicked, this);
+            var parentMenu = this.macros.FindParentIdRecursive(this.macros.Macros.First(), currentMacro.ParentId.Value);
+            this.mainMenuControl.InitialiseMain(parentMenu, MacroClicked, this.OnBackClicked, this);
             this.windowService.BringCubaseToFront();
         }
 
@@ -161,7 +165,7 @@ namespace Cubase.Macro
                     macroButton.SetBlockCursor();
                     RunMacro(macro.ToggleOnKeys, macro);
                 }
-                this.mainMenuControl.Initialise(macro, MacroClicked, this.OnBackClicked, this);
+                this.mainMenuControl.InitialiseMain(macro, MacroClicked, this.OnBackClicked, this);
                 macroButton.SetDefaultCursor();
                 this.windowService.BringCubaseToFront();
             }
@@ -336,7 +340,7 @@ namespace Cubase.Macro
                 {
                     if (macro.MacroType == CubaseMacroType.KeyCommand)
                     {
-                        macro = this.macros.FindParentIdRecursive(this.macros.First(), macro.ParentId.Value);
+                        macro = this.macros.FindParentIdRecursive(this.macros.Macros.First(), macro.ParentId.Value);
                     }
                 }
                 this.OnBackClicked(macro, null);
@@ -375,7 +379,7 @@ namespace Cubase.Macro
             this.FormBorderStyle = FormBorderStyle.None; // optional (for panel look)
 
             this.Location = new Point(screen.Left, screen.Top);
-            this.Size = new Size(this.Width, screen.Height);
+            this.Size = new Size(this.Width, Screen.PrimaryScreen.WorkingArea.Height);
 
             this.ResumeLayout();
         }

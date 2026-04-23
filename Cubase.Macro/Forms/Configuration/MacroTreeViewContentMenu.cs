@@ -17,6 +17,16 @@ namespace Cubase.Macro.Forms.Configuration
             this.Items.Add(new PasteCommandTreeViewMenuItem(macros, parent, dataPanel, macroUpdatedEventHandler));
             this.Items.Add(new DeleteMenuTreeViewMenuItem(macros, parent, dataPanel, macroUpdatedEventHandler));
         }
+
+        public MacroTreeViewContentMenu(CubaseMacroCollection macros, Panel dataPanel, Action macroUpdatedEventHandler)
+        {
+            this.Items.Add(new NewCommonCommandTreeViewMenuItem(macros, dataPanel, macroUpdatedEventHandler));
+            this.Items.Add(new MoveUpCommandTreeViewMenuItem(macros, null, dataPanel, macroUpdatedEventHandler));
+            this.Items.Add(new MoveDownCommandTreeViewMenuItem(macros, null, dataPanel, macroUpdatedEventHandler));
+            this.Items.Add(new CopyCommandTreeViewMenuItem(macros, null, dataPanel, macroUpdatedEventHandler)); ;
+            this.Items.Add(new PasteCommandTreeViewMenuItem(macros, null, dataPanel, macroUpdatedEventHandler));
+            this.Items.Add(new DeleteMenuTreeViewMenuItem(macros, null, dataPanel, macroUpdatedEventHandler));
+        }
     }
 
     public class MoveDownCommandTreeViewMenuItem : ToolStripMenuItem
@@ -218,6 +228,35 @@ namespace Cubase.Macro.Forms.Configuration
         }
     }
 
+    public class NewCommonCommandTreeViewMenuItem : ToolStripMenuItem
+    {
+        public CubaseMacroCollection Macros { get; private set; }
+
+        private Panel DataPanel { get; set; }
+
+        private Action MacroUpdatedEventHandler { get; set; }
+
+
+        public NewCommonCommandTreeViewMenuItem(CubaseMacroCollection macros, Panel dataPanel, Action macroUpdatedEventHandler)
+        {
+            this.Macros = macros;
+            this.DataPanel = dataPanel;
+            this.MacroUpdatedEventHandler = macroUpdatedEventHandler;
+            this.Text = "Add Macro";
+        }
+
+        protected override void OnClick(EventArgs e)
+        {
+            var newMacro = CubaseMacro.CreateKeyCommandMacro("New Macro", Guid.Empty);
+            this.Macros.CommonMacros.Add(newMacro);
+            var editControl = new EditMacroControl(this.Macros, newMacro, this.MacroUpdatedEventHandler);
+            this.DataPanel.Controls.Clear();
+            editControl.Dock = DockStyle.Fill;
+            this.DataPanel.Controls.Add(editControl);
+
+        }
+    }
+
     public class NewCommandTreeViewMenuItem : ToolStripMenuItem
     {
         public CubaseMacro Macro { get; private set; }
@@ -274,7 +313,7 @@ namespace Cubase.Macro.Forms.Configuration
         {
             this.DataPanel.Controls.Clear();
 
-            foreach (var macro in this.Macros)
+            foreach (var macro in this.Macros.Macros)
             {
                 RemoveMacroRecursive(macro, this.Macro);
             }
