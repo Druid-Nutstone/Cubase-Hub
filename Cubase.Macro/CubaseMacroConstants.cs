@@ -25,5 +25,10 @@ namespace Cubase.Macro
         public static string MacroConfigurationFileName = Path.Combine(UserAppDataFolderPath, "CubaseMacro.json");
     
         public static string ConfigurationFileName = Path.Combine(UserAppDataFolderPath, "CubaseMacroConfig.json");
+    
+        public static string MidiConfigurationFileName = Path.Combine(UserAppDataFolderPath, "CubaseMidiMacroConfig.json");
+
+        public static string MidiJavascriptFileName = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments), "Steinberg", "Cubase", "MIDI Remote", "Driver Scripts", "Local", "Nutstone", "VirtualDevice", "Nutstone_VirtualDevice.js");
+
     }
 }

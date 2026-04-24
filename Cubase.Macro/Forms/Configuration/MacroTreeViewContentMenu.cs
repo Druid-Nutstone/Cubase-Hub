@@ -9,12 +9,18 @@ namespace Cubase.Macro.Forms.Configuration
     {
         public MacroTreeViewContentMenu(CubaseMacroCollection macros, CubaseMacro parent, Panel dataPanel, Action macroUpdatedEventHandler)
         {
-            this.Items.Add(new NewMenuTreeViewMenuItem(macros, parent, dataPanel, macroUpdatedEventHandler));
-            this.Items.Add(new NewCommandTreeViewMenuItem(macros, parent, dataPanel, macroUpdatedEventHandler));
+            if (parent.MacroType == CubaseMacroType.Menu)
+            {
+                this.Items.Add(new NewMenuTreeViewMenuItem(macros, parent, dataPanel, macroUpdatedEventHandler));
+                this.Items.Add(new NewCommandTreeViewMenuItem(macros, parent, dataPanel, macroUpdatedEventHandler));
+            }
             this.Items.Add(new MoveUpCommandTreeViewMenuItem(macros, parent, dataPanel, macroUpdatedEventHandler));
             this.Items.Add(new MoveDownCommandTreeViewMenuItem(macros, parent, dataPanel, macroUpdatedEventHandler));
             this.Items.Add(new CopyCommandTreeViewMenuItem(macros, parent, dataPanel, macroUpdatedEventHandler));
-            this.Items.Add(new PasteCommandTreeViewMenuItem(macros, parent, dataPanel, macroUpdatedEventHandler));
+            if (parent.MacroType == CubaseMacroType.Menu)
+            {
+                this.Items.Add(new PasteCommandTreeViewMenuItem(macros, parent, dataPanel, macroUpdatedEventHandler));
+            }
             this.Items.Add(new DeleteMenuTreeViewMenuItem(macros, parent, dataPanel, macroUpdatedEventHandler));
         }
 
@@ -51,15 +57,20 @@ namespace Cubase.Macro.Forms.Configuration
 
         protected override void OnClick(EventArgs e)
         {
-            if (this.Macro.ParentId == null)
-                return;
+            List<CubaseMacro> siblings = new List<CubaseMacro>();
+            if (this.Macro.ParentId == Guid.Empty) // must be common macros 
+            {
+                siblings = this.Macros.CommonMacros;
+            }
+            else
+            {
+                var actualParent = this.Macros.FindParentFromBase(this.Macro.ParentId.Value);
 
-            var actualParent = this.Macros.FindParentFromBase(this.Macro.ParentId.Value);
+                if (actualParent?.Macros == null)
+                    return;
 
-            if (actualParent?.Macros == null)
-                return;
-
-            var siblings = actualParent.Macros;
+                siblings = actualParent.Macros;
+            }
 
             var index = siblings.IndexOf(this.Macro);
 
@@ -98,18 +109,22 @@ namespace Cubase.Macro.Forms.Configuration
 
         protected override void OnClick(EventArgs e)
         {
-            if (this.Macro.ParentId == null)
-                return;
+            List<CubaseMacro> siblings = new List<CubaseMacro>();
+            if (this.Macro.ParentId == Guid.Empty) // must be common macros 
+            {
+                siblings = this.Macros.CommonMacros;
+            }
+            else
+            {
+                var actualParent = this.Macros.FindParentFromBase(this.Macro.ParentId.Value);
 
-            var actualParent = this.Macros.FindParentFromBase(this.Macro.ParentId.Value);
+                if (actualParent?.Macros == null)
+                    return;
 
-            if (actualParent?.Macros == null)
-                return;
-
-            var siblings = actualParent.Macros;
+                siblings = actualParent.Macros;
+            }
 
             var index = siblings.IndexOf(this.Macro);
-
             // Already at the top → do nothing
             if (index <= 0)
                 return;
@@ -323,8 +338,11 @@ namespace Cubase.Macro.Forms.Configuration
 
         private bool RemoveMacroRecursive(CubaseMacro parent, CubaseMacro target)
         {
-            if (parent.Macros == null)
-                return false;
+            if (target.ParentId == Guid.Empty)
+            {
+                this.Macros.CommonMacros.Remove(target);
+                return true;
+            }
 
             // Try remove directly
             if (parent.Macros.Remove(target))

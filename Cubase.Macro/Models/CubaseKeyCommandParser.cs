@@ -33,6 +33,12 @@ namespace Cubase.Macro.Models
 
         private void AddMidiCommands(CubaseKeyCommandCollection commands)
         {
+            commands.AddRange(CubaseMidiCommandCollection
+                    .LoadFromJavascript()
+                    .Select(midiCmd =>
+                                    CubaseKeyCommand.CreateMidi(midiCmd.Command, midiCmd.Note, midiCmd.Channel)));
+            
+            /*
             commands.Add(CubaseKeyCommand.CreateMidi("Start", 2, 0));
             commands.Add(CubaseKeyCommand.CreateMidi("Show Guitars", 0, 2));
             commands.Add(CubaseKeyCommand.CreateMidi("Show Keyboards", 1, 2));
@@ -50,11 +56,9 @@ namespace Cubase.Macro.Models
             commands.Add(CubaseKeyCommand.CreateMidi("Show Tracks With Data", 10, 0));
             commands.Add(CubaseKeyCommand.CreateMidi("New Track Version", 9, 1));
             commands.Add(CubaseKeyCommand.CreateMidi("Show Selected", 12, 0));
+        */
         }
 
-        /*
-            this.Add(CubaseMidiCommand.Create("Show Selected Tracks", 0, 12, "Channel & Track Visibility", "ShowSelected", 127));         
-         */
 
         private void ProcessCatgeories(XElement catElement, CubaseKeyCommandCollection commands)
         {

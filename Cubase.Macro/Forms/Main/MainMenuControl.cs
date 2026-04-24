@@ -1,6 +1,7 @@
 ﻿using Cubase.Macro.Forms.Main.Buttons;
 using Cubase.Macro.Forms.Main.Menus;
 using Cubase.Macro.Models;
+using Cubase.Macro.Services.Config;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -26,6 +27,8 @@ namespace Cubase.Macro.Forms.Main
 
         private MainForm mainForm;
 
+        private IConfigurationService configurationService;
+
         public MainMenuControl()
         {
             InitializeComponent();
@@ -43,11 +46,47 @@ namespace Cubase.Macro.Forms.Main
             ButtonPositionCubase.HelpText = "Position Cubase";
             ButtonRefresh.Click += ButtonRefresh_Click;
             ButtonRefresh.HelpText = "Reload Configuration";
+            this.MainPanel.Resize += MenuSizeChanged;
+        }
+
+        private void MenuSizeChanged(object? sender, EventArgs e)
+        {
+            if (this.configurationService != null)
+            {
+                this.configurationService.Configuration.MacroPanelHeight = this.MainPanel.Height;
+                this.configurationService.Configuration.Save();
+            }
         }
 
         protected override void OnResize(EventArgs e)
         {
             base.OnResize(e);
+            this.SetAndSavePanelHeight();
+        }
+
+        private void SetAndSavePanelHeight()
+        {
+            if (this.configurationService?.Configuration?.MacroPanelHeight < 0)
+            {
+                this.SetDefaultMainPanelHeight();
+                this.configurationService.Configuration.MacroPanelHeight = this.MainPanel.Height;
+                this.configurationService.Configuration.Save();
+            }
+            else
+            {
+                if (this.configurationService != null)
+                {
+                    MainPanel.Height = this.configurationService.Configuration.MacroPanelHeight;
+                }
+                else
+                {
+                    this.SetDefaultMainPanelHeight();
+                }
+            }
+        }
+
+        private void SetDefaultMainPanelHeight()
+        {
             var mainPanelHeight = this.Height * 0.7;
             MainPanel.Height = (int)mainPanelHeight;
         }
@@ -96,8 +135,9 @@ namespace Cubase.Macro.Forms.Main
             });
         }
 
-        public void InitialiseMain(CubaseMacro menu, Action<CubaseMacro, MacroButton> onMacroClicked, Action<CubaseMacro, PictureButton> onBack, MainForm mainForm)
+        public void InitialiseMain(CubaseMacro menu, Action<CubaseMacro, MacroButton> onMacroClicked, Action<CubaseMacro, PictureButton> onBack, MainForm mainForm, IConfigurationService configurationService)
         {
+            this.configurationService = configurationService;
             this.menu = menu;
             this.mainForm = mainForm;
             this.onMacroClicked = onMacroClicked;
@@ -116,6 +156,6 @@ namespace Cubase.Macro.Forms.Main
             {
                 this.menuCommonControl.AddMacro(macro, onMacroClicked);
             }
-            }
+        }
     }
 }

@@ -12,9 +12,9 @@ namespace Cubase.Macro.Forms.Main.Menus
 
         public MenuCommonControl()
         {
-            Dock = DockStyle.Fill;
+            Dock = DockStyle.Top;
             AutoSize = true;
-            AutoSizeMode = AutoSizeMode.GrowAndShrink;
+            AutoSizeMode = AutoSizeMode.GrowAndShrink; 
             GrowStyle = TableLayoutPanelGrowStyle.AddRows;
             DoubleBuffered = true;
             Padding = new Padding(10);
@@ -45,7 +45,7 @@ namespace Cubase.Macro.Forms.Main.Menus
             if (row >= RowCount)
             {
                 RowCount++;
-                RowStyles.Add(new RowStyle(SizeType.AutoSize));
+                RowStyles.Add(new RowStyle(SizeType.Absolute, button.Height)); // 60px height
             }
 
             Controls.Add(button, col, row);

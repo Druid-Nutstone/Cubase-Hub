@@ -80,7 +80,7 @@ namespace Cubase.Macro
             this.macros = CubaseMacroCollection.Load();
             if (this.macros.Macros.Count > 0)
             {
-                this.mainMenuControl.InitialiseMain(this.macros.Macros.First(), MacroClicked, this.OnBackClicked, this);
+                this.mainMenuControl.InitialiseMain(this.macros.Macros.First(), MacroClicked, this.OnBackClicked, this, this.configurationService);
                 if (this.macros.CommonMacros.Count > 0)
                 {
                     this.mainMenuControl.InitialiseCommon(this.macros.CommonMacros, MacroClicked);
@@ -125,7 +125,7 @@ namespace Cubase.Macro
                 }
             }
             var parentMenu = this.macros.FindParentIdRecursive(this.macros.Macros.First(), currentMacro.ParentId.Value);
-            this.mainMenuControl.InitialiseMain(parentMenu, MacroClicked, this.OnBackClicked, this);
+            this.mainMenuControl.InitialiseMain(parentMenu, MacroClicked, this.OnBackClicked, this, this.configurationService);
             this.windowService.BringCubaseToFront();
         }
 
@@ -165,7 +165,7 @@ namespace Cubase.Macro
                     macroButton.SetBlockCursor();
                     RunMacro(macro.ToggleOnKeys, macro);
                 }
-                this.mainMenuControl.InitialiseMain(macro, MacroClicked, this.OnBackClicked, this);
+                this.mainMenuControl.InitialiseMain(macro, MacroClicked, this.OnBackClicked, this, this.configurationService);
                 macroButton.SetDefaultCursor();
                 this.windowService.BringCubaseToFront();
             }

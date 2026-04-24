@@ -36,7 +36,7 @@
             ButtonMinimise = new Cubase.Macro.Forms.Main.Buttons.PictureButton();
             ButtonClose = new Cubase.Macro.Forms.Main.Buttons.PictureButton();
             MainPanel = new Panel();
-            splitter1 = new Splitter();
+            MenuSplitter = new Splitter();
             CommonPanel = new Panel();
             NavPanel.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)ButtonRefresh).BeginInit();
@@ -118,14 +118,14 @@
             MainPanel.Size = new Size(200, 274);
             MainPanel.TabIndex = 1;
             // 
-            // splitter1
+            // MenuSplitter
             // 
-            splitter1.Dock = DockStyle.Top;
-            splitter1.Location = new Point(0, 335);
-            splitter1.Name = "splitter1";
-            splitter1.Size = new Size(200, 4);
-            splitter1.TabIndex = 2;
-            splitter1.TabStop = false;
+            MenuSplitter.Dock = DockStyle.Top;
+            MenuSplitter.Location = new Point(0, 335);
+            MenuSplitter.Name = "MenuSplitter";
+            MenuSplitter.Size = new Size(200, 4);
+            MenuSplitter.TabIndex = 2;
+            MenuSplitter.TabStop = false;
             // 
             // CommonPanel
             // 
@@ -142,7 +142,7 @@
             AutoScaleDimensions = new SizeF(8F, 20F);
             AutoScaleMode = AutoScaleMode.Font;
             Controls.Add(CommonPanel);
-            Controls.Add(splitter1);
+            Controls.Add(MenuSplitter);
             Controls.Add(MainPanel);
             Controls.Add(NavPanel);
             Name = "MainMenuControl";
@@ -165,7 +165,7 @@
         private Buttons.PictureButton ButtonBack;
         private Buttons.PictureButton ButtonPositionCubase;
         private Buttons.PictureButton ButtonRefresh;
-        private Splitter splitter1;
+        private Splitter MenuSplitter;
         private Panel CommonPanel;
     }
 }

@@ -27,7 +27,7 @@ namespace Cubase.Macro.Forms.Main.Buttons
             this.FlatStyle = FlatStyle.Flat;
             this.FlatAppearance.BorderSize = 1;
             this.Width = 60;
-            this.Height = 120;
+            this.Height = 80;
         }
     }
 }

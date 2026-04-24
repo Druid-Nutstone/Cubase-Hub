@@ -10,6 +10,8 @@ namespace Cubase.Macro.Models
     {
 
 
+        public int MacroPanelHeight { get; set; } = -1;
+        
         public string ResetVisibilityKey { get; set; }
 
         public int MenuHeight { get; set; } = 80;
