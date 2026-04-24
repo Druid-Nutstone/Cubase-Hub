@@ -18,6 +18,11 @@ namespace Cubase.Macro.Models
             this.AddRange(source);
         }
         
+        public CubaseKeyCommandCollection GetFilteredBy(string category)
+        {
+            return new CubaseKeyCommandCollection(this.Where(c => c.Category == category));
+        }
+
         public List<CubaseKeyCommand> GetAllocated()
         {
             return this.Where(c => !string.IsNullOrWhiteSpace(c.Key)).ToList(); 

@@ -29,12 +29,39 @@ namespace Cubase.Macro.Forms.Configuration.KeySelector
             ThemeApplier.ApplyDarkTheme(this);
             this.allCommands = new CubaseKeyCommandParser().Parse();
             this.keyCommandListView.Populate(this.allCommands);
+            this.BuildFilter();
+            this.FilterBy.SelectedIndexChanged += FilterBy_SelectedIndexChanged;
             this.OnKeySelected = OnKeySelected;
             this.keyCommandListView.OnKeySelected = (cmd) => 
             { 
                 this.OnKeySelected.Invoke(cmd);
                 this.Close();
             };
+            this.ClearFilterButton.Click += ClearFilterButton_Click;
+        }
+
+        private void ClearFilterButton_Click(object? sender, EventArgs e)
+        {
+            this.FilterBy.SelectedIndex = -1;
+        }
+
+        private void BuildFilter()
+        {
+            var filtered = this.allCommands.Select(x => x.Category).Distinct();
+            this.FilterBy.Items.AddRange(filtered.ToArray());
+        } 
+
+        private void FilterBy_SelectedIndexChanged(object? sender, EventArgs e)
+        {
+            if (this.FilterBy.SelectedIndex > -1)
+            {
+                var filterbySelection = this.FilterBy.SelectedItem.ToString();
+                this.keyCommandListView.Populate(this.allCommands.GetFilteredBy(filterbySelection));
+            }
+            else
+            {
+                this.keyCommandListView.Populate(this.allCommands);
+            }
         }
 
         private void ClearButton_Click(object? sender, EventArgs e)

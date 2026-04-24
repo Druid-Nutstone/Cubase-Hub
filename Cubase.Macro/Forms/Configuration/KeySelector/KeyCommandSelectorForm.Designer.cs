@@ -32,9 +32,12 @@
             panel3 = new Panel();
             keyCommandListView = new KeyCommandListView();
             panel2 = new Panel();
+            FilterBy = new ComboBox();
+            label2 = new Label();
+            ClearButton = new Button();
             SearchForText = new TextBox();
             label1 = new Label();
-            ClearButton = new Button();
+            ClearFilterButton = new Button();
             panel1.SuspendLayout();
             panel3.SuspendLayout();
             panel2.SuspendLayout();
@@ -73,6 +76,9 @@
             // 
             // panel2
             // 
+            panel2.Controls.Add(ClearFilterButton);
+            panel2.Controls.Add(FilterBy);
+            panel2.Controls.Add(label2);
             panel2.Controls.Add(ClearButton);
             panel2.Controls.Add(SearchForText);
             panel2.Controls.Add(label1);
@@ -81,6 +87,33 @@
             panel2.Name = "panel2";
             panel2.Size = new Size(724, 109);
             panel2.TabIndex = 0;
+            // 
+            // FilterBy
+            // 
+            FilterBy.FormattingEnabled = true;
+            FilterBy.Location = new Point(461, 38);
+            FilterBy.Name = "FilterBy";
+            FilterBy.Size = new Size(165, 28);
+            FilterBy.TabIndex = 4;
+            // 
+            // label2
+            // 
+            label2.AutoSize = true;
+            label2.Font = new Font("Segoe UI", 9F, FontStyle.Bold);
+            label2.Location = new Point(461, 15);
+            label2.Name = "label2";
+            label2.Size = new Size(45, 20);
+            label2.TabIndex = 3;
+            label2.Text = "Filter";
+            // 
+            // ClearButton
+            // 
+            ClearButton.Location = new Point(346, 38);
+            ClearButton.Name = "ClearButton";
+            ClearButton.Size = new Size(40, 29);
+            ClearButton.TabIndex = 2;
+            ClearButton.Text = "X";
+            ClearButton.UseVisualStyleBackColor = true;
             // 
             // SearchForText
             // 
@@ -99,14 +132,14 @@
             label1.TabIndex = 0;
             label1.Text = "Search";
             // 
-            // ClearButton
+            // ClearFilterButton
             // 
-            ClearButton.Location = new Point(346, 38);
-            ClearButton.Name = "ClearButton";
-            ClearButton.Size = new Size(40, 29);
-            ClearButton.TabIndex = 2;
-            ClearButton.Text = "X";
-            ClearButton.UseVisualStyleBackColor = true;
+            ClearFilterButton.Location = new Point(632, 38);
+            ClearFilterButton.Name = "ClearFilterButton";
+            ClearFilterButton.Size = new Size(40, 29);
+            ClearFilterButton.TabIndex = 5;
+            ClearFilterButton.Text = "X";
+            ClearFilterButton.UseVisualStyleBackColor = true;
             // 
             // KeyCommandSelectorForm
             // 
@@ -134,5 +167,8 @@
         private TextBox SearchForText;
         private Label label1;
         private Button ClearButton;
+        private ComboBox FilterBy;
+        private Label label2;
+        private Button ClearFilterButton;
     }
 }
