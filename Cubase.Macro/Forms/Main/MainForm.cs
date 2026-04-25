@@ -292,7 +292,29 @@ namespace Cubase.Macro
 
         private void RunMidiMacro(CubaseKeyCommand command)
         {
+            var haveMidiResponse = false;
+            this.midiService.OnMidiResponse = (midiResponse) =>
+            {
+                if (midiResponse.Name == command.Name) // maybe should check not and channel ?
+                {
+                    haveMidiResponse = true;
+                    this.logger.LogInformation($"Command {command.Name} has been processed");
+                }
+            };
+            
             this.midiService.SendMidiMessage(command);
+
+            var count = 0;
+            // very naff - but hey ho 
+            while (!haveMidiResponse && count <= 100)
+            {
+                Thread.Sleep(20);
+                count++;
+            }
+            if (count == 100)
+            {
+                this.logger.LogError($"Did not receive a response for midi command {command.Name}");
+            }
         }
 
         private void RunMacro(List<CubaseKeyCommand> macros, CubaseMacro macro)

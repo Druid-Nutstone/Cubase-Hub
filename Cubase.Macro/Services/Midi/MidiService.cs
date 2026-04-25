@@ -3,6 +3,7 @@ using Microsoft.Extensions.Logging;
 using System.Collections.Concurrent;
 using System.Diagnostics;
 using System.Text;
+using System.Text.Json;
 
 namespace Cubase.Macro.Services.Midi
 {
@@ -21,6 +22,8 @@ namespace Cubase.Macro.Services.Midi
 
         public Action<bool>? OnCommandComplete { get; set; }
         public Action? OnReadyReceived { get; set; }
+
+        public Action<CubaseMidiResponse> OnMidiResponse {  get; set; }
 
         public bool ReadyReceived { get; private set; }
 
@@ -50,6 +53,7 @@ namespace Cubase.Macro.Services.Midi
         {
             try
             {
+                logger.LogInformation($"Sending Midi {cubaseMidiCommand.Name} Ch:{cubaseMidiCommand.Channel} Note:{cubaseMidiCommand.Note}");
                 midiDriver?.SendNoteOn(
                     cubaseMidiCommand.Channel,
                     cubaseMidiCommand.Note,
@@ -168,7 +172,17 @@ namespace Cubase.Macro.Services.Midi
                 case "FAILED":
                     OnCommandComplete?.Invoke(false);
                     break;
-
+                case "COMMANDVALUECHANGED":
+                    try
+                    {
+                        var midiResponse = JsonSerializer.Deserialize<CubaseMidiResponse>(payload);
+                        OnMidiResponse?.Invoke(midiResponse);
+                    }
+                    catch (Exception ex)
+                    {
+                        logger.LogError(ex, $"Error deserialising CommandValueChanged");
+                    }
+                    break;
                 default:
                     logger.LogInformation(
                         "Unhandled MIDI command: {Command} Payload: {Payload}",

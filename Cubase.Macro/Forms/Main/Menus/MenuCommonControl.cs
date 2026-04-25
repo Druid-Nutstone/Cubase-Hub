@@ -22,6 +22,14 @@ namespace Cubase.Macro.Forms.Main.Menus
             SetupColumns();
         }
 
+        public void ClearMacros()
+        {
+            this.Controls.Clear();
+            this.RowStyles.Clear();
+            this.RowCount = 0;
+            this.SetupColumns(); 
+        }
+
         private void SetupColumns()
         {
             ColumnCount = _columns;

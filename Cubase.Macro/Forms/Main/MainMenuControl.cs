@@ -152,6 +152,7 @@ namespace Cubase.Macro.Forms.Main
 
         public void InitialiseCommon(List<CubaseMacro> macros, Action<CubaseMacro, MacroButton> onMacroClicked)
         {
+            menuCommonControl.ClearMacros();
             foreach (var macro in macros)
             {
                 this.menuCommonControl.AddMacro(macro, onMacroClicked);
