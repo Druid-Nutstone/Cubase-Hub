@@ -248,6 +248,7 @@ namespace Cubase.Macro
             // this.MaximiseCubase();
         }
 
+
         protected override void OnMouseEnter(EventArgs e)
         {
             this.Activate();

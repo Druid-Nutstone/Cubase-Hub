@@ -30,5 +30,10 @@ namespace Cubase.Macro
 
         public static string MidiJavascriptFileName = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments), "Steinberg", "Cubase", "MIDI Remote", "Driver Scripts", "Local", "Nutstone", "VirtualDevice", "Nutstone_VirtualDevice.js");
 
+        // C:\Users\david\OneDrive\Documents\Steinberg\Cubase\User Presets\Project Logical Editor
+
+        public static string PleDirectoryMacroLocation = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments), "Steinberg", "Cubase", "User Presets", "Project Logical Editor");
+
+
     }
 }
