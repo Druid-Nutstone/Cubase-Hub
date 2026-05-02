@@ -84,6 +84,7 @@ namespace Cubase.Macro
 
         static void StartMidiService(IServiceProvider services)
         {
+            Log.Logger.Information($"Loading Config from {CubaseMacroConstants.ConfigurationFileName}");
             var configurationService = services.GetService<IConfigurationService>();
             configurationService?.ReloadConfiguration();
 

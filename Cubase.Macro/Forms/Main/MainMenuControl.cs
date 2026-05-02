@@ -2,6 +2,7 @@
 using Cubase.Macro.Forms.Main.Menus;
 using Cubase.Macro.Models;
 using Cubase.Macro.Services.Config;
+using Microsoft.Extensions.Logging;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -14,6 +15,14 @@ namespace Cubase.Macro.Forms.Main
 {
     public partial class MainMenuControl : UserControl
     {
+
+        [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
+        public Action<string> Logger { get; set; }
+
+        [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
+        public MainForm MainForm { get; set; }
+
+        private bool haveSetSize = false;
 
         private CubaseMacro menu;
 
@@ -46,37 +55,46 @@ namespace Cubase.Macro.Forms.Main
             ButtonPositionCubase.HelpText = "Position Cubase";
             ButtonRefresh.Click += ButtonRefresh_Click;
             ButtonRefresh.HelpText = "Reload Configuration";
-            this.MainPanel.Resize += MenuSizeChanged;
+            MainPanel.Resize += MenuSizeChanged;
         }
 
         private void MenuSizeChanged(object? sender, EventArgs e)
         {
             if (this.configurationService != null)
             {
+                this.Log($"MenuSizeChanged: Setting menu height to {this.MainPanel.Height}");
                 this.configurationService.Configuration.MacroPanelHeight = this.MainPanel.Height;
-                this.configurationService.Configuration.Save();
+                if (!this.configurationService.Configuration.Save())
+                {
+                    MessageBox.Show("Could not save configuration", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                }
             }
         }
 
-        protected override void OnResize(EventArgs e)
+        public void SetSize()
         {
-            base.OnResize(e);
-            this.SetAndSavePanelHeight();
+            if (!this.haveSetSize)
+            {
+                this.SetAndSavePanelHeight();
+            }
+           
         }
 
         private void SetAndSavePanelHeight()
         {
             if (this.configurationService?.Configuration?.MacroPanelHeight < 0)
             {
+                this.Log($"Setting main panel height to default. MacroPanelHeight is {this.configurationService.Configuration.MacroPanelHeight}");
                 this.SetDefaultMainPanelHeight();
                 this.configurationService.Configuration.MacroPanelHeight = this.MainPanel.Height;
-                this.configurationService.Configuration.Save();
             }
             else
             {
                 if (this.configurationService != null)
                 {
+                    this.Log($"Setting mainpanel height to {this.configurationService.Configuration.MacroPanelHeight}");
                     MainPanel.Height = this.configurationService.Configuration.MacroPanelHeight;
+                    this.haveSetSize = true;
                 }
                 else
                 {
@@ -87,8 +105,12 @@ namespace Cubase.Macro.Forms.Main
 
         private void SetDefaultMainPanelHeight()
         {
-            var mainPanelHeight = this.Height * 0.7;
-            MainPanel.Height = (int)mainPanelHeight;
+            if (this.MainForm?.WindowState != FormWindowState.Minimized)
+            {
+                var mainPanelHeight = this.Height * 0.7;
+                this.Log($"Setting default main menu height to {mainPanelHeight}");
+                MainPanel.Height = (int)mainPanelHeight;
+            }
         }
 
         private void ButtonRefresh_Click(object? sender, EventArgs e)
@@ -133,6 +155,14 @@ namespace Cubase.Macro.Forms.Main
             {
                 this.onBack?.Invoke(this.menu, this.ButtonBack);
             });
+        }
+
+        private void Log(string msg)
+        {
+            if (this.Logger != null)
+            {
+                this.Logger.Invoke(msg);
+            }
         }
 
         public void InitialiseMain(CubaseMacro menu, Action<CubaseMacro, MacroButton> onMacroClicked, Action<CubaseMacro, PictureButton> onBack, MainForm mainForm, IConfigurationService configurationService)

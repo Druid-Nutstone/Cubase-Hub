@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Runtime.CompilerServices;
 using System.Text;
 using System.Text.Json;
 
@@ -24,10 +25,18 @@ namespace Cubase.Macro.Models
 
         public bool ReloadWindowsMidiService { get; set; } = false;
 
-        public void Save()
+        public bool Save()
         {
-            var json = JsonSerializer.Serialize(this, new JsonSerializerOptions() { WriteIndented = true });
-            File.WriteAllText(CubaseMacroConstants.ConfigurationFileName, json);
+            try
+            {
+                var json = JsonSerializer.Serialize(this, new JsonSerializerOptions() { WriteIndented = true });
+                File.WriteAllText(CubaseMacroConstants.ConfigurationFileName, json);
+                return true;
+            }
+            catch (Exception ex)
+            {
+                return false;
+            }
         }
         
         public static CubaseMacroConfiguration Load()

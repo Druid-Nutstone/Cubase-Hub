@@ -192,9 +192,10 @@ namespace Cubase.Macro.Forms.Configuration
             if (!string.IsNullOrEmpty(clipboardText))
             {
                 var pasteMacro = System.Text.Json.JsonSerializer.Deserialize<CubaseMacro>(clipboardText);
+                var isCommonMacro = this.Macro == null;
                 if (pasteMacro != null)
                 {
-                    if (this.Macro.MacroType != CubaseMacroType.Menu)
+                    if (!isCommonMacro && this.Macro.MacroType != CubaseMacroType.Menu)
                     {
                         MessageBox.Show("Cannot paste a macro into a non-menu macro.", "Invalid Paste", MessageBoxButtons.OK, MessageBoxIcon.Error);
                     }
@@ -202,7 +203,7 @@ namespace Cubase.Macro.Forms.Configuration
                     {
                         if (pasteMacro.MacroType == CubaseMacroType.KeyCommand)
                         {
-                            var newMacro = CubaseMacro.CreateKeyCommandMacro(pasteMacro.Title, this.Macro.Id);
+                            var newMacro = CubaseMacro.CreateKeyCommandMacro(pasteMacro.Title, this.Macro?.Id);
                             newMacro.TitleToggle = pasteMacro.TitleToggle;
                             newMacro.ButtonType = pasteMacro.ButtonType;
                             newMacro.BackgroundColourARGB = pasteMacro.BackgroundColourARGB;
@@ -213,7 +214,14 @@ namespace Cubase.Macro.Forms.Configuration
                             newMacro.ToggleOnKeys = pasteMacro.ToggleOnKeys;
                             newMacro.ToggleOffKeys = pasteMacro.ToggleOffKeys;
                             newMacro.ReturnToParentMenuAfterExecution = pasteMacro.ReturnToParentMenuAfterExecution;
-                            this.Macro.Macros.Add(newMacro);
+                            if (!isCommonMacro)
+                            {
+                                this.Macro.Macros.Add(newMacro);
+                            }
+                            else
+                            {
+                                this.Macros.CommonMacros.Add(newMacro);
+                            }
                         }
                         else
                         {

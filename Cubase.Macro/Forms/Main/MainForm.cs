@@ -69,10 +69,17 @@ namespace Cubase.Macro
             this.midiService = midiService;
             this.windowService = windowService;
             this.logger = log;
+            this.mainMenuControl.Logger = this.Log;
+            this.mainMenuControl.MainForm = this;
             StaticConfig.Instance.SetConfiguration(this.configurationService.Configuration);
             ThemeApplier.ApplyDarkTheme(this);
             LoadMacros();
             this.ShowMacros();
+        }
+
+        private void Log(string msg)
+        {
+            this.logger.LogInformation(msg);
         }
 
         private void LoadMacros()
@@ -288,7 +295,11 @@ namespace Cubase.Macro
                         break;
                 }
             }
-            
+
+            if (this.WindowState != FormWindowState.Minimized)
+            {
+                this.mainMenuControl.SetSize();
+            }
         }
 
         private void RunMidiMacro(CubaseKeyCommand command)
@@ -312,9 +323,14 @@ namespace Cubase.Macro
                 Thread.Sleep(20);
                 count++;
             }
-            if (count == 100)
+            if (count > 100)
             {
                 this.logger.LogError($"Did not receive a response for midi command {command.Name}");
+                var commandResponse = MessageBox.Show("Cubase midi is not responding. Shall I restart the midi service?", "Midi not responding", MessageBoxButtons.YesNo, MessageBoxIcon.Question);
+                if (commandResponse == DialogResult.Yes)
+                {
+                    this.midiService.RestartMidi();
+                }
             }
         }
 
