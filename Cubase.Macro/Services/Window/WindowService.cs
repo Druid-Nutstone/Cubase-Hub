@@ -32,6 +32,20 @@ namespace Cubase.Macro.Services.Window
 
         #region Win32
 
+        public const int TME_LEAVE = 0x00000002;
+
+        [StructLayout(LayoutKind.Sequential)]
+        public struct TRACKMOUSEEVENT
+        {
+            public int cbSize;
+            public int dwFlags;
+            public IntPtr hwndTrack;
+            public int dwHoverTime;
+        }
+
+        [DllImport("user32.dll")]
+        public static extern bool TrackMouseEvent(ref TRACKMOUSEEVENT lpEventTrack);
+
         [DllImport("user32.dll")] private static extern bool SetForegroundWindow(IntPtr hWnd);
         [DllImport("user32.dll")] private static extern bool ShowWindow(IntPtr hWnd, int nCmdShow);
         [DllImport("user32.dll")] private static extern IntPtr GetForegroundWindow();
@@ -320,5 +334,27 @@ namespace Cubase.Macro.Services.Window
             GetWindowPlacement(hWnd, ref placement);
             return Enum.GetValues<ExternalWindowState>().Contains((ExternalWindowState)placement.showCmd) ? (ExternalWindowState)placement.showCmd : ExternalWindowState.Unknown;
         }
+
+        public nint GetCurrentForeGroundWindow()
+        {
+            return GetForegroundWindow();
+        }
+    }
+
+    internal static class NativeMethods
+    {
+        public const int TME_LEAVE = 0x00000002;
+
+        [StructLayout(LayoutKind.Sequential)]
+        public struct TRACKMOUSEEVENT
+        {
+            public int cbSize;
+            public int dwFlags;
+            public IntPtr hwndTrack;
+            public int dwHoverTime;
+        }
+
+        [DllImport("user32.dll")]
+        public static extern bool TrackMouseEvent(ref TRACKMOUSEEVENT lpEventTrack);
     }
 }

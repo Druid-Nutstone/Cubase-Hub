@@ -23,5 +23,9 @@ namespace Cubase.Macro.Services.Window
         bool IsCubasePositioned(int left);
 
         ExternalWindowState GetCubaseWindowState();
+
+        IntPtr GetCurrentForeGroundWindow();
+
+        // static extern bool TrackMouseEvent(ref TRACKMOUSEEVENT lpEventTrack);
     }
 }

@@ -16,6 +16,7 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
 using System.Drawing;
+using System.Runtime.InteropServices;
 using System.Text;
 using System.Windows.Forms;
 using System.Windows.Input;
@@ -32,10 +33,6 @@ namespace Cubase.Macro
             WaitingForActive,
             WaitingForClosed
         }
-
-        private CubaseState _state = CubaseState.WaitingForActive;
-        
-        private System.Windows.Forms.Timer _timer;
 
         private System.Windows.Forms.Timer _mouseWatcherTimer;
 
@@ -75,6 +72,7 @@ namespace Cubase.Macro
             ThemeApplier.ApplyDarkTheme(this);
             LoadMacros();
             this.ShowMacros();
+            this.StartMouseWatcher();
         }
 
         private void Log(string msg)
@@ -178,50 +176,6 @@ namespace Cubase.Macro
             }
         }
 
-        //private void StartCubaseWatcher()
-        //{
-        //    cubaseWatcher = new System.Windows.Forms.Timer();
-        //    cubaseWatcher.Interval = 50;
-        //    bool newProjectLoaded = false;
-        //    cubaseWatcher.Tick += (s, e) =>
-        //    {
-
-        //        bool isRunning = this.windowService.IsCubaseRunning();
-        //        bool isActive = this.windowService.IsCubaseMainWindowActive();
-
-        //        if (isRunning && isActive)
-        //        {
-        //            if (!userForcedMinimised)
-        //            {
-        //                if (this.WindowState == FormWindowState.Minimized)
-        //                {
-        //                    if (!windowService.IsCubasePositioned(this.Width))
-        //                    {
-        //                        this.WindowState = FormWindowState.Normal;
-        //                    }
-        //                }
-        //            }
-        //            /*
-        //            if (newProjectLoaded)
-        //            {
-        //                this.logger.LogInformation("New Cubase project loaded. Restarting MIDI service to ensure MIDI macros work correctly.");
-        //                this.midiService.RestartMidi();
-                        
-        //                newProjectLoaded = false;
-        //            }
-        //            */
-        //        }
-        //        else
-        //        {
-        //            if (!isActive)
-        //            {
-        //                newProjectLoaded = true;
-        //            }
-        //        }
-        //    };
-
-        //    cubaseWatcher.Start();
-        //}
 
         public void Minimise()         {
 
@@ -251,55 +205,55 @@ namespace Cubase.Macro
         protected override void OnFormClosing(FormClosingEventArgs e)
         {
             this.midiService.Dispose();
+            this._mouseWatcherTimer.Stop();
             base.OnFormClosing(e);
-            // this.MaximiseCubase();
+
         }
 
-
-        protected override void OnMouseEnter(EventArgs e)
+        private void StartMouseWatcher()
         {
-            this.Activate();
+            _mouseWatcherTimer = new System.Windows.Forms.Timer();
+            _mouseWatcherTimer.Interval = 50;
+            _mouseWatcherTimer.Tick += CheckMousePosition;
+            _mouseWatcherTimer.Start();
         }
 
-        protected override void OnMouseLeave(EventArgs e)
+        private void CheckMousePosition(object? source, EventArgs e)
         {
-            Point mousePos = System.Windows.Forms.Cursor.Position;
-
-            if (!insideForm())
+            if (!this.Bounds.Contains(System.Windows.Forms.Cursor.Position))
             {
-                this.windowService.BringCubaseToFront();
+                if (this.WindowState != FormWindowState.Minimized)
+                {
+                    if (this.windowService.IsCubaseMainWindowActive())
+                    {
+                        this.windowService.BringCubaseToFront();
+                    }
+                }
             }
-
-            bool insideForm()
+            else
             {
-                return mousePos.X >= this.Bounds.Left &&
-                       mousePos.X <= this.Bounds.Right &&
-                       mousePos.Y >= this.Bounds.Top &&
-                       mousePos.Y <= this.Bounds.Bottom;
+                if (this.WindowState != FormWindowState.Minimized)
+                {
+                    if (this.windowService.GetCurrentForeGroundWindow() != this.Handle)
+                    {
+                        this.ToFront();
+                    }
+                }
             }
         }
 
         protected override void OnResize(EventArgs e)
         {
             base.OnResize(e);
-            
-            if (this.windowService != null)
-            {
-                switch (this.WindowState)
-                {
-                    case FormWindowState.Normal:
-                        if (this.windowService.IsCubaseMainWindowActive())
-                        {
-                            this.PositionCubase();
-                        }
-                        break;
-                }
-            }
-
-            if (this.WindowState != FormWindowState.Minimized)
+            if (this.WindowState != FormWindowState.Minimized) 
             {
                 this.mainMenuControl.SetSize();
-            }
+            } 
+        }
+
+        protected override void OnMouseEnter(EventArgs e)
+        {
+            this.Activate();
         }
 
         private void RunMidiMacro(CubaseKeyCommand command)
