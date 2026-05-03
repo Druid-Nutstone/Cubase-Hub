@@ -247,6 +247,7 @@ namespace Cubase.Macro.Services.Window
             if (hWnd == IntPtr.Zero)
                 return false;
 
+            if (GetForegroundWindow() == hWnd) return true;
 
             uint targetThreadId = GetWindowThreadProcessId(hWnd, out uint processId);
             uint currentThreadId = GetCurrentThreadId();

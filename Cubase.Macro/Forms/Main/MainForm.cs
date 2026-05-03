@@ -52,6 +52,8 @@ namespace Cubase.Macro
 
         private readonly ILogger<MainForm> logger;
 
+        private bool suspendMouseChecking = false;
+
         public MainForm(IKeyboardService keyboardService, 
                         IConfigurationService configurationService,
                         IWindowService windowService,
@@ -206,6 +208,7 @@ namespace Cubase.Macro
         {
             this.midiService.Dispose();
             this._mouseWatcherTimer.Stop();
+            this.MaximiseCubase();
             base.OnFormClosing(e);
 
         }
@@ -216,48 +219,60 @@ namespace Cubase.Macro
             _mouseWatcherTimer.Interval = 50;
             _mouseWatcherTimer.Tick += CheckMousePosition;
             _mouseWatcherTimer.Start();
+            this.suspendMouseChecking = false;
         }
 
         private void CheckMousePosition(object? source, EventArgs e)
         {
-            if (!this.Bounds.Contains(System.Windows.Forms.Cursor.Position))
+            if (!suspendMouseChecking)
             {
-                if (this.WindowState != FormWindowState.Minimized)
+                if (this.windowService.IsCubaseMainWindowActive())
                 {
-                    if (this.windowService.IsCubaseMainWindowActive())
+                    if (this.WindowState != FormWindowState.Minimized)
                     {
-                        this.windowService.BringCubaseToFront();
+                        if (!this.windowService.IsCubasePositioned(this.Width))
+                        {
+                            this.PositionCubase();
+                        }
+
+                        if (!this.Bounds.Contains(System.Windows.Forms.Cursor.Position))
+                        {
+                            this.windowService.BringCubaseToFront();
+                        }
+                        else
+                        {
+                            if (this.windowService.GetCurrentForeGroundWindow() != this.Handle)
+                            {
+                                this.Activate();
+                            }
+                        }
                     }
                 }
-            }
-            else
-            {
-                if (this.WindowState != FormWindowState.Minimized)
-                {
-                    if (this.windowService.GetCurrentForeGroundWindow() != this.Handle)
-                    {
-                        this.ToFront();
-                    }
-                }
+
             }
         }
 
         protected override void OnResize(EventArgs e)
         {
+            this.suspendMouseChecking = true;
             base.OnResize(e);
             if (this.WindowState != FormWindowState.Minimized) 
             {
                 this.mainMenuControl.SetSize();
-            } 
+            }
+            this.suspendMouseChecking = false;
         }
 
+        /*
         protected override void OnMouseEnter(EventArgs e)
         {
             this.Activate();
         }
+        */
 
         private void RunMidiMacro(CubaseKeyCommand command)
         {
+            this.suspendMouseChecking = true;
             var haveMidiResponse = false;
             this.midiService.OnMidiResponse = (midiResponse) =>
             {
@@ -279,13 +294,14 @@ namespace Cubase.Macro
             }
             if (count > 100)
             {
-                this.logger.LogError($"Did not receive a response for midi command {command.Name}");
+                 this.logger.LogError($"Did not receive a response for midi command {command.Name}");
                 var commandResponse = MessageBox.Show("Cubase midi is not responding. Shall I restart the midi service?", "Midi not responding", MessageBoxButtons.YesNo, MessageBoxIcon.Question);
                 if (commandResponse == DialogResult.Yes)
                 {
                     this.midiService.RestartMidi();
                 }
             }
+            this.suspendMouseChecking = false;
         }
 
         private void RunMacro(List<CubaseKeyCommand> macros, CubaseMacro macro)
