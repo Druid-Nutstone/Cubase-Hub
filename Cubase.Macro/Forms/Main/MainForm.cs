@@ -34,8 +34,6 @@ namespace Cubase.Macro
             WaitingForClosed
         }
 
-        private System.Windows.Forms.Timer _mouseWatcherTimer;
-
         public bool HaveError { get; private set; }
 
         private CubaseMacroCollection macros;
@@ -51,8 +49,6 @@ namespace Cubase.Macro
         private readonly IMidiService midiService;
 
         private readonly ILogger<MainForm> logger;
-
-        private bool suspendMouseChecking = false;
 
         public MainForm(IKeyboardService keyboardService, 
                         IConfigurationService configurationService,
@@ -74,7 +70,28 @@ namespace Cubase.Macro
             ThemeApplier.ApplyDarkTheme(this);
             LoadMacros();
             this.ShowMacros();
-            this.StartMouseWatcher();
+            this.HookMouseMove(this);
+        }
+
+        private void HookMouseMove(Control baseControl)
+        {
+            baseControl.MouseLeave += this.MouseAllOut;
+            foreach (Control control in baseControl.Controls)
+            {
+                HookMouseMove(control);
+            }
+        }
+
+        private void MouseAllOut(object? sender, EventArgs e)
+        {
+            if (!this.Bounds.Contains(System.Windows.Forms.Cursor.Position))
+            {
+                this.windowService.BringCubaseToFront();
+            }
+            else
+            {
+                this.Activate();
+            }
         }
 
         private void Log(string msg)
@@ -207,72 +224,33 @@ namespace Cubase.Macro
         protected override void OnFormClosing(FormClosingEventArgs e)
         {
             this.midiService.Dispose();
-            this._mouseWatcherTimer.Stop();
             this.MaximiseCubase();
             base.OnFormClosing(e);
 
         }
 
-        private void StartMouseWatcher()
+        protected override void OnResize(EventArgs e)
         {
-            _mouseWatcherTimer = new System.Windows.Forms.Timer();
-            _mouseWatcherTimer.Interval = 50;
-            _mouseWatcherTimer.Tick += CheckMousePosition;
-            _mouseWatcherTimer.Start();
-            this.suspendMouseChecking = false;
-        }
-
-        private void CheckMousePosition(object? source, EventArgs e)
-        {
-            if (!suspendMouseChecking)
+            base.OnResize(e);
+            if (this.WindowState != FormWindowState.Minimized) 
             {
-                if (this.windowService.IsCubaseMainWindowActive())
+                this.mainMenuControl.SetSize();
+                if (this.windowService != null)
                 {
-                    if (this.WindowState != FormWindowState.Minimized)
+                    if (this.windowService.IsCubaseMainWindowActive())
                     {
                         if (!this.windowService.IsCubasePositioned(this.Width))
                         {
                             this.PositionCubase();
                         }
-
-                        if (!this.Bounds.Contains(System.Windows.Forms.Cursor.Position))
-                        {
-                            this.windowService.BringCubaseToFront();
-                        }
-                        else
-                        {
-                            if (this.windowService.GetCurrentForeGroundWindow() != this.Handle)
-                            {
-                                this.Activate();
-                            }
-                        }
                     }
                 }
-
             }
         }
 
-        protected override void OnResize(EventArgs e)
-        {
-            this.suspendMouseChecking = true;
-            base.OnResize(e);
-            if (this.WindowState != FormWindowState.Minimized) 
-            {
-                this.mainMenuControl.SetSize();
-            }
-            this.suspendMouseChecking = false;
-        }
-
-        /*
-        protected override void OnMouseEnter(EventArgs e)
-        {
-            this.Activate();
-        }
-        */
-
+       
         private void RunMidiMacro(CubaseKeyCommand command)
         {
-            this.suspendMouseChecking = true;
             var haveMidiResponse = false;
             this.midiService.OnMidiResponse = (midiResponse) =>
             {
@@ -301,7 +279,6 @@ namespace Cubase.Macro
                     this.midiService.RestartMidi();
                 }
             }
-            this.suspendMouseChecking = false;
         }
 
         private void RunMacro(List<CubaseKeyCommand> macros, CubaseMacro macro)
@@ -389,7 +366,7 @@ namespace Cubase.Macro
 
             this.Location = new Point(screen.Left, screen.Top);
             this.Size = new Size(this.Width, Screen.PrimaryScreen.WorkingArea.Height);
-
+            this.WindowState = FormWindowState.Minimized;
             this.ResumeLayout();
         }
 
