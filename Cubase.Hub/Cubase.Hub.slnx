@@ -1,5 +1,7 @@
 <Solution>
   <Project Path="../Cubase.Hub.Services/Cubase.Hub.Services.csproj" />
+  <Project Path="../Cubase.Macro.Common/Cubase.Macro.Common.csproj" Id="eff2f630-0b07-4859-8908-b0aaba336634" />
+  <Project Path="../Cubase.Macro.Tests/Cubase.Macro.Tests.csproj" Id="6017fe09-e9da-40d3-b5ca-08330e9b7928" />
   <Project Path="../Cubase.Macro/Cubase.Macro.csproj" Id="0fb9dceb-76d5-4447-a5ec-c369e6a94677" />
   <Project Path="../Cubse.Hub.Tests/Cubse.Hub.Tests.csproj" />
   <Project Path="Cubase.Hub.csproj" />

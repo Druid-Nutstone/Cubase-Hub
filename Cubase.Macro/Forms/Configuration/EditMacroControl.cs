@@ -1,4 +1,5 @@
-﻿using Cubase.Macro.Forms.Configuration.KeyEditors;
+﻿using Cubase.Macro.Common.Models;
+using Cubase.Macro.Forms.Configuration.KeyEditors;
 using Cubase.Macro.Models;
 using System;
 using System.Collections.Generic;

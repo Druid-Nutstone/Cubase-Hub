@@ -1,4 +1,5 @@
-﻿using Cubase.Macro.Forms;
+﻿using Cubase.Macro.Common.Models;
+using Cubase.Macro.Forms;
 using Cubase.Macro.Forms.Main;
 using Cubase.Macro.Forms.Main.Buttons;
 using Cubase.Macro.Models;

@@ -1,4 +1,5 @@
-﻿using Cubase.Macro.Models;
+﻿using Cubase.Macro.Common.Models;
+using Cubase.Macro.Models;
 using Cubase.Macro.Services.Config;
 using System;
 using System.Collections.Generic;

@@ -1,24 +1,24 @@
 using Cubase.Macro.Forms.Configuration;
-using Cubase.Macro.Forms.Main;
 using Cubase.Macro.Services.Config;
 using Cubase.Macro.Services.Keyboard;
 using Cubase.Macro.Services.Midi;
-using Cubase.Macro.Services.Monitor;
-using Cubase.Macro.Services.Mouse;
 using Cubase.Macro.Services.Window;
 using Cubase.Macro.Services.WindowsServices;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using Serilog;
-using System.Diagnostics;
 using System.IO;
-    
+using Microsoft.AspNetCore.Hosting;
 using System.Runtime.InteropServices;
 using System.Windows.Shell;
+using Microsoft.Extensions.Hosting;
+using Microsoft.AspNetCore.Builder;
+using Cubase.Macro.Services.WebSockets;
+using Cubase.Macro.Common.Models;
 
 namespace Cubase.Macro
 {
-    internal static class Program
+    public static class Program
     {
         [DllImport("shell32.dll")]
         private static extern int SetCurrentProcessExplicitAppUserModelID(string AppID);
@@ -38,7 +38,9 @@ namespace Cubase.Macro
 
             SetCurrentProcessExplicitAppUserModelID("DavidNuttall.CubaseMacro");
 
-            var services = InstallServices();
+            var host = CreateHostApiAndServices();
+            
+            // var services = InstallServices();
 
             SetJumpListItems();
 
@@ -56,39 +58,41 @@ namespace Cubase.Macro
                   retainedFileCountLimit: 10)
                 .CreateLogger();
             
-            LoadForm(services, args);
+            LoadForm(host, args);
 
         }
 
-        static void LoadForm(IServiceProvider services, string[] args) 
+        static void LoadForm(IHost host, string[] args) 
         {
             if (args.Count() < 1)
             {
                 // get main form 
-                var mainForm = services.GetService<MainForm>();
+                var mainForm = host.Services.GetService<MainForm>();
                 mainForm.WindowState = FormWindowState.Minimized;
-                StartMidiService(services);
-                Application.Run(services.GetService<MainForm>());
+                StartMidiService(host);
+                // start websocket api 
+                _ = host.RunAsync();
+                Application.Run(host.Services.GetService<MainForm>());
             }
             else
             {
                 var options = args[0]; 
                 if (options == "settings")
                 {
-                    var configForm = services.GetService<SettingsForm>();
+                    var configForm = host.Services.GetService<SettingsForm>();
                     Application.Run(configForm);
                 }
 
             }
         }
 
-        static void StartMidiService(IServiceProvider services)
+        static void StartMidiService(IHost host)
         {
             Log.Logger.Information($"Loading Config from {CubaseMacroConstants.ConfigurationFileName}");
-            var configurationService = services.GetService<IConfigurationService>();
+            var configurationService = host.Services.GetService<IConfigurationService>();
             configurationService?.ReloadConfiguration();
 
-            var windowsService = services.GetService<IWindowsControllerService>();
+            var windowsService = host.Services.GetService<IWindowsControllerService>();
 
             var shouldReloadWindowsMidiService = false;
 
@@ -102,7 +106,7 @@ namespace Cubase.Macro
                 }
             }
 
-            var midiService = services.GetService<IMidiService>();
+            var midiService = host.Services.GetService<IMidiService>();
             midiService.Initialise();
 
             if (shouldReloadWindowsMidiService)
@@ -149,5 +153,52 @@ namespace Cubase.Macro
             return provider;
         }
 
+
+        public static IHost CreateHostApiAndServices()
+        {
+            return Host.CreateDefaultBuilder()
+                .ConfigureServices((context, services) =>
+                {
+                    services
+                        .AddSingleton<IKeyboardService, KeyboardService>()
+                        .AddSingleton<IWindowService, WindowService>()
+                        .AddSingleton<IConfigurationService, ConfigurationService>()
+                        .AddSingleton<IMidiService, MidiService>()
+                        .AddSingleton<IWindowsControllerService, WindowsControllerService>()
+                        .AddScoped<SettingsForm>()
+                        .AddScoped<MainForm>();
+                })
+                .ConfigureWebHostDefaults(webBuilder =>
+                {
+                    webBuilder.ConfigureKestrel(options => 
+                    {
+                        options.ListenAnyIP(8014);
+                    });
+                    webBuilder.UseKestrel()
+                        .UseUrls("http://localhost:8014")
+                        .Configure(app =>
+                        {
+                            app.UseWebSockets();
+                            app.Use(async (context, next) =>
+                            {
+                                if (context.WebSockets.IsWebSocketRequest)
+                                {
+                                    var midi = context.RequestServices.GetRequiredService<IMidiService>();
+                                    var config = context.RequestServices.GetRequiredService<IConfigurationService>();
+                                    var logger = context.RequestServices.GetRequiredService<Microsoft.Extensions.Logging.ILogger>();
+                                    using var ws = await context.WebSockets.AcceptWebSocketAsync();
+                                    await CubaseSockets.HandleWebSocket(ws, midi, logger, config);
+                                }
+                                else
+                                {
+                                    await next();
+                                }
+                            });
+                        });
+                })
+                .Build();
+        }
     }
+
+
 }

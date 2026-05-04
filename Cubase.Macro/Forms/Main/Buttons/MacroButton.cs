@@ -1,4 +1,5 @@
-﻿using Cubase.Macro.Forms.Configuration.ColourPicker;
+﻿using Cubase.Macro.Common.Models;
+using Cubase.Macro.Forms.Configuration.ColourPicker;
 using Cubase.Macro.Models;
 using Microsoft.Windows.Themes;
 using System;

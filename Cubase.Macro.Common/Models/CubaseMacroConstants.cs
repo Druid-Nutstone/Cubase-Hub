@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Text;
 using System.IO;
 
-namespace Cubase.Macro
+namespace Cubase.Macro.Common.Models
 {
     public static class CubaseMacroConstants
     {

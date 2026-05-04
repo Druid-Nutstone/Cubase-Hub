@@ -1,10 +1,12 @@
 ﻿using System;
+using System.Buffers.Text;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Text.Json;
 using System.Threading.Tasks;
 
-namespace Cubase.Macro.Models
+namespace Cubase.Macro.Common.Models
 {
     public class CubaseKeyCommandCollection : List<CubaseKeyCommand>    
     {
@@ -13,6 +15,18 @@ namespace Cubase.Macro.Models
         
         }
         
+        public static CubaseKeyCommandCollection Deserialise(string message)
+        {
+            var json = Encoding.UTF8.GetString(Convert.FromBase64String(message));
+            return JsonSerializer.Deserialize<CubaseKeyCommandCollection>(json);
+        }
+
+        public string Serialise()
+        {
+            var json = JsonSerializer.Serialize(this);
+            return Convert.ToBase64String(Encoding.UTF8.GetBytes(json));
+        }
+
         public CubaseKeyCommandCollection(IEnumerable<CubaseKeyCommand> source)
         {
             this.AddRange(source);

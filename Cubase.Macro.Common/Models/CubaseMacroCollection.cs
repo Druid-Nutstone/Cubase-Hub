@@ -1,15 +1,26 @@
-﻿using Cubase.Macro.Forms;
-using Microsoft.Windows.Themes;
-using System;
+﻿using System;
 using System.Collections.Generic;
+using System.Drawing;
 using System.IO;
 using System.Text;
 using System.Text.Json;
 
-namespace Cubase.Macro.Models
+namespace Cubase.Macro.Common.Models
 {
     public class CubaseMacroCollection
     {
+
+        public static CubaseMacroCollection Deserialise(string message)
+        {
+            var json = Encoding.UTF8.GetString(Convert.FromBase64String(message));
+            return JsonSerializer.Deserialize<CubaseMacroCollection>(json);
+        }
+
+        public string Serialise()
+        {
+            var json = JsonSerializer.Serialize(this);
+            return Convert.ToBase64String(Encoding.UTF8.GetBytes(json));
+        }
 
         public List<CubaseMacro> Macros { get; set; } = new();
         public List<CubaseMacro> CommonMacros { get; set; } = new();
@@ -73,13 +84,13 @@ namespace Cubase.Macro.Models
 
         public CubaseMacroType MacroType { get; set; }
 
-        public int BackgroundColourARGB { get; set; } = DarkTheme.BackColor.ToArgb();
+        public int BackgroundColourARGB { get; set; } = Color.FromArgb(32, 32, 32).ToArgb();
 
-        public int ForegroundColourARGB { get; set; } = DarkTheme.TextColor.ToArgb();
+        public int ForegroundColourARGB { get; set; } = Color.FromArgb(220, 220, 220).ToArgb();
 
-        public int ToggleBackgroundColourARGB { get; set; } = DarkTheme.BackColor.ToArgb();
+        public int ToggleBackgroundColourARGB { get; set; } = Color.FromArgb(32, 32, 32).ToArgb();
 
-        public int ToggleForegroundColourARGB { get; set; } = DarkTheme.TextColor.ToArgb();
+        public int ToggleForegroundColourARGB { get; set; } = Color.FromArgb(220, 220, 220).ToArgb();
 
         public CubaseMacroButtonType ButtonType { get; set; } = CubaseMacroButtonType.NotApplicable;
 
