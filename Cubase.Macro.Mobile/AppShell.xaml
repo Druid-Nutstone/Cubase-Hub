@@ -5,7 +5,11 @@
     xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
     xmlns:local="clr-namespace:Cubase.Macro.Mobile"
     Title="Cubase.Macro.Mobile">
-
+    <Shell.TitleView>
+        <HorizontalStackLayout x:Name="TopMenu" Spacing="10">
+        </HorizontalStackLayout>
+    </Shell.TitleView>
+    
     <ShellContent
         Title="Cubase Remote"
         ContentTemplate="{DataTemplate local:MainPage}"

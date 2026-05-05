@@ -17,6 +17,7 @@ namespace Cubase.Macro.Mobile
                 });
 
             builder.Services.AddSingleton<CubaseMacroWebSocketClient>();
+            builder.Services.AddSingleton<AppShell>();
             builder.Services.AddSingleton<MainPage>();
 
 #if DEBUG

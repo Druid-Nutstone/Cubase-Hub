@@ -28,7 +28,7 @@ namespace Cubase.Macro.Mobile
             this.client.Dispose();
         }
 
-        private async Task LoadMacros()
+        public async Task LoadMacros()
         {
             var connected = await this.client.Connect(CubaseMacroMobileConstants.TargetIPAddress,
                 async (msg) => 
@@ -41,23 +41,38 @@ namespace Cubase.Macro.Mobile
                 return;
             }
 
-            // load all macros 
-            var macros = await this.client.GetMacroCollection();
-        
-            foreach (var macro in macros)
+            await RefreshMacros();
+ 
+
+        }
+
+        public async Task RefreshMacros()
+        {
+            if (this.client != null && this.client.State == System.Net.WebSockets.WebSocketState.Open)
             {
-                var button = new MacroButton(macro);
+                this.CollectionsLayout.Clear();
 
-                button.OnMacroClicked = this.ButtonClicked;
+                // load all macros 
+                var macros = await this.client.GetMacroCollection();
 
-                this.CollectionsLayout.Add(button);
-            } 
+                foreach (var macro in macros)
+                {
+                    var button = new MacroButton(macro);
 
+                    button.OnMacroClicked = this.ButtonClicked;
+
+                    this.CollectionsLayout.Add(button);
+                }
+            }
         }
 
         private async void ButtonClicked(CubaseMacro cubaseMacro, bool toggled)
         {
             var midiCommands = cubaseMacro.ToggleOffKeys;
+            if (cubaseMacro.ButtonType == CubaseMacroButtonType.Single)
+            {
+                midiCommands = cubaseMacro.ToggleOnKeys;
+            }
             if (toggled)
             {
                 midiCommands = cubaseMacro.ToggleOnKeys;

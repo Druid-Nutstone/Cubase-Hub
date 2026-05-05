@@ -4,14 +4,18 @@ namespace Cubase.Macro.Mobile
 {
     public partial class App : Application
     {
-        public App()
+        private readonly IServiceProvider serviceProvider;
+        
+        public App(IServiceProvider services)
         {
+            this.serviceProvider = services;
             InitializeComponent();
         }
 
         protected override Window CreateWindow(IActivationState? activationState)
         {
-            return new Window(new AppShell());
+            var shell = this.serviceProvider.GetRequiredService<AppShell>();
+            return new Window(shell);
         }
     }
 }
