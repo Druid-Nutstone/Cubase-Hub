@@ -64,6 +64,7 @@ namespace Cubase.Macro.Forms.Configuration
                 this.macro.ButtonType = (CubaseMacroButtonType)selectedValue;
                 this.LoadEditControlForButtonType();
             };
+            this.MacroAvailableForMacro.Bind(nameof(CubaseMacro.IsAvailableForRemote), this.macro);
             this.LoadEditControlForButtonType();
             this.UpdateExampleButton();
         }
@@ -73,7 +74,7 @@ namespace Cubase.Macro.Forms.Configuration
             this.ExampleSingle.BackColor = Color.FromArgb(this.macro.BackgroundColourARGB);
             this.ExampleSingle.ForeColor = Color.FromArgb(this.macro.ForegroundColourARGB);
             this.ExampleToggled.BackColor = Color.FromArgb(this.macro.ToggleBackgroundColourARGB);
-            this.ExampleToggled.ForeColor = Color.FromArgb(this.macro.ToggleForegroundColourARGB);  
+            this.ExampleToggled.ForeColor = Color.FromArgb(this.macro.ToggleForegroundColourARGB);
         }
 
         private void LoadEditControlForButtonType()

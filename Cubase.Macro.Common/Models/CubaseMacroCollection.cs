@@ -25,6 +25,20 @@ namespace Cubase.Macro.Common.Models
         public List<CubaseMacro> Macros { get; set; } = new();
         public List<CubaseMacro> CommonMacros { get; set; } = new();
 
+
+
+        public CubaseRemoteMidiMacroCollection GetMidiRemoteCollection()
+        {
+            var allMacros =
+                this.Macros
+                    .Concat(this.CommonMacros ?? new List<CubaseMacro>())
+                    .SelectMany(m => m.GetAll())
+                    .Where(m => m.IsAvailableForRemote)
+                    .ToList();
+
+            return new CubaseRemoteMidiMacroCollection(allMacros);
+        }
+
         public void Save()
         {
             var json = JsonSerializer.Serialize(this, new JsonSerializerOptions() { WriteIndented = true });
@@ -84,6 +98,8 @@ namespace Cubase.Macro.Common.Models
 
         public CubaseMacroType MacroType { get; set; }
 
+        public bool IsAvailableForRemote { get; set; } = false;
+
         public int BackgroundColourARGB { get; set; } = Color.FromArgb(32, 32, 32).ToArgb();
 
         public int ForegroundColourARGB { get; set; } = Color.FromArgb(220, 220, 220).ToArgb();
@@ -114,6 +130,22 @@ namespace Cubase.Macro.Common.Models
         {
             var json = Encoding.UTF8.GetString(Convert.FromBase64String(base64String));
             return JsonSerializer.Deserialize<CubaseMacro>(json);
+        }
+
+        public IEnumerable<CubaseMacro> GetAll()
+        {
+            yield return this;
+
+            if (Macros == null)
+                yield break;
+
+            foreach (var child in Macros)
+            {
+                foreach (var descendant in child.GetAll())
+                {
+                    yield return descendant;
+                }
+            }
         }
 
         public static CubaseMacro CreateNewMenuMacro(Guid? parentId = null)

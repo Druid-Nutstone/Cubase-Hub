@@ -159,12 +159,19 @@ namespace Cubase.Macro
             return Host.CreateDefaultBuilder()
                 .ConfigureServices((context, services) =>
                 {
+                    services.AddLogging(builder =>
+                    {
+                        builder.ClearProviders();
+                        builder.AddSerilog();
+                    });
+
                     services
                         .AddSingleton<IKeyboardService, KeyboardService>()
                         .AddSingleton<IWindowService, WindowService>()
                         .AddSingleton<IConfigurationService, ConfigurationService>()
                         .AddSingleton<IMidiService, MidiService>()
                         .AddSingleton<IWindowsControllerService, WindowsControllerService>()
+                        .AddScoped<SettingsMainControl>()
                         .AddScoped<SettingsForm>()
                         .AddScoped<MainForm>();
                 })
@@ -185,9 +192,13 @@ namespace Cubase.Macro
                                 {
                                     var midi = context.RequestServices.GetRequiredService<IMidiService>();
                                     var config = context.RequestServices.GetRequiredService<IConfigurationService>();
-                                    var logger = context.RequestServices.GetRequiredService<Microsoft.Extensions.Logging.ILogger>();
+
+                                    var ip = context.Connection.RemoteIpAddress?.ToString();
+                                    var port = context.Connection.RemotePort;
+
+                                    Log.Information($"WebSocket connection from {ip}:{port}");
                                     using var ws = await context.WebSockets.AcceptWebSocketAsync();
-                                    await CubaseSockets.HandleWebSocket(ws, midi, logger, config);
+                                    await CubaseSockets.HandleWebSocket(ws, midi, Log.Logger, config);
                                 }
                                 else
                                 {

@@ -26,9 +26,9 @@ namespace Cubase.Macro.Common.Models
             return CubaseKeyCommand.Deserialise(this.Message);
         }
 
-        public CubaseMacroCollection GetMacroCollection()
+        public CubaseRemoteMidiMacroCollection GetMacroCollection()
         {
-            return CubaseMacroCollection.Deserialise(this.Message);
+            return CubaseRemoteMidiMacroCollection.Deserialise(this.Message);
         }
 
         public static WebSocketMidiCommandMessage CreateFromCommand(WebSocketMidiCommand command)
@@ -36,7 +36,7 @@ namespace Cubase.Macro.Common.Models
             return new WebSocketMidiCommandMessage() { Command = command };
         }
         
-        public static WebSocketMidiCommandMessage CreateFromMacroCollection(CubaseMacroCollection cubaseMacroCollection)
+        public static WebSocketMidiCommandMessage CreateFromMacroCollection(CubaseRemoteMidiMacroCollection cubaseMacroCollection)
         {
             return new WebSocketMidiCommandMessage()
             {

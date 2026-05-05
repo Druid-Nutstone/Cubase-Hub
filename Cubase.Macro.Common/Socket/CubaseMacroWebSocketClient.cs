@@ -1,114 +1,171 @@
 ﻿using Cubase.Macro.Common.Models;
-using System;
-using System.Collections.Generic;
 using System.Net.WebSockets;
 using System.Text;
 
 namespace Cubase.Macro.Common.Socket
 {
-    // Cannot inherit from sealed ClientWebSocket; wrap it instead.
     public class CubaseMacroWebSocketClient : IDisposable
     {
         private readonly ClientWebSocket client = new ClientWebSocket();
+        private Task? receiveTask;
+        private CancellationTokenSource cts = new();
 
-        private string ipAddress;
+        private TaskCompletionSource<WebSocketMidiCommandMessage>? pendingResponse;
 
-        private WebSocketMidiCommandMessage response = null;
-
-        public ClientWebSocket Client => client;
-
-        // Commonly useful convenience members forwarded to the inner instance.
         public WebSocketState State => client.State;
-        public void Abort() => client.Abort();
-        public void Dispose() => client.Dispose();
 
-        public CubaseMacroWebSocketClient(string ipAddress)
-        {
-            this.ipAddress = ipAddress;
-        }
+        public bool IsConnected => client.State == WebSocketState.Open;
 
-        public async Task<bool> Connect()
+        public void Dispose()
         {
-            await client.ConnectAsync(new Uri($"ws://{ipAddress}:8014/ws"), CancellationToken.None);
-            var maxWait = 200;
-            var current = 0;
-            while (client.State != WebSocketState.Open || current > maxWait)
+            try
             {
-                Task.Delay(200).Wait();
+                cts.Cancel();
+                client.Dispose();
             }
-            _ = ReceiveLoop();
-            return maxWait < 200;
+            catch { }
         }
 
-        public async Task<CubaseMacroCollection?> GetKeyCommands()
+        // --------------------------------------------------
+        // CONNECT
+        // --------------------------------------------------
+        public async Task<bool> Connect(string ipAddress, Action<string> errorHandler, int port = 8014)
         {
-            if (IsConnected())
+            if (client.State == WebSocketState.Open)
+                return true;
+
+            try
             {
-                this.response = null;
-                await this.SendWebSocketCommand(WebSocketMidiCommandMessage.CreateFromCommand(WebSocketMidiCommand.MidiCommandList));
-                var response = await this.WaitForResponse();
-                if (response == null)
-                {
-                    return null;
-                }
-                return response.GetMacroCollection();
+                await client.ConnectAsync(
+                    new Uri($"ws://{ipAddress}:{port}/ws"),
+                    CancellationToken.None);
             }
-            return null;
-        }
-
-        private async Task<WebSocketMidiCommandMessage?> WaitForResponse()
-        {
-            var maxCount = 200;
-            var current = 0;
-            while (this.response == null || current > maxCount)
+            catch (Exception ex)
             {
-                Task.Delay(200).Wait();
+                errorHandler.Invoke(ex.Message);
+                return false;
             }
-            if (current > maxCount)
-            {
-                return null;
-            }
-            return this.response;
-        }
+            if (client.State != WebSocketState.Open)
+                return false;
 
-        public bool IsConnected()
-        {
-            return client?.State == WebSocketState.Open;    
-        }
+            // Start receive loop on background thread
+            receiveTask = Task.Run(ReceiveLoop);
 
-        private async Task<bool> SendWebSocketCommand(WebSocketMidiCommandMessage message)
-        {
-            var data = Encoding.UTF8.GetBytes(message.Serialise());
-            await client.SendAsync(new ArraySegment<byte>(data), WebSocketMessageType.Text, true, CancellationToken.None);
             return true;
         }
 
+        // --------------------------------------------------
+        // PUBLIC API
+        // --------------------------------------------------
+        public async Task<CubaseRemoteMidiMacroCollection?> GetMacroCollection()
+        {
+            var response = await SendAndWait(
+                WebSocketMidiCommandMessage.CreateFromCommand(
+                    WebSocketMidiCommand.MidiCommandList));
+
+            return response?.GetMacroCollection();
+        }
+
+        public async Task<WebSocketMidiCommandMessage> SendMidiCommand(CubaseKeyCommand cubaseKeyCommand)
+        {
+            return await SendAndWait(WebSocketMidiCommandMessage.CreateFromKeyCommand(cubaseKeyCommand));
+        }
+
+        public async Task Close()
+        {
+            if (this.client != null)
+            {
+                if (this.client.State == WebSocketState.Open)
+                {
+                    await this.client.CloseAsync(WebSocketCloseStatus.NormalClosure, "Client Disconnected", CancellationToken.None);
+                }
+            }
+        }
+
+        // --------------------------------------------------
+        // CORE SEND/RECEIVE
+        // --------------------------------------------------
+        private async Task<WebSocketMidiCommandMessage?> SendAndWait(
+            WebSocketMidiCommandMessage message,
+            int timeoutMs = 5000)
+        {
+            if (!IsConnected)
+                throw new InvalidOperationException("WebSocket not connected");
+
+            pendingResponse = new TaskCompletionSource<WebSocketMidiCommandMessage>(
+                TaskCreationOptions.RunContinuationsAsynchronously);
+
+            // Send
+            var data = Encoding.UTF8.GetBytes(message.Serialise());
+            await client.SendAsync(
+                new ArraySegment<byte>(data),
+                WebSocketMessageType.Text,
+                true,
+                CancellationToken.None);
+
+            // Wait for response or timeout
+            var completed = await Task.WhenAny(
+                pendingResponse.Task,
+                Task.Delay(timeoutMs));
+
+            if (completed != pendingResponse.Task)
+                return null; // timeout
+
+            return await pendingResponse.Task;
+        }
+
+        // --------------------------------------------------
+        // RECEIVE LOOP
+        // --------------------------------------------------
         private async Task ReceiveLoop()
         {
-            var buffer = new byte[8192];
+            var buffer = new byte[1024 * 10];
 
-            while (client.State == WebSocketState.Open)
+            try
             {
-                using var ms = new MemoryStream();
-                WebSocketReceiveResult result;
+                while (!cts.Token.IsCancellationRequested &&
+                       client.State == WebSocketState.Open)
+                {
+                    using var ms = new MemoryStream();
+                    WebSocketReceiveResult result;
 
-                do
-                {
-                    result = await client.ReceiveAsync(new ArraySegment<byte>(buffer), CancellationToken.None);
-                    ms.Write(buffer, 0, result.Count);
-                } while (!result.EndOfMessage);
+                    do
+                    {
+                        result = await client.ReceiveAsync(
+                            new ArraySegment<byte>(buffer),
+                            cts.Token);
 
-                if (result.MessageType == WebSocketMessageType.Close)
-                {
-                    await client.CloseAsync(WebSocketCloseStatus.NormalClosure, "", CancellationToken.None);
-                }
-                else if (result.MessageType == WebSocketMessageType.Text)
-                {
+                        if (result.MessageType == WebSocketMessageType.Close)
+                        {
+                            await client.CloseAsync(
+                                WebSocketCloseStatus.NormalClosure,
+                                "Closing",
+                                CancellationToken.None);
+                            return;
+                        }
+
+                        ms.Write(buffer, 0, result.Count);
+
+                    } while (!result.EndOfMessage);
+
+                    // Handle text message
                     ms.Seek(0, SeekOrigin.Begin);
                     using var reader = new StreamReader(ms, Encoding.UTF8);
-                    string message = await reader.ReadToEndAsync();
-                    response = WebSocketMidiCommandMessage.Deserialise(message);
+                    var message = await reader.ReadToEndAsync();
+
+                    var deserialised =
+                        WebSocketMidiCommandMessage.Deserialise(message);
+
+                    pendingResponse?.TrySetResult(deserialised);
                 }
+            }
+            catch (OperationCanceledException)
+            {
+                // expected on shutdown
+            }
+            catch (Exception ex)
+            {
+                pendingResponse?.TrySetException(ex);
             }
         }
     }

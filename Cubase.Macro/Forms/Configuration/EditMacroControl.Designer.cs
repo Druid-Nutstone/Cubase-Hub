@@ -33,6 +33,7 @@
             MacroTitle = new Cubase.Macro.BoundControls.BoundTextBox();
             panel1 = new Panel();
             panel2 = new Panel();
+            label3 = new Label();
             MacroMenuChangesVisibility = new Cubase.Macro.BoundControls.BoundCheckbox();
             label2 = new Label();
             ExampleToggled = new Button();
@@ -46,6 +47,7 @@
             MacroButtonType = new Cubase.Macro.BoundControls.BoundEnumComboBox();
             label4 = new Label();
             ContentPanel = new Panel();
+            MacroAvailableForMacro = new Cubase.Macro.BoundControls.BoundCheckbox();
             panel1.SuspendLayout();
             panel2.SuspendLayout();
             SuspendLayout();
@@ -88,6 +90,8 @@
             // 
             // panel2
             // 
+            panel2.Controls.Add(MacroAvailableForMacro);
+            panel2.Controls.Add(label3);
             panel2.Controls.Add(MacroMenuChangesVisibility);
             panel2.Controls.Add(label2);
             panel2.Controls.Add(ExampleToggled);
@@ -108,6 +112,16 @@
             panel2.Size = new Size(934, 262);
             panel2.TabIndex = 4;
             // 
+            // label3
+            // 
+            label3.AutoSize = true;
+            label3.Font = new Font("Segoe UI", 9F, FontStyle.Bold);
+            label3.Location = new Point(590, 15);
+            label3.Name = "label3";
+            label3.Size = new Size(152, 20);
+            label3.TabIndex = 17;
+            label3.Text = "Available For Mobile";
+            // 
             // MacroMenuChangesVisibility
             // 
             MacroMenuChangesVisibility.AutoSize = true;
@@ -124,9 +138,9 @@
             label2.Font = new Font("Segoe UI", 9F, FontStyle.Bold);
             label2.Location = new Point(432, 15);
             label2.Name = "label2";
-            label2.Size = new Size(176, 20);
+            label2.Size = new Size(136, 20);
             label2.TabIndex = 15;
-            label2.Text = "Menu Changes Visibility";
+            label2.Text = " Changes Visibility";
             // 
             // ExampleToggled
             // 
@@ -219,6 +233,16 @@
             ContentPanel.Size = new Size(934, 174);
             ContentPanel.TabIndex = 5;
             // 
+            // MacroAvailableForMacro
+            // 
+            MacroAvailableForMacro.AutoSize = true;
+            MacroAvailableForMacro.Location = new Point(590, 42);
+            MacroAvailableForMacro.Name = "MacroAvailableForMacro";
+            MacroAvailableForMacro.Size = new Size(78, 24);
+            MacroAvailableForMacro.TabIndex = 18;
+            MacroAvailableForMacro.Text = "Yes/No";
+            MacroAvailableForMacro.UseVisualStyleBackColor = true;
+            // 
             // EditMacroControl
             // 
             AutoScaleDimensions = new SizeF(8F, 20F);
@@ -254,5 +278,7 @@
         private Button ExampleToggled;
         private BoundControls.BoundCheckbox MacroMenuChangesVisibility;
         private Label label2;
+        private Label label3;
+        private BoundControls.BoundCheckbox MacroAvailableForMacro;
     }
 }

@@ -14,14 +14,17 @@ namespace Cubase.Macro.Services.WebSockets
 
     public static class CubaseSockets
     {
-        private static Microsoft.Extensions.Logging.ILogger Log;
+        private static Serilog.ILogger Log;
 
         private static IConfigurationService ConfigurationService;
 
-        public static async Task HandleWebSocket(WebSocket socket, IMidiService midiService, Microsoft.Extensions.Logging.ILogger logger, IConfigurationService configurationService)
+        private static IMidiService MidiService;
+
+        public static async Task HandleWebSocket(WebSocket socket, IMidiService midiService, Serilog.ILogger logger, IConfigurationService configurationService)
         {
             Log = logger;
             ConfigurationService = configurationService;
+            MidiService = midiService;
             var buffer = new byte[1024 * 10];
 
             while (socket.State == WebSocketState.Open)
@@ -30,6 +33,7 @@ namespace Cubase.Macro.Services.WebSockets
 
                 if (result.MessageType == WebSocketMessageType.Close)
                 {
+                    Log.Information("Closing WebSocket Connection");
                     await socket.CloseAsync(WebSocketCloseStatus.NormalClosure, "Closing", CancellationToken.None);
                     break;
                 }
@@ -60,14 +64,19 @@ namespace Cubase.Macro.Services.WebSockets
 
         static WebSocketMidiCommandMessage GetMidiCommandList()
         {
-            Log.LogInformation("Received command to get Midi Commands");
+            Log?.Information("Received command to get Midi Commands");
             var macroCollection = CubaseMacroCollection.Load();
-            return WebSocketMidiCommandMessage.CreateFromMacroCollection(macroCollection);
+            return WebSocketMidiCommandMessage.CreateFromMacroCollection(macroCollection.GetMidiRemoteCollection());
         }
 
         static WebSocketMidiCommandMessage RunMidiCommand(CubaseKeyCommand cubaseKeyCommand)
         {
-            return WebSocketMidiCommandMessage.CreateError("Not implemented! - yet");
+            Log?.Information($"Received Midi Command {cubaseKeyCommand.Name}");
+            if (MidiService.SendMidiMessage(cubaseKeyCommand))
+            {
+                return WebSocketMidiCommandMessage.CreateFromCommand(WebSocketMidiCommand.MidiCommand);
+            }            
+            else return WebSocketMidiCommandMessage.CreateError("Not implemented! - yet");
         }
     }
 }
