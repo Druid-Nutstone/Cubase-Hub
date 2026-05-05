@@ -81,12 +81,19 @@ namespace Cubase.Macro.Mobile
             foreach (var midiCommand in midiCommands)
             {
                 var response = await this.client.SendMidiCommand(midiCommand);
+
                 if (response.Command == WebSocketMidiCommand.Error)
                 {
                     await DisplayAlertAsync("Oops", $"Cannot Send Midi Command {midiCommand.Name}", "OK");
                     break;
                 }
-
+                else
+                {
+                    if (midiCommand.ThreadWaitAfterExecutionMs > 0)
+                    {
+                        Task.Delay(midiCommand.ThreadWaitAfterExecutionMs).Wait();
+                    }
+                }
             }        
         } 
     }
