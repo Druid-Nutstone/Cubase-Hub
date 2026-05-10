@@ -56,6 +56,8 @@
             // 
             lyricEditor.BorderStyle = BorderStyle.None;
             lyricEditor.Dock = DockStyle.Fill;
+            lyricEditor.Font = new Font("Segoe UI", 12F);
+            lyricEditor.ForeColor = Color.White;
             lyricEditor.Location = new Point(0, 0);
             lyricEditor.Name = "lyricEditor";
             lyricEditor.Size = new Size(800, 426);
@@ -71,7 +73,9 @@
             Controls.Add(TopMenu);
             MainMenuStrip = TopMenu;
             Name = "LyricsForm";
-            Text = "LyricsForm";
+            RightToLeftLayout = true;
+            Text = "Create and Amend Lyrics and Setlists";
+            WindowState = FormWindowState.Maximized;
             MainPanel.ResumeLayout(false);
             ResumeLayout(false);
             PerformLayout();
