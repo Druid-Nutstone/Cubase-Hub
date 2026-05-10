@@ -5,6 +5,7 @@ using System.IO;
 using System.Runtime.InteropServices;
 using System.Text;
 using System.ComponentModel;
+using System.Windows;
 
 namespace Cubase.Macro.Forms.Lyrics.Editor
 {
@@ -25,6 +26,8 @@ namespace Cubase.Macro.Forms.Lyrics.Editor
         [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
         public string FileName { get; private set; } = string.Empty;
 
+        private int fontSize = 12; 
+
         private const int WM_SETREDRAW = 0x000B;
 
         [DllImport("user32.dll")]
@@ -41,6 +44,32 @@ namespace Cubase.Macro.Forms.Lyrics.Editor
             this.Font = new Font("Segoe UI", 12);
         }
 
+        public void SetDefaultFontSize(int fontSize)
+        {
+            this.fontSize = fontSize;
+            this.Font = new Font(this.Font.FontFamily, fontSize);
+        }
+
+        public void IncreaseFontSize()
+        {
+            this.fontSize += 1;
+            this.SetDefaultFontSize(this.fontSize);
+            this.Refresh();
+            this.ColorizeLines();
+        }
+
+        public void DecreaseFontSize()
+        {
+            if (this.fontSize-1 < 2)
+            {
+                return;
+            }
+            this.fontSize -= 1;
+            this.SetDefaultFontSize(this.fontSize);
+            this.Refresh();
+            this.ColorizeLines();
+        }
+
         public void Initialise(string text, LyricEditorType editorType, string fileName)
         {
             this.Text = text;
@@ -48,6 +77,7 @@ namespace Cubase.Macro.Forms.Lyrics.Editor
             this.FileName = fileName;
             var metaData = this.ScanLyricsForAttributes();
             this.ContextMenuStrip = new LyricEditorContextMenu(this, metaData, editorType);
+            this.ColorizeLines();
         }
 
         private LyricMetaData ScanLyricsForAttributes()
@@ -116,36 +146,42 @@ namespace Cubase.Macro.Forms.Lyrics.Editor
                 // Base color for whole line
                 this.Select(lineStart, line.Length);
 
-                this.SelectionColor = line.StartsWith("{")
+                var startsWithControlCharacter = line.StartsWith("{") || line.EndsWith(":");
+
+                this.SelectionColor = startsWithControlCharacter
                     ? Color.Yellow
                     : Color.AntiqueWhite;
 
-                // Find ALL [ ... ] pairs
-                int searchIndex = 0;
 
-                while (searchIndex < line.Length)
+                if (!startsWithControlCharacter)
                 {
-                    int start = line.IndexOf('[', searchIndex);
+                    // Find ALL [ ... ] pairs
+                    int searchIndex = 0;
 
-                    if (start == -1)
+                    while (searchIndex < line.Length)
                     {
-                        break;
+                        int start = line.IndexOf('[', searchIndex);
+
+                        if (start == -1)
+                        {
+                            break;
+                        }
+
+                        int end = line.IndexOf(']', start);
+
+                        if (end == -1)
+                        {
+                            // No closing ] found
+                            end = line.Length - 1;
+                        }
+
+                        int length = (end - start) + 1;
+
+                        this.Select(lineStart + start, length);
+                        this.SelectionColor = Color.Red;
+
+                        searchIndex = end + 1;
                     }
-
-                    int end = line.IndexOf(']', start);
-
-                    if (end == -1)
-                    {
-                        // No closing ] found
-                        end = line.Length - 1;
-                    }
-
-                    int length = (end - start) + 1;
-
-                    this.Select(lineStart + start, length);
-                    this.SelectionColor = Color.Red;
-
-                    searchIndex = end + 1;
                 }
             }
 

@@ -26,11 +26,13 @@ namespace Cubase.Macro.Forms.Configuration.Config
             KeyHeight.Bind(nameof(CubaseMacroConfiguration.KeyHeight), this.cubaseMacroConfiguration);
             KeyHeight.LostFocus += SaveConfig;
             CubaseExecutableName.Bind(nameof(CubaseMacroConfiguration.CubaseExecutable), this.cubaseMacroConfiguration);
-            CubaseExecutableName.LostFocus += SaveConfig;   
+            CubaseExecutableName.LostFocus += SaveConfig;
             CubaseProjectWindowStartsWith.Bind(nameof(CubaseMacroConfiguration.CubaseProjectWindowName), this.cubaseMacroConfiguration);
             CubaseProjectWindowStartsWith.LostFocus += SaveConfig;
             CubaseRestartWindowsMidiService.Bind(nameof(CubaseMacroConfiguration.ReloadWindowsMidiService), this.cubaseMacroConfiguration);
             CubaseRestartWindowsMidiService.CheckedChanged += SaveConfig;
+            LyricFontSize.Bind(nameof(CubaseMacroConfiguration.LyricFontSize), this.cubaseMacroConfiguration);
+            LyricFontSize.LostFocus += SaveConfig;
         }
 
         private void SaveConfig(object? sender, EventArgs e)
@@ -40,12 +42,13 @@ namespace Cubase.Macro.Forms.Configuration.Config
 
         private void SelectVisibilityKey_Click(object? sender, EventArgs e)
         {
-            var keySelector = new KeyCommandSelectorForm((cubaseMacro) => 
+            var keySelector = new KeyCommandSelectorForm((cubaseMacro) =>
             {
                 this.ResetVisibilityKey.Text = cubaseMacro.Serialise();
                 this.cubaseMacroConfiguration.Save();
             });
             keySelector.ShowDialog();
         }
+
     }
 }

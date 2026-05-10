@@ -85,8 +85,8 @@ namespace Cubase.Macro
                 }
                 if (options == "lyrics")
                 {
-                    var lyricsForm = new LyricsForm();
-                    Application.Run(lyricsForm);
+                    var lyricForm = host.Services.GetService<LyricsForm>();
+                    Application.Run(lyricForm);
                 }
 
             }
@@ -187,6 +187,7 @@ namespace Cubase.Macro
                         .AddSingleton<IWindowsControllerService, WindowsControllerService>()
                         .AddScoped<SettingsMainControl>()
                         .AddScoped<SettingsForm>()
+                        .AddScoped<LyricsForm>()
                         .AddScoped<MainForm>();
                 })
                 .ConfigureWebHostDefaults(webBuilder =>

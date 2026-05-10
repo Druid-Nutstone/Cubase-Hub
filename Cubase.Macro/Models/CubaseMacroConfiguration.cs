@@ -26,6 +26,8 @@ namespace Cubase.Macro.Models
 
         public bool ReloadWindowsMidiService { get; set; } = false;
 
+        public int LyricFontSize { get; set; } = 12;
+
         public bool Save()
         {
             try

@@ -18,6 +18,47 @@ namespace Cubase.Macro.Forms.Lyrics
             this.lyricEditor = lyricEditor;
             topMenu.Items.Add(new FileMenuItem(lyricEditor));
             topMenu.Items.Add(new NewMenuItem(lyricEditor));
+            topMenu.Items.Add(new FontSizeMenuItem(lyricEditor));
+        }
+    }
+
+    public class  FontSizeMenuItem : ToolStripMenuItem
+    {
+        public FontSizeMenuItem(LyricEditor lyricEditor)
+        {
+            this.Text = "Font Size";
+            this.DropDownItems.Add(new IncreaseFontSizeMenuItem(lyricEditor));
+            this.DropDownItems.Add(new DecreaseFontSizeMenuItem(lyricEditor));
+        }
+    }
+
+    public class DecreaseFontSizeMenuItem : ToolStripMenuItem
+    {
+        private readonly LyricEditor lyricEditor;
+        public DecreaseFontSizeMenuItem(LyricEditor lyricEditor)
+        {
+            this.Text = "Decrease Font Size";
+            this.lyricEditor = lyricEditor;
+        }
+        protected override void OnClick(EventArgs e)
+        {
+            base.OnClick(e);
+            this.lyricEditor.DecreaseFontSize();
+        }
+    }
+
+    public class IncreaseFontSizeMenuItem : ToolStripMenuItem
+    {
+        private readonly LyricEditor lyricEditor;
+        public IncreaseFontSizeMenuItem(LyricEditor lyricEditor)
+        {
+            this.Text = "Increase Font Size";
+            this.lyricEditor = lyricEditor;
+        }
+        protected override void OnClick(EventArgs e)
+        {
+            base.OnClick(e);
+            this.lyricEditor.IncreaseFontSize();
         }
     }
 

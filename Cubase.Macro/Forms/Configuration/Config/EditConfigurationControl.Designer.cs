@@ -40,6 +40,8 @@
             CubaseProjectWindowStartsWith = new Cubase.Macro.BoundControls.BoundTextBox();
             label5 = new Label();
             CubaseRestartWindowsMidiService = new Cubase.Macro.BoundControls.BoundCheckbox();
+            label6 = new Label();
+            LyricFontSize = new Cubase.Macro.BoundControls.BoundTextBox();
             SuspendLayout();
             // 
             // label1
@@ -108,7 +110,7 @@
             // 
             label4.AutoSize = true;
             label4.Font = new Font("Segoe UI", 9F, FontStyle.Bold);
-            label4.Location = new Point(24, 180);
+            label4.Location = new Point(24, 170);
             label4.Name = "label4";
             label4.Size = new Size(184, 20);
             label4.TabIndex = 7;
@@ -116,14 +118,14 @@
             // 
             // CubaseExecutableName
             // 
-            CubaseExecutableName.Location = new Point(24, 203);
+            CubaseExecutableName.Location = new Point(24, 193);
             CubaseExecutableName.Name = "CubaseExecutableName";
             CubaseExecutableName.Size = new Size(316, 27);
             CubaseExecutableName.TabIndex = 8;
             // 
             // CubaseProjectWindowStartsWith
             // 
-            CubaseProjectWindowStartsWith.Location = new Point(24, 271);
+            CubaseProjectWindowStartsWith.Location = new Point(24, 261);
             CubaseProjectWindowStartsWith.Name = "CubaseProjectWindowStartsWith";
             CubaseProjectWindowStartsWith.Size = new Size(316, 27);
             CubaseProjectWindowStartsWith.TabIndex = 10;
@@ -132,7 +134,7 @@
             // 
             label5.AutoSize = true;
             label5.Font = new Font("Segoe UI", 9F, FontStyle.Bold);
-            label5.Location = new Point(24, 248);
+            label5.Location = new Point(24, 238);
             label5.Name = "label5";
             label5.Size = new Size(257, 20);
             label5.TabIndex = 9;
@@ -141,17 +143,36 @@
             // CubaseRestartWindowsMidiService
             // 
             CubaseRestartWindowsMidiService.AutoSize = true;
-            CubaseRestartWindowsMidiService.Location = new Point(24, 324);
+            CubaseRestartWindowsMidiService.Location = new Point(24, 370);
             CubaseRestartWindowsMidiService.Name = "CubaseRestartWindowsMidiService";
             CubaseRestartWindowsMidiService.Size = new Size(231, 24);
             CubaseRestartWindowsMidiService.TabIndex = 11;
             CubaseRestartWindowsMidiService.Text = "Restart Windows Midi Service ";
             CubaseRestartWindowsMidiService.UseVisualStyleBackColor = true;
             // 
+            // label6
+            // 
+            label6.AutoSize = true;
+            label6.Font = new Font("Segoe UI", 9F, FontStyle.Bold);
+            label6.Location = new Point(24, 307);
+            label6.Name = "label6";
+            label6.Size = new Size(108, 20);
+            label6.TabIndex = 12;
+            label6.Text = "Lyric Font Size";
+            // 
+            // LyricFontSize
+            // 
+            LyricFontSize.Location = new Point(24, 330);
+            LyricFontSize.Name = "LyricFontSize";
+            LyricFontSize.Size = new Size(84, 27);
+            LyricFontSize.TabIndex = 13;
+            // 
             // EditConfigurationControl
             // 
             AutoScaleDimensions = new SizeF(8F, 20F);
             AutoScaleMode = AutoScaleMode.Font;
+            Controls.Add(LyricFontSize);
+            Controls.Add(label6);
             Controls.Add(CubaseRestartWindowsMidiService);
             Controls.Add(CubaseProjectWindowStartsWith);
             Controls.Add(label5);
@@ -184,5 +205,7 @@
         private BoundControls.BoundTextBox CubaseProjectWindowStartsWith;
         private Label label5;
         private BoundControls.BoundCheckbox CubaseRestartWindowsMidiService;
+        private Label label6;
+        private BoundControls.BoundTextBox LyricFontSize;
     }
 }
