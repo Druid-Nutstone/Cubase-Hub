@@ -20,8 +20,13 @@ namespace Cubase.Macro.Forms.Configuration
             ThemeApplier.ApplyDarkTheme(this);
             this.settingsMainControl = settingsMainControl;
             this.OpenConfig.Click += OpenConfig_Click;
-
+            this.OpenLyrics.Click += OpenLyrics_Click;
             this.Initialise();
+        }
+
+        private void OpenLyrics_Click(object? sender, EventArgs e)
+        {
+            
         }
 
         private void OpenConfig_Click(object? sender, EventArgs e)

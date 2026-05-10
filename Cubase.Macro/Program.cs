@@ -15,6 +15,7 @@ using Microsoft.Extensions.Hosting;
 using Microsoft.AspNetCore.Builder;
 using Cubase.Macro.Services.WebSockets;
 using Cubase.Macro.Common.Models;
+using Cubase.Macro.Forms.Lyrics;
 
 namespace Cubase.Macro
 {
@@ -82,6 +83,11 @@ namespace Cubase.Macro
                     var configForm = host.Services.GetService<SettingsForm>();
                     Application.Run(configForm);
                 }
+                if (options == "lyrics")
+                {
+                    var lyricsForm = new LyricsForm();
+                    Application.Run(lyricsForm);
+                }
 
             }
         }
@@ -122,6 +128,14 @@ namespace Cubase.Macro
             {
                 Title = "Open Settings",
                 Arguments = "settings",
+                ApplicationPath = Application.ExecutablePath,
+                IconResourcePath = Application.ExecutablePath,
+                IconResourceIndex = 0
+            });
+            jumpList.JumpItems.Add(new JumpTask
+            {
+                Title = "Open Lyrics",
+                Arguments = "lyrics",
                 ApplicationPath = Application.ExecutablePath,
                 IconResourcePath = Application.ExecutablePath,
                 IconResourceIndex = 0

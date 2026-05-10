@@ -32,13 +32,14 @@
             menuStrip1 = new MenuStrip();
             OpenConfig = new ToolStripMenuItem();
             DataPanel = new Panel();
+            OpenLyrics = new ToolStripMenuItem();
             menuStrip1.SuspendLayout();
             SuspendLayout();
             // 
             // menuStrip1
             // 
             menuStrip1.ImageScalingSize = new Size(20, 20);
-            menuStrip1.Items.AddRange(new ToolStripItem[] { OpenConfig });
+            menuStrip1.Items.AddRange(new ToolStripItem[] { OpenConfig, OpenLyrics });
             menuStrip1.Location = new Point(0, 0);
             menuStrip1.Name = "menuStrip1";
             menuStrip1.Size = new Size(1221, 28);
@@ -58,6 +59,12 @@
             DataPanel.Name = "DataPanel";
             DataPanel.Size = new Size(1221, 627);
             DataPanel.TabIndex = 1;
+            // 
+            // OpenLyrics
+            // 
+            OpenLyrics.Name = "OpenLyrics";
+            OpenLyrics.Size = new Size(58, 24);
+            OpenLyrics.Text = "Lyrics";
             // 
             // SettingsForm
             // 
@@ -82,5 +89,6 @@
         private MenuStrip menuStrip1;
         private Panel DataPanel;
         private ToolStripMenuItem OpenConfig;
+        private ToolStripMenuItem OpenLyrics;
     }
 }
