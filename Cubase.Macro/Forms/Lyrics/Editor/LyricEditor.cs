@@ -26,7 +26,24 @@ namespace Cubase.Macro.Forms.Lyrics.Editor
         [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
         public string FileName { get; private set; } = string.Empty;
 
-        private int fontSize = 12; 
+        private int fontSize = 12;
+
+        private const int EM_GETSCROLLPOS = 0x0400 + 221;
+        private const int EM_SETSCROLLPOS = 0x0400 + 222;
+
+        [StructLayout(LayoutKind.Sequential)]
+        private struct POINT
+        {
+            public int X;
+            public int Y;
+        }
+
+        [DllImport("user32.dll")]
+        private static extern IntPtr SendMessage(
+            IntPtr hWnd,
+            int msg,
+            IntPtr wParam,
+            ref POINT lParam);
 
         private const int WM_SETREDRAW = 0x000B;
 
@@ -130,6 +147,11 @@ namespace Cubase.Macro.Forms.Lyrics.Editor
             int originalSelectionStart = this.SelectionStart;
             int originalSelectionLength = this.SelectionLength;
 
+            // Save scroll position
+            POINT scrollPoint = new POINT();
+            SendMessage(this.Handle, EM_GETSCROLLPOS, IntPtr.Zero, ref scrollPoint);
+
+            // Stop redraw
             SendMessage(this.Handle, WM_SETREDRAW, false, IntPtr.Zero);
 
             for (int lineIndex = 0; lineIndex < this.Lines.Length; lineIndex++)
@@ -146,16 +168,15 @@ namespace Cubase.Macro.Forms.Lyrics.Editor
                 // Base color for whole line
                 this.Select(lineStart, line.Length);
 
-                var startsWithControlCharacter = line.StartsWith("{") || line.EndsWith(":");
+                var startsWithControlCharacter =
+                    line.StartsWith("{") || line.EndsWith(":");
 
                 this.SelectionColor = startsWithControlCharacter
                     ? Color.Yellow
                     : Color.AntiqueWhite;
 
-
                 if (!startsWithControlCharacter)
                 {
-                    // Find ALL [ ... ] pairs
                     int searchIndex = 0;
 
                     while (searchIndex < line.Length)
@@ -171,7 +192,6 @@ namespace Cubase.Macro.Forms.Lyrics.Editor
 
                         if (end == -1)
                         {
-                            // No closing ] found
                             end = line.Length - 1;
                         }
 
@@ -185,12 +205,16 @@ namespace Cubase.Macro.Forms.Lyrics.Editor
                 }
             }
 
-            // Restore caret
+            // Restore caret/selection
             this.Select(originalSelectionStart, originalSelectionLength);
 
+            // Restore scroll position
+            SendMessage(this.Handle, EM_SETSCROLLPOS, IntPtr.Zero, ref scrollPoint);
+
+            // Re-enable redraw
             SendMessage(this.Handle, WM_SETREDRAW, true, IntPtr.Zero);
 
-            this.Refresh();
+            this.Invalidate();
         }
 
         public void InsertAtPointer(string text)

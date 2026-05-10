@@ -27,12 +27,18 @@ namespace Cubase.Macro.Forms.Lyrics.Editor
             if (this.editorType == LyricEditorType.Lyric)
             {
                 this.Items.Add(new InsertLineMenuItem(this.lyricEditor, "Insert Title", "{title:}"));
-                this.Items.Add(new InsertLineMenuItem(this.lyricEditor, "Insert Duration", "{duration:}"));
-                this.Items.Add(new InsertLineMenuItem(this.lyricEditor, "Insert Pause (in seconds)", "{pause:}"));
+                this.Items.Add(new InsertLineMenuItem(this.lyricEditor, "Insert Duration", "{duration:00:00}"));
+                this.Items.Add(new InsertLineMenuItem(this.lyricEditor, "Insert Tempo (bpm)", "{tempo:120}"));
+                this.Items.Add(new InsertLineMenuItem(this.lyricEditor, "Insert Relative Time for a part", "{d_time:00:00}"));
+                this.Items.Add(new InsertLineMenuItem(this.lyricEditor, "Insert Pause (in seconds)", "{pause:1}"));
                 this.Items.Add(new InsertAlbumMenu(this.lyricEditor, this.lyricMetaData));
                 this.Items.Add(new InsertChordMenuitem(this.lyricEditor));
+                this.Items.Add(new InsertLineMenuItem(this.lyricEditor, "Insert a Comment", "{comment:anytext}"));
                 this.Items.Add(new InsertLineMenuItem(this.lyricEditor, "Insert a Verse", "Verse X:"));
                 this.Items.Add(new InsertLineMenuItem(this.lyricEditor, "Insert a Chorus", "Chorus:"));
+                this.Items.Add(new InsertLineMenuItem(this.lyricEditor, "Highlight Chorus Start", "{start_of_chorus}"));
+                this.Items.Add(new InsertLineMenuItem(this.lyricEditor, "Highlight Chorus End", "{end_of_chorus}"));
+                this.Items.Add(new InsertLineMenuItem(this.lyricEditor, "Insert a Bridge", "Bridge:"));
                 this.Items.Add(new InsertLineMenuItem(this.lyricEditor, "Insert a Middle 8", "Middle 8:"));
             }
             if (this.editorType == LyricEditorType.SetList)
