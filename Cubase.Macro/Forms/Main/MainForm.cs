@@ -1,5 +1,6 @@
 ﻿using Cubase.Macro.Common.Models;
 using Cubase.Macro.Forms;
+using Cubase.Macro.Forms.Cues;
 using Cubase.Macro.Forms.Main;
 using Cubase.Macro.Forms.Main.Buttons;
 using Cubase.Macro.Models;
@@ -51,6 +52,9 @@ namespace Cubase.Macro
 
         private readonly ILogger<MainForm> logger;
 
+        [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
+        public bool PositionCubaseWithMouse { get; set; } = true;
+
         public MainForm(IKeyboardService keyboardService, 
                         IConfigurationService configurationService,
                         IWindowService windowService,
@@ -85,6 +89,7 @@ namespace Cubase.Macro
 
         private void MouseAllOut(object? sender, EventArgs e)
         {
+            
             if (!this.Bounds.Contains(System.Windows.Forms.Cursor.Position))
             {
                 this.windowService.BringCubaseToFront();
@@ -225,7 +230,7 @@ namespace Cubase.Macro
         protected override void OnFormClosing(FormClosingEventArgs e)
         {
             this.midiService.Dispose();
-            this.MaximiseCubase();
+            // this.MaximiseCubase();
             base.OnFormClosing(e);
 
         }
@@ -235,14 +240,17 @@ namespace Cubase.Macro
             base.OnResize(e);
             if (this.WindowState != FormWindowState.Minimized) 
             {
-                this.mainMenuControl.SetSize();
-                if (this.windowService != null)
+                if (this.PositionCubaseWithMouse)
                 {
-                    if (this.windowService.IsCubaseMainWindowActive())
+                    this.mainMenuControl.SetSize();
+                    if (this.windowService != null)
                     {
-                        if (!this.windowService.IsCubasePositioned(this.Width))
+                        if (this.windowService.IsCubaseMainWindowActive())
                         {
-                            this.PositionCubase();
+                            if (!this.windowService.IsCubasePositioned(this.Width))
+                            {
+                                this.PositionCubase();
+                            }
                         }
                     }
                 }
@@ -369,6 +377,13 @@ namespace Cubase.Macro
             this.Size = new Size(this.Width, Screen.PrimaryScreen.WorkingArea.Height);
             this.WindowState = FormWindowState.Minimized;
             this.ResumeLayout();
+        }
+
+        public void ShowCueLevels()
+        {
+            this.PositionCubaseWithMouse = false;
+            this.serviceProvider.GetService<CueForm>().ShowDialog();
+            this.PositionCubaseWithMouse = true;
         }
 
     }

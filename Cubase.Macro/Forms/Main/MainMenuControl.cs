@@ -57,6 +57,12 @@ namespace Cubase.Macro.Forms.Main
             ButtonRefresh.Click += ButtonRefresh_Click;
             ButtonRefresh.HelpText = "Reload Configuration";
             MainPanel.Resize += MenuSizeChanged;
+            ButtonCueLevels.Click += ButtonCueLevels_Click;
+        }
+
+        private void ButtonCueLevels_Click(object? sender, EventArgs e)
+        {
+            this.mainForm.ShowCueLevels();
         }
 
         private void MenuSizeChanged(object? sender, EventArgs e)
@@ -78,7 +84,7 @@ namespace Cubase.Macro.Forms.Main
             {
                 this.SetAndSavePanelHeight();
             }
-           
+
         }
 
         private void SetAndSavePanelHeight()
@@ -189,5 +195,6 @@ namespace Cubase.Macro.Forms.Main
                 this.menuCommonControl.AddMacro(macro, onMacroClicked);
             }
         }
+
     }
 }

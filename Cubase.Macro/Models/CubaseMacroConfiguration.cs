@@ -26,7 +26,12 @@ namespace Cubase.Macro.Models
 
         public bool ReloadWindowsMidiService { get; set; } = false;
 
+        public WindowSettings? CueLevelLocation { get; set; } = null;
+
         public int LyricFontSize { get; set; } = 12;
+
+        // this is a bit naff i should get the cue name from cubase but for now this is fine
+        public string[] CueNames { get; set; } = new string[] { "Vocal", "Cue 2", "Cue 3", "Cue 4" };
 
         public bool Save()
         {
@@ -53,5 +58,15 @@ namespace Cubase.Macro.Models
                 return new CubaseMacroConfiguration();
             }
         }
+    }
+
+    public class WindowSettings
+    {
+        public int X { get; set; }
+        public int Y { get; set; }
+        public int Width { get; set; }
+        public int Height { get; set; }
+
+        public bool isMaximised { get; set; }
     }
 }

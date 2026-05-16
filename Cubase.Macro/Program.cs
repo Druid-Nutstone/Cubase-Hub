@@ -16,6 +16,7 @@ using Microsoft.AspNetCore.Builder;
 using Cubase.Macro.Services.WebSockets;
 using Cubase.Macro.Common.Models;
 using Cubase.Macro.Forms.Lyrics;
+using Cubase.Macro.Forms.Cues;
 
 namespace Cubase.Macro
 {
@@ -187,6 +188,7 @@ namespace Cubase.Macro
                         .AddSingleton<IWindowsControllerService, WindowsControllerService>()
                         .AddScoped<SettingsMainControl>()
                         .AddScoped<SettingsForm>()
+                        .AddTransient<CueForm>()
                         .AddScoped<LyricsForm>()
                         .AddScoped<MainForm>();
                 })

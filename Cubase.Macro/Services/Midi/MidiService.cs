@@ -1,5 +1,7 @@
 ﻿using Cubase.Macro.Common.Models;
 using Cubase.Macro.Models;
+using Cubase.Macro.Services.Config;
+using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using System.Collections.Concurrent;
 using System.Diagnostics;
@@ -12,6 +14,7 @@ namespace Cubase.Macro.Services.Midi
     {
         private readonly ILogger<MidiService> logger;
         private readonly IServiceProvider serviceProvider;
+        private IConfigurationService configurationService;
 
         private NutstoneDriver? midiDriver;
 
@@ -19,14 +22,26 @@ namespace Cubase.Macro.Services.Midi
         private CancellationTokenSource? cancellationTokenSource;
         private Task? workerTask;
 
+        private CueLevelCollection cueLevels = new CueLevelCollection();
+
         private bool disposed;
+
+        private bool inGettingCueLevels = false;
+
+        private System.Timers.Timer cueTimer = new();
 
         public Action<bool>? OnCommandComplete { get; set; }
         public Action? OnReadyReceived { get; set; }
 
+        public List<Action> GetCueLevelsEndCallbacks { get; } = new List<Action>(); 
+
+        public List<Action> UpdatedCueLevelsEndCallbacks { get; } = new List<Action>();
+
         public Action<CubaseMidiResponse> OnMidiResponse {  get; set; }
 
         public bool ReadyReceived { get; private set; }
+
+        public CueLevelCollection CueCollection => this.cueLevels ?? new CueLevelCollection();
 
         public MidiService(
             ILogger<MidiService> logger,
@@ -34,6 +49,18 @@ namespace Cubase.Macro.Services.Midi
         {
             this.logger = logger;
             this.serviceProvider = serviceProvider;
+            this.configurationService = this.serviceProvider.GetService<IConfigurationService>();
+            cueTimer.Elapsed += CueTimer_Elapsed;
+            cueTimer.Interval = 2000; // every 2 seconds
+        }
+
+
+        private void CueTimer_Elapsed(object? sender, System.Timers.ElapsedEventArgs e)
+        {
+            if (this.cueLevels.HaveAtLeastOneChange && !inGettingCueLevels)
+            {
+                this.HandleCueLevelsUpdated();
+            }
         }
 
         public void Initialise()
@@ -160,20 +187,41 @@ namespace Cubase.Macro.Services.Midi
 
         private void ProcessCommand(string command, string payload)
         {
-            switch (command.ToUpperInvariant())
+            switch (command.ToLowerInvariant())
             {
-                case "READY":
+                case var _ when command.Equals(MidiCommand.Ready.ToString(), StringComparison.OrdinalIgnoreCase):
                     HandleReady();
                     break;
-
-                case "COMPLETE":
+                case var _ when command.Equals(MidiCommand.ClearChannels.ToString(), StringComparison.OrdinalIgnoreCase):
+                    this.cueLevels = new CueLevelCollection();
+                    break;
+                case var _ when command.Equals(MidiCommand.CommandComplete.ToString(), StringComparison.OrdinalIgnoreCase):
                     OnCommandComplete?.Invoke(true);
                     break;
-
-                case "FAILED":
+                case var _ when command.Equals(MidiCommand.CueLevelChange.ToString(), StringComparison.OrdinalIgnoreCase):
+                    var cueResponse = JsonSerializer.Deserialize<CueLevelChange>(payload);
+                    this.HandleCueLevelChange(cueResponse);
+                    break;
+                case var _ when command.Equals(MidiCommand.GetCueLevelsComplete.ToString(), StringComparison.OrdinalIgnoreCase):
+                    this.HandleCueLevelsUpdated();
+                    break;
+                case var _ when command.Equals(MidiCommand.Failed.ToString(), StringComparison.OrdinalIgnoreCase):
                     OnCommandComplete?.Invoke(false);
                     break;
-                case "COMMANDVALUECHANGED":
+                case var _ when command.Equals(MidiCommand.UpdateCueLevelComplete.ToString(), StringComparison.OrdinalIgnoreCase):
+                    foreach (var callback in UpdatedCueLevelsEndCallbacks)
+                    {
+                        try
+                        {
+                            callback.Invoke();
+                        }
+                        catch (Exception ex)
+                        {
+                            logger.LogError(ex, "Error invoking UpdateCueLevelsEnd callback.");
+                        }
+                    }
+                    break;
+                case var _ when command.Equals(MidiCommand.CommandValueChanged.ToString(), StringComparison.OrdinalIgnoreCase):
                     try
                     {
                         var midiResponse = JsonSerializer.Deserialize<CubaseMidiResponse>(payload);
@@ -191,6 +239,36 @@ namespace Cubase.Macro.Services.Midi
                         payload);
                     break;
             }
+        }
+
+        private void HandleCueLevelsUpdated()
+        {
+            this.inGettingCueLevels = false;
+            this.cueLevels.HaveAtLeastOneChange = false;
+            foreach (var callback in GetCueLevelsEndCallbacks)
+            {
+                try
+                {
+                    callback.Invoke();
+                }
+                catch (Exception ex)
+                {
+                    logger.LogError(ex, "Error invoking GetCueLevelsEnd callback.");
+                }
+            }
+        }
+
+        private void HandleCueLevelChange(CueLevelChange cueLevelChange)
+        {
+            if (cueLevelChange == null)
+                return;
+
+            var cueName =
+                this.configurationService != null
+                    ? this.configurationService.Configuration.CueNames[cueLevelChange.CueIndex]
+                    : $"Cue{cueLevelChange.CueIndex}";
+
+            this.cueLevels.UpdateCueLevel(cueLevelChange, cueName);
         }
 
         private void HandleReady()
@@ -230,6 +308,42 @@ namespace Cubase.Macro.Services.Midi
 
             cancellationTokenSource?.Dispose();
             messageQueue.Dispose();
+        }
+
+        public void RegisterForGetCueLevelsEndCallbacks(Action onGetCueLevelsEnd)
+        {
+            this.GetCueLevelsEndCallbacks.Add(onGetCueLevelsEnd);
+        }
+
+        public void DeRegisterForGetCueLevelsEndCallbacks(Action onGetCueLevelsEnd)
+        {
+            this.GetCueLevelsEndCallbacks.Remove(onGetCueLevelsEnd); 
+        }
+
+        public void GetCueCollection()
+        {
+            this.inGettingCueLevels = true;
+            this.SendSysExMessage(MidiCommand.GetCueLevels, "{}");
+        }
+
+        public void RegisterForUpdateCueLevelsEndCallbacks(Action onUpdateCueLevelsEnd)
+        {
+            this.UpdatedCueLevelsEndCallbacks.Add(onUpdateCueLevelsEnd);
+        }
+
+        public void DeRegisterForUpdateCueLevelsEndCallbacks(Action onUpdateCueLevelsEnd)
+        {
+            this.UpdatedCueLevelsEndCallbacks.Remove(onUpdateCueLevelsEnd);
+        }
+
+        public void SuspendCueChecking()
+        {
+            this.cueTimer.Stop();
+        }
+
+        public void ResumeCueChecking()
+        {
+            this.cueTimer.Start();
         }
     }
 }

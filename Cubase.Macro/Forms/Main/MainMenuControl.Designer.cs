@@ -38,6 +38,7 @@
             MainPanel = new Panel();
             MenuSplitter = new Splitter();
             CommonPanel = new Panel();
+            ButtonCueLevels = new Button();
             NavPanel.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)ButtonRefresh).BeginInit();
             ((System.ComponentModel.ISupportInitialize)ButtonPositionCubase).BeginInit();
@@ -48,6 +49,7 @@
             // 
             // NavPanel
             // 
+            NavPanel.Controls.Add(ButtonCueLevels);
             NavPanel.Controls.Add(ButtonRefresh);
             NavPanel.Controls.Add(ButtonPositionCubase);
             NavPanel.Controls.Add(ButtonBack);
@@ -56,7 +58,7 @@
             NavPanel.Dock = DockStyle.Top;
             NavPanel.Location = new Point(0, 0);
             NavPanel.Name = "NavPanel";
-            NavPanel.Size = new Size(200, 61);
+            NavPanel.Size = new Size(200, 88);
             NavPanel.TabIndex = 0;
             // 
             // ButtonRefresh
@@ -113,7 +115,7 @@
             // 
             MainPanel.AutoScroll = true;
             MainPanel.Dock = DockStyle.Top;
-            MainPanel.Location = new Point(0, 61);
+            MainPanel.Location = new Point(0, 88);
             MainPanel.Name = "MainPanel";
             MainPanel.Size = new Size(200, 274);
             MainPanel.TabIndex = 1;
@@ -121,7 +123,7 @@
             // MenuSplitter
             // 
             MenuSplitter.Dock = DockStyle.Top;
-            MenuSplitter.Location = new Point(0, 335);
+            MenuSplitter.Location = new Point(0, 362);
             MenuSplitter.Name = "MenuSplitter";
             MenuSplitter.Size = new Size(200, 4);
             MenuSplitter.TabIndex = 2;
@@ -131,11 +133,20 @@
             // 
             CommonPanel.AutoScroll = true;
             CommonPanel.Dock = DockStyle.Fill;
-            CommonPanel.Location = new Point(0, 339);
+            CommonPanel.Location = new Point(0, 366);
             CommonPanel.Name = "CommonPanel";
             CommonPanel.Padding = new Padding(0, 0, 0, 10);
-            CommonPanel.Size = new Size(200, 223);
+            CommonPanel.Size = new Size(200, 196);
             CommonPanel.TabIndex = 3;
+            // 
+            // ButtonCueLevels
+            // 
+            ButtonCueLevels.Location = new Point(81, 41);
+            ButtonCueLevels.Name = "ButtonCueLevels";
+            ButtonCueLevels.Size = new Size(106, 29);
+            ButtonCueLevels.TabIndex = 11;
+            ButtonCueLevels.Text = "Cue Levels";
+            ButtonCueLevels.UseVisualStyleBackColor = true;
             // 
             // MainMenuControl
             // 
@@ -167,5 +178,6 @@
         private Buttons.PictureButton ButtonRefresh;
         private Splitter MenuSplitter;
         private Panel CommonPanel;
+        private Button ButtonCueLevels;
     }
 }
