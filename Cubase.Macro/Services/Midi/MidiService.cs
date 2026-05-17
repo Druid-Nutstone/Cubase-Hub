@@ -263,12 +263,7 @@ namespace Cubase.Macro.Services.Midi
             if (cueLevelChange == null)
                 return;
 
-            var cueName =
-                this.configurationService != null
-                    ? this.configurationService.Configuration.CueNames[cueLevelChange.CueIndex]
-                    : $"Cue{cueLevelChange.CueIndex}";
-
-            this.cueLevels.UpdateCueLevel(cueLevelChange, cueName);
+            this.cueLevels.UpdateCueLevel(cueLevelChange);
         }
 
         private void HandleReady()

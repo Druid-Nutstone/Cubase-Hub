@@ -7,6 +7,9 @@ namespace Cubase.Macro.Common.Models
     // TrackName: tracks[channelIndex].Name, CueIndex: cueIndex, CueLevel: tracks[channelIndex].CueLevels[cueIndex]}
     public class CueLevelChange
     {
+        public string CueName { get; set; }
+
+
         public string TrackName { get; set; }
 
         public int TrackIndex { get; set; } = -1;

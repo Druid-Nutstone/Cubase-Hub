@@ -10,18 +10,22 @@ namespace Cubase.Macro.Common.Models
 
         public bool HaveAtLeastOneChange {  get; set; } = false;
 
+        public string[] GetCueNames()
+        {
+            return this.Select(c => c.Name).ToArray();
+        }
 
-        public void UpdateCueLevel(CueLevelChange cueLevelChange,string cueName)
+        public void UpdateCueLevel(CueLevelChange cueLevelChange)
         {
             var cue =
                 this.FirstOrDefault(
-                    x => x.Name == cueName);
+                    x => x.Name == cueLevelChange.CueName);
 
             if (cue == null)
             {
                 cue = new Cue()
                 {
-                    Name = cueName
+                    Name = cueLevelChange.CueName
                 };
 
                 this.HaveAtLeastOneChange = true;
@@ -84,6 +88,7 @@ namespace Cubase.Macro.Common.Models
 
     public class CueLevel
     {
+
         public int TrackIndex { get; set; } = -1;
 
         public string TrackName { get; set; }

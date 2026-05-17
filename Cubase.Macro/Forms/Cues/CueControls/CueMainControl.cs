@@ -34,11 +34,28 @@ namespace Cubase.Macro.Forms.Cues.CueControls
             {
                 this.OnRefreshMixer?.Invoke();
             };
+            this.CueNames.SelectedIndexChanged += CueNames_SelectedIndexChanged;
         }
 
+        private void CueNames_SelectedIndexChanged(object? sender, EventArgs e)
+        {
+            if (this.CueNames.SelectedIndex > -1)
+            {
+                this.defaultCue = this.CueNames.SelectedIndex;
+            }
+        }
 
         public void UpdateCueLevels(CueLevelCollection cueLevels)
         {
+            if (this.CueNames.Items.Count == 0)
+            {
+                this.CueNames.Items.AddRange(cueLevels.GetCueNames());
+            }
+            if (this.CueNames.Items.Count == 1)
+            {
+                this.defaultCue = 0;
+                this.CueNames.SelectedIndex = 0; 
+            }
             this.cueLevels = cueLevels;
             this.BuildMixer(defaultCue);
         }

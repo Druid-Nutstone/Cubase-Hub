@@ -11,7 +11,6 @@ namespace Cubase.Macro.Models
     public class CubaseMacroConfiguration
     {
 
-
         public int MacroPanelHeight { get; set; } = -1;
         
         public string ResetVisibilityKey { get; set; }
@@ -29,9 +28,6 @@ namespace Cubase.Macro.Models
         public WindowSettings? CueLevelLocation { get; set; } = null;
 
         public int LyricFontSize { get; set; } = 12;
-
-        // this is a bit naff i should get the cue name from cubase but for now this is fine
-        public string[] CueNames { get; set; } = new string[] { "Vocal", "Cue 2", "Cue 3", "Cue 4" };
 
         public bool Save()
         {
