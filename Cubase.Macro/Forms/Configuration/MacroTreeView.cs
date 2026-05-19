@@ -15,13 +15,20 @@ namespace Cubase.Macro.Forms.Configuration
 
         private Action macroUpdatedEventHandler;
 
+        private Action<string> nodeSelected;
+
         private CubaseMacroConfiguration cubaseMacroConfiguration;
 
-        public MacroTreeView(Panel DataPanel, Action MacroUpdatedEventHandler, CubaseMacroConfiguration cubaseMacroConfiguration)
+        private string lastPath = string.Empty;
+
+        public MacroTreeView(Panel DataPanel, Action MacroUpdatedEventHandler, Action<string> NodeSelected, CubaseMacroConfiguration cubaseMacroConfiguration, string lastNode)
         {
+            this.lastPath = lastNode;
+            this.nodeSelected = NodeSelected;
             this.Dock = DockStyle.Fill;
             ThemeApplier.ApplyDarkTheme(this);
             this.macroUpdatedEventHandler = MacroUpdatedEventHandler;
+            this.nodeSelected = NodeSelected;
             this.dataPanel = DataPanel;
             this.cubaseMacroConfiguration = cubaseMacroConfiguration;   
         }
@@ -34,6 +41,57 @@ namespace Cubase.Macro.Forms.Configuration
             this.Nodes.Add(new CommonMacrosTreeNode(macros, dataPanel, macroUpdatedEventHandler));
             this.Nodes.Add(new ConfigurationTreeNode(this.cubaseMacroConfiguration));
             this.ExpandAll();
+            if (!string.IsNullOrEmpty(lastPath))
+            {
+                var lastNode = FindLastNodeSelected(this.Nodes[0]);
+                if (lastNode != null)
+                {
+                    lastNode.EnsureVisible();
+                    return;
+                }
+                lastNode = FindLastNodeSelected(this.Nodes[1]);
+                if (lastNode != null)
+                {
+                    lastNode.EnsureVisible();
+                    return;
+                }
+                lastNode = FindLastNodeSelected(this.Nodes[2]);
+                if (lastNode != null)
+                {
+                    lastNode.EnsureVisible();
+                    return;
+                }
+            }
+        }
+
+        private TreeNode FindLastNodeSelected(TreeNode rootNode)
+        {
+            if (((BaseMacroTreeNode)rootNode).IsItMe(this.lastPath))
+            {
+                return rootNode;
+            }
+            else
+            {
+                foreach (TreeNode node in rootNode.Nodes)
+                {
+                    return FindLastNodeSelected(node);
+                }
+            }
+            return null;
+        }
+
+        protected override void OnMouseDown(MouseEventArgs e)
+        {
+            base.OnMouseDown(e);
+            if (e.Button == MouseButtons.Right)
+            {
+                var nodeAtCursor = this.GetNodeAt(new Point(e.X, e.Y));
+                if (nodeAtCursor != null)
+                {
+                    this.lastPath = nodeAtCursor.FullPath;
+                    this.SetLastNode();
+                }
+            }
         }
 
         protected override void OnAfterSelect(TreeViewEventArgs e)
@@ -59,7 +117,13 @@ namespace Cubase.Macro.Forms.Configuration
                 editControl.Dock = DockStyle.Fill;
                 this.dataPanel.Controls.Add(editControl);
             }
+            this.lastPath = e.Node.FullPath;
+            this.SetLastNode();
+        }
 
+        private void SetLastNode()
+        {
+            this.nodeSelected?.Invoke(this.lastPath);
         }
 
         public class BaseMacroTreeNode : TreeNode
@@ -68,6 +132,12 @@ namespace Cubase.Macro.Forms.Configuration
             {
 
             }
+        
+            public bool IsItMe(string lastPath)
+            {
+                return lastPath == this.FullPath;
+            }
+        
         }
 
         public class ConfigurationTreeNode : BaseMacroTreeNode

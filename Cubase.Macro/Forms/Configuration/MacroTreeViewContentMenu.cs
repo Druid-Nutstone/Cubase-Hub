@@ -221,6 +221,7 @@ namespace Cubase.Macro.Forms.Configuration
                             }
                             else
                             {
+                                newMacro.ParentId = Guid.Empty;
                                 this.Macros.CommonMacros.Add(newMacro);
                             }
                         }
