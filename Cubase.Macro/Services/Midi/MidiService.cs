@@ -340,5 +340,11 @@ namespace Cubase.Macro.Services.Midi
         {
             this.cueTimer.Start();
         }
+
+        public void ReloadScripts()
+        {
+            this.cueLevels = new CueLevelCollection();
+            this.SendMidiMessage(CubaseKeyCommand.CreateMidi("Reload Scripts", 22, 1));
+        }
     }
 }

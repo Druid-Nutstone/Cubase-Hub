@@ -32,23 +32,17 @@ namespace Cubase.Macro.Common.Models
                 this.Add(cue);
             }
 
-            var cueLevel =
-                cue.CueLevels.FirstOrDefault(
-                    x => x.TrackIndex ==
-                         cueLevelChange.TrackIndex);
+            var cueLevel = cue.CueLevels.FirstOrDefault(x => x.Id == cueLevelChange.Id);
 
             if (cueLevel == null)
             {
                 this.HaveAtLeastOneChange = true;
                 cueLevel = new CueLevel()
                 {
-                    TrackName =
-                        cueLevelChange.TrackName,
-
-                    TrackIndex =
-                        cueLevelChange.TrackIndex
+                    TrackName = cueLevelChange.TrackName,
+                    TrackIndex = cueLevelChange.TrackIndex,
+                    Id = cueLevelChange.Id
                 };
-
                 cue.CueLevels.Add(cueLevel);
             }
 
@@ -88,8 +82,9 @@ namespace Cubase.Macro.Common.Models
 
     public class CueLevel
     {
-
-        public int TrackIndex { get; set; } = -1;
+        public string Id { get; set; }
+        
+        public int TrackIndex { get; set; }
 
         public string TrackName { get; set; }
 

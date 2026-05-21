@@ -33,6 +33,8 @@ namespace Cubase.Macro.Services.Midi
 
         public void GetCueCollection();
 
+        public void ReloadScripts();
+
         public Action? OnReadyReceived { get; set; }
 
         public Action<CubaseMidiResponse> OnMidiResponse {  get; set; }

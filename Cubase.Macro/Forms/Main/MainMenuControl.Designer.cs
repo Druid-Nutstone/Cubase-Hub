@@ -30,6 +30,8 @@
         {
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(MainMenuControl));
             NavPanel = new Panel();
+            ButtonReload = new Button();
+            ButtonCueLevels = new Button();
             ButtonRefresh = new Cubase.Macro.Forms.Main.Buttons.PictureButton();
             ButtonPositionCubase = new Cubase.Macro.Forms.Main.Buttons.PictureButton();
             ButtonBack = new Cubase.Macro.Forms.Main.Buttons.PictureButton();
@@ -38,7 +40,6 @@
             MainPanel = new Panel();
             MenuSplitter = new Splitter();
             CommonPanel = new Panel();
-            ButtonCueLevels = new Button();
             NavPanel.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)ButtonRefresh).BeginInit();
             ((System.ComponentModel.ISupportInitialize)ButtonPositionCubase).BeginInit();
@@ -49,6 +50,7 @@
             // 
             // NavPanel
             // 
+            NavPanel.Controls.Add(ButtonReload);
             NavPanel.Controls.Add(ButtonCueLevels);
             NavPanel.Controls.Add(ButtonRefresh);
             NavPanel.Controls.Add(ButtonPositionCubase);
@@ -60,6 +62,24 @@
             NavPanel.Name = "NavPanel";
             NavPanel.Size = new Size(200, 88);
             NavPanel.TabIndex = 0;
+            // 
+            // ButtonReload
+            // 
+            ButtonReload.Location = new Point(3, 41);
+            ButtonReload.Name = "ButtonReload";
+            ButtonReload.Size = new Size(92, 29);
+            ButtonReload.TabIndex = 12;
+            ButtonReload.Text = "Reload";
+            ButtonReload.UseVisualStyleBackColor = true;
+            // 
+            // ButtonCueLevels
+            // 
+            ButtonCueLevels.Location = new Point(100, 41);
+            ButtonCueLevels.Name = "ButtonCueLevels";
+            ButtonCueLevels.Size = new Size(92, 29);
+            ButtonCueLevels.TabIndex = 11;
+            ButtonCueLevels.Text = "Cue Levels";
+            ButtonCueLevels.UseVisualStyleBackColor = true;
             // 
             // ButtonRefresh
             // 
@@ -139,15 +159,6 @@
             CommonPanel.Size = new Size(200, 196);
             CommonPanel.TabIndex = 3;
             // 
-            // ButtonCueLevels
-            // 
-            ButtonCueLevels.Location = new Point(81, 41);
-            ButtonCueLevels.Name = "ButtonCueLevels";
-            ButtonCueLevels.Size = new Size(106, 29);
-            ButtonCueLevels.TabIndex = 11;
-            ButtonCueLevels.Text = "Cue Levels";
-            ButtonCueLevels.UseVisualStyleBackColor = true;
-            // 
             // MainMenuControl
             // 
             AutoScaleDimensions = new SizeF(8F, 20F);
@@ -179,5 +190,6 @@
         private Splitter MenuSplitter;
         private Panel CommonPanel;
         private Button ButtonCueLevels;
+        private Button ButtonReload;
     }
 }

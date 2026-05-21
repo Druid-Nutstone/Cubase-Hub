@@ -58,6 +58,12 @@ namespace Cubase.Macro.Forms.Main
             ButtonRefresh.HelpText = "Reload Configuration";
             MainPanel.Resize += MenuSizeChanged;
             ButtonCueLevels.Click += ButtonCueLevels_Click;
+            ButtonReload.Click += ButtonReload_Click;
+        }
+
+        private void ButtonReload_Click(object? sender, EventArgs e)
+        {
+            this.mainForm.ReloadScripts();
         }
 
         private void ButtonCueLevels_Click(object? sender, EventArgs e)

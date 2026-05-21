@@ -386,5 +386,9 @@ namespace Cubase.Macro
             this.PositionCubaseWithMouse = true;
         }
 
+        public void ReloadScripts()
+        {
+            this.midiService.ReloadScripts();
+        }
     }
 }
