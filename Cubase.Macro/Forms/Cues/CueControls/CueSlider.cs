@@ -28,15 +28,24 @@ namespace Cubase.Macro.Forms.Cues.CueControls
             this.TrackName.Text = cueLevel.TrackName;
             this.VolumeText.Text = cueLevel.Volume.ToString("0.00");
             this.SliderPanel.Controls.Add(new CueTrackBar(cueLevel.Volume, this.VolumeChanged, this.VolumeChanging));
+            this.BindToggleButtons(cueLevel);
         }
 
         public void UpdateCueLevel(CueLevel cueLevel)
         {
+            this.BindToggleButtons(cueLevel);
             this.CueLevel = cueLevel;
             this.TrackName.Text = cueLevel.TrackName;
             this.VolumeText.Text = cueLevel.Volume.ToString("0.00");
             var cueTrackBar = this.SliderPanel.Controls[0] as CueTrackBar;
             cueTrackBar?.UpdateVolume(cueLevel.Volume);
+        }
+
+        private void BindToggleButtons(CueLevel cueLevel)
+        {
+            this.MuteButton.Bind(nameof(cueLevel.Mute), cueLevel);
+            this.RecordButton.Bind(nameof(CueLevel.RecordEnable), cueLevel);
+            this.SoloButton.Bind(nameof(cueLevel.Solo), cueLevel);
         }
 
         private void VolumeChanging(double volume)

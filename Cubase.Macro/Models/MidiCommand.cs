@@ -29,12 +29,16 @@ var sysexCommand = {
        Ready,
        ClearChannels,
        CueLevelChange,
+       ChannelChange, 
        UpdateCueLevel,
        UpdateCueLevelComplete,
        GetCueLevels,
        GetCueLevelsComplete,
        CommandValueChanged,
        CommandComplete,
-       Failed
+       Failed,
+       AckUpdate
+
+
     }
 }

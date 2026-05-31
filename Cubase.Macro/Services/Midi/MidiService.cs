@@ -24,6 +24,8 @@ namespace Cubase.Macro.Services.Midi
 
         private CueLevelCollection cueLevels = new CueLevelCollection();
 
+        private TrackCollection tracks = new TrackCollection();
+
         private bool disposed;
 
         private bool inGettingCueLevels = false;
@@ -42,6 +44,8 @@ namespace Cubase.Macro.Services.Midi
         public bool ReadyReceived { get; private set; }
 
         public CueLevelCollection CueCollection => this.cueLevels ?? new CueLevelCollection();
+
+        public TrackCollection TrackCollection => this.tracks ?? new TrackCollection(); 
 
         public MidiService(
             ILogger<MidiService> logger,
@@ -202,6 +206,10 @@ namespace Cubase.Macro.Services.Midi
                     var cueResponse = JsonSerializer.Deserialize<CueLevelChange>(payload);
                     this.HandleCueLevelChange(cueResponse);
                     break;
+                case var _ when command.Equals(MidiCommand.ChannelChange.ToString(), StringComparison.OrdinalIgnoreCase):
+                    var trackResponse = JsonSerializer.Deserialize<Track>(payload);
+                    this.HandleChannelChange(trackResponse);
+                    break;
                 case var _ when command.Equals(MidiCommand.GetCueLevelsComplete.ToString(), StringComparison.OrdinalIgnoreCase):
                     this.HandleCueLevelsUpdated();
                     break;
@@ -256,6 +264,12 @@ namespace Cubase.Macro.Services.Midi
                     logger.LogError(ex, "Error invoking GetCueLevelsEnd callback.");
                 }
             }
+        }
+
+        private void HandleChannelChange(Track track)
+        {
+            if (track == null) return;
+            this.tracks.UpdateTrack(track);
         }
 
         private void HandleCueLevelChange(CueLevelChange cueLevelChange)
@@ -344,6 +358,7 @@ namespace Cubase.Macro.Services.Midi
         public void ReloadScripts()
         {
             this.cueLevels = new CueLevelCollection();
+            this.tracks = new TrackCollection();
             this.SendMidiMessage(CubaseKeyCommand.CreateMidi("Reload Scripts", 22, 1));
         }
     }

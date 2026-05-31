@@ -201,6 +201,5 @@ namespace Cubase.Macro.Forms.Main
                 this.menuCommonControl.AddMacro(macro, onMacroClicked);
             }
         }
-
     }
 }

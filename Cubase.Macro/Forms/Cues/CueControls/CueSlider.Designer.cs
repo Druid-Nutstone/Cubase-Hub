@@ -32,9 +32,17 @@
             TrackName = new Label();
             panel1 = new Panel();
             VolumeText = new Label();
+            panel2 = new Panel();
+            SoloButton = new CubaseMixerToggleControl();
+            RecordButton = new CubaseMixerToggleControl();
+            MuteButton = new CubaseMixerToggleControl();
             SliderPanel = new Panel();
             BottomPanel.SuspendLayout();
             panel1.SuspendLayout();
+            panel2.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)SoloButton).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)RecordButton).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)MuteButton).BeginInit();
             SuspendLayout();
             // 
             // BottomPanel
@@ -75,19 +83,61 @@
             VolumeText.TabIndex = 0;
             VolumeText.Text = "label1";
             // 
+            // panel2
+            // 
+            panel2.Controls.Add(SoloButton);
+            panel2.Controls.Add(RecordButton);
+            panel2.Controls.Add(MuteButton);
+            panel2.Dock = DockStyle.Top;
+            panel2.Location = new Point(0, 0);
+            panel2.Name = "panel2";
+            panel2.Size = new Size(111, 39);
+            panel2.TabIndex = 2;
+            // 
+            // SoloButton
+            // 
+            SoloButton.Image = Properties.Resources.Solo;
+            SoloButton.Location = new Point(78, 3);
+            SoloButton.Name = "SoloButton";
+            SoloButton.Size = new Size(30, 30);
+            SoloButton.SizeMode = PictureBoxSizeMode.StretchImage;
+            SoloButton.TabIndex = 2;
+            SoloButton.TabStop = false;
+            // 
+            // RecordButton
+            // 
+            RecordButton.Image = Properties.Resources.Record;
+            RecordButton.Location = new Point(35, 3);
+            RecordButton.Name = "RecordButton";
+            RecordButton.Size = new Size(30, 30);
+            RecordButton.SizeMode = PictureBoxSizeMode.StretchImage;
+            RecordButton.TabIndex = 1;
+            RecordButton.TabStop = false;
+            // 
+            // MuteButton
+            // 
+            MuteButton.Image = Properties.Resources.Mute;
+            MuteButton.Location = new Point(3, 3);
+            MuteButton.Name = "MuteButton";
+            MuteButton.Size = new Size(30, 30);
+            MuteButton.SizeMode = PictureBoxSizeMode.StretchImage;
+            MuteButton.TabIndex = 0;
+            MuteButton.TabStop = false;
+            // 
             // SliderPanel
             // 
             SliderPanel.Dock = DockStyle.Fill;
-            SliderPanel.Location = new Point(0, 0);
+            SliderPanel.Location = new Point(0, 39);
             SliderPanel.Name = "SliderPanel";
-            SliderPanel.Size = new Size(111, 290);
-            SliderPanel.TabIndex = 2;
+            SliderPanel.Size = new Size(111, 251);
+            SliderPanel.TabIndex = 3;
             // 
             // CueSlider
             // 
             AutoScaleDimensions = new SizeF(8F, 20F);
             AutoScaleMode = AutoScaleMode.Font;
             Controls.Add(SliderPanel);
+            Controls.Add(panel2);
             Controls.Add(panel1);
             Controls.Add(BottomPanel);
             Name = "CueSlider";
@@ -95,6 +145,10 @@
             BottomPanel.ResumeLayout(false);
             BottomPanel.PerformLayout();
             panel1.ResumeLayout(false);
+            panel2.ResumeLayout(false);
+            ((System.ComponentModel.ISupportInitialize)SoloButton).EndInit();
+            ((System.ComponentModel.ISupportInitialize)RecordButton).EndInit();
+            ((System.ComponentModel.ISupportInitialize)MuteButton).EndInit();
             ResumeLayout(false);
         }
 
@@ -104,6 +158,10 @@
         private Label TrackName;
         private Panel panel1;
         private Label VolumeText;
+        private Panel panel2;
         private Panel SliderPanel;
+        private CubaseMixerToggleControl MuteButton;
+        private CubaseMixerToggleControl RecordButton;
+        private CubaseMixerToggleControl SoloButton;
     }
 }

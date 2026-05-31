@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Cubase.Macro.Forms.Cues.CueControls;
+using System;
 using System.Collections.Generic;
 using System.Runtime.InteropServices;
 using System.Text;
@@ -159,9 +160,18 @@ namespace Cubase.Macro.Forms
 
         public static void ApplyDarkTheme(Control control, bool enabled = true)
         {
+            var saveBackColor = control.BackColor;
+            var saveForeColor = control.ForeColor;
+            
             control.BackColor = DarkTheme.BackColor;
             control.ForeColor = DarkTheme.TextColor;
 
+
+            if (control is ToggleCubaseButton)
+            {
+                control.BackColor = saveBackColor;
+                control.ForeColor = saveForeColor; 
+            }
 
             if (control is Panel or TableLayoutPanel)
                 control.BackColor = DarkTheme.PanelColor;

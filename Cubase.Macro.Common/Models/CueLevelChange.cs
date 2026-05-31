@@ -21,13 +21,39 @@ namespace Cubase.Macro.Common.Models
 
         public int CueEnabled { get; set; } = 0;
 
+        public bool Mute { get; set; }
+
+        public bool Solo { get; set; }
+
+        public bool RecordEnable { get; set; }
+
+        public bool Selected { get; set; }
+
+        public string TrackType { get; set; }
+
         public MidiCueMessageType CueMessageType { get; set; } = MidiCueMessageType.NotSpecified;
     }
+
+    /*
+     var MidiCueMessageType = {
+    Enable : 0,
+    Volume : 1,
+    Solo : 2,
+    Mute : 3,
+    RecordEnable: 4,
+    NotSpecified : 5
+} 
+     */
 
     public enum MidiCueMessageType
     {
         Enable = 0,
         Volume = 1,
-        NotSpecified = 2
+        Solo = 2,
+        Mute = 3,
+        RecordEnable = 4,
+        Selected = 5,
+        TrackType = 6,
+        NotSpecified = 7
     }
 }

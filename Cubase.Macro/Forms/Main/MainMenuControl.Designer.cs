@@ -60,7 +60,7 @@
             NavPanel.Dock = DockStyle.Top;
             NavPanel.Location = new Point(0, 0);
             NavPanel.Name = "NavPanel";
-            NavPanel.Size = new Size(200, 88);
+            NavPanel.Size = new Size(200, 77);
             NavPanel.TabIndex = 0;
             // 
             // ButtonReload
@@ -135,7 +135,7 @@
             // 
             MainPanel.AutoScroll = true;
             MainPanel.Dock = DockStyle.Top;
-            MainPanel.Location = new Point(0, 88);
+            MainPanel.Location = new Point(0, 77);
             MainPanel.Name = "MainPanel";
             MainPanel.Size = new Size(200, 274);
             MainPanel.TabIndex = 1;
@@ -143,7 +143,7 @@
             // MenuSplitter
             // 
             MenuSplitter.Dock = DockStyle.Top;
-            MenuSplitter.Location = new Point(0, 362);
+            MenuSplitter.Location = new Point(0, 351);
             MenuSplitter.Name = "MenuSplitter";
             MenuSplitter.Size = new Size(200, 4);
             MenuSplitter.TabIndex = 2;
@@ -153,10 +153,10 @@
             // 
             CommonPanel.AutoScroll = true;
             CommonPanel.Dock = DockStyle.Fill;
-            CommonPanel.Location = new Point(0, 366);
+            CommonPanel.Location = new Point(0, 355);
             CommonPanel.Name = "CommonPanel";
             CommonPanel.Padding = new Padding(0, 0, 0, 10);
-            CommonPanel.Size = new Size(200, 196);
+            CommonPanel.Size = new Size(200, 207);
             CommonPanel.TabIndex = 3;
             // 
             // MainMenuControl
