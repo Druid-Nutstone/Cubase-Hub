@@ -43,9 +43,9 @@ namespace Cubase.Macro.Forms.Cues.CueControls
 
         private void BindToggleButtons(CueLevel cueLevel)
         {
-            this.MuteButton.Bind(nameof(cueLevel.Mute), cueLevel);
-            this.RecordButton.Bind(nameof(CueLevel.RecordEnable), cueLevel);
-            this.SoloButton.Bind(nameof(cueLevel.Solo), cueLevel);
+            this.MuteButton.Bind(nameof(cueLevel.Mute), cueLevel, DawButtonGenerator.CreateMuteButton(true));
+            this.RecordButton.Bind(nameof(CueLevel.RecordEnable), cueLevel, DawButtonGenerator.CreateRecordButton(true));
+            this.SoloButton.Bind(nameof(cueLevel.Solo), cueLevel, DawButtonGenerator.CreateSoloButton(true));
         }
 
         private void VolumeChanging(double volume)

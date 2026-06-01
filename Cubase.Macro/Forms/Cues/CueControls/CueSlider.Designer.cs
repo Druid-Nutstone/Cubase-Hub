@@ -96,7 +96,6 @@
             // 
             // SoloButton
             // 
-            SoloButton.Image = Properties.Resources.Solo;
             SoloButton.Location = new Point(78, 3);
             SoloButton.Name = "SoloButton";
             SoloButton.Size = new Size(30, 30);
@@ -106,7 +105,6 @@
             // 
             // RecordButton
             // 
-            RecordButton.Image = Properties.Resources.Record;
             RecordButton.Location = new Point(35, 3);
             RecordButton.Name = "RecordButton";
             RecordButton.Size = new Size(30, 30);
@@ -116,7 +114,6 @@
             // 
             // MuteButton
             // 
-            MuteButton.Image = Properties.Resources.Mute;
             MuteButton.Location = new Point(3, 3);
             MuteButton.Name = "MuteButton";
             MuteButton.Size = new Size(30, 30);
