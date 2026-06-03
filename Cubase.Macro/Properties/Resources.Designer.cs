@@ -93,9 +93,9 @@ namespace Cubase.Macro.Properties {
         /// <summary>
         ///   Looks up a localized resource of type System.Drawing.Bitmap.
         /// </summary>
-        internal static System.Drawing.Bitmap Mute {
+        internal static System.Drawing.Bitmap MuteActive {
             get {
-                object obj = ResourceManager.GetObject("Mute", resourceCulture);
+                object obj = ResourceManager.GetObject("MuteActive", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
             }
         }
@@ -103,9 +103,9 @@ namespace Cubase.Macro.Properties {
         /// <summary>
         ///   Looks up a localized resource of type System.Drawing.Bitmap.
         /// </summary>
-        internal static System.Drawing.Bitmap Record {
+        internal static System.Drawing.Bitmap MuteInactive {
             get {
-                object obj = ResourceManager.GetObject("Record", resourceCulture);
+                object obj = ResourceManager.GetObject("MuteInactive", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
             }
         }
@@ -113,9 +113,39 @@ namespace Cubase.Macro.Properties {
         /// <summary>
         ///   Looks up a localized resource of type System.Drawing.Bitmap.
         /// </summary>
-        internal static System.Drawing.Bitmap Solo {
+        internal static System.Drawing.Bitmap RecordActive {
             get {
-                object obj = ResourceManager.GetObject("Solo", resourceCulture);
+                object obj = ResourceManager.GetObject("RecordActive", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
+        internal static System.Drawing.Bitmap RecordInactive {
+            get {
+                object obj = ResourceManager.GetObject("RecordInactive", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
+        internal static System.Drawing.Bitmap SoloActive {
+            get {
+                object obj = ResourceManager.GetObject("SoloActive", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
+        internal static System.Drawing.Bitmap SoloInactive {
+            get {
+                object obj = ResourceManager.GetObject("SoloInactive", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
             }
         }

@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
 using System.Drawing;
+using System.Resources;
 using System.Text;
 using System.Windows.Forms;
 
@@ -43,9 +44,9 @@ namespace Cubase.Macro.Forms.Cues.CueControls
 
         private void BindToggleButtons(CueLevel cueLevel)
         {
-            this.MuteButton.Bind(nameof(cueLevel.Mute), cueLevel, DawButtonGenerator.CreateMuteButton(true));
-            this.RecordButton.Bind(nameof(CueLevel.RecordEnable), cueLevel, DawButtonGenerator.CreateRecordButton(true));
-            this.SoloButton.Bind(nameof(cueLevel.Solo), cueLevel, DawButtonGenerator.CreateSoloButton(true));
+            this.MuteButton.Bind(nameof(cueLevel.Mute), cueLevel, Properties.Resources.MuteActive, Properties.Resources.MuteInactive); 
+            // this.RecordButton.Bind(nameof(CueLevel.RecordEnable), cueLevel, Properties.Resources.RecordActive, Properties.Resources.RecordInactive);
+            this.SoloButton.Bind(nameof(cueLevel.Solo), cueLevel, Properties.Resources.SoloActive, Properties.Resources.SoloInactive);
         }
 
         private void VolumeChanging(double volume)

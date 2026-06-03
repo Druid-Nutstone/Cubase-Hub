@@ -76,11 +76,8 @@ namespace Cubase.Macro.Common.Models
 
         private void HandleMuteChange(CueLevelChange cueLevelChange, CueLevel cueLevel)
         {
-            if (cueLevel.Mute != cueLevelChange.Mute)
-            {
-                cueLevel.Mute = cueLevelChange.Mute;
-                this.HaveAtLeastOneChange = true;
-            }
+            cueLevel.Mute = cueLevelChange.Mute;
+            this.HaveAtLeastOneChange = true;
         }
 
         private void HandleSoloChange(CueLevelChange cueLevelChange, CueLevel cueLevel)
