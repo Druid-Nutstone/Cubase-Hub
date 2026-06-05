@@ -14,5 +14,9 @@ namespace Cubase.Macro.Models
 
         // new level for the cue (0.0 - 1.0)
         public double CueLevel { get; set; }
+
+        public int Mute { get; set; }
+
+        public int Solo { get; set; }
     }
 }

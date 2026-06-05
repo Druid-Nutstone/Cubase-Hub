@@ -33,14 +33,12 @@
             panel1 = new Panel();
             VolumeText = new Label();
             panel2 = new Panel();
-            SoloButton = new CubaseMixerToggleControl();
-            MuteButton = new CubaseMixerToggleControl();
+            SoloButton = new ToggleCubaseButton();
+            MuteButton = new ToggleCubaseButton();
             SliderPanel = new Panel();
             BottomPanel.SuspendLayout();
             panel1.SuspendLayout();
             panel2.SuspendLayout();
-            ((System.ComponentModel.ISupportInitialize)SoloButton).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)MuteButton).BeginInit();
             SuspendLayout();
             // 
             // BottomPanel
@@ -88,33 +86,39 @@
             panel2.Dock = DockStyle.Top;
             panel2.Location = new Point(0, 0);
             panel2.Name = "panel2";
-            panel2.Size = new Size(120, 25);
+            panel2.Size = new Size(120, 33);
             panel2.TabIndex = 2;
             // 
             // SoloButton
             // 
-            SoloButton.Location = new Point(46, 1);
+            SoloButton.FlatStyle = FlatStyle.Flat;
+            SoloButton.Font = new Font("Segoe UI", 9F, FontStyle.Bold);
+            SoloButton.Location = new Point(31, 1);
             SoloButton.Name = "SoloButton";
-            SoloButton.Size = new Size(45, 21);
-            SoloButton.SizeMode = PictureBoxSizeMode.StretchImage;
+            SoloButton.OnOff = false;
+            SoloButton.Size = new Size(30, 30);
             SoloButton.TabIndex = 1;
-            SoloButton.TabStop = false;
+            SoloButton.Text = "S";
+            SoloButton.UseVisualStyleBackColor = true;
             // 
             // MuteButton
             // 
+            MuteButton.FlatStyle = FlatStyle.Flat;
+            MuteButton.Font = new Font("Segoe UI", 9F, FontStyle.Bold);
             MuteButton.Location = new Point(1, 1);
             MuteButton.Name = "MuteButton";
-            MuteButton.Size = new Size(45, 21);
-            MuteButton.SizeMode = PictureBoxSizeMode.StretchImage;
+            MuteButton.OnOff = false;
+            MuteButton.Size = new Size(30, 30);
             MuteButton.TabIndex = 0;
-            MuteButton.TabStop = false;
+            MuteButton.Text = "M";
+            MuteButton.UseVisualStyleBackColor = true;
             // 
             // SliderPanel
             // 
             SliderPanel.Dock = DockStyle.Fill;
-            SliderPanel.Location = new Point(0, 25);
+            SliderPanel.Location = new Point(0, 33);
             SliderPanel.Name = "SliderPanel";
-            SliderPanel.Size = new Size(120, 265);
+            SliderPanel.Size = new Size(120, 257);
             SliderPanel.TabIndex = 3;
             // 
             // CueSlider
@@ -131,8 +135,6 @@
             BottomPanel.PerformLayout();
             panel1.ResumeLayout(false);
             panel2.ResumeLayout(false);
-            ((System.ComponentModel.ISupportInitialize)SoloButton).EndInit();
-            ((System.ComponentModel.ISupportInitialize)MuteButton).EndInit();
             ResumeLayout(false);
         }
 
@@ -144,7 +146,7 @@
         private Label VolumeText;
         private Panel panel2;
         private Panel SliderPanel;
-        private CubaseMixerToggleControl SoloButton;
-        private CubaseMixerToggleControl MuteButton;
+        private ToggleCubaseButton MuteButton;
+        private ToggleCubaseButton SoloButton;
     }
 }

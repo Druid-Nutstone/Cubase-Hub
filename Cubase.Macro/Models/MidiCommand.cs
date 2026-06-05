@@ -39,7 +39,9 @@ var sysexCommand = {
        Failed,
        AckUpdate,
        TrackDeleted,
-       Reload
+       Reload,
+       UpdateMute,
+       UpdateSolo
 
 
     }

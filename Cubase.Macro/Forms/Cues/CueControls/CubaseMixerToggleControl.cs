@@ -11,7 +11,7 @@ namespace Cubase.Macro.Forms.Cues.CueControls
 
         public CubaseMixerToggleControl() : base() 
         {
-            this.Size = new System.Drawing.Size(45, 38);
+            this.Size = new System.Drawing.Size(24, 24);
             this.SizeMode = PictureBoxSizeMode.StretchImage;
             this.Cursor = Cursors.Hand; 
         }

@@ -33,6 +33,8 @@ namespace Cubase.Macro.Forms.Cues
             this.midiService.GetCueCollection();
             this.CueControl.OnCueChanged = CueChanged;
             this.CueControl.OnRefreshMixer = RefreshMixer;
+            this.CueControl.OnMuteChanged = MuteChanged;
+            this.CueControl.OnSoloChanged = SoloChanged;
             this.LoadLocation();
         }
 
@@ -114,6 +116,28 @@ namespace Cubase.Macro.Forms.Cues
                 CueLevel = cue.Volume
             };
             this.midiService.SendSysExMessage(MidiCommand.UpdateCueLevel, cueUpdateRequest);
+        }
+
+        private void MuteChanged(CueLevel cue, int cueIndex)
+        {
+            var cueUpdateRequest = new CueUpdateRequest()
+            {
+                TrackIndex = cue.TrackIndex,
+                CueSlotIndex = cueIndex,
+                Mute = cue.Mute ? 1 : 0
+            };
+            this.midiService.SendSysExMessage(MidiCommand.UpdateMute, cueUpdateRequest);
+        }
+
+        private void SoloChanged(CueLevel cue, int cueIndex)
+        {
+            var cueUpdateRequest = new CueUpdateRequest()
+            {
+                TrackIndex = cue.TrackIndex,
+                CueSlotIndex = cueIndex,
+                Solo = cue.Solo ? 1 : 0
+            };
+            this.midiService.SendSysExMessage(MidiCommand.UpdateSolo, cueUpdateRequest);
         }
 
         protected override void OnFormClosing(FormClosingEventArgs e)

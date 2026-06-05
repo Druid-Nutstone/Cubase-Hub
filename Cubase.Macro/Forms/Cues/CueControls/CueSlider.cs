@@ -19,10 +19,18 @@ namespace Cubase.Macro.Forms.Cues.CueControls
         [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
         public Action<CueLevel> OnVolumeChanged { get; set; }
 
-        public CueSlider(CueLevel cueLevel, Action<CueLevel> onVolumeChanged)
+        [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
+        public Action<CueLevel> OnMuteChanged { get; set; }
+
+        [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
+        public Action<CueLevel> OnSoloChanged { get; set; }
+
+        public CueSlider(CueLevel cueLevel, Action<CueLevel> onVolumeChanged, Action<CueLevel> onMuteChanged, Action<CueLevel> onSoloChanged)
         {
             InitializeComponent();
             this.OnVolumeChanged = onVolumeChanged;
+            this.OnMuteChanged = onMuteChanged;
+            this.OnSoloChanged = onSoloChanged;
             this.Dock = DockStyle.Left;
             this.BorderStyle = BorderStyle.FixedSingle;
             this.CueLevel = cueLevel;
@@ -44,9 +52,20 @@ namespace Cubase.Macro.Forms.Cues.CueControls
 
         private void BindToggleButtons(CueLevel cueLevel)
         {
-            this.MuteButton.Bind(nameof(cueLevel.Mute), cueLevel, Properties.Resources.MuteActive, Properties.Resources.MuteInactive); 
-            // this.RecordButton.Bind(nameof(CueLevel.RecordEnable), cueLevel, Properties.Resources.RecordActive, Properties.Resources.RecordInactive);
-            this.SoloButton.Bind(nameof(cueLevel.Solo), cueLevel, Properties.Resources.SoloActive, Properties.Resources.SoloInactive);
+            this.MuteButton.Bind(nameof(cueLevel.Mute), cueLevel, Color.Yellow, DarkTheme.BackColor, Color.Black, DarkTheme.MutedText,this.MuteClicked, "Mute the track"); 
+            this.SoloButton.Bind(nameof(cueLevel.Solo), cueLevel, Color.DarkRed, DarkTheme.BackColor, Color.White, DarkTheme.MutedText, this.SoloClicked, "Solo the track");
+        }
+
+        private void MuteClicked(bool isMuted)
+        {
+            this.CueLevel.Mute = isMuted;
+            this.OnMuteChanged?.Invoke(this.CueLevel);
+        }
+
+        private void SoloClicked(bool isSoloed)
+        {
+            this.CueLevel.Solo = isSoloed;
+            this.OnSoloChanged?.Invoke(this.CueLevel);
         }
 
         private void VolumeChanging(double volume)
@@ -58,7 +77,6 @@ namespace Cubase.Macro.Forms.Cues.CueControls
         {
             this.CueLevel.Volume = volume;
             this.OnVolumeChanged?.Invoke(this.CueLevel);
-
         }
     }
 }
