@@ -55,7 +55,7 @@ namespace Cubase.Macro.Services.Midi
             this.serviceProvider = serviceProvider;
             this.configurationService = this.serviceProvider.GetService<IConfigurationService>();
             cueTimer.Elapsed += CueTimer_Elapsed;
-            cueTimer.Interval = 2000; // every 2 seconds
+            cueTimer.Interval = 2000; 
         }
 
 
@@ -197,7 +197,7 @@ namespace Cubase.Macro.Services.Midi
                     HandleReady();
                     break;
                 case var _ when command.Equals(MidiCommand.ClearChannels.ToString(), StringComparison.OrdinalIgnoreCase):
-                    this.cueLevels = new CueLevelCollection();
+                    HandleClearChannels();
                     break;
                 case var _ when command.Equals(MidiCommand.CommandComplete.ToString(), StringComparison.OrdinalIgnoreCase):
                     OnCommandComplete?.Invoke(true);
@@ -216,6 +216,16 @@ namespace Cubase.Macro.Services.Midi
                 case var _ when command.Equals(MidiCommand.Failed.ToString(), StringComparison.OrdinalIgnoreCase):
                     OnCommandComplete?.Invoke(false);
                     break;
+                case var _ when command.Equals(MidiCommand.TrackDeleted.ToString(), StringComparison.OrdinalIgnoreCase):
+                    var trackDeletedResponse = JsonSerializer.Deserialize<TrackDeletedCommand>(payload);
+                    if (trackDeletedResponse != null)
+                    {
+                        this.cueLevels.TrackDeleted(trackDeletedResponse);
+                    }
+                    break;
+                case var _ when command.Equals(MidiCommand.Reload.ToString(), StringComparison.OrdinalIgnoreCase):
+                    this.ReloadScripts();
+                    break; 
                 case var _ when command.Equals(MidiCommand.UpdateCueLevelComplete.ToString(), StringComparison.OrdinalIgnoreCase):
                     foreach (var callback in UpdatedCueLevelsEndCallbacks)
                     {
@@ -278,6 +288,12 @@ namespace Cubase.Macro.Services.Midi
                 return;
 
             this.cueLevels.UpdateCueLevel(cueLevelChange);
+        }
+
+        private void HandleClearChannels()
+        {
+            this.tracks = new TrackCollection();
+            this.cueLevels = new CueLevelCollection();
         }
 
         private void HandleReady()
@@ -357,8 +373,7 @@ namespace Cubase.Macro.Services.Midi
 
         public void ReloadScripts()
         {
-            this.cueLevels = new CueLevelCollection();
-            this.tracks = new TrackCollection();
+            this.HandleClearChannels();
             this.SendMidiMessage(CubaseKeyCommand.CreateMidi("Reload Scripts", 22, 1));
         }
     }

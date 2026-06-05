@@ -72,7 +72,7 @@ namespace Cubase.Macro.Forms.Cues.CueControls
                     .OfType<CueSlider>()
                     .Where(slider =>
                         !activeCues.Any(c =>
-                            c.TrackName == slider.CueLevel.TrackName))
+                            c.Id == slider.CueLevel.Id))
                     .ToList();
 
             foreach (var slider in slidersToRemove)
@@ -109,7 +109,7 @@ namespace Cubase.Macro.Forms.Cues.CueControls
         {
             foreach (Control control in MainPanel.Controls)
             {
-                if (control is CueSlider slider && slider.CueLevel.TrackName == cueLevel.TrackName)
+                if (control is CueSlider slider && slider.CueLevel.Id == cueLevel.Id)
                 {
                     slider.UpdateCueLevel(cueLevel);
                     return slider;
@@ -131,7 +131,8 @@ namespace Cubase.Macro.Forms.Cues.CueControls
 
             var currentCue = this.cueLevels[cueSlot];
 
-            var enabledLevels = currentCue.CueLevels.Where(x => x.Enabled).ToList();
+            var enabledLevels = currentCue.CueLevels.Where(x => x.Value.Enabled)
+                                                    .Select(x => x.Value).ToList();
             
             ActiveCues =
                 enabledLevels

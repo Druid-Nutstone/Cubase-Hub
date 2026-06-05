@@ -37,7 +37,9 @@ var sysexCommand = {
        CommandValueChanged,
        CommandComplete,
        Failed,
-       AckUpdate
+       AckUpdate,
+       TrackDeleted,
+       Reload
 
 
     }

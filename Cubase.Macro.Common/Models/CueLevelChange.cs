@@ -54,6 +54,8 @@ namespace Cubase.Macro.Common.Models
         RecordEnable = 4,
         Selected = 5,
         TrackType = 6,
-        NotSpecified = 7
+        TrackVolume = 7,
+        Name = 8,
+        NotSpecified = 9
     }
 }

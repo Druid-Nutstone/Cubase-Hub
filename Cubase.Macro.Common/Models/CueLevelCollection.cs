@@ -67,11 +67,8 @@ namespace Cubase.Macro.Common.Models
 
         private void HandleEnableChange(CueLevelChange cueLevelChange, CueLevel cueLevel)
         {
-            if (cueLevel.Enabled != cueLevelChange.CueEnabled > 0)
-            {
-                cueLevel.Enabled = cueLevelChange.CueEnabled > 0;
-                this.HaveAtLeastOneChange = true;
-            }
+            cueLevel.Enabled = cueLevelChange.CueEnabled > 0;
+            this.HaveAtLeastOneChange = true;
         }
 
         private void HandleMuteChange(CueLevelChange cueLevelChange, CueLevel cueLevel)
@@ -113,12 +110,12 @@ namespace Cubase.Macro.Common.Models
                 this.Add(cue);
             }
 
-            var cueLevel = cue.CueLevels.FirstOrDefault(x => x.Id == cueLevelChange.Id);
+            var cueLevel = cue.CueLevels.ContainsKey(cueLevelChange.Id);
 
-            if (cueLevel == null)
+            if (!cueLevel)
             {
                 this.HaveAtLeastOneChange = true;
-                cueLevel = new CueLevel()
+                var newCueLevel = new CueLevel()
                 {
                     TrackName = cueLevelChange.TrackName,
                     TrackIndex = cueLevelChange.TrackIndex,
@@ -130,9 +127,13 @@ namespace Cubase.Macro.Common.Models
                     TrackType = cueLevelChange.TrackType,
                     RecordEnable = cueLevelChange.RecordEnable
                 };
-                cue.CueLevels.Add(cueLevel);
+                cue.CueLevels[cueLevelChange.Id] = newCueLevel;
+                return newCueLevel;
             }
-            return cueLevel;
+            else
+            {
+                return cue.CueLevels[cueLevelChange.Id];
+            }
         }
 
         public bool HaveAtLeastOneChange {  get; set; } = false;
@@ -140,6 +141,19 @@ namespace Cubase.Macro.Common.Models
         public string[] GetCueNames()
         {
             return this.Select(c => c.Name).ToArray();
+        }
+
+        public void TrackDeleted(TrackDeletedCommand trackDeletedCommand )
+        {
+            foreach (var cue in this)
+            {
+                var cueLevel = cue.CueLevels.ContainsKey(trackDeletedCommand.Id);
+                if (cueLevel)
+                {
+                    cue.CueLevels.Remove(trackDeletedCommand.Id);
+                    this.HaveAtLeastOneChange = true;
+                }
+            }
         }
 
         public void UpdateCueLevel(CueLevelChange cueLevelChange)
@@ -192,7 +206,7 @@ namespace Cubase.Macro.Common.Models
     {
         public string Name { get; set; }
 
-        public List<CueLevel> CueLevels { get; set; } = new List<CueLevel>();
+        public Dictionary<string, CueLevel> CueLevels { get; set; } = new Dictionary<string, CueLevel>();
     }
 
     public class CueLevel
