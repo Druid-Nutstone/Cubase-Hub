@@ -29,15 +29,17 @@
         private void InitializeComponent()
         {
             TopPanel = new Panel();
+            CueNames = new ComboBox();
+            label1 = new Label();
             RefreshMixer = new Button();
             MainPanel = new Panel();
-            label1 = new Label();
-            CueNames = new ComboBox();
+            ResetFadersButton = new Button();
             TopPanel.SuspendLayout();
             SuspendLayout();
             // 
             // TopPanel
             // 
+            TopPanel.Controls.Add(ResetFadersButton);
             TopPanel.Controls.Add(CueNames);
             TopPanel.Controls.Add(label1);
             TopPanel.Controls.Add(RefreshMixer);
@@ -46,6 +48,24 @@
             TopPanel.Name = "TopPanel";
             TopPanel.Size = new Size(719, 49);
             TopPanel.TabIndex = 0;
+            // 
+            // CueNames
+            // 
+            CueNames.FormattingEnabled = true;
+            CueNames.Location = new Point(172, 10);
+            CueNames.Name = "CueNames";
+            CueNames.Size = new Size(210, 28);
+            CueNames.TabIndex = 2;
+            // 
+            // label1
+            // 
+            label1.AutoSize = true;
+            label1.Font = new Font("Segoe UI", 9F, FontStyle.Bold);
+            label1.Location = new Point(127, 14);
+            label1.Name = "label1";
+            label1.Size = new Size(39, 20);
+            label1.TabIndex = 1;
+            label1.Text = "Cue:";
             // 
             // RefreshMixer
             // 
@@ -64,23 +84,15 @@
             MainPanel.Size = new Size(719, 327);
             MainPanel.TabIndex = 1;
             // 
-            // label1
+            // ResetFadersButton
             // 
-            label1.AutoSize = true;
-            label1.Font = new Font("Segoe UI", 9F, FontStyle.Bold);
-            label1.Location = new Point(127, 14);
-            label1.Name = "label1";
-            label1.Size = new Size(39, 20);
-            label1.TabIndex = 1;
-            label1.Text = "Cue:";
-            // 
-            // CueNames
-            // 
-            CueNames.FormattingEnabled = true;
-            CueNames.Location = new Point(172, 10);
-            CueNames.Name = "CueNames";
-            CueNames.Size = new Size(210, 28);
-            CueNames.TabIndex = 2;
+            ResetFadersButton.Anchor = AnchorStyles.Top | AnchorStyles.Right;
+            ResetFadersButton.Location = new Point(573, 9);
+            ResetFadersButton.Name = "ResetFadersButton";
+            ResetFadersButton.Size = new Size(130, 29);
+            ResetFadersButton.TabIndex = 3;
+            ResetFadersButton.Text = "Reset Faders";
+            ResetFadersButton.UseVisualStyleBackColor = true;
             // 
             // CueMainControl
             // 
@@ -102,5 +114,6 @@
         private Button RefreshMixer;
         private Label label1;
         private ComboBox CueNames;
+        private Button ResetFadersButton;
     }
 }

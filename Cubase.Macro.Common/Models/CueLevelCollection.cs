@@ -79,11 +79,8 @@ namespace Cubase.Macro.Common.Models
 
         private void HandleSoloChange(CueLevelChange cueLevelChange, CueLevel cueLevel)
         {
-            if (cueLevel.Solo != cueLevelChange.Solo)
-            {
-                cueLevel.Solo = cueLevelChange.Solo;
-                this.HaveAtLeastOneChange = true;
-            }
+             cueLevel.Solo = cueLevelChange.Solo;
+             this.HaveAtLeastOneChange = true;
         }
 
         private void HandleRecordEnableChange(CueLevelChange cueLevelChange, CueLevel cueLevel)

@@ -35,6 +35,7 @@ namespace Cubase.Macro.Forms.Cues
             this.CueControl.OnRefreshMixer = RefreshMixer;
             this.CueControl.OnMuteChanged = MuteChanged;
             this.CueControl.OnSoloChanged = SoloChanged;
+            this.CueControl.OnResetFader = ResetFader;
             this.LoadLocation();
         }
 
@@ -78,6 +79,18 @@ namespace Cubase.Macro.Forms.Cues
             }
         }
 
+        public void ResetFader(CueLevel cueLevel, int cueSlot)
+        {
+            var cueUpdateRequest = new CueUpdateRequest()
+            {
+                Id = cueLevel.Id,
+                TrackIndex = cueLevel.TrackIndex,
+                CueSlotIndex = cueSlot,
+                CueLevel = this.midiService.TrackCollection.GetTrackVolume(cueLevel.Id)
+            };
+            this.midiService.SendSysExMessage(MidiCommand.UpdateCueLevel, cueUpdateRequest);
+        }
+
         public void OnCueLevelUpdated()
         {
             this.midiService.GetCueCollection();
@@ -111,6 +124,7 @@ namespace Cubase.Macro.Forms.Cues
         {
             var cueUpdateRequest = new CueUpdateRequest()
             {
+                Id = cue.Id,
                 TrackIndex = cue.TrackIndex,
                 CueSlotIndex = cueIndex,
                 CueLevel = cue.Volume
@@ -122,7 +136,7 @@ namespace Cubase.Macro.Forms.Cues
         {
             var cueUpdateRequest = new CueUpdateRequest()
             {
-                TrackIndex = cue.TrackIndex,
+                Id = cue.Id,
                 CueSlotIndex = cueIndex,
                 Mute = cue.Mute ? 1 : 0
             };
@@ -133,7 +147,7 @@ namespace Cubase.Macro.Forms.Cues
         {
             var cueUpdateRequest = new CueUpdateRequest()
             {
-                TrackIndex = cue.TrackIndex,
+                Id = cue.Id,
                 CueSlotIndex = cueIndex,
                 Solo = cue.Solo ? 1 : 0
             };

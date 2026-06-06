@@ -33,6 +33,9 @@ namespace Cubase.Macro.Forms.Cues.CueControls
         [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
         public Action OnRefreshMixer { get; set; }
 
+        [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
+        public Action<CueLevel, int> OnResetFader { get; set; }
+
         public CueMainControl()
         {
             InitializeComponent();
@@ -41,6 +44,26 @@ namespace Cubase.Macro.Forms.Cues.CueControls
                 this.OnRefreshMixer?.Invoke();
             };
             this.CueNames.SelectedIndexChanged += CueNames_SelectedIndexChanged;
+            this.ResetFadersButton.Click += ResetFadersButton_Click; 
+        }
+
+        private void ResetFadersButton_Click(object? sender, EventArgs e)
+        {
+            var currentCue = this.cueLevels[defaultCue];
+
+            var enabledLevels = currentCue.CueLevels.Where(x => x.Value.Enabled)
+                                                    .Select(x => x.Value).ToList();
+
+            ActiveCues =
+                enabledLevels
+                    .OrderBy(x => x.TrackIndex)
+                    .ToList();
+        
+            foreach (var cueLevel in ActiveCues)
+            {
+                OnResetFader?.Invoke(cueLevel, defaultCue);
+            }
+
         }
 
         private void CueNames_SelectedIndexChanged(object? sender, EventArgs e)
@@ -94,7 +117,7 @@ namespace Cubase.Macro.Forms.Cues.CueControls
 
                 if (slider == null)
                 {
-                    slider = new CueSlider(cue, CueChanged, MuteChanged, SoloChanged);
+                    slider = new CueSlider(cue, CueChanged, MuteChanged, SoloChanged, OnResetFaderRequest);
                     MainPanel.Controls.Add(slider);
                 }
                 else
@@ -155,7 +178,11 @@ namespace Cubase.Macro.Forms.Cues.CueControls
             this.MainPanel.Controls.Clear();
             foreach (var currentCueLevel in ActiveCues)
             {
-                var slider = new CueSlider(currentCueLevel, this.CueChanged, this.MuteChanged, this.SoloChanged);
+                var slider = new CueSlider(currentCueLevel, 
+                    this.CueChanged, 
+                    this.MuteChanged, 
+                    this.SoloChanged,
+                    this.OnResetFaderRequest);
                 this.MainPanel.Controls.Add(slider);
             }
             MainPanel.ResumeLayout(true);
@@ -200,6 +227,11 @@ namespace Cubase.Macro.Forms.Cues.CueControls
         private void CueChanged(CueLevel cueLevel)
         {
             this.OnCueChanged?.Invoke(cueLevel, this.currentCueSlot);
+        }
+
+        private void OnResetFaderRequest(CueLevel cueLevel)
+        {
+            this.OnResetFader?.Invoke(cueLevel, this.currentCueSlot);
         }
 
         private void MuteChanged(CueLevel cueLevel)

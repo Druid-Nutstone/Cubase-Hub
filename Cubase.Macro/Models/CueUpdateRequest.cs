@@ -6,6 +6,8 @@ namespace Cubase.Macro.Models
 {
     public class CueUpdateRequest
     {
+        public string Id { get; set; }
+        
         // index of the cue in the channel (0-3)
         public int CueSlotIndex { get; set; }
 

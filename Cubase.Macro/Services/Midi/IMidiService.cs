@@ -9,6 +9,8 @@ namespace Cubase.Macro.Services.Midi
 
         public CueLevelCollection CueCollection { get; }
 
+        public TrackCollection TrackCollection { get; }
+
         public bool SendMidiMessage(CubaseKeyCommand cubaseMidiCommand);
 
         public void SendSysExMessage<T>(MidiCommand command, T request);

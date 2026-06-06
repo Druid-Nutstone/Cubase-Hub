@@ -12,7 +12,8 @@ namespace Cubase.Macro.Forms.Cues.CueControls
         private int topMargin = 10;
         private int bottomMargin = 10;
         private int dragOffsetY;
-
+        private bool thumbHover;
+        private bool usingRightClick = false; 
 
         [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
         public Action<double> OnVolumeChanged { get; set; }
@@ -90,6 +91,24 @@ namespace Cubase.Macro.Forms.Cues.CueControls
             base.OnSizeChanged(e);
 
             Invalidate();
+        }
+
+        private Rectangle GetThumbRect()
+        {
+            int usableHeight =
+                Height - topMargin - bottomMargin - thumbHeight;
+
+            usableHeight = Math.Max(1, usableHeight);
+
+            int thumbY =
+                topMargin +
+                (int)((1 - volume) * usableHeight);
+
+            return new Rectangle(
+                (Width - thumbWidth) / 2,
+                thumbY,
+                thumbWidth,
+                thumbHeight);
         }
 
         protected override void OnPaint(PaintEventArgs e)
@@ -234,7 +253,10 @@ namespace Cubase.Macro.Forms.Cues.CueControls
                     thumbHeight);
 
             using var thumbBrush =
-                new SolidBrush(Color.Silver);
+                new SolidBrush(
+                    thumbHover
+                        ? Color.Gainsboro
+                        : Color.Silver);
 
             g.FillRectangle(
                 thumbBrush,
@@ -262,6 +284,28 @@ namespace Cubase.Macro.Forms.Cues.CueControls
             }
         }
 
+        protected override void OnMouseClick(MouseEventArgs e)
+        {
+            thumbHover = GetThumbRect().Contains(e.Location);
+            if (e.Button == MouseButtons.Right)
+            {
+                if (thumbHover && !usingRightClick)
+                {
+                    usingRightClick = true;
+                    dragging = true;
+                    Cursor = Cursors.SizeNS;
+                }
+                else if (usingRightClick)
+                {
+                    dragging = false;
+                    Cursor = Cursors.Default;   
+                    OnVolumeChanged?.Invoke(volume);
+                    usingRightClick = false;
+                }
+            }
+            base.OnMouseClick(e);
+        }
+
         protected override void OnMouseDown(MouseEventArgs e)
         {
             int usableHeight =
@@ -273,17 +317,9 @@ namespace Cubase.Macro.Forms.Cues.CueControls
                 topMargin +
                 (int)((1 - volume) * usableHeight);
 
-            Rectangle thumbRect =
-                new Rectangle(
-                    (Width - thumbWidth) / 2,
-                    thumbY,
-                    thumbWidth,
-                    thumbHeight);
-
-            dragging = true;
-
-            if (thumbRect.Contains(e.Location))
+            if (GetThumbRect().Contains(e.Location))
             {
+                dragging = true;
                 // Store where inside the thumb the user clicked
                 dragOffsetY = e.Y - thumbY;
             }
@@ -300,6 +336,11 @@ namespace Cubase.Macro.Forms.Cues.CueControls
 
         protected override void OnMouseMove(MouseEventArgs e)
         {
+            thumbHover = GetThumbRect().Contains(e.Location);
+
+            Cursor = thumbHover ? (dragging ? Cursors.SizeNS : Cursors.Hand)
+                : Cursors.Default;
+           
             if (dragging)
             {
                 UpdateFromMouse(e.Y - dragOffsetY);
@@ -310,10 +351,11 @@ namespace Cubase.Macro.Forms.Cues.CueControls
 
         protected override void OnMouseUp(MouseEventArgs e)
         {
-            dragging = false;
-
-            OnVolumeChanged?.Invoke(volume);
-
+            if (!usingRightClick && dragging)
+            {
+                dragging = false;
+                OnVolumeChanged?.Invoke(volume);
+            }
             base.OnMouseUp(e);
         }
 

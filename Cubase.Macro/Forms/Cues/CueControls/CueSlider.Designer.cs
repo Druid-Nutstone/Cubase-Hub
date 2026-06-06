@@ -33,6 +33,7 @@
             panel1 = new Panel();
             VolumeText = new Label();
             panel2 = new Panel();
+            ResetFaderButton = new Button();
             SoloButton = new ToggleCubaseButton();
             MuteButton = new ToggleCubaseButton();
             SliderPanel = new Panel();
@@ -81,6 +82,7 @@
             // 
             // panel2
             // 
+            panel2.Controls.Add(ResetFaderButton);
             panel2.Controls.Add(SoloButton);
             panel2.Controls.Add(MuteButton);
             panel2.Dock = DockStyle.Top;
@@ -88,6 +90,19 @@
             panel2.Name = "panel2";
             panel2.Size = new Size(120, 33);
             panel2.TabIndex = 2;
+            // 
+            // ResetFaderButton
+            // 
+            ResetFaderButton.Anchor = AnchorStyles.Top | AnchorStyles.Right;
+            ResetFaderButton.FlatAppearance.BorderSize = 0;
+            ResetFaderButton.FlatStyle = FlatStyle.Flat;
+            ResetFaderButton.Font = new Font("Segoe UI", 9F, FontStyle.Bold);
+            ResetFaderButton.Location = new Point(84, 1);
+            ResetFaderButton.Name = "ResetFaderButton";
+            ResetFaderButton.Size = new Size(30, 30);
+            ResetFaderButton.TabIndex = 2;
+            ResetFaderButton.Text = "F";
+            ResetFaderButton.UseVisualStyleBackColor = true;
             // 
             // SoloButton
             // 
@@ -148,5 +163,6 @@
         private Panel SliderPanel;
         private ToggleCubaseButton MuteButton;
         private ToggleCubaseButton SoloButton;
+        private Button ResetFaderButton;
     }
 }

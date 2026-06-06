@@ -13,12 +13,19 @@ namespace Cubase.Macro.Common.Models
             if (trackToUpdate == null)
             {
                 trackToUpdate = new Track() { Id = track.Id, Mute = track.Mute, Name = track.Name, Solo = track.Solo, TrackType = track.TrackType, Volume = track.Volume };
+                this.Add(trackToUpdate);
                 return;
             }
             else
             {
                 this[this.FindIndex(x => x.Id == trackToUpdate.Id)] = track;
             }
+        }
+
+        public double GetTrackVolume(string trackId)
+        {
+            var track = this.FirstOrDefault(x => x.Id == trackId);
+            return track != null ? track.Volume : 0;
         }
     }
 
