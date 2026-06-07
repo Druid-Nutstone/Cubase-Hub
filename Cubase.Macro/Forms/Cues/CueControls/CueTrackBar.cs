@@ -1,5 +1,6 @@
 ﻿using System;
 using System.ComponentModel;
+using System.Diagnostics;
 using System.Drawing;
 using System.Windows.Forms;
 
@@ -298,7 +299,7 @@ namespace Cubase.Macro.Forms.Cues.CueControls
                 else if (usingRightClick)
                 {
                     dragging = false;
-                    Cursor = Cursors.Default;   
+                    Cursor = Cursors.Default;
                     OnVolumeChanged?.Invoke(volume);
                     usingRightClick = false;
                 }

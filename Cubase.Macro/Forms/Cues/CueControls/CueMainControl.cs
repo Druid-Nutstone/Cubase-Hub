@@ -3,6 +3,7 @@ using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
+using System.Diagnostics;
 using System.Drawing;
 using System.Text;
 using System.Windows.Forms;
@@ -168,6 +169,7 @@ namespace Cubase.Macro.Forms.Cues.CueControls
                     .OrderBy(x => x.TrackIndex)
                     .ToList();
 
+   
             if (this.MainPanel.Controls.Count > 0)
             {
                 this.UpdateMixer(ActiveCues);

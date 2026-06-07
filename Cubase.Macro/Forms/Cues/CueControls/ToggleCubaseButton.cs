@@ -6,7 +6,7 @@ using System.ComponentModel;
 
 namespace Cubase.Macro.Forms.Cues.CueControls
 {
-    public class ToggleCubaseButton : Button
+    public class ToggleCubaseButton : ButtonWithHelp
     {
 
         private Color onBackgroundColour = Color.Empty;
@@ -16,7 +16,7 @@ namespace Cubase.Macro.Forms.Cues.CueControls
 
         private Color defaultBack = Color.Empty;
         
-        private HelpProvider helpProvider = new HelpProvider();
+
 
         private Action<bool> OnClicked;
 
@@ -43,14 +43,13 @@ namespace Cubase.Macro.Forms.Cues.CueControls
             this.SetColours();
         }
 
-        public void Bind(string propertyName, object dataSource, Color onBackgroundColour, Color offBackgroundColour, Color onForeGroundColour, Color offForegroundColour, Action<bool> onClicked, string helpText)
+        public void Bind(string propertyName, object dataSource, Color onBackgroundColour, Color offBackgroundColour, Color onForeGroundColour, Color offForegroundColour, Action<bool> onClicked)
         {
             this.onBackgroundColour = onBackgroundColour;
             this.offBackgroundColour = offBackgroundColour;
             this.onForegroundColour = onForeGroundColour;
             this.offForegroundColour = offForegroundColour;
             this.OnClicked = onClicked;
-            this.helpProvider.SetHelpString(this, helpText);
             this.OnOff = (bool)dataSource.GetType().GetProperty(propertyName).GetValue(dataSource);
             this.SetColours();
         }

@@ -6,6 +6,7 @@ using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
+using System.Diagnostics;
 using System.Drawing;
 using System.Text;
 using System.Windows.Forms;
@@ -29,7 +30,6 @@ namespace Cubase.Macro.Forms.Cues
             this.midiService = midiService;
             this.midiService.ResumeCueChecking();
             this.midiService.RegisterForGetCueLevelsEndCallbacks(OnCueLevelsChanged);
-            this.midiService.RegisterForUpdateCueLevelsEndCallbacks(OnCueLevelUpdated);
             this.midiService.GetCueCollection();
             this.CueControl.OnCueChanged = CueChanged;
             this.CueControl.OnRefreshMixer = RefreshMixer;
@@ -89,11 +89,6 @@ namespace Cubase.Macro.Forms.Cues
                 CueLevel = this.midiService.TrackCollection.GetTrackVolume(cueLevel.Id)
             };
             this.midiService.SendSysExMessage(MidiCommand.UpdateCueLevel, cueUpdateRequest);
-        }
-
-        public void OnCueLevelUpdated()
-        {
-            this.midiService.GetCueCollection();
         }
 
         private void OnCueLevelsChanged()
@@ -159,7 +154,6 @@ namespace Cubase.Macro.Forms.Cues
             base.OnFormClosing(e);
             this.SaveLocation();
             this.midiService.DeRegisterForGetCueLevelsEndCallbacks(OnCueLevelsChanged);
-            this.midiService.DeRegisterForUpdateCueLevelsEndCallbacks(OnCueLevelUpdated);
             this.midiService.SuspendCueChecking();
         }
 

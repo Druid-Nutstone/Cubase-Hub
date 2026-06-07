@@ -3,6 +3,7 @@ using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
+using System.Diagnostics;
 using System.Drawing;
 using System.Resources;
 using System.Text;
@@ -47,6 +48,7 @@ namespace Cubase.Macro.Forms.Cues.CueControls
             this.SliderPanel.Controls.Add(new CueTrackBar(cueLevel.Volume, this.VolumeChanged, this.VolumeChanging));
             this.BindToggleButtons(cueLevel);
             this.ResetFaderButton.Click += ResetFaderButton_Click;
+            this.ResetFaderButton.SetHelpText("Reset the fader to the default level for this cue");
         }
 
         private void ResetFaderButton_Click(object? sender, EventArgs e)
@@ -66,8 +68,10 @@ namespace Cubase.Macro.Forms.Cues.CueControls
 
         private void BindToggleButtons(CueLevel cueLevel)
         {
-            this.MuteButton.Bind(nameof(cueLevel.Mute), cueLevel, Color.Yellow, DarkTheme.BackColor, Color.Black, DarkTheme.MutedText, this.MuteClicked, "Mute the track");
-            this.SoloButton.Bind(nameof(cueLevel.Solo), cueLevel, Color.DarkRed, DarkTheme.BackColor, Color.White, DarkTheme.MutedText, this.SoloClicked, "Solo the track");
+            this.MuteButton.Bind(nameof(cueLevel.Mute), cueLevel, Color.Yellow, DarkTheme.BackColor, Color.Black, DarkTheme.MutedText, this.MuteClicked);
+            this.MuteButton.SetHelpText("Mute the track");
+            this.SoloButton.Bind(nameof(cueLevel.Solo), cueLevel, Color.DarkRed, DarkTheme.BackColor, Color.White, DarkTheme.MutedText, this.SoloClicked);
+            this.SoloButton.SetHelpText("Solo the track");
         }
 
         private void MuteClicked(bool isMuted)
