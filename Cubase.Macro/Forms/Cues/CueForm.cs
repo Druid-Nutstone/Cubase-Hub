@@ -36,6 +36,7 @@ namespace Cubase.Macro.Forms.Cues
             this.CueControl.OnMuteChanged = MuteChanged;
             this.CueControl.OnSoloChanged = SoloChanged;
             this.CueControl.OnResetFader = ResetFader;
+            this.CueControl.OnVolumeMoving = OnVolumeMoving;
             this.LoadLocation();
         }
 
@@ -125,6 +126,11 @@ namespace Cubase.Macro.Forms.Cues
                 CueLevel = cue.Volume
             };
             this.midiService.SendSysExMessage(MidiCommand.UpdateCueLevel, cueUpdateRequest);
+        }
+
+        private void OnVolumeMoving(bool isMoving)
+        {
+            this.midiService.VolumeChanging = isMoving;
         }
 
         private void MuteChanged(CueLevel cue, int cueIndex)

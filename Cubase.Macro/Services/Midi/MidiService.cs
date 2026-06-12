@@ -35,17 +35,25 @@ namespace Cubase.Macro.Services.Midi
         public Action<bool>? OnCommandComplete { get; set; }
         public Action? OnReadyReceived { get; set; }
 
-        public List<Action> GetCueLevelsEndCallbacks { get; } = new List<Action>(); 
+        public List<Action> GetCueLevelsEndCallbacks { get; } = new List<Action>();
 
         public List<Action> UpdatedCueLevelsEndCallbacks { get; } = new List<Action>();
 
-        public Action<CubaseMidiResponse> OnMidiResponse {  get; set; }
+        public Action<CubaseMidiResponse> OnMidiResponse { get; set; }
 
         public bool ReadyReceived { get; private set; }
 
         public CueLevelCollection CueCollection => this.cueLevels ?? new CueLevelCollection();
 
-        public TrackCollection TrackCollection => this.tracks ?? new TrackCollection(); 
+        public TrackCollection TrackCollection => this.tracks ?? new TrackCollection();
+
+        private bool _volumeChanging = false;
+
+        public bool VolumeChanging
+        {
+            get { return _volumeChanging; }
+            set { _volumeChanging = value; }
+        }
 
         public MidiService(
             ILogger<MidiService> logger,
@@ -55,13 +63,13 @@ namespace Cubase.Macro.Services.Midi
             this.serviceProvider = serviceProvider;
             this.configurationService = this.serviceProvider.GetService<IConfigurationService>();
             cueTimer.Elapsed += CueTimer_Elapsed;
-            cueTimer.Interval = 2000; 
+            cueTimer.Interval = 1500;
         }
 
 
         private void CueTimer_Elapsed(object? sender, System.Timers.ElapsedEventArgs e)
         {
-            if (this.cueLevels.HaveAtLeastOneChange && !inGettingCueLevels)
+            if (this.cueLevels.HaveAtLeastOneChange && !inGettingCueLevels && !this.VolumeChanging)
             {
                 this.HandleCueLevelsUpdated();
             }
@@ -225,7 +233,7 @@ namespace Cubase.Macro.Services.Midi
                     break;
                 case var _ when command.Equals(MidiCommand.Reload.ToString(), StringComparison.OrdinalIgnoreCase):
                     this.ReloadScripts();
-                    break; 
+                    break;
                 case var _ when command.Equals(MidiCommand.UpdateCueLevelComplete.ToString(), StringComparison.OrdinalIgnoreCase):
                     foreach (var callback in UpdatedCueLevelsEndCallbacks)
                     {
@@ -261,6 +269,7 @@ namespace Cubase.Macro.Services.Midi
 
         private void HandleCueLevelsUpdated()
         {
+
             this.inGettingCueLevels = false;
             this.cueLevels.HaveAtLeastOneChange = false;
             foreach (var callback in GetCueLevelsEndCallbacks)
@@ -274,6 +283,7 @@ namespace Cubase.Macro.Services.Midi
                     logger.LogError(ex, "Error invoking GetCueLevelsEnd callback.");
                 }
             }
+
         }
 
         private void HandleChannelChange(Track track)
@@ -342,7 +352,7 @@ namespace Cubase.Macro.Services.Midi
 
         public void DeRegisterForGetCueLevelsEndCallbacks(Action onGetCueLevelsEnd)
         {
-            this.GetCueLevelsEndCallbacks.Remove(onGetCueLevelsEnd); 
+            this.GetCueLevelsEndCallbacks.Remove(onGetCueLevelsEnd);
         }
 
         public void GetCueCollection()

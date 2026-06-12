@@ -29,17 +29,22 @@ namespace Cubase.Macro.Forms.Cues.CueControls
         [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
         public Action<CueLevel> OnResetFader { get; set; }
 
+        [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
+        public Action<bool> OnVolumeMoving { get; set; }
+
         public CueSlider(CueLevel cueLevel, 
                                   Action<CueLevel> onVolumeChanged, 
                                   Action<CueLevel> onMuteChanged, 
                                   Action<CueLevel> onSoloChanged, 
-                                  Action<CueLevel> onResetFader)
+                                  Action<CueLevel> onResetFader,
+                                  Action<bool> onVolumeMoving)
         {
             InitializeComponent();
             this.OnVolumeChanged = onVolumeChanged;
             this.OnMuteChanged = onMuteChanged;
             this.OnSoloChanged = onSoloChanged;
             this.OnResetFader = onResetFader;
+            this.OnVolumeMoving = onVolumeMoving;
             this.Dock = DockStyle.Left;
             this.BorderStyle = BorderStyle.FixedSingle;
             this.CueLevel = cueLevel;
@@ -89,12 +94,14 @@ namespace Cubase.Macro.Forms.Cues.CueControls
         private void VolumeChanging(double volume)
         {
             this.VolumeText.Text = volume.ToString("0.00");
+            this.OnVolumeMoving?.Invoke(true);
         }
 
         private void VolumeChanged(double volume)
         {
             this.CueLevel.Volume = volume;
             this.OnVolumeChanged?.Invoke(this.CueLevel);
+            this.OnVolumeMoving?.Invoke(false);
         }
     }
 }

@@ -7,6 +7,8 @@ namespace Cubase.Macro.Services.Midi
     {
         public void Initialise();
 
+        public bool VolumeChanging { get;  set; }
+
         public CueLevelCollection CueCollection { get; }
 
         public TrackCollection TrackCollection { get; }

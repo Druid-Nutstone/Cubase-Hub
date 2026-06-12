@@ -20,6 +20,8 @@ namespace Cubase.Macro.Forms.Cues.CueControls
 
         private int _lastSliderWidth = -1;
 
+        private CueLevel? lastUpdatedCuLevel = null;
+
         private List<CueLevel>? ActiveCues = null;
 
         [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
@@ -36,6 +38,9 @@ namespace Cubase.Macro.Forms.Cues.CueControls
 
         [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
         public Action<CueLevel, int> OnResetFader { get; set; }
+
+        [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
+        public Action<bool> OnVolumeMoving { get; set; }
 
         public CueMainControl()
         {
@@ -107,6 +112,10 @@ namespace Cubase.Macro.Forms.Cues.CueControls
 
             foreach (var slider in slidersToRemove)
             {
+                if (slider.CueLevel.Id == lastUpdatedCuLevel?.Id)
+                {
+                    lastUpdatedCuLevel = null;
+                }
                 MainPanel.Controls.Remove(slider);
                 slider.Dispose();
             }
@@ -118,12 +127,22 @@ namespace Cubase.Macro.Forms.Cues.CueControls
 
                 if (slider == null)
                 {
-                    slider = new CueSlider(cue, CueChanged, MuteChanged, SoloChanged, OnResetFaderRequest);
+                    slider = new CueSlider(cue, CueChanged, MuteChanged, SoloChanged, OnResetFaderRequest, OnVolumeMoving);
                     MainPanel.Controls.Add(slider);
                 }
                 else
                 {
-                    slider.UpdateCueLevel(cue);
+                    if (lastUpdatedCuLevel == null)
+                    {
+                        slider.UpdateCueLevel(cue);
+                    }
+                    else
+                    {
+                        if (lastUpdatedCuLevel.Id != cue.Id)
+                        {
+                            slider.UpdateCueLevel(cue);
+                        }
+                    }
                 }
             }
 
@@ -184,7 +203,8 @@ namespace Cubase.Macro.Forms.Cues.CueControls
                     this.CueChanged, 
                     this.MuteChanged, 
                     this.SoloChanged,
-                    this.OnResetFaderRequest);
+                    this.OnResetFaderRequest, 
+                    this.OnVolumeMoving);
                 this.MainPanel.Controls.Add(slider);
             }
             MainPanel.ResumeLayout(true);
@@ -228,11 +248,13 @@ namespace Cubase.Macro.Forms.Cues.CueControls
 
         private void CueChanged(CueLevel cueLevel)
         {
+            this.lastUpdatedCuLevel = cueLevel;
             this.OnCueChanged?.Invoke(cueLevel, this.currentCueSlot);
         }
 
         private void OnResetFaderRequest(CueLevel cueLevel)
         {
+            this.lastUpdatedCuLevel = null;
             this.OnResetFader?.Invoke(cueLevel, this.currentCueSlot);
         }
 
