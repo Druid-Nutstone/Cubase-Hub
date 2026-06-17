@@ -41,8 +41,7 @@ var sysexCommand = {
        TrackDeleted,
        Reload,
        UpdateMute,
-       UpdateSolo
-
-
+       UpdateSolo,
+       LocationChanged
     }
 }

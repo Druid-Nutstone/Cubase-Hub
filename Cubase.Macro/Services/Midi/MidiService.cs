@@ -26,6 +26,8 @@ namespace Cubase.Macro.Services.Midi
 
         private TrackCollection tracks = new TrackCollection();
 
+        private TransportLocationCollection transportLocation = new TransportLocationCollection(); 
+
         private bool disposed;
 
         private bool inGettingCueLevels = false;
@@ -46,6 +48,8 @@ namespace Cubase.Macro.Services.Midi
         public CueLevelCollection CueCollection => this.cueLevels ?? new CueLevelCollection();
 
         public TrackCollection TrackCollection => this.tracks ?? new TrackCollection();
+
+        public TransportLocationCollection TransportLocation => this.transportLocation ?? new TransportLocationCollection();
 
         private bool _volumeChanging = false;
 
@@ -224,6 +228,10 @@ namespace Cubase.Macro.Services.Midi
                 case var _ when command.Equals(MidiCommand.Failed.ToString(), StringComparison.OrdinalIgnoreCase):
                     OnCommandComplete?.Invoke(false);
                     break;
+                case var _ when command.Equals(MidiCommand.LocationChanged.ToString(), StringComparison.OrdinalIgnoreCase):
+                    var trackLocation = JsonSerializer.Deserialize<TransportLocaton>(payload);
+                    this.HandleLocationChange(trackLocation);
+                    break;
                 case var _ when command.Equals(MidiCommand.TrackDeleted.ToString(), StringComparison.OrdinalIgnoreCase):
                     var trackDeletedResponse = JsonSerializer.Deserialize<TrackDeletedCommand>(payload);
                     if (trackDeletedResponse != null)
@@ -284,6 +292,11 @@ namespace Cubase.Macro.Services.Midi
                 }
             }
 
+        }
+
+        private void HandleLocationChange(TransportLocaton transportLocaton)
+        {
+            this.transportLocation = new TransportLocationCollection(transportLocaton);
         }
 
         private void HandleChannelChange(Track track)
