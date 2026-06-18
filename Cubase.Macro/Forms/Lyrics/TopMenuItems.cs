@@ -10,9 +10,9 @@ namespace Cubase.Macro.Forms.Lyrics
     {
         private readonly MenuStrip topMenu;
 
-        private readonly LyricEditor lyricEditor;
+        private readonly LyricsForm lyricEditor;
 
-        public TopMenuItems(MenuStrip topMenu, LyricEditor lyricEditor) 
+        public TopMenuItems(MenuStrip topMenu, LyricsForm lyricEditor) 
         { 
             this.topMenu = topMenu;
             this.lyricEditor = lyricEditor;
@@ -24,7 +24,7 @@ namespace Cubase.Macro.Forms.Lyrics
 
     public class  FontSizeMenuItem : ToolStripMenuItem
     {
-        public FontSizeMenuItem(LyricEditor lyricEditor)
+        public FontSizeMenuItem(LyricsForm lyricEditor)
         {
             this.Text = "Font Size";
             this.DropDownItems.Add(new IncreaseFontSizeMenuItem(lyricEditor));
@@ -34,8 +34,8 @@ namespace Cubase.Macro.Forms.Lyrics
 
     public class DecreaseFontSizeMenuItem : ToolStripMenuItem
     {
-        private readonly LyricEditor lyricEditor;
-        public DecreaseFontSizeMenuItem(LyricEditor lyricEditor)
+        private readonly LyricsForm lyricEditor;
+        public DecreaseFontSizeMenuItem(LyricsForm lyricEditor)
         {
             this.Text = "Decrease Font Size";
             this.lyricEditor = lyricEditor;
@@ -49,8 +49,8 @@ namespace Cubase.Macro.Forms.Lyrics
 
     public class IncreaseFontSizeMenuItem : ToolStripMenuItem
     {
-        private readonly LyricEditor lyricEditor;
-        public IncreaseFontSizeMenuItem(LyricEditor lyricEditor)
+        private readonly LyricsForm lyricEditor;
+        public IncreaseFontSizeMenuItem(LyricsForm lyricEditor)
         {
             this.Text = "Increase Font Size";
             this.lyricEditor = lyricEditor;
@@ -64,7 +64,7 @@ namespace Cubase.Macro.Forms.Lyrics
 
     public class  NewMenuItem : ToolStripMenuItem
     {
-        public NewMenuItem(LyricEditor lyricEditor)
+        public NewMenuItem(LyricsForm lyricEditor)
         {
             this.Text = "New";
             this.DropDownItems.Add(new NewLyricMenuItem(lyricEditor));
@@ -74,8 +74,8 @@ namespace Cubase.Macro.Forms.Lyrics
 
     public class NewLyricMenuItem : ToolStripMenuItem
     {
-        private readonly LyricEditor lyricEditor;
-        public NewLyricMenuItem(LyricEditor lyricEditor)
+        private readonly LyricsForm lyricEditor;
+        public NewLyricMenuItem(LyricsForm lyricEditor)
         {
             this.Text = "New Lyric";
             this.lyricEditor = lyricEditor;
@@ -83,14 +83,14 @@ namespace Cubase.Macro.Forms.Lyrics
         protected override void OnClick(EventArgs e)
         {
             base.OnClick(e);
-            this.lyricEditor.Initialise(string.Empty, LyricEditorType.Lyric, string.Empty);
+            this.lyricEditor.InitialiseEdit([], LyricEditorType.Lyric, string.Empty);
         }
     }
 
     public class NewSetListMenuItem : ToolStripMenuItem
     {
-        private readonly LyricEditor lyricEditor;
-        public NewSetListMenuItem(LyricEditor lyricEditor)
+        private readonly LyricsForm lyricEditor;
+        public NewSetListMenuItem(LyricsForm lyricEditor)
         {
             this.Text = "New SetList";
             this.lyricEditor = lyricEditor;
@@ -98,13 +98,13 @@ namespace Cubase.Macro.Forms.Lyrics
         protected override void OnClick(EventArgs e)
         {
             base.OnClick(e);
-            this.lyricEditor.Initialise(string.Empty, LyricEditorType.SetList, string.Empty);
+            this.lyricEditor.InitialiseEdit([], LyricEditorType.SetList, string.Empty);
         }
     }
 
     public class FileMenuItem : ToolStripMenuItem
     {
-        public FileMenuItem(LyricEditor lyricEditor)
+        public FileMenuItem(LyricsForm lyricEditor)
         {
             this.Text = "File";
             this.DropDownItems.Add(new OpenLyricMenuItem(lyricEditor));
@@ -116,8 +116,8 @@ namespace Cubase.Macro.Forms.Lyrics
 
     public class OpenLyricMenuItem : ToolStripMenuItem
     {
-        private readonly LyricEditor lyricEditor;
-        public OpenLyricMenuItem(LyricEditor lyricEditor)
+        private readonly LyricsForm lyricEditor;
+        public OpenLyricMenuItem(LyricsForm lyricEditor)
         {
             this.Text = "Open Lyrics";
             this.lyricEditor = lyricEditor;
@@ -130,16 +130,16 @@ namespace Cubase.Macro.Forms.Lyrics
             openFileDialog.Filter = "Text files (*.txt)|*.txt|All files (*.*)|*.*";
             if (openFileDialog.ShowDialog() == DialogResult.OK)
             {
-                this.lyricEditor.Initialise(System.IO.File.ReadAllText(openFileDialog.FileName), LyricEditorType.Lyric, openFileDialog.FileName);
+                this.lyricEditor.InitialiseEdit(System.IO.File.ReadAllLines(openFileDialog.FileName), LyricEditorType.Lyric, openFileDialog.FileName);
             }
         }
     }
 
     public class SaveLyricMenuItem : ToolStripMenuItem
     {
-        private readonly LyricEditor lyricEditor;
+        private readonly LyricsForm lyricEditor;
 
-        public SaveLyricMenuItem(LyricEditor lyricEditor)
+        public SaveLyricMenuItem(LyricsForm lyricEditor)
         {
             this.Text = "Save Lyrics";
             this.lyricEditor = lyricEditor;
@@ -155,20 +155,20 @@ namespace Cubase.Macro.Forms.Lyrics
                 saveFileDialog.Filter = "Text files (*.txt)|*.txt|All files (*.*)|*.*";
                 if (saveFileDialog.ShowDialog() == DialogResult.OK)
                 {
-                    System.IO.File.WriteAllText(saveFileDialog.FileName, this.lyricEditor.Text);
+                    System.IO.File.WriteAllText(saveFileDialog.FileName, this.lyricEditor?.lyricEditor?.Text);
                 }
             }
             else
             {
-                System.IO.File.WriteAllText(this.lyricEditor.FileName, this.lyricEditor.Text);
+                System.IO.File.WriteAllText(this.lyricEditor.FileName, this.lyricEditor?.lyricEditor?.Text);
             }
         }
     }
 
     public class OpenSetListMenuItem : ToolStripMenuItem
     {
-        private readonly LyricEditor lyricEditor;
-        public OpenSetListMenuItem(LyricEditor lyricEditor)
+        private readonly LyricsForm lyricEditor;
+        public OpenSetListMenuItem(LyricsForm lyricEditor)
         {
             this.Text = "Open SetList";
             this.lyricEditor = lyricEditor;
@@ -181,16 +181,16 @@ namespace Cubase.Macro.Forms.Lyrics
             openFileDialog.Filter = "Text files (*.txt)|*.txt|All files (*.*)|*.*";
             if (openFileDialog.ShowDialog() == DialogResult.OK)
             {
-                this.lyricEditor.Initialise(System.IO.File.ReadAllText(openFileDialog.FileName), LyricEditorType.SetList, openFileDialog.FileName);
+                this.lyricEditor.InitialiseEdit(System.IO.File.ReadAllLines(openFileDialog.FileName), LyricEditorType.SetList, openFileDialog.FileName);
             }
         }
     }
 
     public class SaveSetListMenuItem : ToolStripMenuItem
     {
-        private readonly LyricEditor lyricEditor;
+        private readonly LyricsForm lyricEditor;
 
-        public SaveSetListMenuItem(LyricEditor lyricEditor)
+        public SaveSetListMenuItem(LyricsForm lyricEditor)
         {
             this.Text = "Save SetList";
             this.lyricEditor = lyricEditor;

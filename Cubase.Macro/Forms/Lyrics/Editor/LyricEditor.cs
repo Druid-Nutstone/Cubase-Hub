@@ -17,7 +17,7 @@ namespace Cubase.Macro.Forms.Lyrics.Editor
         NotSpecified
     }
 
-    public class LyricEditor : RichTextBox
+    public class LyricEditor : BaseRichEdit
     {
 
         [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
@@ -28,37 +28,10 @@ namespace Cubase.Macro.Forms.Lyrics.Editor
 
         private int fontSize = 12;
 
-        private const int EM_GETSCROLLPOS = 0x0400 + 221;
-        private const int EM_SETSCROLLPOS = 0x0400 + 222;
-
-        [StructLayout(LayoutKind.Sequential)]
-        private struct POINT
-        {
-            public int X;
-            public int Y;
-        }
-
-        [DllImport("user32.dll")]
-        private static extern IntPtr SendMessage(
-            IntPtr hWnd,
-            int msg,
-            IntPtr wParam,
-            ref POINT lParam);
-
-        private const int WM_SETREDRAW = 0x000B;
-
-        [DllImport("user32.dll")]
-        private static extern IntPtr SendMessage(
-            IntPtr hWnd,
-            int msg,
-            bool wParam,
-            IntPtr lParam);
-
 
         public LyricEditor() : base() 
         { 
-            this.ForeColor = Color.White;
-            this.Font = new Font("Segoe UI", 12);
+
         }
 
         public void SetDefaultFontSize(int fontSize)
@@ -87,9 +60,9 @@ namespace Cubase.Macro.Forms.Lyrics.Editor
             this.ColorizeLines();
         }
 
-        public void Initialise(string text, LyricEditorType editorType, string fileName)
+        public void Initialise(string[] sourceCode, LyricEditorType editorType, string fileName)
         {
-            this.Text = text;
+            this.Lines = sourceCode;
             this.EditorType = editorType;
             this.FileName = fileName;
             var metaData = this.ScanLyricsForAttributes();
