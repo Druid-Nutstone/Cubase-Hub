@@ -6,6 +6,8 @@ using System.Runtime.InteropServices;
 using System.Text;
 using System.ComponentModel;
 using System.Windows;
+using Cubase.Macro.Common.Lyrics.Services;
+using Cubase.Macro.Services.Midi;
 
 namespace Cubase.Macro.Forms.Lyrics.Editor
 {
@@ -28,10 +30,14 @@ namespace Cubase.Macro.Forms.Lyrics.Editor
 
         private int fontSize = 12;
 
+        private ILyricService lyricService;
 
-        public LyricEditor() : base() 
+        private IMidiService midiService;
+
+        public LyricEditor(ILyricService lyricService, IMidiService midiService) : base() 
         { 
-
+            this.lyricService = lyricService;
+            this.midiService = midiService;
         }
 
         public void SetDefaultFontSize(int fontSize)

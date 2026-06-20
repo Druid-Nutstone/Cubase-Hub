@@ -40,7 +40,7 @@ namespace Cubase.Macro.Common.Lyrics
             return this.ParseLines(lines);
         }
 
-        private LyricChordCollection ParseLines(string[] lines)
+        private LyricChordCollection ParseLines(IEnumerable<string> lines)
         {
             foreach (var line in lines)
             {
@@ -71,7 +71,7 @@ namespace Cubase.Macro.Common.Lyrics
             return this.LyricsChords;
         }
 
-        public static LyricChordCollection FromLines(string[] lines)
+        public static LyricChordCollection FromLines(IEnumerable<string> lines)
         {
             var parser = new LyricChordParser();
             return parser.ParseLines(lines);

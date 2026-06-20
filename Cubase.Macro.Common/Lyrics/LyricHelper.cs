@@ -36,7 +36,12 @@ namespace Cubase.Macro.Common.Lyrics
                               .FirstOrDefault(x => x.Equals(bits[0], StringComparison.OrdinalIgnoreCase));
             if (keyWord != null)
             {
-                return (Enum.Parse<ControlLyricKeyword>(keyWord), bits[1]); 
+                var value = bits[1];
+                if (bits.Length > 2) // contains more than one ':'
+                {
+                    value = string.Join(':', bits.TakeLast(bits.Length - 1));
+                }
+                return (Enum.Parse<ControlLyricKeyword>(keyWord), value); 
             }
             return null;
         } 

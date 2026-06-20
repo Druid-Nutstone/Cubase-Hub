@@ -29,7 +29,7 @@ namespace Cubase.Macro.Forms.Lyrics.Editor
                 this.Items.Add(new InsertLineMenuItem(this.lyricEditor, "Insert Title", "{title:}"));
                 this.Items.Add(new InsertLineMenuItem(this.lyricEditor, "Insert Duration", "{duration:00:00}"));
                 this.Items.Add(new InsertLineMenuItem(this.lyricEditor, "Insert Tempo (bpm)", "{tempo:120}"));
-                this.Items.Add(new InsertLineMenuItem(this.lyricEditor, "Insert Relative Time for a part", "{d_time:00:00}"));
+                this.Items.Add(new InsertLineMenuItem(this.lyricEditor, "Insert Relative Time for a part", "{d_time:0}"));
                 this.Items.Add(new InsertLineMenuItem(this.lyricEditor, "Insert Pause (in seconds)", "{pause:1}"));
                 this.Items.Add(new InsertAlbumMenu(this.lyricEditor, this.lyricMetaData));
                 this.Items.Add(new InsertChordMenuitem(this.lyricEditor));

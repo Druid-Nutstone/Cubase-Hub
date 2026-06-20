@@ -17,6 +17,8 @@ using Cubase.Macro.Services.WebSockets;
 using Cubase.Macro.Common.Models;
 using Cubase.Macro.Forms.Lyrics;
 using Cubase.Macro.Forms.Cues;
+using Cubase.Macro.Common.Lyrics.Services;
+using Cubase.Macro.Common.Lyrics.Scrolling;
 
 namespace Cubase.Macro
 {
@@ -185,6 +187,8 @@ namespace Cubase.Macro
                         .AddSingleton<IWindowService, WindowService>()
                         .AddSingleton<IConfigurationService, ConfigurationService>()
                         .AddSingleton<IMidiService, MidiService>()
+                        .AddSingleton<ILyricService, LyricService>()
+                        .AddSingleton<IScroller, RicheditScroller>()
                         .AddSingleton<IWindowsControllerService, WindowsControllerService>()
                         .AddScoped<SettingsMainControl>()
                         .AddScoped<SettingsForm>()

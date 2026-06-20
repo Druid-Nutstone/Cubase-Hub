@@ -8,6 +8,9 @@ using System.Windows;
 using static Cubase.Macro.Services.Mouse.NativeMouse;
 using System.ComponentModel;
 using System.Diagnostics;
+using Cubase.Macro.Common.Lyrics.Scrolling;
+using Cubase.Macro.Common.Lyrics.Services;
+using Cubase.Macro.Services.Midi;
 
 namespace Cubase.Macro.Forms.Lyrics.Viewer
 {
@@ -18,36 +21,26 @@ namespace Cubase.Macro.Forms.Lyrics.Viewer
         
         private string[] sourceCode;
 
-        private LyricChordCollection lyricCollection;
-
-        private ViewerContent view = new ViewerContent();
-
         private double totalDuration = -1;
 
         private DateTime autoScrollStarted;
 
         private System.Windows.Forms.Timer autoScrollTimer;
 
-        public LyricViewer() : base()
+        private readonly ILyricService lyricService;
+
+        private readonly IMidiService midiService;
+
+        public LyricViewer(ILyricService lyricService, IMidiService midiService) : base()
         {
             this.ReadOnly = true;
+            this.lyricService = lyricService;
+            this.midiService = midiService;
         }
 
         public void StartAutoScroll()
         {
-            if (this.lyricCollection != null)
-            {
-                var duration = this.lyricCollection.GetControlValue(ControlLyricKeyword.Duration);
-                if (duration != null)
-                {
-                    totalDuration = duration.GetTimeSeconds();
-                    StartScrollTimer();
-                }
-                else
-                {
-                    // do based on midi 
-                }
-            }
+            StartScrollTimer();
         }
 
         public void StartScrollTimer()
@@ -56,25 +49,85 @@ namespace Cubase.Macro.Forms.Lyrics.Viewer
             this.autoScrollTimer.Interval = 500;
             this.autoScrollTimer.Tick += AutoScrollTimer_Tick; 
             this.autoScrollStarted = DateTime.Now;
+            this.lyricService.StartScrolling();
             this.autoScrollTimer.Start();
         }
 
         private void AutoScrollTimer_Tick(object? sender, EventArgs e)
         {
+            
             var timeSpan = TimeSpan.FromTicks(DateTime.Now.Ticks - autoScrollStarted.Ticks);
             ScrollUpdateEvent.Invoke(timeSpan);
-            // now get all defined times for verses ...
-            var allTimers = this.view.GetDefinedTimers();
-            foreach (var timer in allTimers)
-            {
-                var timerTimespan = TimeSpan.FromSeconds(timer.TimeLine);
-                // if this d_time is is five seconds away - make sure it is scrolled and visible
-                if (TimeSpan.FromSeconds(timerTimespan.TotalSeconds-timeSpan.TotalSeconds).TotalSeconds < 5)
+
+            var scrollResponse = this.lyricService.Scroll();
+
+            if (scrollResponse != null) 
+            { 
+                if (scrollResponse.ShouldStop)
                 {
-                    Debug.WriteLine(timer.LineIndex);
+                    this.autoScrollTimer.Stop();
+                    this.autoScrollTimer.Dispose();
+                    return;
                 }
-                // if ( timeSpan.Ticks - )
+
+                if (scrollResponse.ScrollLine > -1)
+                {
+                    this.ScrollTolineNumber(scrollResponse.ScrollLine);
+                }
+
             }
+        }
+
+        private void ScrollTolineNumber(int lineNumber)
+        {
+            if (lineNumber < 0 || this.Lines[lineNumber].Length < 2) 
+            { 
+                return; 
+            }
+
+            // 1. Ensure the control has focus so the selection is visible
+            this.Focus();
+
+            // 2. Identify the range
+            int lineStart = this.GetFirstCharIndexFromLine(lineNumber);
+            int lineLength = this.Lines[lineNumber].Length;
+
+            // 3. Scroll to the line first
+            var visible = this.GetVisibleLines(); // Assuming this is your custom helper
+            if (lineNumber < visible.topLine + 3 || lineNumber > visible.bottomLine - 3)
+            {
+                this.SelectionStart = lineStart;
+                this.ScrollToCaret();
+            }
+
+            this.SelectionLength = 0;
+
+            // 4. Apply formatting to the specific line
+            this.Select(lineStart, lineLength);
+
+            Debug.WriteLine($"Line number: {lineNumber} Top: {visible.topLine} Bottom: {visible.bottomLine}");
+        }
+
+        public (int topLine, int bottomLine) GetVisibleLines()
+        {
+            // character at the top-left of the control
+            System.Drawing.Point topPoint = new System.Drawing.Point(1, 1);
+            int topChar = this.GetCharIndexFromPosition(topPoint);
+
+
+            // character near the bottom-left
+            System.Drawing.Point bottomPoint = new System.Drawing.Point(
+                1,
+                this.ClientSize.Height - 1);
+
+            int bottomChar = this.GetCharIndexFromPosition(bottomPoint);
+
+
+            int topLine = this.GetLineFromCharIndex(topChar);
+            int bottomLine = this.GetLineFromCharIndex(bottomChar);
+
+
+            return (topLine, bottomLine);
         }
 
         public void Initialise(string fileName)
@@ -88,76 +141,10 @@ namespace Cubase.Macro.Forms.Lyrics.Viewer
         public void Initialise(string[] sourceCode)
         {
             this.Clear(); // Clear existing content
-            this.view.Clear();
             this.sourceCode = sourceCode;
-            this.lyricCollection = LyricChordParser.FromLines(sourceCode);
-
-            var lyricBuffer = new LyricBuffer();
-            foreach (var line in lyricCollection)
-            {
-                if (line.HaveControls())
-                {
-                    ViewModel currentView = null;
-                    foreach (var cntrl in line.Controls)
-                    {
-                        switch (cntrl.Key)
-                        {
-                            case ControlLyricKeyword.Title:
-                                currentView = AppendToView(lyricBuffer, cntrl.Value, () => Color.Cyan);
-                                lyricBuffer.AddBlank(1);
-                                break;
-                            case ControlLyricKeyword.Sov:    
-                            case ControlLyricKeyword.Start_Of_Verse:
-                                currentView = AppendToView(lyricBuffer, cntrl.Value, () => Color.Yellow);
-                                break;
-                            case ControlLyricKeyword.Eov:
-                            case ControlLyricKeyword.End_Of_Verse:
-                                lyricBuffer.AddBlank(2);
-                                break;
-                            case ControlLyricKeyword.D_Time:
-                                if (currentView == null) 
-                                {
-                                    currentView = AppendToView(lyricBuffer, string.Empty, () => DarkTheme.BackColor);
-                                }
-                                currentView.TimeLine = cntrl.Value.GetTimeSeconds();
-                                break;
-                        }
-                    }
-                }
-                if (line.Content.HaveChords())
-                {
-                    var cb = new StringBuilder();
-                    foreach (var item in line.Content.Chords)
-                    {
-                        if (item.Location > cb.Length)
-                        {
-                            cb.Append(' ', item.Location - cb.Length);
-                        }
-                        cb.Insert(item.Location, item.Chord);
-                    }
-                    AppendToView(lyricBuffer, cb.ToString(), () => Color.IndianRed);
-
-                }
-                if (line.Content.HaveLyric())
-                {
-                    AppendToView(lyricBuffer, line.Content.Lyric, null);
-                }
-            }
-
-            this.Text = lyricBuffer.ToText();
+            var lyrics = this.lyricService.ParseLyrics(this.sourceCode);
+            this.Text = lyrics.ToText();
             this.ColourIze();
-        }
-
-        private ViewModel AppendToView(List<string> lines, string line, Func<Color>? foreGroundColourCallback)
-        {
-            lines.Add(line);
-            var viewModel = new ViewModel()
-            {
-                ForeColour = foreGroundColourCallback?.Invoke() ?? DarkTheme.TextColor,
-                LineIndex = lines.Count - 1
-            };
-            view.Add(viewModel);
-            return viewModel;
         }
 
         protected override void OnHandleCreated(EventArgs e)
@@ -195,7 +182,7 @@ namespace Cubase.Macro.Forms.Lyrics.Viewer
                 {
                     // colour for whole line
                     this.Select(lineStart, line.Length);
-                    this.SelectionColor = view.GetForColour(lineIndex);
+                    this.SelectionColor = (Color)this.lyricService.GetTextColour(lineIndex);
                 }
             }
 
@@ -208,41 +195,6 @@ namespace Cubase.Macro.Forms.Lyrics.Viewer
             this.Invalidate();
 
         }
-    }
-
-
-    public class ViewerContent : List<ViewModel>
-    {
-        public ViewModel? GetIndex(int lineIndex)
-        {
-            return this.FirstOrDefault(x => x.LineIndex == lineIndex);
-        }
-
-
-        public List<ViewModel> GetDefinedTimers()
-        {
-            return this.Where(x => x.TimeLine > -1).ToList();   
-        }
-
-        public Color GetForColour(int lineIndex)
-        {
-            if (this.Any(x => x.LineIndex == lineIndex))
-            {
-                return this.First(x => x.LineIndex == lineIndex).ForeColour;
-            }
-            return DarkTheme.TextColor;
-        }
-    }
-
-    public class ViewModel
-    {
-        public int LineIndex { get; set; }
-
-        public Color ForeColour { get; set; } = Color.White;
-
-        public Color BackgroundColour { get; set; }
-
-        public double TimeLine { get; set; } = -1;
     }
 }
 

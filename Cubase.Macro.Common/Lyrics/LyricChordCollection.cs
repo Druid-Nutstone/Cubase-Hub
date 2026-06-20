@@ -143,6 +143,7 @@ namespace Cubase.Macro.Common.Lyrics
     {
         Title,
         Duration,
+        Scroll,
         Book,
         Tempo,
         Comment,

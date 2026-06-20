@@ -1,6 +1,8 @@
-﻿using Cubase.Macro.Forms.Lyrics.Editor;
+﻿using Cubase.Macro.Common.Lyrics.Services;
+using Cubase.Macro.Forms.Lyrics.Editor;
 using Cubase.Macro.Forms.Lyrics.Viewer;
 using Cubase.Macro.Services.Config;
+using Cubase.Macro.Services.Midi;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -26,9 +28,15 @@ namespace Cubase.Macro.Forms.Lyrics
 
         private ViewState viewState;
 
-        public LyricsForm(IConfigurationService configurationService)
+        private readonly ILyricService lyricService;
+
+        private readonly IMidiService midiService;
+
+        public LyricsForm(IConfigurationService configurationService, IMidiService midiService, ILyricService lyricService)
         {
             this.Text = "Create and Amend Lyrics and Setlists";
+            this.lyricService = lyricService;
+            this.midiService = midiService;
             InitializeComponent();
             ThemeApplier.ApplyDarkTheme(this);
             configurationService.ReloadConfiguration();
@@ -65,7 +73,7 @@ namespace Cubase.Macro.Forms.Lyrics
             this.viewState = ViewState.Edit; 
             this.FileName = fileName;
             this.SourceCode = sourceCode;
-            this.lyricEditor = new LyricEditor();
+            this.lyricEditor = new LyricEditor(this.lyricService, this.midiService);
             ThemeApplier.ApplyDarkTheme(this.lyricEditor);
             this.LoadPanel(lyricEditor);
             this.lyricEditor.Initialise(sourceCode, editorType, fileName);
@@ -94,7 +102,7 @@ namespace Cubase.Macro.Forms.Lyrics
             {
                 this.SourceCode = this.lyricEditor?.Lines;
             }
-            this.lyricViewer = new LyricViewer();
+            this.lyricViewer = new LyricViewer(this.lyricService, this.midiService);
             this.LoadPanel(this.lyricViewer);
             this.lyricViewer.Initialise(this.SourceCode ?? []);
             this.viewState = ViewState.View;
@@ -116,7 +124,7 @@ namespace Cubase.Macro.Forms.Lyrics
                     this.SourceCode = [];
                 }
             }
-            this.lyricEditor = new LyricEditor();
+            this.lyricEditor = new LyricEditor(this.lyricService, this.midiService);
             this.LoadPanel(lyricEditor);
             this.InitialiseEdit(this.SourceCode, LyricEditorType.Lyric, this.FileName);
         }
