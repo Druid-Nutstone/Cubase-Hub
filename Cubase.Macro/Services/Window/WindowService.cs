@@ -340,6 +340,21 @@ namespace Cubase.Macro.Services.Window
         {
             return GetForegroundWindow();
         }
+
+        public string? GetCubaseProjectTitle()
+        {
+            var cubaseHandle = this.FindCubaseMainWindow();
+            if (cubaseHandle == IntPtr.Zero) return null;
+            var hwnd = Process.GetProcesses().FirstOrDefault(p => p.MainWindowTitle.StartsWith(this.configurationService.Configuration.CubaseProjectWindowName, StringComparison.OrdinalIgnoreCase) && p.MainWindowHandle == cubaseHandle);
+            if (hwnd != null)
+            {
+                if (hwnd.MainWindowTitle.Contains("-"))
+                {
+                    return hwnd.MainWindowTitle.Split("-").Last().Trim();
+                }
+            }
+            return null;
+        }
     }
 
     internal static class NativeMethods

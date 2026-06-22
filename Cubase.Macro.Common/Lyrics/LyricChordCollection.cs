@@ -104,7 +104,7 @@ namespace Cubase.Macro.Common.Lyrics
         {
             if (this.HasKey(controlLyricKeyword))
             {
-                return this.Controls[controlLyricKeyword];
+                return this.Controls[controlLyricKeyword].Trim();
             }
             return null;
         }
@@ -156,5 +156,10 @@ namespace Cubase.Macro.Common.Lyrics
         End_Of_Verse,
         Start_of_Chorus,
         End_of_Chorus,
+        SoS, // start of section 
+        Eos, // end of section
+        Start_of_Section,
+        End_of_Section,
+        Start, // defines the actual start position of the left locator 
     }
 }

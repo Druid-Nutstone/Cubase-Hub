@@ -57,16 +57,20 @@ namespace Cubase.Macro.Forms.Main
             ButtonRefresh.Click += ButtonRefresh_Click;
             ButtonRefresh.HelpText = "Reload Configuration";
             MainPanel.Resize += MenuSizeChanged;
-            ButtonCueLevels.Click += ButtonCueLevels_Click;
-            ButtonReload.Click += ButtonReload_Click;
+
         }
 
-        private void ButtonReload_Click(object? sender, EventArgs e)
+        private void ButtonLyrics_Click()
+        {
+            this.mainForm.ShowLyrics();
+        }
+
+        private void ButtonReload_Click()
         {
             this.mainForm.ReloadScripts();
         }
 
-        private void ButtonCueLevels_Click(object? sender, EventArgs e)
+        private void ButtonCueLevels_Click()
         {
             this.mainForm.ShowCueLevels();
         }
@@ -189,7 +193,11 @@ namespace Cubase.Macro.Forms.Main
             foreach (var macro in menu.Macros)
             {
                 menuControl.AddMacro(macro, onMacroClicked);
+
             }
+            ButtonCueLevels.Bind(ButtonCueLevels_Click, Color.Yellow, "C", "Cue levels");
+            ButtonReload.Bind(ButtonReload_Click, Color.Cyan, "R", "Reload Scripts");
+            ButtonLyrics.Bind(ButtonLyrics_Click, Color.LightGreen, "L", "Show lyrics");
 
         }
 

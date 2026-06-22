@@ -12,23 +12,11 @@ using Cubase.Macro.Services.Midi;
 namespace Cubase.Macro.Forms.Lyrics.Editor
 {
     
-    public enum LyricEditorType
-    {
-        Lyric,
-        SetList,
-        NotSpecified
-    }
-
     public class LyricEditor : BaseRichEdit
     {
 
         [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
-        public LyricEditorType EditorType { get; private set; } = LyricEditorType.Lyric;
-
-        [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
         public string FileName { get; private set; } = string.Empty;
-
-        private int fontSize = 12;
 
         private ILyricService lyricService;
 
@@ -40,40 +28,13 @@ namespace Cubase.Macro.Forms.Lyrics.Editor
             this.midiService = midiService;
         }
 
-        public void SetDefaultFontSize(int fontSize)
+        public void Initialise(IEnumerable<string> sourceCode, string fileName)
         {
-            this.fontSize = fontSize;
-            this.Font = new Font(this.Font.FontFamily, fontSize);
-        }
-
-        public void IncreaseFontSize()
-        {
-            this.fontSize += 1;
-            this.SetDefaultFontSize(this.fontSize);
-            this.Refresh();
-            this.ColorizeLines();
-        }
-
-        public void DecreaseFontSize()
-        {
-            if (this.fontSize-1 < 2)
-            {
-                return;
-            }
-            this.fontSize -= 1;
-            this.SetDefaultFontSize(this.fontSize);
-            this.Refresh();
-            this.ColorizeLines();
-        }
-
-        public void Initialise(string[] sourceCode, LyricEditorType editorType, string fileName)
-        {
-            this.Lines = sourceCode;
-            this.EditorType = editorType;
+            this.Lines = sourceCode.ToArray();
             this.FileName = fileName;
             var metaData = this.ScanLyricsForAttributes();
-            this.ContextMenuStrip = new LyricEditorContextMenu(this, metaData, editorType);
-            this.ColorizeLines();
+            this.ContextMenuStrip = new LyricEditorContextMenu(this, metaData);
+            this.RefreshContent();
         }
 
         private LyricMetaData ScanLyricsForAttributes()
@@ -117,11 +78,11 @@ namespace Cubase.Macro.Forms.Lyrics.Editor
             base.OnKeyDown(e);
             if (e.KeyCode == Keys.Enter)
             {
-                this.ColorizeLines();
+                this.RefreshContent();
             }
         }
 
-        private void ColorizeLines()
+        protected override void RefreshContent()
         {
             int originalSelectionStart = this.SelectionStart;
             int originalSelectionLength = this.SelectionLength;
@@ -211,7 +172,7 @@ namespace Cubase.Macro.Forms.Lyrics.Editor
             this.SelectionStart = pos + 1;
             this.SelectionLength = 0;
 
-            this.ColorizeLines();
+            this.RefreshContent();
             // Optional: keep focus in editor
             this.Focus();
         }
@@ -237,7 +198,7 @@ namespace Cubase.Macro.Forms.Lyrics.Editor
 
             this.Text = this.Text.Insert(pos, textToInsert);
             this.SelectionStart = pos + textToInsert.Length;
-            this.ColorizeLines();
+            this.RefreshContent();
         }
 
     }

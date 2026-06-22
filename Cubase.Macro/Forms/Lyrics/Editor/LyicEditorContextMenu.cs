@@ -10,13 +10,10 @@ namespace Cubase.Macro.Forms.Lyrics.Editor
 
         private readonly LyricMetaData lyricMetaData;
 
-        private readonly LyricEditorType editorType;
-
-        public LyricEditorContextMenu(LyricEditor lyricEditor, LyricMetaData lyricMetaData, LyricEditorType editorType)
+        public LyricEditorContextMenu(LyricEditor lyricEditor, LyricMetaData lyricMetaData)
         {
             this.lyricEditor = lyricEditor;
             this.lyricMetaData = lyricMetaData;
-            this.editorType = editorType;
             this.InitialiseMenus(); 
         }
 
@@ -24,8 +21,7 @@ namespace Cubase.Macro.Forms.Lyrics.Editor
         {
 
             this.Items.Add(new PasteMenuItem(this.lyricEditor));
-            if (this.editorType == LyricEditorType.Lyric)
-            {
+
                 this.Items.Add(new InsertLineMenuItem(this.lyricEditor, "Insert Title", "{title:}"));
                 this.Items.Add(new InsertLineMenuItem(this.lyricEditor, "Insert Duration", "{duration:00:00}"));
                 this.Items.Add(new InsertLineMenuItem(this.lyricEditor, "Insert Tempo (bpm)", "{tempo:120}"));
@@ -40,13 +36,14 @@ namespace Cubase.Macro.Forms.Lyrics.Editor
                 this.Items.Add(new InsertLineMenuItem(this.lyricEditor, "Highlight Chorus End", "{end_of_chorus}"));
                 this.Items.Add(new InsertLineMenuItem(this.lyricEditor, "Insert a Bridge", "Bridge:"));
                 this.Items.Add(new InsertLineMenuItem(this.lyricEditor, "Insert a Middle 8", "Middle 8:"));
-            }
+            /*
             if (this.editorType == LyricEditorType.SetList)
             {
                 this.Items.Add(new InsertLineMenuItem(this.lyricEditor, "Insert Setlist Name", "--- SetList_Name_Here ---"));
                 this.Items.Add(new InsertLineMenuItem(this.lyricEditor, "Insert Setlist comment", "- Comment_Here -"));
                 this.Items.Add(new InsertLyricTitleMenu(this.lyricEditor, this.lyricMetaData));
             }
+            */
         }
     }
 

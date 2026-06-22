@@ -1,16 +1,18 @@
 ﻿using Cubase.Macro.Common.Lyrics;
-using Microsoft.Windows.Themes;
-using System;
-using System.Collections.Generic;
-using System.IO;
-using System.Text;
-using System.Windows;
-using static Cubase.Macro.Services.Mouse.NativeMouse;
-using System.ComponentModel;
-using System.Diagnostics;
 using Cubase.Macro.Common.Lyrics.Scrolling;
 using Cubase.Macro.Common.Lyrics.Services;
 using Cubase.Macro.Services.Midi;
+using Microsoft.Windows.Themes;
+using System;
+using System.Collections.Generic;
+using System.ComponentModel;
+using System.Diagnostics;
+using System.IO;
+using System.Text;
+using System.Windows;
+using System.Windows.Controls;
+using static Cubase.Macro.Services.Mouse.NativeMouse;
+using static System.Runtime.InteropServices.JavaScript.JSType;
 
 namespace Cubase.Macro.Forms.Lyrics.Viewer
 {
@@ -23,7 +25,7 @@ namespace Cubase.Macro.Forms.Lyrics.Viewer
 
         private double totalDuration = -1;
 
-        private DateTime autoScrollStarted;
+        // private DateTime autoScrollStarted;
 
         private System.Windows.Forms.Timer autoScrollTimer;
 
@@ -31,15 +33,25 @@ namespace Cubase.Macro.Forms.Lyrics.Viewer
 
         private readonly IMidiService midiService;
 
+        private int lastHighlightedLine = -1;
+
+        private int linePadding = 2;
+
+        private char indicator = '\u25B6';
+
         public LyricViewer(ILyricService lyricService, IMidiService midiService) : base()
         {
             this.ReadOnly = true;
             this.lyricService = lyricService;
             this.midiService = midiService;
+            this.Font = new Font("Segoe UI", 12);
         }
 
         public void StartAutoScroll()
         {
+            this.Select(0, 1);
+            this.ScrollToCaret();
+            this.RefreshContent();
             StartScrollTimer();
         }
 
@@ -48,29 +60,26 @@ namespace Cubase.Macro.Forms.Lyrics.Viewer
             this.autoScrollTimer = new System.Windows.Forms.Timer();
             this.autoScrollTimer.Interval = 500;
             this.autoScrollTimer.Tick += AutoScrollTimer_Tick; 
-            this.autoScrollStarted = DateTime.Now;
+            // this.autoScrollStarted = DateTime.Now;
             this.lyricService.StartScrolling();
             this.autoScrollTimer.Start();
         }
 
         private void AutoScrollTimer_Tick(object? sender, EventArgs e)
         {
-            
-            var timeSpan = TimeSpan.FromTicks(DateTime.Now.Ticks - autoScrollStarted.Ticks);
-            ScrollUpdateEvent.Invoke(timeSpan);
-
+            // var timeSpan = TimeSpan.FromTicks(DateTime.Now.Ticks - autoScrollStarted.Ticks);
             var scrollResponse = this.lyricService.Scroll();
-
+            ScrollUpdateEvent.Invoke(scrollResponse.TransportLocation);
             if (scrollResponse != null) 
             { 
-                if (scrollResponse.ShouldStop)
+                if (scrollResponse.ScrollType == ScrollResponseType.Stop)
                 {
                     this.autoScrollTimer.Stop();
                     this.autoScrollTimer.Dispose();
                     return;
                 }
 
-                if (scrollResponse.ScrollLine > -1)
+                if (scrollResponse.ScrollLine > -1 && scrollResponse.ScrollType == ScrollResponseType.Scroll)
                 {
                     this.ScrollTolineNumber(scrollResponse.ScrollLine);
                 }
@@ -100,12 +109,26 @@ namespace Cubase.Macro.Forms.Lyrics.Viewer
                 this.ScrollToCaret();
             }
 
-            this.SelectionLength = 0;
+            if (lastHighlightedLine > -1)
+            {
+                this.ApplyHighlight(lastHighlightedLine, this.BackColor);
+            }
 
-            // 4. Apply formatting to the specific line
-            this.Select(lineStart, lineLength);
+            this.ApplyHighlight(lineNumber, Color.OrangeRed);
+
+            this.lastHighlightedLine = lineNumber; 
 
             Debug.WriteLine($"Line number: {lineNumber} Top: {visible.topLine} Bottom: {visible.bottomLine}");
+        }
+
+        private void ApplyHighlight(int lineNumber, Color highlightColour)
+        {
+            int lineStartIndex = this.GetFirstCharIndexFromLine(lineNumber);
+            if (lineStartIndex == -1) return; // Line doesn't exist
+            // this.Text = this.Text.Remove(lineStartIndex, 1).Insert(lineStartIndex, highLighter.ToString());
+            this.Select(lineStartIndex, 1);
+            this.SelectionColor = highlightColour;
+            this.DeselectAll();
         }
 
         public (int topLine, int bottomLine) GetVisibleLines()
@@ -138,22 +161,23 @@ namespace Cubase.Macro.Forms.Lyrics.Viewer
             }
         }
 
-        public void Initialise(string[] sourceCode)
+        public void Initialise(IEnumerable<string> sourceCode)
         {
             this.Clear(); // Clear existing content
-            this.sourceCode = sourceCode;
-            var lyrics = this.lyricService.ParseLyrics(this.sourceCode);
+            this.sourceCode = sourceCode.ToArray();
+            var lyrics = this.lyricService.ParseLyrics(this.sourceCode, this.linePadding, indicator);
             this.Text = lyrics.ToText();
-            this.ColourIze();
+            this.RefreshContent();
         }
+
 
         protected override void OnHandleCreated(EventArgs e)
         {
             base.OnHandleCreated(e);
-            this.ColourIze();
+            this.RefreshContent();
         }
 
-        private void ColourIze()
+        protected override void RefreshContent()
         {
             if (!this.IsHandleCreated)
             {
@@ -178,12 +202,15 @@ namespace Cubase.Macro.Forms.Lyrics.Viewer
                     continue;
                 }
 
-                if (line.Length > 0)
+                if (line.Length > 0 && line.Trim() != string.Empty)
                 {
                     // colour for whole line
                     this.Select(lineStart, line.Length);
                     this.SelectionColor = (Color)this.lyricService.GetTextColour(lineIndex);
                 }
+                // set padding chars to black 
+                this.Select(lineStart, linePadding);
+                this.SelectionColor = this.BackColor;
             }
 
             // Restore scroll position 
@@ -191,7 +218,7 @@ namespace Cubase.Macro.Forms.Lyrics.Viewer
 
             // Re-enable redraw
             SendMessage(this.Handle, WM_SETREDRAW, true, IntPtr.Zero);
-
+            this.DeselectAll();
             this.Invalidate();
 
         }

@@ -26,6 +26,8 @@ namespace Cubase.Macro.Services.Window
 
         IntPtr GetCurrentForeGroundWindow();
 
+        string? GetCubaseProjectTitle();
+
         // static extern bool TrackMouseEvent(ref TRACKMOUSEEVENT lpEventTrack);
     }
 }

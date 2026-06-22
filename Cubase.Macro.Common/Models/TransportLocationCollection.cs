@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Text;
+using System.Text.Json;
 
 namespace Cubase.Macro.Common.Models
 {
@@ -36,6 +37,18 @@ namespace Cubase.Macro.Common.Models
         public int BarBeatTime { get; set; }
 
         public string SampleTime { get; set; }
-    
+
+        public static TransportLocationCollection Deserialise(string message)
+        {
+            var json = Encoding.UTF8.GetString(Convert.FromBase64String(message));
+            return JsonSerializer.Deserialize<TransportLocationCollection>(json);
+        }
+
+        public string Serialise()
+        {
+            var json = JsonSerializer.Serialize(this);
+            return Convert.ToBase64String(Encoding.UTF8.GetBytes(json));
+        }
+
     }
 }

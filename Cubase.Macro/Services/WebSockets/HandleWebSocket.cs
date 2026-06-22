@@ -52,6 +52,9 @@ namespace Cubase.Macro.Services.WebSockets
                     case WebSocketMidiCommand.MidiCommandList:
                         response = GetMidiCommandList(); 
                         break;
+                    case WebSocketMidiCommand.MidiTransportLocation:
+                        response = GetMidiTransportLocation(); 
+                        break;
                 }
 
                 // Example: trigger MIDI
@@ -60,6 +63,12 @@ namespace Cubase.Macro.Services.WebSockets
                 var responseEncoded = Encoding.UTF8.GetBytes(response.Serialise());
                 await socket.SendAsync(responseEncoded, WebSocketMessageType.Text, true, CancellationToken.None);
             }
+        }
+
+        static WebSocketMidiCommandMessage GetMidiTransportLocation()
+        {
+            Log?.Information("Received command to get Midi TransportLocation");
+            return WebSocketMidiCommandMessage.CreateFromTransportCollection(MidiService.TransportLocation);
         }
 
         static WebSocketMidiCommandMessage GetMidiCommandList()

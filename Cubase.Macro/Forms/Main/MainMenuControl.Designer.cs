@@ -30,8 +30,9 @@
         {
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(MainMenuControl));
             NavPanel = new Panel();
-            ButtonReload = new Button();
-            ButtonCueLevels = new Button();
+            ButtonLyrics = new Cubase.Macro.Forms.Main.Buttons.ActionButton();
+            ButtonCueLevels = new Cubase.Macro.Forms.Main.Buttons.ActionButton();
+            ButtonReload = new Cubase.Macro.Forms.Main.Buttons.ActionButton();
             ButtonRefresh = new Cubase.Macro.Forms.Main.Buttons.PictureButton();
             ButtonPositionCubase = new Cubase.Macro.Forms.Main.Buttons.PictureButton();
             ButtonBack = new Cubase.Macro.Forms.Main.Buttons.PictureButton();
@@ -50,8 +51,9 @@
             // 
             // NavPanel
             // 
-            NavPanel.Controls.Add(ButtonReload);
+            NavPanel.Controls.Add(ButtonLyrics);
             NavPanel.Controls.Add(ButtonCueLevels);
+            NavPanel.Controls.Add(ButtonReload);
             NavPanel.Controls.Add(ButtonRefresh);
             NavPanel.Controls.Add(ButtonPositionCubase);
             NavPanel.Controls.Add(ButtonBack);
@@ -60,26 +62,44 @@
             NavPanel.Dock = DockStyle.Top;
             NavPanel.Location = new Point(0, 0);
             NavPanel.Name = "NavPanel";
-            NavPanel.Size = new Size(200, 77);
+            NavPanel.Size = new Size(200, 79);
             NavPanel.TabIndex = 0;
             // 
-            // ButtonReload
+            // ButtonLyrics
             // 
-            ButtonReload.Location = new Point(3, 41);
-            ButtonReload.Name = "ButtonReload";
-            ButtonReload.Size = new Size(92, 29);
-            ButtonReload.TabIndex = 12;
-            ButtonReload.Text = "Reload";
-            ButtonReload.UseVisualStyleBackColor = true;
+            ButtonLyrics.FlatAppearance.BorderSize = 0;
+            ButtonLyrics.FlatStyle = FlatStyle.Flat;
+            ButtonLyrics.Font = new Font("Segoe UI", 9F, FontStyle.Bold);
+            ButtonLyrics.Location = new Point(83, 40);
+            ButtonLyrics.Name = "ButtonLyrics";
+            ButtonLyrics.Size = new Size(30, 30);
+            ButtonLyrics.TabIndex = 14;
+            ButtonLyrics.Text = "L";
+            ButtonLyrics.UseVisualStyleBackColor = true;
             // 
             // ButtonCueLevels
             // 
-            ButtonCueLevels.Location = new Point(100, 41);
+            ButtonCueLevels.FlatAppearance.BorderSize = 0;
+            ButtonCueLevels.FlatStyle = FlatStyle.Flat;
+            ButtonCueLevels.Font = new Font("Segoe UI", 9F, FontStyle.Bold);
+            ButtonCueLevels.Location = new Point(43, 40);
             ButtonCueLevels.Name = "ButtonCueLevels";
-            ButtonCueLevels.Size = new Size(92, 29);
-            ButtonCueLevels.TabIndex = 11;
-            ButtonCueLevels.Text = "Cue Levels";
+            ButtonCueLevels.Size = new Size(30, 30);
+            ButtonCueLevels.TabIndex = 13;
+            ButtonCueLevels.Text = "C";
             ButtonCueLevels.UseVisualStyleBackColor = true;
+            // 
+            // ButtonReload
+            // 
+            ButtonReload.FlatAppearance.BorderSize = 0;
+            ButtonReload.FlatStyle = FlatStyle.Flat;
+            ButtonReload.Font = new Font("Segoe UI", 9F, FontStyle.Bold);
+            ButtonReload.Location = new Point(2, 40);
+            ButtonReload.Name = "ButtonReload";
+            ButtonReload.Size = new Size(30, 30);
+            ButtonReload.TabIndex = 12;
+            ButtonReload.Text = "R";
+            ButtonReload.UseVisualStyleBackColor = true;
             // 
             // ButtonRefresh
             // 
@@ -135,7 +155,7 @@
             // 
             MainPanel.AutoScroll = true;
             MainPanel.Dock = DockStyle.Top;
-            MainPanel.Location = new Point(0, 77);
+            MainPanel.Location = new Point(0, 79);
             MainPanel.Name = "MainPanel";
             MainPanel.Size = new Size(200, 274);
             MainPanel.TabIndex = 1;
@@ -143,7 +163,7 @@
             // MenuSplitter
             // 
             MenuSplitter.Dock = DockStyle.Top;
-            MenuSplitter.Location = new Point(0, 351);
+            MenuSplitter.Location = new Point(0, 353);
             MenuSplitter.Name = "MenuSplitter";
             MenuSplitter.Size = new Size(200, 4);
             MenuSplitter.TabIndex = 2;
@@ -153,10 +173,10 @@
             // 
             CommonPanel.AutoScroll = true;
             CommonPanel.Dock = DockStyle.Fill;
-            CommonPanel.Location = new Point(0, 355);
+            CommonPanel.Location = new Point(0, 357);
             CommonPanel.Name = "CommonPanel";
             CommonPanel.Padding = new Padding(0, 0, 0, 10);
-            CommonPanel.Size = new Size(200, 207);
+            CommonPanel.Size = new Size(200, 205);
             CommonPanel.TabIndex = 3;
             // 
             // MainMenuControl
@@ -189,7 +209,8 @@
         private Buttons.PictureButton ButtonRefresh;
         private Splitter MenuSplitter;
         private Panel CommonPanel;
-        private Button ButtonCueLevels;
-        private Button ButtonReload;
+        private Buttons.ActionButton ButtonReload;
+        private Buttons.ActionButton ButtonCueLevels;
+        private Buttons.ActionButton ButtonLyrics;
     }
 }

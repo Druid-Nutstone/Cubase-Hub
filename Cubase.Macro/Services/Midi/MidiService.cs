@@ -22,6 +22,7 @@ namespace Cubase.Macro.Services.Midi
         private CancellationTokenSource? cancellationTokenSource;
         private Task? workerTask;
 
+
         private CueLevelCollection cueLevels = new CueLevelCollection();
 
         private TrackCollection tracks = new TrackCollection();
@@ -44,6 +45,8 @@ namespace Cubase.Macro.Services.Midi
         public Action<CubaseMidiResponse> OnMidiResponse { get; set; }
 
         public bool ReadyReceived { get; private set; }
+
+        public bool Initialised { get; private set; }
 
         public CueLevelCollection CueCollection => this.cueLevels ?? new CueLevelCollection();
 
@@ -91,6 +94,7 @@ namespace Cubase.Macro.Services.Midi
             workerTask = Task.Run(() =>
                 ProcessMessages(cancellationTokenSource.Token),
                 cancellationTokenSource.Token);
+            this.Initialised = true;
         }
 
         public bool SendMidiMessage(CubaseKeyCommand cubaseMidiCommand)

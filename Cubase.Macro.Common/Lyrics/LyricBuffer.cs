@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 using System.Drawing;
 using System.Text;
 
@@ -7,6 +8,35 @@ namespace Cubase.Macro.Common.Lyrics
 {
     public class LyricBuffer : List<LyricViewModel>
     {
+
+        private int padding;
+        
+        private char paddingChar;
+
+        public LyricBuffer(int padding, char paddingChar) 
+        { 
+           this.padding = padding;
+           this.paddingChar = paddingChar;
+        }
+        
+        public void Reset()
+        {
+            this.ForEach(x => x.HasBeenScrolled = false);
+        } 
+
+        public LyricViewModel AddLyric(string lyric, object foreColour, double timeLine = -1, bool hasBeenScrolled = false)
+        {
+            var lyricModel = new LyricViewModel()
+            {
+                Lyric = lyric.AddLeftPadding(padding, paddingChar),
+                ForeColour = foreColour,
+                TimeLine = timeLine,
+                HasBeenScrolled = hasBeenScrolled
+            }; 
+            this.Add(lyricModel);
+            return lyricModel;
+        }
+
         public void AddBlank(int count = 1)
         {
             for (int i=0; i < count; i++)
@@ -25,6 +55,15 @@ namespace Cubase.Macro.Common.Lyrics
             return this.Select(x => x.Lyric).Where(x => x != null).ToList().IndexOf(lineText);
         }
 
+        public int GetIndex(LyricViewModel lyricViewModel)
+        {
+            return this.GetLineIndex(lyricViewModel.Lyric);
+        } 
+
+        public LyricViewModel? GetTimelineGreateOrEqualTo(double targetTimeline)
+        {
+            return this.FirstOrDefault(x => x.TimeLine >= targetTimeline && !x.HasBeenScrolled);
+        }
         public string ToText()
         {
             return string.Join(Environment.NewLine, this.Select(x => x.Lyric)
@@ -32,8 +71,7 @@ namespace Cubase.Macro.Common.Lyrics
         }
     }
 
-    public class LyricViewModel
-    {
+    public class LyricViewModel    {
         public string? Lyric { get; set; }
 
         public object ForeColour { get; set; }

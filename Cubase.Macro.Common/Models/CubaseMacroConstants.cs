@@ -30,7 +30,7 @@ namespace Cubase.Macro.Common.Models
 
         public static string MidiJavascriptFileName = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments), "Steinberg", "Cubase", "MIDI Remote", "Driver Scripts", "Local", "Nutstone", "VirtualDevice", "Nutstone_VirtualDevice.js");
 
-        public static string DropBoxBaseDirectory = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.UserProfile), "Dropbox");
+        public static string DropBoxBaseDirectory = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.UserProfile), "Dropbox", "Lyrics");
 
         // C:\Users\david\OneDrive\Documents\Steinberg\Cubase\User Presets\Project Logical Editor
 

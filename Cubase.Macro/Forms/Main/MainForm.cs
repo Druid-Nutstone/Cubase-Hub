@@ -1,6 +1,7 @@
 ﻿using Cubase.Macro.Common.Models;
 using Cubase.Macro.Forms;
 using Cubase.Macro.Forms.Cues;
+using Cubase.Macro.Forms.Lyrics;
 using Cubase.Macro.Forms.Main;
 using Cubase.Macro.Forms.Main.Buttons;
 using Cubase.Macro.Models;
@@ -385,6 +386,24 @@ namespace Cubase.Macro
             this.serviceProvider.GetService<CueForm>().ShowDialog();
             this.PositionCubaseWithMouse = true;
         }
+
+        public void ShowLyrics()
+        {
+            var lyricForm = this.serviceProvider.GetService<LyricViewerForm>();
+            var dropBoxDir = CubaseMacroConstants.DropBoxBaseDirectory;
+            var projectName = this.windowService.GetCubaseProjectTitle();
+            if (!string.IsNullOrEmpty(projectName))
+            {
+                var realProjectName = $"{projectName}.txt";
+                var fullProjectLyricFile = System.IO.Path.Combine(dropBoxDir, realProjectName);
+                if (System.IO.File.Exists(fullProjectLyricFile))
+                {
+                    lyricForm.FileName = realProjectName;
+                    lyricForm.LoadFile();
+                }
+            }
+            lyricForm.Show();
+        } 
 
         public void ReloadScripts()
         {

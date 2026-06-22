@@ -88,10 +88,9 @@ namespace Cubase.Macro
                 }
                 if (options == "lyrics")
                 {
-                    var lyricForm = host.Services.GetService<LyricsForm>();
+                    var lyricForm = host.Services.GetService<LyricViewerForm>();
                     Application.Run(lyricForm);
                 }
-
             }
         }
 
@@ -188,12 +187,12 @@ namespace Cubase.Macro
                         .AddSingleton<IConfigurationService, ConfigurationService>()
                         .AddSingleton<IMidiService, MidiService>()
                         .AddSingleton<ILyricService, LyricService>()
-                        .AddSingleton<IScroller, RicheditScroller>()
+                        .AddSingleton<IColourService, RicheditColourService>()
                         .AddSingleton<IWindowsControllerService, WindowsControllerService>()
                         .AddScoped<SettingsMainControl>()
                         .AddScoped<SettingsForm>()
                         .AddTransient<CueForm>()
-                        .AddScoped<LyricsForm>()
+                        .AddScoped<LyricViewerForm>()
                         .AddScoped<MainForm>();
                 })
                 .ConfigureWebHostDefaults(webBuilder =>

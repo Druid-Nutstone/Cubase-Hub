@@ -31,6 +31,10 @@ namespace Cubase.Macro.Common.Models
             return CubaseRemoteMidiMacroCollection.Deserialise(this.Message);
         }
 
+        public TransportLocationCollection GetTransportLocationCollection()
+        {
+            return TransportLocationCollection.Deserialise(this.Message);
+        }
         public static WebSocketMidiCommandMessage CreateFromCommand(WebSocketMidiCommand command)
         {
             return new WebSocketMidiCommandMessage() { Command = command };
@@ -42,6 +46,15 @@ namespace Cubase.Macro.Common.Models
             {
                 Command = WebSocketMidiCommand.MidiCommandList,
                 Message = cubaseMacroCollection.Serialise()
+            };
+        }
+
+        public static WebSocketMidiCommandMessage CreateFromTransportCollection(TransportLocationCollection transportLocationCollection)
+        {
+            return new WebSocketMidiCommandMessage()
+            {
+                Command = WebSocketMidiCommand.MidiTransportLocation,
+                Message = transportLocationCollection.Serialise()
             };
         }
 

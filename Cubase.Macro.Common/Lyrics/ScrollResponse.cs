@@ -8,6 +8,15 @@ namespace Cubase.Macro.Common.Lyrics
     {
         public int ScrollLine { get; set; } = -1;
 
-        public bool ShouldStop { get; set; } = false;     
+        public ScrollResponseType ScrollType { get; set; } = ScrollResponseType.Nop;   
+        
+        public TimeSpan TransportLocation {  get; set; }
+    }
+
+    public enum ScrollResponseType
+    {
+        Scroll = 0,
+        Nop = 1,
+        Stop = 2
     }
 }

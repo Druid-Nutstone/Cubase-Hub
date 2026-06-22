@@ -66,6 +66,14 @@ namespace Cubase.Macro.Common.Socket
             return response?.GetMacroCollection();
         }
 
+        public async Task<TransportLocationCollection?> GetTransportLocation()
+        {
+            var response = await SendAndWait(
+                WebSocketMidiCommandMessage.CreateFromCommand(
+                    WebSocketMidiCommand.MidiTransportLocation));
+            return response?.GetTransportLocationCollection();
+        }
+
         public async Task<WebSocketMidiCommandMessage> SendMidiCommand(CubaseKeyCommand cubaseKeyCommand)
         {
             return await SendAndWait(WebSocketMidiCommandMessage.CreateFromKeyCommand(cubaseKeyCommand));

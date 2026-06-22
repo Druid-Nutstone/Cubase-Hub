@@ -5,7 +5,7 @@ using System.Text;
 
 namespace Cubase.Macro.Forms.Lyrics
 {
-    public class RicheditScroller : IScroller
+    public class RicheditColourService : IColourService
     {
         public object GetChordsColour()
         {
@@ -14,12 +14,17 @@ namespace Cubase.Macro.Forms.Lyrics
 
         public object GetDefaultColour()
         {
-            return Color.White;
+            return DarkTheme.TextColor;
+        }
+
+        public object GetSectionColour()
+        {
+            return Color.Yellow;
         }
 
         public object GetTitleColour()
         {
-            return Color.Yellow;
+            return Color.Cyan;
         }
     }
 }

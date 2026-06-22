@@ -8,6 +8,7 @@ namespace Cubase.Macro.Common.Models
     {
         MidiCommandList = 0,
         MidiCommand = 1,
-        Error = 2
+        MidiTransportLocation = 2,
+        Error = 3
     }
 }
