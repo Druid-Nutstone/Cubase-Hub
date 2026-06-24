@@ -13,5 +13,7 @@ namespace Cubase.Macro.Common.Lyrics.Services
         void StartScrolling();
 
         ScrollResponse Scroll();
+
+        void UseMidi(bool useMidi);
     }
 }

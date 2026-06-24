@@ -398,7 +398,7 @@ namespace Cubase.Macro
                 var fullProjectLyricFile = System.IO.Path.Combine(dropBoxDir, realProjectName);
                 if (System.IO.File.Exists(fullProjectLyricFile))
                 {
-                    lyricForm.FileName = realProjectName;
+                    lyricForm.FileName = fullProjectLyricFile;
                     lyricForm.LoadFile();
                 }
             }

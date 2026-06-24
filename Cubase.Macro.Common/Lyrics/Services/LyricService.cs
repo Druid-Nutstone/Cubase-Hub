@@ -1,6 +1,7 @@
 ﻿using Cubase.Macro.Common.Lyrics.Scrolling;
 using System;
 using System.Collections.Generic;
+using System.ComponentModel.Design;
 using System.Diagnostics;
 using System.Reflection.Metadata.Ecma335;
 using System.Text;
@@ -11,6 +12,8 @@ namespace Cubase.Macro.Common.Lyrics.Services
     {
         private readonly IColourService colourService;
 
+        private readonly IlyricMidiService lyricMidiService;
+        
         private LyricChordCollection lyricCollection;
 
         private LyricBuffer lyricBuffer;
@@ -23,18 +26,32 @@ namespace Cubase.Macro.Common.Lyrics.Services
         
         private ScrollingStrategy scrollingStrategy;
 
-        private double duration;
+        private double duration = -1;
 
         private double start = 0;
 
+        private bool haveTime = false;
+
+        private bool haveBar = true;
+
+        private bool useMidi = false;
+
+        private int bpm = -1;
+
+        private int bpb = -1; // beats per bar 
+
         private DateTime scrollingStartedAt;
 
-        public LyricService(IColourService colourService) 
+        public LyricService(IColourService colourService, 
+                            IlyricMidiService lyricMidiService) 
         {
             this.colourService = colourService;
+            this.lyricMidiService = lyricMidiService;
             this.commandParsers = new Dictionary<ControlLyricKeyword, Func<Section, LyricBuffer, LyricChordCollection, LyricViewModel, LyricViewModel>>()
             {
                 { ControlLyricKeyword.Title, ProcessTitle },
+                { ControlLyricKeyword.Tempo, ProcessBPM },
+                { ControlLyricKeyword.Beats_Per_Bar, ProcessBPB },
                 { ControlLyricKeyword.Sov, ProcessVerse },
                 { ControlLyricKeyword.Start_Of_Verse, ProcessVerse },
                 { ControlLyricKeyword.Eov, ProcessEndVerse },
@@ -50,18 +67,21 @@ namespace Cubase.Macro.Common.Lyrics.Services
                 { ControlLyricKeyword.Eoc, ProcessEndChorus },
                 { ControlLyricKeyword.End_of_Chorus, ProcessEndChorus },
                 { ControlLyricKeyword.Start, ProcessStart },
+                { ControlLyricKeyword.Bar, ProcessBar },
             };
 
             this.scrollStartProcessors = new Dictionary<ScrollingStrategy, Action>() 
             {
                 { ScrollingStrategy.Duration, StartDurationProcessor },
-                { ScrollingStrategy.Time, StartDurationProcessor } // starts as duration does 
+                { ScrollingStrategy.Time, StartDurationProcessor }, // starts as duration does 
+                { ScrollingStrategy.Bar, StartDurationProcessor } // starts as duration does             
             };
 
             this.scrollProcessors = new Dictionary<ScrollingStrategy, Func<ScrollResponse>>()
             {
                 { ScrollingStrategy.Duration, DurationProcessor },
-                { ScrollingStrategy.Time, TimeProcessor }
+                { ScrollingStrategy.Time, TimeProcessor },
+                { ScrollingStrategy.Bar, BarProcessor }
             }; 
         }
 
@@ -114,11 +134,32 @@ namespace Cubase.Macro.Common.Lyrics.Services
             return this.lyricBuffer;
         }
 
+        public void UseMidi(bool useMidi)
+        {
+            if (useMidi && this.lyricMidiService.IsMidiAvailable()) 
+            {
+                this.useMidi = true;
+            }
+            this.useMidi = useMidi;
+        }
+
         private LyricViewModel ProcessTitle(Section source, LyricBuffer buffer, LyricChordCollection originalSource, LyricViewModel currentView)
         {
             var newViewModel = buffer.AddLyric(source.GetControlValue(ControlLyricKeyword.Title), this.colourService.GetTitleColour());
             buffer.AddBlank(2);
             return newViewModel;
+        }
+
+        private LyricViewModel ProcessBPM(Section source, LyricBuffer buffer, LyricChordCollection originalSource, LyricViewModel currentView)
+        {
+            this.bpm = int.Parse(source.GetControlValue(ControlLyricKeyword.Tempo));
+            return currentView;
+        }
+
+        private LyricViewModel ProcessBPB(Section source, LyricBuffer buffer, LyricChordCollection originalSource, LyricViewModel currentView)
+        {
+            this.bpb = int.Parse(source.GetControlValue(ControlLyricKeyword.Beats_Per_Bar));
+            return currentView;
         }
 
         private LyricViewModel ProcessVerse(Section source, LyricBuffer buffer, LyricChordCollection originalSource, LyricViewModel currentView)
@@ -181,13 +222,27 @@ namespace Cubase.Macro.Common.Lyrics.Services
 
         private LyricViewModel ProcessTime(Section source, LyricBuffer buffer, LyricChordCollection originalSource, LyricViewModel currentView)
         {
-            this.scrollingStrategy = ScrollingStrategy.Time;
+            this.haveTime = true;
             if (currentView != null)
             {
                 var timeLine = source.GetControlValue(ControlLyricKeyword.D_Time);
                 if (timeLine != null)
                 {
                     currentView.TimeLine = timeLine.GetTimeSeconds();
+                }
+            }
+            return currentView;
+        }
+
+        private LyricViewModel ProcessBar(Section source, LyricBuffer buffer, LyricChordCollection originalSource, LyricViewModel currentView)
+        {
+            this.haveBar = true;
+            if (currentView != null)
+            {
+                var timeLine = source.GetControlValue(ControlLyricKeyword.Bar);
+                if (timeLine != null)
+                {
+                    currentView.Bar = int.Parse(timeLine);
                 }
             }
             return currentView;
@@ -208,7 +263,24 @@ namespace Cubase.Macro.Common.Lyrics.Services
 
         public void StartScrolling()
         {
-            // if start is specified - amend the started at to the left locator 
+            if (duration > 0) 
+            { 
+                if (this.bpm > 0)
+                {
+                    this.scrollingStrategy = ScrollingStrategy.Bar;
+                }
+                else
+                {
+                    if (this.haveTime)
+                    {
+                        this.scrollingStrategy = ScrollingStrategy.Time;
+                    }
+                    else
+                    {
+                        this.scrollingStrategy = ScrollingStrategy.Duration;
+                    }
+                }
+            }
             this.scrollingStartedAt = DateTime.Now.AddSeconds(this.start > 0 ? this.start * -1 : 0);
             this.scrollStartProcessors[this.scrollingStrategy]();
         }
@@ -255,6 +327,7 @@ namespace Cubase.Macro.Common.Lyrics.Services
             {
                 ScrollLine = scrolllineIndex,
                 TransportLocation = timeSpan,
+                LocationType = TransportLocationType.Time,
                 ScrollType = ShouldStop(targetLine) ? ScrollResponseType.Stop : ScrollResponseType.Scroll 
             };
         }
@@ -262,21 +335,33 @@ namespace Cubase.Macro.Common.Lyrics.Services
         #region Time processor
         private ScrollResponse TimeProcessor()
         {
-            // get elapsed time so far 
-            var timeSpan = TimeSpan.FromTicks(DateTime.Now.Ticks - this.scrollingStartedAt.Ticks);
-            // get first lyricline/verse/chorus etc that is =>
-            var timelineTarget = this.lyricBuffer.GetTimelineGreateOrEqualTo(timeSpan.TotalSeconds);
-            Debug.WriteLine($"Current Time: {timeSpan.TotalSeconds} Target Time: {timelineTarget?.TimeLine}");
-            if (timelineTarget != null && !timelineTarget.HasBeenScrolled)
+            TimeSpan timeSpan = TimeSpan.Zero;
+            LyricViewModel? timeLineTarget = null;
+            if (this.useMidi)
             {
-                if (timelineTarget.TimeLine.IsWithinThreshold(timeSpan.TotalSeconds))
+                var midiTransportLocation = this.lyricMidiService.GetTransportLocation();
+                timeSpan = TimeSpan.FromSeconds(midiTransportLocation.SecondsTime.GetTimeSeconds());
+                timeLineTarget = this.lyricBuffer.GetTimeLineWithinThreshold(timeSpan.TotalSeconds);
+            }
+            else
+            {
+                // get elapsed time so far 
+                timeSpan = TimeSpan.FromTicks(DateTime.Now.Ticks - this.scrollingStartedAt.Ticks);
+                // get first lyricline/verse/chorus etc that is =>
+                timeLineTarget = this.lyricBuffer.GetTimelineGreateOrEqualTo(timeSpan.TotalSeconds);
+            }
+            Debug.WriteLine($"Current Time: {timeSpan.TotalSeconds} Target Time: {timeLineTarget?.TimeLine}");
+            if (timeLineTarget != null)
+            {
+                if (timeLineTarget.TimeLine.IsWithinThreshold(timeSpan.TotalSeconds))
                 {
-                    var lineNumber = this.lyricBuffer.GetIndex(timelineTarget);
-                    timelineTarget.HasBeenScrolled = true;
+                    var lineNumber = this.lyricBuffer.GetIndex(timeLineTarget);
+                    timeLineTarget.HasBeenScrolled = true;
                     return new ScrollResponse()
                     {
-                        ScrollLine = this.lyricBuffer.GetIndex(timelineTarget),
+                        ScrollLine = lineNumber,
                         TransportLocation = timeSpan,
+                        LocationType = TransportLocationType.Time,
                         ScrollType = ShouldStop(lineNumber) ? ScrollResponseType.Stop : ScrollResponseType.Scroll,
                     };
                 }
@@ -284,10 +369,80 @@ namespace Cubase.Macro.Common.Lyrics.Services
             return new ScrollResponse() 
             { 
                 TransportLocation = timeSpan,
+                LocationType = TransportLocationType.Time,
                 ScrollType = timeSpan.TotalSeconds > this.duration ? ScrollResponseType.Stop : ScrollResponseType.Nop
             };
         }
-        #endregion 
         #endregion
+        #region Bar processing
+        private ScrollResponse BarProcessor()
+        {
+            var timeSpan = TimeSpan.FromTicks(DateTime.Now.Ticks - this.scrollingStartedAt.Ticks);
+            if (this.useMidi)
+            {
+                return BarWithMidi();
+            }
+            else
+            {
+                return Bar();   
+            }
+
+            ScrollResponse Bar()
+            {
+                // 1. Seconds per beat
+                double secondsPerBeat = 60.0 / bpm;
+                // 2. Seconds per full bar
+                double secondsPerBar = secondsPerBeat * bpb;
+                // 3. Calculate current bar (adding 1 because we start counting at Bar 1)
+                double currentBar = (timeSpan.TotalSeconds / secondsPerBar) + 1.0;
+                var lyricBar = this.lyricBuffer.GetLyricBar((int)currentBar);
+                Debug.WriteLine($"Seconds: {timeSpan.TotalSeconds} Bpm: {bpm} Bpb: {bpb} Current Bar: {currentBar} Lyric bar: {lyricBar?.Lyric}");
+                if (lyricBar != null)
+                {
+                    return new ScrollResponse()
+                    {
+                         ScrollLine = this.lyricBuffer.GetIndex(lyricBar),
+                         ScrollType = ScrollResponseType.Scroll,
+                         LocationType = TransportLocationType.Bar,
+                         Bar = lyricBar.Bar
+                    };
+                }
+                else
+                {
+                    return new ScrollResponse()
+                    {
+                        TransportLocation = timeSpan,
+                        ScrollType = ScrollResponseType.Nop
+                    };
+                }
+            }
+
+            ScrollResponse BarWithMidi()
+            {
+                var midiTransportLocation = this.lyricMidiService.GetTransportLocation();
+                var barLineTarget = this.lyricBuffer.GetLyricBar(midiTransportLocation.BarBeatTime);
+                if (barLineTarget != null)
+                {
+                    var barLyricLine = this.lyricBuffer.GetIndex(barLineTarget);
+                    return new ScrollResponse()
+                    {
+                         ScrollLine = barLyricLine,
+                         ScrollType= ScrollResponseType.Scroll,
+                         LocationType = TransportLocationType.Bar,
+                         Bar = midiTransportLocation.BarBeatTime
+                    };
+                }
+                else
+                {
+                    return new ScrollResponse()
+                    {
+                        TransportLocation = timeSpan,
+                        ScrollType = ScrollResponseType.Nop
+                    };
+                }
+            }
+        }
+#endregion
+#endregion
     }
 }

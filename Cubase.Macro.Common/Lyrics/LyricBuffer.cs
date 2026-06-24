@@ -62,7 +62,17 @@ namespace Cubase.Macro.Common.Lyrics
 
         public LyricViewModel? GetTimelineGreateOrEqualTo(double targetTimeline)
         {
-            return this.FirstOrDefault(x => x.TimeLine >= targetTimeline && !x.HasBeenScrolled);
+            return this.FirstOrDefault(x => x.TimeLine >= targetTimeline);
+        }
+
+        public LyricViewModel? GetLyricBar(int targetBar)
+        {
+            return this.FirstOrDefault(x => x.Bar == targetBar);
+        }
+
+        public LyricViewModel? GetTimeLineWithinThreshold(double targetTimeLineSeconds, int threshold = 1)
+        {
+            return this.FirstOrDefault(x => Math.Abs(x.TimeLine - targetTimeLineSeconds) <= threshold);
         }
         public string ToText()
         {
@@ -77,6 +87,8 @@ namespace Cubase.Macro.Common.Lyrics
         public object ForeColour { get; set; }
 
         public double TimeLine { get; set; } = -1;
+
+        public int Bar { get; set; } = -1;
 
         public bool HasBeenScrolled { get; set; } = false;
 

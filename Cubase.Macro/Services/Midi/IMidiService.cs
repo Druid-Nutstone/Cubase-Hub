@@ -44,6 +44,8 @@ namespace Cubase.Macro.Services.Midi
         public Action? OnReadyReceived { get; set; }
 
         public Action<CubaseMidiResponse> OnMidiResponse {  get; set; }
+        
+        bool Initialised { get; }
 
     }
 }

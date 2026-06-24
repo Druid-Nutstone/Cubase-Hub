@@ -19,7 +19,7 @@ namespace Cubase.Macro.Forms.Lyrics.Viewer
     public class LyricViewer : BaseRichEdit
     {
         [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
-        public Action<TimeSpan> ScrollUpdateEvent { get; set; }
+        public Action<ScrollResponse> ScrollUpdateEvent { get; set; }
         
         private string[] sourceCode;
 
@@ -31,21 +31,29 @@ namespace Cubase.Macro.Forms.Lyrics.Viewer
 
         private readonly ILyricService lyricService;
 
-        private readonly IMidiService midiService;
-
         private int lastHighlightedLine = -1;
 
         private int linePadding = 2;
 
         private char indicator = '\u25B6';
 
-        public LyricViewer(ILyricService lyricService, IMidiService midiService) : base()
+        public LyricViewer(ILyricService lyricService) : base()
         {
             this.ReadOnly = true;
             this.lyricService = lyricService;
-            this.midiService = midiService;
             this.Font = new Font("Segoe UI", 12);
         }
+
+        protected override void OnHandleDestroyed(EventArgs e)
+        {
+            base.OnHandleDestroyed(e);  
+            if (this.autoScrollTimer != null)
+            {
+                this.autoScrollTimer.Stop();
+                this.autoScrollTimer.Dispose();
+            }
+        }
+
 
         public void StartAutoScroll()
         {
@@ -53,6 +61,17 @@ namespace Cubase.Macro.Forms.Lyrics.Viewer
             this.ScrollToCaret();
             this.RefreshContent();
             StartScrollTimer();
+        }
+
+        public void EndAutoScroll()
+        {
+            if (this.autoScrollTimer != null)
+            {
+                this.autoScrollTimer.Stop();
+                this.autoScrollTimer.Dispose();
+                this.Select(0, 1);
+                this.ScrollToCaret();
+            }
         }
 
         public void StartScrollTimer()
@@ -69,7 +88,7 @@ namespace Cubase.Macro.Forms.Lyrics.Viewer
         {
             // var timeSpan = TimeSpan.FromTicks(DateTime.Now.Ticks - autoScrollStarted.Ticks);
             var scrollResponse = this.lyricService.Scroll();
-            ScrollUpdateEvent.Invoke(scrollResponse.TransportLocation);
+            ScrollUpdateEvent.Invoke(scrollResponse);
             if (scrollResponse != null) 
             { 
                 if (scrollResponse.ScrollType == ScrollResponseType.Stop)
@@ -89,7 +108,7 @@ namespace Cubase.Macro.Forms.Lyrics.Viewer
 
         private void ScrollTolineNumber(int lineNumber)
         {
-            if (lineNumber < 0 || this.Lines[lineNumber].Length < 2) 
+            if (lineNumber < 0 || this.Lines[lineNumber].Length < 2 || lineNumber == this.lastHighlightedLine) 
             { 
                 return; 
             }

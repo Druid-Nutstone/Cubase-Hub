@@ -7,6 +7,7 @@ namespace Cubase.Macro.Common.Lyrics.Scrolling
     public enum ScrollingStrategy
     {
        Duration = 0,
-       Time = 1
+       Time = 1,
+       Bar = 2 
     }
 }

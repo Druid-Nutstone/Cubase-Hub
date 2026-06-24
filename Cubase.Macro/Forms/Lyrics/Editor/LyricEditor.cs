@@ -20,12 +20,9 @@ namespace Cubase.Macro.Forms.Lyrics.Editor
 
         private ILyricService lyricService;
 
-        private IMidiService midiService;
-
-        public LyricEditor(ILyricService lyricService, IMidiService midiService) : base() 
+        public LyricEditor(ILyricService lyricService) : base() 
         { 
             this.lyricService = lyricService;
-            this.midiService = midiService;
         }
 
         public void Initialise(IEnumerable<string> sourceCode, string fileName)

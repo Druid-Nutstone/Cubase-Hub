@@ -188,11 +188,12 @@ namespace Cubase.Macro
                         .AddSingleton<IMidiService, MidiService>()
                         .AddSingleton<ILyricService, LyricService>()
                         .AddSingleton<IColourService, RicheditColourService>()
+                        .AddSingleton<IlyricMidiService, RichEditLyricMidiService>()
                         .AddSingleton<IWindowsControllerService, WindowsControllerService>()
                         .AddScoped<SettingsMainControl>()
                         .AddScoped<SettingsForm>()
                         .AddTransient<CueForm>()
-                        .AddScoped<LyricViewerForm>()
+                        .AddTransient<LyricViewerForm>()
                         .AddScoped<MainForm>();
                 })
                 .ConfigureWebHostDefaults(webBuilder =>

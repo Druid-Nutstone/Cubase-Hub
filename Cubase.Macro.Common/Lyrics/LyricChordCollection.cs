@@ -161,5 +161,7 @@ namespace Cubase.Macro.Common.Lyrics
         Start_of_Section,
         End_of_Section,
         Start, // defines the actual start position of the left locator 
+        Beats_Per_Bar, // 4/4 = 4, 3/4 = 4
+        Bar               // 
     }
 }

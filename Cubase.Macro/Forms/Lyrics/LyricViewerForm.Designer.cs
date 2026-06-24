@@ -38,6 +38,7 @@
             FontIncrease = new Cubase.Macro.Forms.Main.Buttons.LyricButton();
             EditButton = new Cubase.Macro.Forms.Main.Buttons.LyricButton();
             MainPanel = new Panel();
+            MidiEnabled = new CheckBox();
             panel1.SuspendLayout();
             panel2.SuspendLayout();
             SuspendLayout();
@@ -78,19 +79,20 @@
             // 
             // panel2
             // 
+            panel2.Controls.Add(MidiEnabled);
             panel2.Controls.Add(ScrollButton);
             panel2.Controls.Add(TransPortLocation);
             panel2.Dock = DockStyle.Right;
-            panel2.Location = new Point(505, 0);
+            panel2.Location = new Point(467, 0);
             panel2.Name = "panel2";
-            panel2.Size = new Size(295, 60);
+            panel2.Size = new Size(333, 60);
             panel2.TabIndex = 4;
             // 
             // ScrollButton
             // 
             ScrollButton.Anchor = AnchorStyles.Top | AnchorStyles.Right;
             ScrollButton.Font = new Font("Segoe UI", 9F, FontStyle.Bold);
-            ScrollButton.Location = new Point(107, 15);
+            ScrollButton.Location = new Point(145, 15);
             ScrollButton.Name = "ScrollButton";
             ScrollButton.Size = new Size(120, 30);
             ScrollButton.TabIndex = 1;
@@ -101,7 +103,7 @@
             // 
             TransPortLocation.Anchor = AnchorStyles.Top | AnchorStyles.Right;
             TransPortLocation.AutoSize = true;
-            TransPortLocation.Location = new Point(233, 20);
+            TransPortLocation.Location = new Point(271, 20);
             TransPortLocation.Name = "TransPortLocation";
             TransPortLocation.Size = new Size(44, 20);
             TransPortLocation.TabIndex = 0;
@@ -151,6 +153,17 @@
             MainPanel.Size = new Size(800, 390);
             MainPanel.TabIndex = 1;
             // 
+            // MidiEnabled
+            // 
+            MidiEnabled.Anchor = AnchorStyles.Top | AnchorStyles.Right;
+            MidiEnabled.AutoSize = true;
+            MidiEnabled.Location = new Point(38, 19);
+            MidiEnabled.Name = "MidiEnabled";
+            MidiEnabled.Size = new Size(89, 24);
+            MidiEnabled.TabIndex = 2;
+            MidiEnabled.Text = "Use Midi";
+            MidiEnabled.UseVisualStyleBackColor = true;
+            // 
             // LyricViewerForm
             // 
             AutoScaleDimensions = new SizeF(8F, 20F);
@@ -179,5 +192,6 @@
         private Main.Buttons.LyricButton OpenButton;
         private Main.Buttons.LyricButton SaveButton;
         private Main.Buttons.LyricButton ScrollButton;
+        private CheckBox MidiEnabled;
     }
 }
