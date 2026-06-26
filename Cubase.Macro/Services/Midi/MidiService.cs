@@ -281,7 +281,6 @@ namespace Cubase.Macro.Services.Midi
 
         private void HandleCueLevelsUpdated()
         {
-
             this.inGettingCueLevels = false;
             this.cueLevels.HaveAtLeastOneChange = false;
             foreach (var callback in GetCueLevelsEndCallbacks)
@@ -376,6 +375,16 @@ namespace Cubase.Macro.Services.Midi
         {
             this.inGettingCueLevels = true;
             this.SendSysExMessage(MidiCommand.GetCueLevels, "{}");
+        }
+
+        public void StartTransportMonitoring()
+        {
+            this.SendSysExMessage(MidiCommand.StartTransportEventMonitoring, "{}");
+        }
+
+        public void StopTransportMonitoring()
+        {
+            this.SendSysExMessage(MidiCommand.StopTransportEventMonitoring, "{}");
         }
 
         public void RegisterForUpdateCueLevelsEndCallbacks(Action onUpdateCueLevelsEnd)

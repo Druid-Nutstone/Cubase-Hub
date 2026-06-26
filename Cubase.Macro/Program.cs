@@ -19,6 +19,7 @@ using Cubase.Macro.Forms.Lyrics;
 using Cubase.Macro.Forms.Cues;
 using Cubase.Macro.Common.Lyrics.Services;
 using Cubase.Macro.Common.Lyrics.Scrolling;
+using Cubase.Macro.Services.Lyrics;
 
 namespace Cubase.Macro
 {
@@ -190,6 +191,7 @@ namespace Cubase.Macro
                         .AddSingleton<IColourService, RicheditColourService>()
                         .AddSingleton<IlyricMidiService, RichEditLyricMidiService>()
                         .AddSingleton<IWindowsControllerService, WindowsControllerService>()
+                        .AddSingleton<ILyricFileService, LyricFileService>()
                         .AddScoped<SettingsMainControl>()
                         .AddScoped<SettingsForm>()
                         .AddTransient<CueForm>()
@@ -213,13 +215,13 @@ namespace Cubase.Macro
                                 {
                                     var midi = context.RequestServices.GetRequiredService<IMidiService>();
                                     var config = context.RequestServices.GetRequiredService<IConfigurationService>();
-
+                                    var lyricFileService = context.RequestServices.GetRequiredService<ILyricFileService>(); 
                                     var ip = context.Connection.RemoteIpAddress?.ToString();
                                     var port = context.Connection.RemotePort;
 
                                     Log.Information($"WebSocket connection from {ip}:{port}");
                                     using var ws = await context.WebSockets.AcceptWebSocketAsync();
-                                    await CubaseSockets.HandleWebSocket(ws, midi, Log.Logger, config);
+                                    await CubaseSockets.HandleWebSocket(ws, midi, Log.Logger, lyricFileService, config);
                                 }
                                 else
                                 {

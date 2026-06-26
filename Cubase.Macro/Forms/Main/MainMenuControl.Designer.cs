@@ -41,6 +41,7 @@
             MainPanel = new Panel();
             MenuSplitter = new Splitter();
             CommonPanel = new Panel();
+            ButtonStartStopTransportMonitoring = new Cubase.Macro.Forms.Cues.CueControls.ToggleCubaseButton();
             NavPanel.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)ButtonRefresh).BeginInit();
             ((System.ComponentModel.ISupportInitialize)ButtonPositionCubase).BeginInit();
@@ -51,6 +52,7 @@
             // 
             // NavPanel
             // 
+            NavPanel.Controls.Add(ButtonStartStopTransportMonitoring);
             NavPanel.Controls.Add(ButtonLyrics);
             NavPanel.Controls.Add(ButtonCueLevels);
             NavPanel.Controls.Add(ButtonReload);
@@ -179,6 +181,20 @@
             CommonPanel.Size = new Size(200, 205);
             CommonPanel.TabIndex = 3;
             // 
+            // ButtonStartStopTransportMonitoring
+            // 
+            ButtonStartStopTransportMonitoring.Anchor = AnchorStyles.Top | AnchorStyles.Right;
+            ButtonStartStopTransportMonitoring.FlatAppearance.BorderSize = 0;
+            ButtonStartStopTransportMonitoring.FlatStyle = FlatStyle.Flat;
+            ButtonStartStopTransportMonitoring.Font = new Font("Segoe UI", 9F, FontStyle.Bold);
+            ButtonStartStopTransportMonitoring.Location = new Point(150, 40);
+            ButtonStartStopTransportMonitoring.Name = "ButtonStartStopTransportMonitoring";
+            ButtonStartStopTransportMonitoring.OnOff = false;
+            ButtonStartStopTransportMonitoring.Size = new Size(30, 30);
+            ButtonStartStopTransportMonitoring.TabIndex = 15;
+            ButtonStartStopTransportMonitoring.Text = "T";
+            ButtonStartStopTransportMonitoring.UseVisualStyleBackColor = true;
+            // 
             // MainMenuControl
             // 
             AutoScaleDimensions = new SizeF(8F, 20F);
@@ -212,5 +228,6 @@
         private Buttons.ActionButton ButtonReload;
         private Buttons.ActionButton ButtonCueLevels;
         private Buttons.ActionButton ButtonLyrics;
+        private Cues.CueControls.ToggleCubaseButton ButtonStartStopTransportMonitoring;
     }
 }

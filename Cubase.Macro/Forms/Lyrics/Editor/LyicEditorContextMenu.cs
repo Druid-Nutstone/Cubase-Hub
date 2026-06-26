@@ -19,31 +19,9 @@ namespace Cubase.Macro.Forms.Lyrics.Editor
 
         private void InitialiseMenus()
         {
-
+            this.Items.Add(new CopyMenuItem(this.lyricEditor));
             this.Items.Add(new PasteMenuItem(this.lyricEditor));
-
-                this.Items.Add(new InsertLineMenuItem(this.lyricEditor, "Insert Title", "{title:}"));
-                this.Items.Add(new InsertLineMenuItem(this.lyricEditor, "Insert Duration", "{duration:00:00}"));
-                this.Items.Add(new InsertLineMenuItem(this.lyricEditor, "Insert Tempo (bpm)", "{tempo:120}"));
-                this.Items.Add(new InsertLineMenuItem(this.lyricEditor, "Insert Relative Time for a part", "{d_time:0}"));
-                this.Items.Add(new InsertLineMenuItem(this.lyricEditor, "Insert Pause (in seconds)", "{pause:1}"));
-                this.Items.Add(new InsertAlbumMenu(this.lyricEditor, this.lyricMetaData));
-                this.Items.Add(new InsertChordMenuitem(this.lyricEditor));
-                this.Items.Add(new InsertLineMenuItem(this.lyricEditor, "Insert a Comment", "{comment:anytext}"));
-                this.Items.Add(new InsertLineMenuItem(this.lyricEditor, "Insert a Verse", "Verse X:"));
-                this.Items.Add(new InsertLineMenuItem(this.lyricEditor, "Insert a Chorus", "Chorus:"));
-                this.Items.Add(new InsertLineMenuItem(this.lyricEditor, "Highlight Chorus Start", "{start_of_chorus}"));
-                this.Items.Add(new InsertLineMenuItem(this.lyricEditor, "Highlight Chorus End", "{end_of_chorus}"));
-                this.Items.Add(new InsertLineMenuItem(this.lyricEditor, "Insert a Bridge", "Bridge:"));
-                this.Items.Add(new InsertLineMenuItem(this.lyricEditor, "Insert a Middle 8", "Middle 8:"));
-            /*
-            if (this.editorType == LyricEditorType.SetList)
-            {
-                this.Items.Add(new InsertLineMenuItem(this.lyricEditor, "Insert Setlist Name", "--- SetList_Name_Here ---"));
-                this.Items.Add(new InsertLineMenuItem(this.lyricEditor, "Insert Setlist comment", "- Comment_Here -"));
-                this.Items.Add(new InsertLyricTitleMenu(this.lyricEditor, this.lyricMetaData));
-            }
-            */
+            this.Items.Add(new InsertAlbumMenu(this.lyricEditor, this.lyricMetaData));
         }
     }
 
@@ -107,6 +85,18 @@ namespace Cubase.Macro.Forms.Lyrics.Editor
         }
     }
 
+    public class CopyMenuItem : BaseMenuItem
+    {
+        public CopyMenuItem(LyricEditor lyricEditor) : base(lyricEditor, "Copy")
+        {
+        }
+        protected override void OnClick(EventArgs e)
+        {
+            base.OnClick(e);
+            this.lyricEditor.Copy();
+        }
+    }
+
     public class PasteMenuItem : BaseMenuItem
     {
         public PasteMenuItem(LyricEditor lyricEditor) : base(lyricEditor, "Paste")
@@ -116,6 +106,7 @@ namespace Cubase.Macro.Forms.Lyrics.Editor
         {
             base.OnClick(e);
             this.lyricEditor.Paste();
+            this.lyricEditor.ColourCode();
         }
     }
 

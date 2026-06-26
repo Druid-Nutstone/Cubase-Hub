@@ -1,5 +1,7 @@
-﻿using Cubase.Macro.Common.Models;
+﻿using Cubase.Macro.Common.Lyrics.Services;
+using Cubase.Macro.Common.Models;
 using Cubase.Macro.Services.Config;
+using Cubase.Macro.Services.Lyrics;
 using Cubase.Macro.Services.Midi;
 using Microsoft.Extensions.Logging;
 using Serilog;
@@ -20,11 +22,18 @@ namespace Cubase.Macro.Services.WebSockets
 
         private static IMidiService MidiService;
 
-        public static async Task HandleWebSocket(WebSocket socket, IMidiService midiService, Serilog.ILogger logger, IConfigurationService configurationService)
+        private static ILyricFileService LyricFileService;
+
+        public static async Task HandleWebSocket(WebSocket socket, 
+                                                 IMidiService midiService, 
+                                                 Serilog.ILogger logger,
+                                                 ILyricFileService lyricFileService,
+                                                 IConfigurationService configurationService)
         {
             Log = logger;
             ConfigurationService = configurationService;
             MidiService = midiService;
+            LyricFileService = lyricFileService;
             var buffer = new byte[1024 * 10];
 
             while (socket.State == WebSocketState.Open)
@@ -55,6 +64,17 @@ namespace Cubase.Macro.Services.WebSockets
                     case WebSocketMidiCommand.MidiTransportLocation:
                         response = GetMidiTransportLocation(); 
                         break;
+                    case WebSocketMidiCommand.MidiLyricCurrentProject:
+                        response = GetMidiLyricCurrentProject();
+                        break;
+                    case WebSocketMidiCommand.MidiLyricStartTransportMonitoring:
+                        midiService.StartTransportMonitoring();
+                        response = WebSocketMidiCommandMessage.CreateFromCommand(WebSocketMidiCommand.MidiLyricStartTransportMonitoring);
+                        break;
+                    case WebSocketMidiCommand.MidiLyricStopTransportMonitoring:
+                        midiService.StopTransportMonitoring();
+                        response = WebSocketMidiCommandMessage.CreateFromCommand(WebSocketMidiCommand.MidiLyricStopTransportMonitoring);
+                        break; 
                 }
 
                 // Example: trigger MIDI
@@ -69,6 +89,12 @@ namespace Cubase.Macro.Services.WebSockets
         {
             Log?.Information("Received command to get Midi TransportLocation");
             return WebSocketMidiCommandMessage.CreateFromTransportCollection(MidiService.TransportLocation);
+        }
+
+        static WebSocketMidiCommandMessage GetMidiLyricCurrentProject()
+        {
+            Log?.Information("Received command to get Midi Current Lyric");
+            return WebSocketMidiCommandMessage.CreateFromLyricResponse(LyricFileService.GetProjectCurrentLyrics());
         }
 
         static WebSocketMidiCommandMessage GetMidiCommandList()

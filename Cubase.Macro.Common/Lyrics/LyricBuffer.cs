@@ -92,9 +92,18 @@ namespace Cubase.Macro.Common.Lyrics
 
         public bool HasBeenScrolled { get; set; } = false;
 
+        public LyricLineType LineType { get; set; } = LyricLineType.None;
+
         public static LyricViewModel CreateEmptyLine()
         {
             return new LyricViewModel() { Lyric = string.Empty };
         }
+    }
+
+    public enum LyricLineType
+    {
+        None = 0,
+        Lyric = 1,
+        Chord = 2,
     }
 }

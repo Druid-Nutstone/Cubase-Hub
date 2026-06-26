@@ -43,6 +43,17 @@ namespace Cubase.Macro.Forms.Cues.CueControls
             this.SetColours();
         }
 
+        public void Bind(Color onBackgroundColour, Color offBackgroundColour, Color onForeGroundColour, Color offForegroundColour, Action<bool> onClicked, string helpText)
+        {
+            this.onBackgroundColour = onBackgroundColour;
+            this.offBackgroundColour = offBackgroundColour;
+            this.onForegroundColour = onForeGroundColour;
+            this.offForegroundColour = offForegroundColour;
+            this.OnClicked = onClicked;
+            this.SetHelpText(helpText);
+            this.SetColours();
+        }
+
         public void Bind(string propertyName, object dataSource, Color onBackgroundColour, Color offBackgroundColour, Color onForeGroundColour, Color offForegroundColour, Action<bool> onClicked)
         {
             this.onBackgroundColour = onBackgroundColour;

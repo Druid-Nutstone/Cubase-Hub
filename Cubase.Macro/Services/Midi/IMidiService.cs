@@ -37,13 +37,17 @@ namespace Cubase.Macro.Services.Midi
 
         void Dispose();
 
-        public void GetCueCollection();
+        void GetCueCollection();
 
-        public void ReloadScripts();
+        void StartTransportMonitoring();
 
-        public Action? OnReadyReceived { get; set; }
+        void StopTransportMonitoring();
 
-        public Action<CubaseMidiResponse> OnMidiResponse {  get; set; }
+        void ReloadScripts();
+
+        Action? OnReadyReceived { get; set; }
+
+        Action<CubaseMidiResponse> OnMidiResponse {  get; set; }
         
         bool Initialised { get; }
 

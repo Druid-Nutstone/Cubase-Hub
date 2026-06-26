@@ -14,7 +14,7 @@ namespace Cubase.Macro.Common.Lyrics.Services
 
         private readonly IlyricMidiService lyricMidiService;
         
-        private LyricChordCollection lyricCollection;
+        public LyricChordCollection LyricCollection { get; set; }
 
         private LyricBuffer lyricBuffer;
 
@@ -67,7 +67,7 @@ namespace Cubase.Macro.Common.Lyrics.Services
                 { ControlLyricKeyword.Eoc, ProcessEndChorus },
                 { ControlLyricKeyword.End_of_Chorus, ProcessEndChorus },
                 { ControlLyricKeyword.Start, ProcessStart },
-                { ControlLyricKeyword.Bar, ProcessBar },
+                { ControlLyricKeyword.Bar, ProcessBar }
             };
 
             this.scrollStartProcessors = new Dictionary<ScrollingStrategy, Action>() 
@@ -97,10 +97,10 @@ namespace Cubase.Macro.Common.Lyrics.Services
 
         public LyricBuffer ParseLyrics(IEnumerable<string> lyricSource, int padding, char paddingChar)
         {
-            this.lyricCollection = LyricChordParser.FromLines(lyricSource);
+            this.LyricCollection = LyricChordParser.FromLines(lyricSource);
             this.lyricBuffer = new LyricBuffer(padding, paddingChar);
             LyricViewModel lyricViewModel = null;
-            foreach (var line in lyricCollection)
+            foreach (var line in LyricCollection)
             {
                 if (line.HaveControls())
                 {
@@ -108,7 +108,7 @@ namespace Cubase.Macro.Common.Lyrics.Services
                     {
                         if (this.commandParsers.ContainsKey(cntrl.Key))
                         {
-                            lyricViewModel = this.commandParsers[cntrl.Key](line, this.lyricBuffer, this.lyricCollection, lyricViewModel);
+                            lyricViewModel = this.commandParsers[cntrl.Key](line, this.lyricBuffer, this.LyricCollection, lyricViewModel);
                         }
                     }
                 }
@@ -124,11 +124,13 @@ namespace Cubase.Macro.Common.Lyrics.Services
                         cb.Insert(item.Location, item.Chord);
                     }
 
-                    lyricViewModel = this.lyricBuffer.AddLyric(cb.ToString(), this.colourService.GetChordsColour()); 
+                    lyricViewModel = this.lyricBuffer.AddLyric(cb.ToString(), this.colourService.GetChordsColour());
+                    lyricViewModel.LineType = LyricLineType.Chord;
                 }
                 if (line.Content.HaveLyric())
                 {
                     lyricViewModel = this.lyricBuffer.AddLyric(line.Content.Lyric, this.colourService.GetDefaultColour());
+                    lyricViewModel.LineType = LyricLineType.Lyric;
                 }
             }
             return this.lyricBuffer;

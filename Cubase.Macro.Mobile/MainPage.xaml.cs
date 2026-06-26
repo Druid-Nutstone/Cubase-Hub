@@ -24,8 +24,6 @@ namespace Cubase.Macro.Mobile
         protected override async void OnDisappearing()
         {
             base.OnDisappearing();
-            await this.client.Close();
-            this.client.Dispose();
         }
 
         public async Task LoadMacros()

@@ -9,6 +9,9 @@ namespace Cubase.Macro.Common.Models
         MidiCommandList = 0,
         MidiCommand = 1,
         MidiTransportLocation = 2,
-        Error = 3
+        MidiLyricCurrentProject = 3,
+        MidiLyricStartTransportMonitoring = 4,
+        MidiLyricStopTransportMonitoring = 5,
+        Error = 6
     }
 }

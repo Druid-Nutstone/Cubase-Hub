@@ -81,7 +81,7 @@ namespace Cubase.Macro.Forms.Lyrics
         protected override void OnShown(EventArgs e)
         {
             base.OnShown(e);
-            this.LoadLyricViewer();
+            this.LoadLyricEditor();
             this.LoadFromSource();
         }
 

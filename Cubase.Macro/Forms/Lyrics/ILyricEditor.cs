@@ -10,7 +10,6 @@ namespace Cubase.Macro.Forms.Lyrics
 
         void DecreaseFont();
 
-
         void SetFontSize(int fontSize);
     }
 }

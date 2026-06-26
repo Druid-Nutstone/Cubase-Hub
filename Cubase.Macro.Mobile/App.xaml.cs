@@ -1,4 +1,5 @@
-﻿using Microsoft.Extensions.DependencyInjection;
+﻿using Cubase.Macro.Common.Socket;
+using Microsoft.Extensions.DependencyInjection;
 
 namespace Cubase.Macro.Mobile
 {
@@ -15,7 +16,14 @@ namespace Cubase.Macro.Mobile
         protected override Window CreateWindow(IActivationState? activationState)
         {
             var shell = this.serviceProvider.GetRequiredService<AppShell>();
-            return new Window(shell);
+            var socket = this.serviceProvider.GetRequiredService<CubaseMacroWebSocketClient>();
+            var mainWindow = new Window(shell);
+            mainWindow.Destroying += (s, o) => 
+            {
+                socket?.Close();
+                socket?.Dispose();
+            };
+            return mainWindow;
         }
     }
 }

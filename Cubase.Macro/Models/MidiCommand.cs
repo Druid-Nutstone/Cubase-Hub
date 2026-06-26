@@ -42,6 +42,8 @@ var sysexCommand = {
        Reload,
        UpdateMute,
        UpdateSolo,
-       LocationChanged
+       LocationChanged,
+       StartTransportEventMonitoring,
+       StopTransportEventMonitoring
     }
 }

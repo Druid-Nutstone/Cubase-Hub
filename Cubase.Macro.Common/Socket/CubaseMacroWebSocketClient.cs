@@ -66,6 +66,22 @@ namespace Cubase.Macro.Common.Socket
             return response?.GetMacroCollection();
         }
 
+        public async Task<bool> StartTransportMonitoring()
+        {
+            var response = await SendAndWait(
+                WebSocketMidiCommandMessage.CreateFromCommand(
+                    WebSocketMidiCommand.MidiLyricStartTransportMonitoring));
+            return true;
+        }
+
+        public async Task<bool> StopTransportMonitoring()
+        {
+            var response = await SendAndWait(
+                WebSocketMidiCommandMessage.CreateFromCommand(
+                    WebSocketMidiCommand.MidiLyricStopTransportMonitoring));
+            return true;
+        }
+
         public async Task<TransportLocationCollection?> GetTransportLocation()
         {
             var response = await SendAndWait(
@@ -73,6 +89,14 @@ namespace Cubase.Macro.Common.Socket
                     WebSocketMidiCommand.MidiTransportLocation));
             return response?.GetTransportLocationCollection();
         }
+
+        public async Task<LyricResponseModel?> GetCurrentLyric()
+        {
+            var response = await SendAndWait(
+                WebSocketMidiCommandMessage.CreateFromCommand(
+                    WebSocketMidiCommand.MidiLyricCurrentProject));
+            return response?.GetLyricResponseModel();
+        } 
 
         public async Task<WebSocketMidiCommandMessage> SendMidiCommand(CubaseKeyCommand cubaseKeyCommand)
         {
@@ -98,6 +122,7 @@ namespace Cubase.Macro.Common.Socket
             int timeoutMs = 5000)
         {
             if (!IsConnected)
+                
                 throw new InvalidOperationException("WebSocket not connected");
 
             pendingResponse = new TaskCompletionSource<WebSocketMidiCommandMessage>(

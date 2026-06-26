@@ -1,19 +1,26 @@
-﻿using Cubase.Macro.Common.Models;
+﻿using Cubase.Macro.Common.Lyrics.Services;
+using Cubase.Macro.Common.Models;
+using Cubase.Macro.Services.Midi;
 using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.IO;
 using System.Runtime.InteropServices;
 using System.Text;
-using System.ComponentModel;
 using System.Windows;
-using Cubase.Macro.Common.Lyrics.Services;
-using Cubase.Macro.Services.Midi;
+using System.Windows.Controls;
+using System.Windows.Controls.Primitives;
 
 namespace Cubase.Macro.Forms.Lyrics.Editor
 {
     
     public class LyricEditor : BaseRichEdit
     {
+
+        private LyricCompletetionForm completetionControl;
+        private bool autoCompletetionActive = false;
+
+        private char controlCharStart = '{';
 
         [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
         public string FileName { get; private set; } = string.Empty;
@@ -51,7 +58,6 @@ namespace Cubase.Macro.Forms.Lyrics.Editor
                         {
                             metaData.SongTitles.Add(new TitleMetaData() { FileName = Path.GetFileNameWithoutExtension(lyric), Title = title});
                         }
-
                     }
                     if (line.StartsWith("{book:"))
                     {
@@ -62,21 +68,70 @@ namespace Cubase.Macro.Forms.Lyrics.Editor
                             {
                                 metaData.Albums.Add(album);
                             }
-
                         }
                     }
                 }
             }
             return metaData;
-        } 
+        }
 
-        protected override void OnKeyDown(KeyEventArgs e)
+        protected override void OnKeyUp(KeyEventArgs e)
         {
-            base.OnKeyDown(e);
-            if (e.KeyCode == Keys.Enter)
+            base.OnKeyUp(e);
+            if (completetionControl == null)
             {
-                this.RefreshContent();
+               this.RefreshContent();
             }
+        }
+
+        protected override void OnTextChanged(EventArgs e)
+        {
+            base.OnTextChanged(e);
+            int cursor = this.SelectionStart;
+            if (cursor > 0 && this.Text[cursor - 1] == this.controlCharStart)
+            {
+                ShowControlSelections();
+            }
+        }
+
+        private void ShowControlSelections()
+        {
+            if (completetionControl == null || completetionControl.IsDisposed)
+            {
+                completetionControl = new LyricCompletetionForm(); 
+                // Position relative to cursor
+                System.Drawing.Point p = this.GetPositionFromCharIndex(this.SelectionStart);
+                p = this.PointToScreen(p);
+                completetionControl.Location = new System.Drawing.Point(p.X, p.Y + 24); // Offset below cursor
+                completetionControl.Show(this);
+                autoCompletetionActive = true;
+                
+                completetionControl.OnSelected = (lyricControl) => 
+                {
+                    if (lyricControl != null)
+                    {
+                        this.InsertAtPointer(lyricControl.Text.StartsWith(this.controlCharStart) ? lyricControl.Text.Substring(1) : lyricControl.Text);
+                        if (lyricControl.Text.Contains(':'))
+                        {
+                            var valueLocation = lyricControl.Text.IndexOf(":");
+                            this.SelectionStart += valueLocation - 1;
+                        }
+                        else
+                        {
+                            // move selection to end of line 
+                            this.SelectionStart = this.SelectionStart + lyricControl.Text.Length - 1;
+                            this.AppendText(Environment.NewLine);
+                        }
+                    }
+                    this.Focus();
+                    completetionControl = null;
+                };
+            }
+        }
+
+        public void ColourCode()
+        {
+            this.RefreshContent();
         }
 
         protected override void RefreshContent()

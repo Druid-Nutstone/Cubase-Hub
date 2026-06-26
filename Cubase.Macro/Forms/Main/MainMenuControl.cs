@@ -56,8 +56,14 @@ namespace Cubase.Macro.Forms.Main
             ButtonPositionCubase.HelpText = "Position Cubase";
             ButtonRefresh.Click += ButtonRefresh_Click;
             ButtonRefresh.HelpText = "Reload Configuration";
+            ButtonStartStopTransportMonitoring.Bind(Color.IndianRed, DarkTheme.BackColor, Color.Black, DarkTheme.TextColor, ToggleTransportMonitoring, "Toggle Transport location monitoring on and off");
             MainPanel.Resize += MenuSizeChanged;
 
+        }
+
+        private void ToggleTransportMonitoring(bool startStop)
+        {
+            this.MainForm.ToggleTransportMonitoring(startStop);
         }
 
         private void ButtonLyrics_Click()

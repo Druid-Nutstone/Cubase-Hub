@@ -35,6 +35,12 @@ namespace Cubase.Macro.Common.Models
         {
             return TransportLocationCollection.Deserialise(this.Message);
         }
+
+        public LyricResponseModel GetLyricResponseModel()
+        {
+            return LyricResponseModel.Deserialise(this.Message);
+        }
+
         public static WebSocketMidiCommandMessage CreateFromCommand(WebSocketMidiCommand command)
         {
             return new WebSocketMidiCommandMessage() { Command = command };
@@ -55,6 +61,15 @@ namespace Cubase.Macro.Common.Models
             {
                 Command = WebSocketMidiCommand.MidiTransportLocation,
                 Message = transportLocationCollection.Serialise()
+            };
+        }
+
+        public static WebSocketMidiCommandMessage CreateFromLyricResponse(LyricResponseModel lyricResponseModel)
+        {
+            return new WebSocketMidiCommandMessage()
+            {
+                Command = WebSocketMidiCommand.MidiLyricCurrentProject,
+                Message = lyricResponseModel.Serialise()
             };
         }
 

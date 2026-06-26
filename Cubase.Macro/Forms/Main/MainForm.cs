@@ -202,6 +202,17 @@ namespace Cubase.Macro
             }
         }
 
+        public void ToggleTransportMonitoring(bool startStop)
+        {
+            if (startStop)
+            {
+                this.midiService.StartTransportMonitoring();
+            }
+            else
+            {
+                this.midiService.StopTransportMonitoring();
+            }
+        }
 
         public void Minimise()         {
 
