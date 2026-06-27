@@ -36,6 +36,7 @@ namespace Cubase.Macro.Common.Models
 
         public static string PleDirectoryMacroLocation = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments), "Steinberg", "Cubase", "User Presets", "Project Logical Editor");
 
+        public static string LyricIndexFile = Path.Combine(DropBoxBaseDirectory, "LyricIndex.json");
 
     }
 }

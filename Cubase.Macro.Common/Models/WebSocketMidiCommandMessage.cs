@@ -41,9 +41,33 @@ namespace Cubase.Macro.Common.Models
             return LyricResponseModel.Deserialise(this.Message);
         }
 
+        public LyricIndexCollection GetLyricIndex()
+        {
+            return LyricIndexCollection.Deserialise(this.Message);
+        }
+
+        public LyricContent GetLyricContent()
+        {
+            return LyricContent.Deserialise(this.Message);
+        }
+
+        public Lyric GetLyric()
+        {
+            return Lyric.Deserialise(this.Message);
+        }
+
         public static WebSocketMidiCommandMessage CreateFromCommand(WebSocketMidiCommand command)
         {
             return new WebSocketMidiCommandMessage() { Command = command };
+        }
+
+        public static WebSocketMidiCommandMessage CreateLyricContentRequest(Lyric lyric)
+        {
+            return new WebSocketMidiCommandMessage()
+            {
+                Command = WebSocketMidiCommand.MidiLyricContent,
+                Message = lyric.Serialise()
+            };
         }
         
         public static WebSocketMidiCommandMessage CreateFromMacroCollection(CubaseRemoteMidiMacroCollection cubaseMacroCollection)
@@ -70,6 +94,25 @@ namespace Cubase.Macro.Common.Models
             {
                 Command = WebSocketMidiCommand.MidiLyricCurrentProject,
                 Message = lyricResponseModel.Serialise()
+            };
+        }
+        // CreateLyricContentResponse
+
+        public static WebSocketMidiCommandMessage CreateLyricContentResponse(LyricContent lyricResponse)
+        {
+            return new WebSocketMidiCommandMessage()
+            {
+                Command = WebSocketMidiCommand.MidiLyricCurrentProject,
+                Message = lyricResponse.Serialise()
+            };
+        }
+
+        public static WebSocketMidiCommandMessage CreateFromLyricIndexResponse(LyricIndexCollection lyricIndexCollection)
+        {
+            return new WebSocketMidiCommandMessage()
+            {
+                Command = WebSocketMidiCommand.MidiLyricIndex,
+                Message = lyricIndexCollection.Serialise()
             };
         }
 

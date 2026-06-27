@@ -1,6 +1,7 @@
 ﻿using Cubase.Macro.Common.Models;
 using Cubase.Macro.Common.Socket;
 using Cubase.Macro.Mobile.Controls;
+using Cubase.Macro.Mobile.Lyrics;
 
 namespace Cubase.Macro.Mobile
 {
@@ -10,7 +11,7 @@ namespace Cubase.Macro.Mobile
 
         public MainPage(CubaseMacroWebSocketClient cubaseMacroWebSocketClient)
         {
-            this.BackgroundColor = Color.FromRgba("#1E1E1E");
+            this.BackgroundColor = CubaseMacroMobileConstants.DefaultBackgroundColour;
             this.client  = cubaseMacroWebSocketClient;
             InitializeComponent();
         }
@@ -28,20 +29,23 @@ namespace Cubase.Macro.Mobile
 
         public async Task LoadMacros()
         {
-            var connected = await this.client.Connect(CubaseMacroMobileConstants.TargetIPAddress,
-                async (msg) => 
-                {
-                    await DisplayAlertAsync("Oops", $"Cannot Connect to {CubaseMacroMobileConstants.TargetIPAddress} error: {msg}", "OK");
-                }
-            );
-            if (!connected)
+            await this.client.Connect(CubaseMacroMobileConstants.TargetIPAddress, (s) => { });
+            if (this.client.Connected)
             {
-                return;
+                await RefreshMacros();
             }
+            else
+            {
+                if (Shell.Current is AppShell shell)
+                {
+                    shell.OpenLyrics();
+                }
+            }
+        }
 
-            await RefreshMacros();
- 
-
+        private async void ProcessError(string errorMessage)
+        {
+            await DisplayAlertAsync("Error", errorMessage, "OK");
         }
 
         public async Task RefreshMacros()
@@ -51,15 +55,17 @@ namespace Cubase.Macro.Mobile
                 this.CollectionsLayout.Clear();
 
                 // load all macros 
-                var macros = await this.client.GetMacroCollection();
-
-                foreach (var macro in macros)
+                var macros = await this.client.GetMacroCollection(this.ProcessError);
+                if (macros != null)
                 {
-                    var button = new MacroButton(macro);
+                    foreach (var macro in macros)
+                    {
+                        var button = new MacroButton(macro);
 
-                    button.OnMacroClicked = this.ButtonClicked;
+                        button.OnMacroClicked = this.ButtonClicked;
 
-                    this.CollectionsLayout.Add(button);
+                        this.CollectionsLayout.Add(button);
+                    }
                 }
             }
         }
@@ -78,18 +84,20 @@ namespace Cubase.Macro.Mobile
 
             foreach (var midiCommand in midiCommands)
             {
-                var response = await this.client.SendMidiCommand(midiCommand);
-
-                if (response.Command == WebSocketMidiCommand.Error)
+                var response = await this.client.SendMidiCommand(midiCommand, this.ProcessError);
+                if (response != null)
                 {
-                    await DisplayAlertAsync("Oops", $"Cannot Send Midi Command {midiCommand.Name}", "OK");
-                    break;
-                }
-                else
-                {
-                    if (midiCommand.ThreadWaitAfterExecutionMs > 0)
+                    if (response.Command == WebSocketMidiCommand.Error)
                     {
-                        Task.Delay(midiCommand.ThreadWaitAfterExecutionMs).Wait();
+                        await DisplayAlertAsync("Oops", $"Cannot Send Midi Command {midiCommand.Name}", "OK");
+                        break;
+                    }
+                    else
+                    {
+                        if (midiCommand.ThreadWaitAfterExecutionMs > 0)
+                        {
+                            Task.Delay(midiCommand.ThreadWaitAfterExecutionMs).Wait();
+                        }
                     }
                 }
             }        

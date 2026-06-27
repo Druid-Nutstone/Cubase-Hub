@@ -49,6 +49,7 @@ namespace Cubase.Macro.Mobile
         private async void SetLyricTopMenu()
         {
             this.TopMenu.Clear();
+            this.TopButton("Files >>", LayoutOptions.Start, this.ShowFileMenu);
             this.TopButton("Back To Main", LayoutOptions.Start, this.OpenMainScreen);
             this.TopButton("Font +", LayoutOptions.Start, this.IncreaseFontSize);
             this.TopButton("Font -", LayoutOptions.Start, this.DecreaseFontSize);
@@ -56,9 +57,14 @@ namespace Cubase.Macro.Mobile
             showHideChords.BackgroundColor = Colors.DarkSalmon;
             var startStopButton = this.TopButton(startAutoScroll, LayoutOptions.Start, this.StartStop);
             startStopButton.BackgroundColor = Colors.Green;
-
         }
 
+        
+        private async void ShowFileMenu(Button button)
+        {
+            this.lyricPage.ShowFiles();
+        }
+        
         private async void ShowHideChords(Button button)
         {
             if (button.Text == hideChords)
@@ -118,13 +124,19 @@ namespace Cubase.Macro.Mobile
             await Shell.Current.GoToAsync("LyricViewer");
         }
 
+        public async void OpenLyrics()
+        {
+            this.SetLyricTopMenu();
+            await Shell.Current.GoToAsync("LyricViewer");
+        }
+
         private Button TopButton(string text, LayoutOptions location, Action<Button> onClicked)
         {
             var newButton = new Button()
             {
                 Text = text,
                 HeightRequest = 40,
-                WidthRequest = 120,             // Set a fixed width
+                MinimumWidthRequest = 110,
                 CornerRadius = 0,               // Make corners square
                 HorizontalOptions = location,
                 BackgroundColor = defaultButtonBackgroundColour

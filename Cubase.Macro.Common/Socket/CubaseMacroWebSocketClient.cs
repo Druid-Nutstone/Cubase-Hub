@@ -16,6 +16,8 @@ namespace Cubase.Macro.Common.Socket
 
         public bool IsConnected => client.State == WebSocketState.Open;
 
+        public bool Connected { get; private set; } = false;
+
         public void Dispose()
         {
             try
@@ -32,7 +34,10 @@ namespace Cubase.Macro.Common.Socket
         public async Task<bool> Connect(string ipAddress, Action<string> errorHandler, int port = 8014)
         {
             if (client.State == WebSocketState.Open)
+            {
+                this.Connected = true;
                 return true;
+            }
 
             try
             {
@@ -50,6 +55,7 @@ namespace Cubase.Macro.Common.Socket
 
             // Start receive loop on background thread
             receiveTask = Task.Run(ReceiveLoop);
+            this.Connected = true;
 
             return true;
         }
@@ -57,50 +63,65 @@ namespace Cubase.Macro.Common.Socket
         // --------------------------------------------------
         // PUBLIC API
         // --------------------------------------------------
-        public async Task<CubaseRemoteMidiMacroCollection?> GetMacroCollection()
+        public async Task<CubaseRemoteMidiMacroCollection?> GetMacroCollection(Action<string> onError)
         {
             var response = await SendAndWait(
                 WebSocketMidiCommandMessage.CreateFromCommand(
-                    WebSocketMidiCommand.MidiCommandList));
+                    WebSocketMidiCommand.MidiCommandList), onError);
 
             return response?.GetMacroCollection();
         }
 
-        public async Task<bool> StartTransportMonitoring()
+        public async Task<bool> StartTransportMonitoring(Action<string> onError)
         {
             var response = await SendAndWait(
                 WebSocketMidiCommandMessage.CreateFromCommand(
-                    WebSocketMidiCommand.MidiLyricStartTransportMonitoring));
+                    WebSocketMidiCommand.MidiLyricStartTransportMonitoring), onError);
             return true;
         }
 
-        public async Task<bool> StopTransportMonitoring()
+        public async Task<bool> StopTransportMonitoring(Action<string> onError)
         {
             var response = await SendAndWait(
                 WebSocketMidiCommandMessage.CreateFromCommand(
-                    WebSocketMidiCommand.MidiLyricStopTransportMonitoring));
+                    WebSocketMidiCommand.MidiLyricStopTransportMonitoring), onError);
             return true;
         }
 
-        public async Task<TransportLocationCollection?> GetTransportLocation()
+        public async Task<TransportLocationCollection?> GetTransportLocation(Action<string> onError)
         {
             var response = await SendAndWait(
                 WebSocketMidiCommandMessage.CreateFromCommand(
-                    WebSocketMidiCommand.MidiTransportLocation));
+                    WebSocketMidiCommand.MidiTransportLocation), onError);
             return response?.GetTransportLocationCollection();
         }
 
-        public async Task<LyricResponseModel?> GetCurrentLyric()
+        public async Task<LyricResponseModel?> GetCurrentLyric(Action<string> onError)
         {
             var response = await SendAndWait(
                 WebSocketMidiCommandMessage.CreateFromCommand(
-                    WebSocketMidiCommand.MidiLyricCurrentProject));
+                    WebSocketMidiCommand.MidiLyricCurrentProject), onError);
             return response?.GetLyricResponseModel();
-        } 
+        }
 
-        public async Task<WebSocketMidiCommandMessage> SendMidiCommand(CubaseKeyCommand cubaseKeyCommand)
+        public async Task<LyricIndexCollection?> GetLyricIndex(Action<string> onError)
         {
-            return await SendAndWait(WebSocketMidiCommandMessage.CreateFromKeyCommand(cubaseKeyCommand));
+            var response = await SendAndWait(
+                WebSocketMidiCommandMessage.CreateFromCommand(
+                    WebSocketMidiCommand.MidiLyricIndex), onError);
+            return response?.GetLyricIndex();
+        }
+
+        public async Task<LyricContent?> GetLyricContent(Lyric lyric, Action<string> onError)
+        {
+            var response = await SendAndWait(
+                WebSocketMidiCommandMessage.CreateLyricContentRequest(lyric), onError);
+            return response?.GetLyricContent();
+        }
+
+        public async Task<WebSocketMidiCommandMessage> SendMidiCommand(CubaseKeyCommand cubaseKeyCommand, Action<string> onError)
+        {
+            return await SendAndWait(WebSocketMidiCommandMessage.CreateFromKeyCommand(cubaseKeyCommand), onError);
         }
 
         public async Task Close()
@@ -118,13 +139,14 @@ namespace Cubase.Macro.Common.Socket
         // CORE SEND/RECEIVE
         // --------------------------------------------------
         private async Task<WebSocketMidiCommandMessage?> SendAndWait(
-            WebSocketMidiCommandMessage message,
+            WebSocketMidiCommandMessage message, Action<string> onError,
             int timeoutMs = 5000)
         {
             if (!IsConnected)
-                
-                throw new InvalidOperationException("WebSocket not connected");
-
+            {
+                onError.Invoke("Web socket is NOT connected");
+                return WebSocketMidiCommandMessage.CreateError("Web socket not connected");
+            }
             pendingResponse = new TaskCompletionSource<WebSocketMidiCommandMessage>(
                 TaskCreationOptions.RunContinuationsAsynchronously);
 

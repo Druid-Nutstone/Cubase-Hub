@@ -23,6 +23,7 @@ namespace Cubase.Macro.Mobile
             builder.Services.AddSingleton<CubaseMacroWebSocketClient>();
             builder.Services.AddSingleton<AppShell>();
             builder.Services.AddSingleton<LyricViewer>();
+            builder.Services.AddSingleton<FileHandler>();
             builder.Services.AddSingleton<ILyricService, LyricService>();
             builder.Services.AddSingleton<IColourService, ColourService>();
             builder.Services.AddSingleton<IlyricMidiService, MobileLyricService>();

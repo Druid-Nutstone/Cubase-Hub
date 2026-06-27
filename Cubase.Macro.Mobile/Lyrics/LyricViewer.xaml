@@ -3,8 +3,46 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              x:Class="Cubase.Macro.Mobile.Lyrics.LyricViewer"
              Title="LyricViewer">
-    <ScrollView x:Name="LyricScrollView">
-        <VerticalStackLayout x:Name="LyricContainer" 
-                         Padding="0,20" />
-    </ScrollView>
+    <Grid>
+        <ScrollView x:Name="LyricScrollView">
+            <VerticalStackLayout x:Name="LyricContainer" Padding="0,20" />
+        </ScrollView>
+
+        <Border x:Name="FilesBorder"
+                WidthRequest="300"
+                BackgroundColor="#1E1E1E"
+                TranslationX="-300" 
+                HorizontalOptions="Start"
+                VerticalOptions="Fill"
+                Stroke="LightGray"
+                StrokeThickness="1"
+                InputTransparent="True">
+
+            <Border.Resources>
+                <ResourceDictionary>
+                    <Style TargetType="Label">
+                        <Setter Property="TextColor" Value="White" />
+                    </Style>
+                    <Style TargetType="Button">
+                        <Setter Property="TextColor" Value="White" />
+                    </Style>
+                </ResourceDictionary>
+            </Border.Resources>
+
+            <Border.StrokeShape>
+                <RoundRectangle CornerRadius="0,4,4,0" />
+            </Border.StrokeShape>
+
+            <Border.Shadow>
+                <Shadow Brush="Gray" Offset="0,0" Radius="10" Opacity="0.2" />
+            </Border.Shadow>
+
+            <VerticalStackLayout Padding="5">
+                <HorizontalStackLayout>
+                    <Label Text="Lyrics" FontSize="18" VerticalOptions="Center"/>
+                </HorizontalStackLayout>
+                <VerticalStackLayout x:Name="FileContainer" />
+            </VerticalStackLayout>
+        </Border>
+    </Grid>
 </ContentPage>

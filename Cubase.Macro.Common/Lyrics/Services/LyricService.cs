@@ -67,7 +67,7 @@ namespace Cubase.Macro.Common.Lyrics.Services
                 { ControlLyricKeyword.Eoc, ProcessEndChorus },
                 { ControlLyricKeyword.End_of_Chorus, ProcessEndChorus },
                 { ControlLyricKeyword.Start, ProcessStart },
-                { ControlLyricKeyword.Bar, ProcessBar }
+                { ControlLyricKeyword.Bar, ProcessBar },
             };
 
             this.scrollStartProcessors = new Dictionary<ScrollingStrategy, Action>() 
@@ -163,6 +163,7 @@ namespace Cubase.Macro.Common.Lyrics.Services
             this.bpb = int.Parse(source.GetControlValue(ControlLyricKeyword.Beats_Per_Bar));
             return currentView;
         }
+
 
         private LyricViewModel ProcessVerse(Section source, LyricBuffer buffer, LyricChordCollection originalSource, LyricViewModel currentView)
         {

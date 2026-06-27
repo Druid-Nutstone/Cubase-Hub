@@ -74,7 +74,13 @@ namespace Cubase.Macro.Services.WebSockets
                     case WebSocketMidiCommand.MidiLyricStopTransportMonitoring:
                         midiService.StopTransportMonitoring();
                         response = WebSocketMidiCommandMessage.CreateFromCommand(WebSocketMidiCommand.MidiLyricStopTransportMonitoring);
-                        break; 
+                        break;
+                    case WebSocketMidiCommand.MidiLyricIndex:
+                        response = GetMidiLyricIndex();
+                        break;
+                    case WebSocketMidiCommand.MidiLyricContent:
+                        response = GetMidiLyricContent(socketRequest.GetLyric());
+                        break;
                 }
 
                 // Example: trigger MIDI
@@ -91,12 +97,25 @@ namespace Cubase.Macro.Services.WebSockets
             return WebSocketMidiCommandMessage.CreateFromTransportCollection(MidiService.TransportLocation);
         }
 
+        static WebSocketMidiCommandMessage GetMidiLyricContent(Lyric lyric)
+        {
+            Log?.Information("Received command to get Midi TransportLocation");
+            return WebSocketMidiCommandMessage.CreateLyricContentResponse(LyricFileService.GetLyricContent(lyric));
+        }
+
         static WebSocketMidiCommandMessage GetMidiLyricCurrentProject()
         {
             Log?.Information("Received command to get Midi Current Lyric");
             return WebSocketMidiCommandMessage.CreateFromLyricResponse(LyricFileService.GetProjectCurrentLyrics());
         }
 
+        static WebSocketMidiCommandMessage GetMidiLyricIndex()
+        {
+            Log?.Information("Received command to get Midi Lyric Index");
+            return WebSocketMidiCommandMessage.CreateFromLyricIndexResponse(LyricFileService.GetLyricIndex());
+        }
+
+        
         static WebSocketMidiCommandMessage GetMidiCommandList()
         {
             Log?.Information("Received command to get Midi Commands");

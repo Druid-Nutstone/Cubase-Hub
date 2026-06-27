@@ -163,6 +163,7 @@ namespace Cubase.Macro.Common.Lyrics
         Start, // defines the actual start position of the left locator 
         Beats_Per_Bar, // 4/4 = 4, 3/4 = 4
         Bar,
-        Font_Size// 
+        Font_Size,
+        Start_Bar
     }
 }

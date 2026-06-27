@@ -6,6 +6,11 @@ namespace Cubase.Macro.Mobile
 {
     public static class CubaseMacroMobileConstants
     {
+        public static string LyricSourceFolder = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData), "CubaseMacro", "Lyrics");
+
+        public static string LyricCollection = Path.Combine(LyricSourceFolder, "LyricIndexCollection.json");
+
+        public static Color DefaultBackgroundColour = Color.FromRgba("#1E1E1E");
 #if DEBUG
         public static string TargetIPAddress => "localhost";
         // Place sensitive logging or diagnostic tools here

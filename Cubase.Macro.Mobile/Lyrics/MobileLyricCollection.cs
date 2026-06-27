@@ -28,7 +28,11 @@ namespace Cubase.Macro.Mobile.Lyrics
 
         public MobileLyric? GetBar(int bar)
         {
-            return this.FirstOrDefault(x => x.Bar == bar);
+           return  this.Where(l => l.Bar <= bar)
+                       .OrderByDescending(l => l.Bar)
+                       .FirstOrDefault();
+
+            // return this.FirstOrDefault(x => x.Bar == bar);
         }
 
         public int GetIndex(MobileLyric mobileLyric)

@@ -17,6 +17,7 @@ namespace Cubase.Macro.Mobile
         {
             var shell = this.serviceProvider.GetRequiredService<AppShell>();
             var socket = this.serviceProvider.GetRequiredService<CubaseMacroWebSocketClient>();
+
             var mainWindow = new Window(shell);
             mainWindow.Destroying += (s, o) => 
             {
@@ -26,4 +27,5 @@ namespace Cubase.Macro.Mobile
             return mainWindow;
         }
     }
+
 }
