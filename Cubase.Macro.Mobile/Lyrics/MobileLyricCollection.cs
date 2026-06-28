@@ -26,6 +26,11 @@ namespace Cubase.Macro.Mobile.Lyrics
             }
         }
 
+        public int MaxBar()
+        {
+            return this.Max(x => x.Bar);
+        }
+
         public MobileLyric? GetBar(int bar)
         {
            return  this.Where(l => l.Bar <= bar)
