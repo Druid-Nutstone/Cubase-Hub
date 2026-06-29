@@ -65,6 +65,7 @@ namespace Cubase.Macro.Mobile.Lyrics
             if (this.webSocketClient.Connected)
             {
                 var lyricCollection = await this.webSocketClient.GetLyricIndex(this.ErrorHandler);
+
                 if (lyricCollection != null)
                 {
                     lyricCollection.SerialiseToFile(CubaseMacroMobileConstants.LyricCollection);
