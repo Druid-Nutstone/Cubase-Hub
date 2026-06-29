@@ -53,8 +53,6 @@ namespace Cubase.Macro.Mobile.Lyrics
 
         public int Bar { get; set; } = -1;
 
-        public bool IsCurrent { get; set; }
-
         public LyricLineType LineType { get; set; }
 
         public Color ForegoundColour { get; set; }

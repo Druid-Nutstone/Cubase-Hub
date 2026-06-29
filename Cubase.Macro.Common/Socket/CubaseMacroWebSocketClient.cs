@@ -41,9 +41,13 @@ namespace Cubase.Macro.Common.Socket
 
             try
             {
+                using var cts = new CancellationTokenSource();
+                // Set the timeout duration
+                cts.CancelAfter(TimeSpan.FromSeconds(20));
+
                 await client.ConnectAsync(
                     new Uri($"ws://{ipAddress}:{port}/ws"),
-                    CancellationToken.None);
+                    cts.Token);
             }
             catch (Exception ex)
             {

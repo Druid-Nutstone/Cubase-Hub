@@ -3,21 +3,19 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              x:Class="Cubase.Macro.Mobile.Lyrics.LyricViewer"
              Title="LyricViewer">
-    <Grid>
-        <ScrollView x:Name="LyricScrollView">
-            <VerticalStackLayout x:Name="LyricContainer" Padding="0,20" />
-        </ScrollView>
 
-        <Border x:Name="FilesBorder"
-                WidthRequest="300"
+    <Grid RowDefinitions="Auto, *" ColumnDefinitions="0, *" x:Name="MainGrid">
+
+        <Border Grid.Row="1" Grid.Column="0"
+                x:Name="FilesBorder"
                 BackgroundColor="#1E1E1E"
-                TranslationX="-300" 
                 HorizontalOptions="Start"
                 VerticalOptions="Fill"
                 Stroke="LightGray"
+                InputTransparent="False"
+                ZIndex="100"
                 StrokeThickness="1"
-                InputTransparent="True">
-
+                WidthRequest="300">
             <Border.Resources>
                 <ResourceDictionary>
                     <Style TargetType="Label">
@@ -37,12 +35,23 @@
                 <Shadow Brush="Gray" Offset="0,0" Radius="10" Opacity="0.2" />
             </Border.Shadow>
 
-            <VerticalStackLayout Padding="5">
+            <VerticalStackLayout Padding="5" WidthRequest="300">
                 <HorizontalStackLayout>
                     <Label Text="Lyrics" FontSize="18" VerticalOptions="Center"/>
                 </HorizontalStackLayout>
                 <VerticalStackLayout x:Name="FileContainer" />
             </VerticalStackLayout>
         </Border>
+
+        <HorizontalStackLayout 
+            BackgroundColor="#1E1E1E" 
+            Grid.Row="0" Grid.Column="0" Grid.ColumnSpan="2"
+            HeightRequest="40"
+            x:Name="Menu">
+        </HorizontalStackLayout>
+
+        <ScrollView x:Name="LyricScrollView" Grid.Row="1" Grid.Column="1">
+            <VerticalStackLayout x:Name="LyricContainer" Padding="0,20" />
+        </ScrollView>
     </Grid>
 </ContentPage>

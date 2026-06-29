@@ -12,7 +12,7 @@ namespace Cubase.Macro.Mobile
 
         public static Color DefaultBackgroundColour = Color.FromRgba("#1E1E1E");
 #if DEBUG
-        public static string TargetIPAddress => "localhost";
+        public static string TargetIPAddress => "192.168.1.89";
         // Place sensitive logging or diagnostic tools here
 
 #else

@@ -3,16 +3,12 @@
     x:Class="Cubase.Macro.Mobile.AppShell"
     xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
     xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
-    xmlns:local="clr-namespace:Cubase.Macro.Mobile"
+    xmlns:local="clr-namespace:Cubase.Macro.Mobile.Nav"
     Title="Cubase.Macro.Mobile">
-    <Shell.TitleView>
-        <HorizontalStackLayout x:Name="TopMenu" Spacing="10">
-        </HorizontalStackLayout>
-    </Shell.TitleView>
     
     <ShellContent
         Title="Cubase Remote"
-        ContentTemplate="{DataTemplate local:MainPage}"
-        Route="MainPage" />
+        ContentTemplate="{DataTemplate local:NavPage}"
+        Route="NavPage" />
 
 </Shell>

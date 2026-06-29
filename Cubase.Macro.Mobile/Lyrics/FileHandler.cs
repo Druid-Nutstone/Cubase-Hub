@@ -9,7 +9,7 @@ namespace Cubase.Macro.Mobile.Lyrics
     public class FileHandler
     {
         private CubaseMacroWebSocketClient webSocketClient;
-        
+
         private VerticalStackLayout Container;
 
         private Action<string> ErrorHandler;
@@ -30,7 +30,7 @@ namespace Cubase.Macro.Mobile.Lyrics
             this.Container = container;
             this.ErrorHandler = errorHandler;
             this.lyricViewer = lyricViewer;
-            this.Lyrics = await this.GetLyricCollection();
+            this.Lyrics = await this.GetLyricCollection(errorHandler);
             if (this.Lyrics == null) return;
             await this.BuildScreen();
         }
@@ -38,8 +38,7 @@ namespace Cubase.Macro.Mobile.Lyrics
         private async Task BuildScreen()
         {
             this.Container.Children.Clear();
-
-            this.Lyrics.Lyrics.ForEach((ly) => 
+            this.Lyrics.Lyrics.ForEach((ly) =>
             {
                 var fileLabel = new Button()
                 {
@@ -57,98 +56,57 @@ namespace Cubase.Macro.Mobile.Lyrics
             });
         }
 
-        private async Task<LyricIndexCollection?> GetLyricCollection()
+        public async Task CheckForFileUpdates()
         {
-            var lyricCollection = new LyricIndexCollection();
             if (!Directory.Exists(CubaseMacroMobileConstants.LyricSourceFolder))
             {
                 Directory.CreateDirectory(CubaseMacroMobileConstants.LyricSourceFolder);
             }
-
-            if (!File.Exists(CubaseMacroMobileConstants.LyricCollection))
+            if (this.webSocketClient.Connected)
             {
-                if (webSocketClient.Connected)
+                var lyricCollection = await this.webSocketClient.GetLyricIndex(this.ErrorHandler);
+                if (lyricCollection != null)
                 {
-                    lyricCollection = await GetFromMidi();
-                    if (lyricCollection == null)
-                    {
-                        return lyricCollection;
-                    }
-                    else
-                    {
-                        lyricCollection.SerialiseToFile(CubaseMacroMobileConstants.LyricCollection);
-                    }
-                }
-                else
-                {
-                    ErrorHandler.Invoke($"Cannot load file index because it does not exist and there is no midi connection");
-                    return null;
-                }
-            }
-
-            lyricCollection = LyricIndexCollection.DeserialiseFromFile(CubaseMacroMobileConstants.LyricCollection);
-
-            if (webSocketClient.Connected)
-            {
-                FileInfo fi = new FileInfo(CubaseMacroMobileConstants.LyricCollection);
-                if (fi.LastWriteTimeUtc.Date < DateTime.UtcNow.Date)
-                {
-                    lyricCollection = await GetFromMidi();
                     lyricCollection.SerialiseToFile(CubaseMacroMobileConstants.LyricCollection);
-                }
-            }
 
-            // check all files exist locally 
-            if (webSocketClient.Connected)
-            {
-                foreach (var lyric in lyricCollection.Lyrics)
-                {
-                    if (!File.Exists(lyric.FileName.LyricFullPath()))
+                    // get or update any existing files 
+                    foreach (var lyric in lyricCollection.Lyrics)
                     {
-                        if (!await SaveLatestFileContent(lyric))
+                        if (!File.Exists(lyric.FileName.LyricFullPath()))
                         {
-                            ErrorHandler.Invoke($"Could not get latest file content for {lyric.FileName}");
-                            return lyricCollection;
+                            await SaveLatestFileContent(lyric);
                         }
-                        ;
-                    }
-                    else
-                    {
-                        if (File.GetLastWriteTimeUtc(lyric.FileName.LyricFullPath()) < lyric.LastModified)
+                        else
                         {
-                            if (!await SaveLatestFileContent(lyric))
+                            if (File.GetLastWriteTimeUtc(lyric.FileName.LyricFullPath()) < lyric.LastModified)
                             {
-                                ErrorHandler.Invoke($"Could not get latest file content for {lyric.FileName}");
-                                return lyricCollection;
+                                await SaveLatestFileContent(lyric);
                             }
                         }
                     }
                 }
             }
-
-            return lyricCollection;
-
-            async Task<LyricIndexCollection?> GetFromMidi()
+            async Task SaveLatestFileContent(Lyric lyric)
             {
-                var lyricCollection = await this.webSocketClient.GetLyricIndex(this.ErrorHandler);
-                if (lyricCollection != null) 
-                {
-                    lyricCollection.SerialiseToFile(CubaseMacroMobileConstants.LyricCollection);
-                }
-                return lyricCollection;
-            }
-
-            async Task<bool> SaveLatestFileContent(Lyric lyric)
-            {
-                var lyricContent = await this.webSocketClient.GetLyricContent(lyric, this.ErrorHandler);
+                var lyricContent = await this.webSocketClient.GetLyricContent(lyric, (err) => { });
                 if (lyricContent != null)
                 {
                     File.WriteAllLines(lyric.FileName.LyricFullPath(), lyricContent.Content);
-                    return true;
                 }
-                return false;
             }
-        } 
+        }
+
+        private async Task<LyricIndexCollection?> GetLyricCollection(Action<string> messageHandler)
+        {
+
+            if (!File.Exists(CubaseMacroMobileConstants.LyricCollection)) 
+            {
+                messageHandler("There are no lyrics. Enable the midi connection and restart this app");
+                return null; 
+            }
+
+            return LyricIndexCollection.DeserialiseFromFile(CubaseMacroMobileConstants.LyricCollection);
+        }
 
     }
 }

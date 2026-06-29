@@ -9,10 +9,13 @@ namespace Cubase.Macro.Mobile
     {
         private readonly CubaseMacroWebSocketClient client;
 
-        public MainPage(CubaseMacroWebSocketClient cubaseMacroWebSocketClient)
+        private readonly FileHandler fileHandler;
+
+        public MainPage(CubaseMacroWebSocketClient cubaseMacroWebSocketClient, FileHandler fileHandler)
         {
             this.BackgroundColor = CubaseMacroMobileConstants.DefaultBackgroundColour;
             this.client  = cubaseMacroWebSocketClient;
+            this.fileHandler = fileHandler;
             InitializeComponent();
         }
 
@@ -29,17 +32,10 @@ namespace Cubase.Macro.Mobile
 
         public async Task LoadMacros()
         {
-            await this.client.Connect(CubaseMacroMobileConstants.TargetIPAddress, (s) => { });
+
             if (this.client.Connected)
             {
                 await RefreshMacros();
-            }
-            else
-            {
-                if (Shell.Current is AppShell shell)
-                {
-                    shell.OpenLyrics();
-                }
             }
         }
 
