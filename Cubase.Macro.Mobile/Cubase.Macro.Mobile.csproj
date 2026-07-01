@@ -84,6 +84,9 @@
 	</ItemGroup>
 
 	<ItemGroup>
+	  <MauiXaml Update="Configuration\ConfigurationPage.xaml">
+	    <Generator>MSBuild:Compile</Generator>
+	  </MauiXaml>
 	  <MauiXaml Update="Lyrics\LyricViewer.xaml">
 	    <Generator>MSBuild:Compile</Generator>
 	  </MauiXaml>

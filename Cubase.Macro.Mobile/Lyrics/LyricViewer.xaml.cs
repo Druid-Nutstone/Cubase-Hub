@@ -2,6 +2,7 @@ using Cubase.Macro.Common.Lyrics;
 using Cubase.Macro.Common.Lyrics.Services;
 using Cubase.Macro.Common.Models;
 using Cubase.Macro.Common.Socket;
+using Cubase.Macro.Mobile.Configuration;
 using System.Diagnostics;
 using System.Xml.Serialization;
 
@@ -14,6 +15,8 @@ public partial class LyricViewer : ContentPage
     private readonly CubaseMacroWebSocketClient webSocketClient;
 
     private readonly FileHandler fileHandler;
+
+    private readonly IMobileConfigurationService configurationService;
 
     private MobileLyricCollection lyrics;
 
@@ -31,8 +34,13 @@ public partial class LyricViewer : ContentPage
 
     private MenuHandler menuHandler;
 
+    private BottomMenuHandler bottomMenuHandler;
+
+    private CubaseMidiProjectStatus midiProjectStatus;
+
     public LyricViewer(ILyricService lyricService,
                        FileHandler fileHandler,
+                       IMobileConfigurationService mobileConfigurationService,
                        CubaseMacroWebSocketClient webSocketClient)
     {
         InitializeComponent();
@@ -40,7 +48,9 @@ public partial class LyricViewer : ContentPage
         this.lyricService = lyricService;
         this.fileHandler = fileHandler;
         this.webSocketClient = webSocketClient;
+        this.configurationService = mobileConfigurationService;
         this.menuHandler = new MenuHandler(this.Menu, this);
+        this.bottomMenuHandler = new BottomMenuHandler(this.BottomMenu, this);
     }
 
 
@@ -65,18 +75,32 @@ public partial class LyricViewer : ContentPage
         {
             await LyricScrollView.ScrollToAsync(0, 0, true);
         });
-
+        if (this.webSocketClient.Connected)
+        {
+            this.midiProjectStatus = await this.webSocketClient.GetProjectStatus(this.ProcessError);
+            if (midiProjectStatus == null)
+            {
+                this.midiProjectStatus = new CubaseMidiProjectStatus
+                {
+                    ProjectStatus = CubaseMidiProjectStatusType.Unknown
+                };  
+            } 
+        }
         timer.Start();
     }
 
     public async Task StopAutoScroll()
     {
-        timer.Stop();
-        ResetPointer();
-        _ = MainThread.InvokeOnMainThreadAsync(async () =>
+        if (timer != null)
         {
-            await LyricScrollView.ScrollToAsync(0, 0, true);
-        });
+            timer.Stop();
+            ResetPointer();
+            _ = MainThread.InvokeOnMainThreadAsync(async () =>
+            {
+                await LyricScrollView.ScrollToAsync(0, 0, true);
+            });
+            await this.menuHandler.ResetScroll();
+        }
     }
 
     public async Task IncreaseFontSize()
@@ -153,7 +177,7 @@ public partial class LyricViewer : ContentPage
 
     public async Task ShowFiles()
     {
-        await MainThread.InvokeOnMainThreadAsync(async () => 
+        await MainThread.InvokeOnMainThreadAsync(async () =>
         {
             await this.fileHandler.Initialise(this.FileContainer, this, this.ProcessError);
 
@@ -163,7 +187,7 @@ public partial class LyricViewer : ContentPage
 
             // Create an animation object
             var animation = new Animation(
-                callback: (v) => 
+                callback: (v) =>
                 {
                     targetColumn.Width = new GridLength(v);
                     // MainGrid.InvalidateMeasure();
@@ -232,12 +256,10 @@ public partial class LyricViewer : ContentPage
         timer.Interval = TimeSpan.FromMilliseconds(500);
         timer.Tick += TimerElapsed;
         await this.menuHandler.BuildMenu();
+        await this.menuHandler.DisableButtons();
         if (webSocketClient.Connected)
         {
-            var lyricContent = await this.webSocketClient.GetCurrentLyric((err) =>
-            {
-                this.ProcessError(err);
-            });
+            var lyricContent = await this.webSocketClient.GetCurrentLyric(this.ProcessError);
             if (lyricContent != null)
             {
                 if (lyricContent.IsSuccess)
@@ -246,27 +268,32 @@ public partial class LyricViewer : ContentPage
                 }
                 else
                 {
-                    this.ProcessError($"Cannot load current project. is cubase loaded ?");
+                    this.ProcessError(lyricContent.ErrorMessage);
                 }
             }
         }
         else
         {
+            await this.menuHandler.DisableButtons();
             await this.ShowFiles();
         }
     }
 
     public async Task LoadFile(IEnumerable<string> content)
     {
+        await this.menuHandler.EnableButtons();
+        await this.StopAutoScroll();
+        // by default hide the chords - this SHOULD BE DONE BE PROFILE !
         await MainThread.InvokeOnMainThreadAsync(async () =>
         {
             StartBar = 0;
             BPB = -1;
             BPM = -1;
-
             var lyricBuffer = this.lyricService.ParseLyrics(content, 0, ' ');
             this.lyrics = new MobileLyricCollection(lyricBuffer);
             this.RefreshLyrics(lyrics);
+            // start by NOT showing any chords 
+            await this.ShowHideChords(false);
             if (this.lyricService.LyricCollection != null)
             {
                 this.ProcessControlStatements(this.lyricService.LyricCollection);
@@ -277,7 +304,7 @@ public partial class LyricViewer : ContentPage
 
     private async void ProcessError(string errorMessage)
     {
-        await DisplayAlertAsync("Error!", errorMessage, "OK");
+        await DisplayAlertAsync("Error!", $"{errorMessage} {Environment.NewLine} Midi server IP: {this.configurationService.Configuration.MidiServerIpAddress}", "OK");
     }
 
     private void ProcessControlStatements(LyricChordCollection sections)
@@ -319,15 +346,16 @@ public partial class LyricViewer : ContentPage
 
     private async void TimerElapsed(object? sender, EventArgs e)
     {
-        if (webSocketClient.Connected)
+        if (IsCubaseAvailable())
         {
+            timer.Stop(); // don't want any other messages to be sent while we are waiting for a response from Cubase
             var transportLocation = await this.webSocketClient.GetTransportLocation(this.ProcessError);
             if (transportLocation != null)
             {
                 if (transportLocation.TransportType == Common.Models.TransportType.BarsBeats)
                 {
-                    var lyricItemBar = this.lyrics.GetBar(transportLocation.BarBeatTime+1);
-                    await Task.Delay(250);
+                    var lyricItemBar = this.lyrics.GetBar(transportLocation.BarBeatTime + 1);
+                    await Task.Delay(350);
                     if (lyricItemBar != null)
                     {
                         // await Task.Delay(100); // allow last lyric line to be sung!?
@@ -335,6 +363,7 @@ public partial class LyricViewer : ContentPage
                     }
                 }
             }
+            timer.Start(); // restart the timer after processing
         }
         else // manual calculation
         {
@@ -346,13 +375,12 @@ public partial class LyricViewer : ContentPage
                 double secondsPerBar = secondsPerBeat * BPB;
                 // 3. Calculate current bar (adding 1 because we start counting at Bar 1)
                 double currentBar = (int)(totalSeconds / secondsPerBar) + StartBar;
-                Debug.WriteLine($"IS THIS CURRENT BAR ? {currentBar}");
                 if (currentBar > this.lyrics.MaxBar())
                 {
                     timer.Stop();
                     return;
                 }
-                
+
                 var lyricItemBar = this.lyrics.GetBar((int)currentBar);
                 if (lyricItemBar != null)
                 {
@@ -360,10 +388,31 @@ public partial class LyricViewer : ContentPage
                 }
             }
         }
+
+        bool IsCubaseAvailable()
+        {
+            if (!webSocketClient.Connected)
+            {
+                return false;
+            }
+            else
+            {
+                if (midiProjectStatus == null)
+                {
+                    return false;
+                }
+                else
+                {
+                    return midiProjectStatus.ProjectStatus == CubaseMidiProjectStatusType.Active;
+                }
+            }
+        }
     }
 
     private void SetBarLocation(int targetBar)
     {
+        CurrentBar?.Text = targetBar.ToString();
+        CurrentBar?.InvalidateMeasure();
         var lyricItemBar = this.lyrics.GetBar(targetBar);
         if (lyricItemBar != null)
         {
@@ -489,7 +538,8 @@ public partial class LyricViewer : ContentPage
                 ColumnDefinitions = {
                 new ColumnDefinition(40), // Arrow
                 new ColumnDefinition(GridLength.Star) // Text
-            }};
+            }
+            };
 
             /*
             var arrow = new Label
@@ -520,7 +570,6 @@ public partial class LyricViewer : ContentPage
                 LineType = lyricModel.LineType,
                 TextColor = lyricModel.ForegoundColour,
                 IsVisible = true
-
             };
 
             row.Add(arrow, 0, 0);

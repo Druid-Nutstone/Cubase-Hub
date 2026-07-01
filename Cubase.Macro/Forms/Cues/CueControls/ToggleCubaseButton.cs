@@ -43,6 +43,16 @@ namespace Cubase.Macro.Forms.Cues.CueControls
             this.SetColours();
         }
 
+        /// <summary>
+        /// manually set state of button WITHOUT executing a callback event 
+        /// </summary>
+        /// <param name="state"></param>
+        public void SetStateWithoutCallback(bool state)
+        {
+            this.OnOff = state;
+            this.SetColours();
+        }
+
         public void Bind(Color onBackgroundColour, Color offBackgroundColour, Color onForeGroundColour, Color offForegroundColour, Action<bool> onClicked, string helpText)
         {
             this.onBackgroundColour = onBackgroundColour;

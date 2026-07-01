@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             x:Class="Cubase.Macro.Mobile.Configuration.ConfigurationPage"
+             Title="ConfigurationPage">
+    <VerticalStackLayout Padding="20" Spacing="10">
+
+        <Label Text="Midi Servcer IP Address:" FontAttributes="Bold" />
+        <Entry x:Name="ServerIPAddress" Placeholder="Type ip or select..." />
+
+        <Label Text="Select an Ip Address:" FontAttributes="Bold" Margin="0,10,0,0" />
+        <Picker x:Name="IpAddressPicker" Title="Select an option">
+        </Picker>
+
+        <Button x:Name="SaveConfiguration" 
+                    Text="Save Configuration" 
+                    IsEnabled="True"
+                    BackgroundColor="DeepSkyBlue"
+                    TextColor="Black"
+                    WidthRequest="200" />
+
+    </VerticalStackLayout>
+</ContentPage>

@@ -353,7 +353,6 @@ namespace Cubase.Macro.Common.Lyrics.Services
                 // get first lyricline/verse/chorus etc that is =>
                 timeLineTarget = this.lyricBuffer.GetTimelineGreateOrEqualTo(timeSpan.TotalSeconds);
             }
-            Debug.WriteLine($"Current Time: {timeSpan.TotalSeconds} Target Time: {timeLineTarget?.TimeLine}");
             if (timeLineTarget != null)
             {
                 if (timeLineTarget.TimeLine.IsWithinThreshold(timeSpan.TotalSeconds))

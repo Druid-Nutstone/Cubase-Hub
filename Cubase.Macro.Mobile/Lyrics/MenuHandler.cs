@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Text;
+using static System.Net.Mime.MediaTypeNames;
 
 namespace Cubase.Macro.Mobile.Lyrics
 {
@@ -10,139 +11,200 @@ namespace Cubase.Macro.Mobile.Lyrics
 
         private readonly LyricViewer viewer;
 
+        private List<MenuButton> menuButtons = new List<MenuButton>();
+
         private Color defaultButtonBackgroundColour = Color.FromArgb("#473C3B");
-
-        private Button lyricButton;
-
-        private string showLyrics = "Lyrics";
-        private string hideLyrics = "Hide Lyrics"; 
-
-        private string startAutoScroll = "Start Auto Scroll";
-        private string stopAutoScroll = "Stop Auto Scroll";
-
-        private string showChords = "Show Chords";
-        private string hideChords = "Hide Chords";
 
         public MenuHandler(HorizontalStackLayout container, LyricViewer viewer)
         {
             this.container = container;
             this.viewer = viewer;
+            menuButtons.Clear();
+        }
+
+        public async Task ResetScroll()
+        {
+            this.menuButtons.FirstOrDefault(m => m.ButtonName == KnownMenuButton.StartStopScroll)?.MakeInActive();  
         }
 
         public async Task SetLyricButtonSelected()
         {
-            this.lyricButton.BackgroundColor = Colors.DarkGreen;
-            this.lyricButton.Text = hideLyrics;
+            this.menuButtons.First().MakeActive();
         }
 
         public async Task SetLyricButtonUnSelected()
         {
-            this.lyricButton.BackgroundColor = defaultButtonBackgroundColour;
-            this.lyricButton.Text = showLyrics;
+            this.menuButtons.First().MakeInActive();
+        }
+
+        public async Task DisableButtons()
+        {
+            foreach (var mitem in menuButtons.Skip(1))
+            {
+                mitem.MenuItem.IsEnabled = false;
+            }
+        }
+
+        public async Task EnableButtons()
+        {
+            foreach (var mitem in menuButtons.Skip(1))
+            {
+                mitem.MenuItem.IsEnabled = true;
+            }
         }
 
         public async Task BuildMenu()
         {
-            
             this.container.Children.Clear();
-            
-            this.lyricButton = await this.MenuButton(showLyrics, LayoutOptions.Start, async (btn) =>
-            {
-                switch (btn.Text)
-                {
-                    case "Lyrics":
-                        btn.Text = this.hideLyrics;
-                        btn.BackgroundColor = Colors.Green;
-                        await this.viewer.ShowFiles();
 
-                        break;
-                    case "Hide Lyrics":
-                        btn.Text = this.showLyrics;
-                        btn.BackgroundColor = defaultButtonBackgroundColour;
-                        await this.viewer.CloseFiles();
-                        break;
-                }
-            });
-            await this.MenuButton("Functions", LayoutOptions.Start, async (btn) =>
-            {
-                await Shell.Current.GoToAsync("//MainPage");
-            });
-            await this.MenuButton("Font +", LayoutOptions.Start, async (btn) =>
-            {
-                await this.viewer.IncreaseFontSize();
-            });
-            await this.MenuButton("Font -", LayoutOptions.Start, async (btn) =>
-            {
-                await this.viewer.DecreaseFontSize();
-            });
-            await this.MenuButton(this.hideChords, LayoutOptions.Start, async (btn) =>
-            {
-                if (btn.Text == hideChords)
+            var lyricButton = MenuButton.Create("Hide Lyrics", "Show Lyrics", Colors.Green, defaultButtonBackgroundColour, async (btn) => 
+            { 
+                if (btn.Pressed)
                 {
-                    btn.BackgroundColor = defaultButtonBackgroundColour;
-                    btn.Text = showChords;
-                    await this.viewer.ShowHideChords(false);
+                    await this.viewer.ShowFiles();
                 }
                 else
                 {
-                    btn.BackgroundColor = Colors.DarkSalmon;
-                    btn.Text = hideChords;
-                    await this.viewer.ShowHideChords(true);
+                    await this.viewer.CloseFiles();
                 }
-            }, () => { return Colors.DarkSalmon; });
-            
-            await this.MenuButton(startAutoScroll, LayoutOptions.Start, async (btn) =>
+            }, KnownMenuButton.LyricButton);
+            this.container.Children.Add(lyricButton.MenuItem);
+            this.menuButtons.Add(lyricButton);
+
+            var fontPlus = MenuButton.Create("Font +", "Font +", defaultButtonBackgroundColour, defaultButtonBackgroundColour, async (btn) =>
             {
-                if (btn.Text == startAutoScroll)
+                await this.viewer.IncreaseFontSize();
+            }, KnownMenuButton.FontPlus);
+            this.container.Children.Add(fontPlus.MenuItem);
+            this.menuButtons.Add(fontPlus);
+
+            var fontMinus = MenuButton.Create("Font -", "Font -", defaultButtonBackgroundColour, defaultButtonBackgroundColour, async (btn) => 
+            {
+                await this.viewer.DecreaseFontSize();
+            }, KnownMenuButton.FontMinus);
+            this.container.Children.Add(fontMinus.MenuItem);
+            this.menuButtons.Add(fontMinus);
+
+            var showHideChords = MenuButton.Create("Hide Chords", "Show Chords", Colors.Orange, defaultButtonBackgroundColour, async (btn) => 
+            { 
+                 await this.viewer.ShowHideChords(btn.Pressed);
+            }, KnownMenuButton.ShowHideChords);
+            this.container.Children.Add(showHideChords.MenuItem);
+            this.menuButtons.Add(showHideChords);
+
+            var startStopScroll = MenuButton.Create("Stop Auto Scroll", "Start Auto Scroll", Colors.DarkSalmon, defaultButtonBackgroundColour, async (btn) => 
+            { 
+                if (btn.Pressed)
                 {
-                    btn.BackgroundColor = Colors.Red;
-                    btn.Text = stopAutoScroll;
                     await this.viewer.StartAutoScroll();
                 }
                 else
                 {
                     await this.viewer.StopAutoScroll();
-                    btn.BackgroundColor = Colors.Green;
-                    btn.Text = startAutoScroll;
                 }
-            }, () => { return Colors.Green; });
+            }, KnownMenuButton.StartStopScroll);
+            this.container.Children.Add(startStopScroll.MenuItem);
+            this.menuButtons.Add(startStopScroll);
+
         }
 
-        private async Task<Button> MenuButton(string text, LayoutOptions location, Func<Button, Task> onClicked, Func<Color>? onBackgroundColour = null)
+    }
+
+    public class MenuButton
+    {
+        public Button MenuItem { get; set; }
+
+        public string ActiveText { get; set; }
+
+        public string InActiveText { get; set; }
+
+        public Color ActiveColour {  get; set; } 
+    
+        public Color InActiveColour { get; set; }
+
+        public bool Pressed { get; set; } = false;
+
+        public KnownMenuButton ButtonName { get; set; }
+
+        public Func<MenuButton, Task> OnClicked { get; set; }
+        
+        
+        public void MakeActive()
+        {
+            this.Pressed = true;
+            this.MenuItem.BackgroundColor = this.ActiveColour;
+            this.MenuItem.Text = this.ActiveText;
+        }
+
+        public void MakeInActive()
+        {
+            this.Pressed = false;
+            this.MenuItem.BackgroundColor = this.InActiveColour;
+            this.MenuItem.Text = this.InActiveText;
+        }
+
+
+        public static MenuButton Create(string activeText, string inactiveText, Color activeColour, Color inActiveColour, Func<MenuButton, Task> onClicked, KnownMenuButton buttonName)
         {
             var newButton = new Button()
             {
-                Text = text,
+                Text = inactiveText,
                 HeightRequest = 40,
                 MinimumWidthRequest = 110,
                 CornerRadius = 0,               // Make corners square
-                HorizontalOptions = location,
-                BackgroundColor = defaultButtonBackgroundColour
-            };
-            
-            if (onBackgroundColour != null)
-            {
-                newButton.BackgroundColor = onBackgroundColour.Invoke();
-            }
-            
-            
-            newButton.Clicked += async (o, e) =>
-            {
-                await onClicked.Invoke(newButton);
+                HorizontalOptions = LayoutOptions.Start,
+                BackgroundColor = inActiveColour
             };
             newButton.Pressed += async (o, e) =>
             {
-                await newButton.ScaleToAsync(0.9, 100);
+                if (newButton.IsEnabled)
+                {
+                    await newButton.ScaleToAsync(0.9, 100);
+                }
             };
             newButton.Released += async (o, e) =>
             {
                 if (newButton != null)
                 {
-                    await newButton.ScaleToAsync(1, 100);
+                    if (newButton.IsEnabled)
+                    {
+                        await newButton.ScaleToAsync(1, 100);
+                    }
                 }
             };
-            this.container.Add(newButton);
-            return newButton;
+
+            var newMenuButton = new MenuButton()
+            {
+                MenuItem = newButton,
+                ActiveText = activeText,
+                InActiveText = inactiveText,
+                ActiveColour = activeColour,
+                InActiveColour = inActiveColour,
+                OnClicked = onClicked,
+                ButtonName = buttonName
+            };
+
+            newButton.Clicked += async (o, e) =>
+            {
+                if (newButton.IsEnabled)
+                {
+                    _ = newMenuButton.Pressed = !newMenuButton.Pressed;
+                    newButton.BackgroundColor = newMenuButton.Pressed ? newMenuButton.ActiveColour : newMenuButton.InActiveColour;
+                    newButton.Text = newMenuButton.Pressed ? newMenuButton.ActiveText : newMenuButton.InActiveText;
+                    await onClicked(newMenuButton);
+                }
+            };
+
+            return newMenuButton;
         }
+    }
+
+    public enum KnownMenuButton
+    {
+        LyricButton,
+        FontPlus,
+        FontMinus,
+        ShowHideChords,
+        StartStopScroll
     }
 }

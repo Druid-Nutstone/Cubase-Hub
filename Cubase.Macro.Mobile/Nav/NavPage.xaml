@@ -9,14 +9,23 @@
 
 
         <VerticalStackLayout Spacing="20">
+            <Button x:Name="MidiConfiguration" 
+                    Text="Configuration" 
+                    IsEnabled="True"
+                    BackgroundColor="DeepSkyBlue"
+                    TextColor="Black"
+                    WidthRequest="200" />            
             <Button x:Name="MidiCommand" 
                     Text="Midi Commands" 
                     IsEnabled="False"
                     WidthRequest="200" />
-
             <Button x:Name="Lyrics" 
                     Text="Lyrics" 
                     IsEnabled="False"
+                    WidthRequest="200" />
+            <Button x:Name="RetryConnection" 
+                    Text="Retry Connection" 
+                    IsVisible="False"
                     WidthRequest="200" />
             <Label Text="Checking Midi Connection .." x:Name="Message" TextColor="Yellow" FontSize="Header"></Label>
         </VerticalStackLayout>

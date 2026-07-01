@@ -24,7 +24,7 @@ namespace Cubase.Macro.Tests.Sockets
             var connected = await client.Connect("locahost", (msg) => { });
             if (connected)
             {
-                var macroCollection = await client.GetMacroCollection();
+                var macroCollection = await client.GetMacroCollection((e) => { });
             }
 
         }

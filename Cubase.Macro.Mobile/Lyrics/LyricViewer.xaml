@@ -4,7 +4,7 @@
              x:Class="Cubase.Macro.Mobile.Lyrics.LyricViewer"
              Title="LyricViewer">
 
-    <Grid RowDefinitions="Auto, *" ColumnDefinitions="0, *" x:Name="MainGrid">
+    <Grid RowDefinitions="Auto, *, Auto" ColumnDefinitions="Auto, *" x:Name="MainGrid">
 
         <Border Grid.Row="1" Grid.Column="0"
                 x:Name="FilesBorder"
@@ -47,11 +47,29 @@
             BackgroundColor="#1E1E1E" 
             Grid.Row="0" Grid.Column="0" Grid.ColumnSpan="2"
             HeightRequest="40"
+            HorizontalOptions="Fill"
             x:Name="Menu">
         </HorizontalStackLayout>
 
         <ScrollView x:Name="LyricScrollView" Grid.Row="1" Grid.Column="1">
             <VerticalStackLayout x:Name="LyricContainer" Padding="0,20" />
         </ScrollView>
+
+        <Grid 
+           Grid.Row="2" Grid.Column="0" Grid.ColumnSpan="2"
+           HeightRequest="40"
+           BackgroundColor="#1E1E1E" 
+           x:Name="BottomMenu">
+
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="*" />
+                <ColumnDefinition Width="Auto" />
+            </Grid.ColumnDefinitions>
+
+            <HorizontalStackLayout Grid.Column="1" Spacing="5" Margin="0,0,10,0">
+                <Label Text="Bar: " VerticalOptions="Center" TextColor="White" />
+                <Label x:Name="CurrentBar" VerticalOptions="Center" TextColor="White" />
+            </HorizontalStackLayout>
+        </Grid>
     </Grid>
 </ContentPage>

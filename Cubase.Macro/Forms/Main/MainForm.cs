@@ -72,11 +72,18 @@ namespace Cubase.Macro
             this.logger = log;
             this.mainMenuControl.Logger = this.Log;
             this.mainMenuControl.MainForm = this;
+            this.midiService.RegisterForTransportMonitoring(this.HookTransportMonitoring);
             StaticConfig.Instance.SetConfiguration(this.configurationService.Configuration);
             ThemeApplier.ApplyDarkTheme(this);
             LoadMacros();
             this.ShowMacros();
             this.HookMouseMove(this);
+            this.mainMenuControl.SetTransportMonitorState(this.midiService.MonitoringTransport);
+        }
+
+        private void HookTransportMonitoring(bool monitoringState)
+        {
+            this.mainMenuControl.SetTransportMonitorState(monitoringState);
         }
 
         private void HookMouseMove(Control baseControl)

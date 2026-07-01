@@ -41,6 +41,11 @@ namespace Cubase.Macro.Common.Models
             return LyricResponseModel.Deserialise(this.Message);
         }
 
+        public CubaseMidiProjectStatus GetCubaseMidiProjectStatus()
+        {
+            return CubaseMidiProjectStatus.Deserialise(this.Message);
+        }
+
         public LyricIndexCollection GetLyricIndex()
         {
             return LyricIndexCollection.Deserialise(this.Message);
@@ -61,6 +66,11 @@ namespace Cubase.Macro.Common.Models
             return new WebSocketMidiCommandMessage() { Command = command };
         }
 
+        public static WebSocketMidiCommandMessage CreateFromCommandWithMessage(WebSocketMidiCommand command, string message )
+        {
+            return new WebSocketMidiCommandMessage() { Command = command, Message = message };
+        }
+
         public static WebSocketMidiCommandMessage CreateLyricContentRequest(Lyric lyric)
         {
             return new WebSocketMidiCommandMessage()
@@ -76,6 +86,15 @@ namespace Cubase.Macro.Common.Models
             {
                 Command = WebSocketMidiCommand.MidiCommandList,
                 Message = cubaseMacroCollection.Serialise()
+            };
+        }
+
+        public static WebSocketMidiCommandMessage CreateFromProjectStatus(CubaseMidiProjectStatus cubaseMidiProjectStatus)
+        {
+            return new WebSocketMidiCommandMessage()
+            {
+                Command = WebSocketMidiCommand.MidiProjectStatus,
+                Message = cubaseMidiProjectStatus.Serialise()
             };
         }
 

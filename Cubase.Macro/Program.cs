@@ -180,6 +180,13 @@ namespace Cubase.Macro
                     {
                         builder.ClearProviders();
                         builder.AddSerilog();
+                        builder.AddFilter(
+                            "Microsoft.AspNetCore.WebSockets",
+                            LogLevel.Trace);
+
+                        builder.AddFilter(
+                            "Microsoft.AspNetCore.Server.Kestrel",
+                            LogLevel.Debug);
                     });
 
                     services
@@ -203,9 +210,9 @@ namespace Cubase.Macro
                     webBuilder.ConfigureKestrel(options => 
                     {
                         options.ListenAnyIP(8014);
+                        options.Limits.KeepAliveTimeout = TimeSpan.FromMinutes(2);
                     });
                     webBuilder.UseKestrel()
-                        .UseUrls("http://localhost:8014")
                         .Configure(app =>
                         {
                             app.UseWebSockets();
@@ -216,12 +223,13 @@ namespace Cubase.Macro
                                     var midi = context.RequestServices.GetRequiredService<IMidiService>();
                                     var config = context.RequestServices.GetRequiredService<IConfigurationService>();
                                     var lyricFileService = context.RequestServices.GetRequiredService<ILyricFileService>(); 
+                                    var windowService = context.RequestServices.GetRequiredService<IWindowService>();
                                     var ip = context.Connection.RemoteIpAddress?.ToString();
                                     var port = context.Connection.RemotePort;
 
                                     Log.Information($"WebSocket connection from {ip}:{port}");
                                     using var ws = await context.WebSockets.AcceptWebSocketAsync();
-                                    await CubaseSockets.HandleWebSocket(ws, midi, Log.Logger, lyricFileService, config);
+                                    await CubaseSockets.HandleWebSocket(ws, midi, Log.Logger, lyricFileService, windowService, config);
                                 }
                                 else
                                 {

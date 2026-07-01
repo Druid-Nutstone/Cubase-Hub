@@ -3,6 +3,7 @@ using Cubase.Macro.Common.Models;
 using Cubase.Macro.Services.Config;
 using Cubase.Macro.Services.Lyrics;
 using Cubase.Macro.Services.Midi;
+using Cubase.Macro.Services.Window;
 using Microsoft.Extensions.Logging;
 using Serilog;
 using System;
@@ -24,22 +25,50 @@ namespace Cubase.Macro.Services.WebSockets
 
         private static ILyricFileService LyricFileService;
 
+        private static IWindowService WindowService;
+
         public static async Task HandleWebSocket(WebSocket socket, 
                                                  IMidiService midiService, 
                                                  Serilog.ILogger logger,
                                                  ILyricFileService lyricFileService,
+                                                 IWindowService windowService,
                                                  IConfigurationService configurationService)
         {
             Log = logger;
             ConfigurationService = configurationService;
             MidiService = midiService;
+            WindowService = windowService;
             LyricFileService = lyricFileService;
             var buffer = new byte[1024 * 10];
 
+            WebSocketReceiveResult result = null;
+
             while (socket.State == WebSocketState.Open)
             {
-                var result = await socket.ReceiveAsync(buffer, CancellationToken.None);
+                try
+                {
+                    result = await socket.ReceiveAsync(buffer, CancellationToken.None);
+                }
+                catch (Exception ex)
+                {
+                    Log.Error(ex,
+                        "WebSocket ReceiveAsync failed. State={State}, CloseStatus={CloseStatus}, CloseDescription={CloseDescription}",
+                        socket.State,
+                        socket.CloseStatus,
+                        socket.CloseStatusDescription);
 
+                    if (ex is WebSocketException wsEx)
+                    {
+                        Log.Error(
+                            "WebSocketErrorCode={ErrorCode}, Inner={Inner}",
+                            wsEx.WebSocketErrorCode,
+                            wsEx.InnerException?.Message);
+                    }
+
+                    if (socket.State != WebSocketState.Closed)
+                        socket.Abort();
+                    break;
+                }
                 if (result.MessageType == WebSocketMessageType.Close)
                 {
                     Log.Information("Closing WebSocket Connection");
@@ -55,6 +84,9 @@ namespace Cubase.Macro.Services.WebSockets
 
                 switch (socketRequest.Command)
                 {
+                    case WebSocketMidiCommand.MidiHeartBeat:
+                        response = WebSocketMidiCommandMessage.CreateFromCommandWithMessage(WebSocketMidiCommand.MidiHeartBeat, "I am here");
+                        break;
                     case WebSocketMidiCommand.MidiCommand:
                         response = RunMidiCommand(socketRequest.GetCommand());
                         break;
@@ -81,6 +113,9 @@ namespace Cubase.Macro.Services.WebSockets
                     case WebSocketMidiCommand.MidiLyricContent:
                         response = GetMidiLyricContent(socketRequest.GetLyric());
                         break;
+                    case WebSocketMidiCommand.MidiProjectStatus:
+                        response = GetMidiProjectStatus();
+                        break;
                 }
 
                 // Example: trigger MIDI
@@ -91,9 +126,32 @@ namespace Cubase.Macro.Services.WebSockets
             }
         }
 
+        static WebSocketMidiCommandMessage GetMidiProjectStatus()
+        {
+            Log?.Information("Received command to get Midi Project Status");
+            var projectStatus = new CubaseMidiProjectStatus();
+            if (!MidiService.Initialised)
+            {
+                projectStatus.ProjectStatus = CubaseMidiProjectStatusType.Unknown;
+                projectStatus.Message = "Midi Service not initialised";
+            }
+            else
+            {
+                projectStatus.ProjectStatus = WindowService.IsCubaseMainWindowActive() ? CubaseMidiProjectStatusType.Active : CubaseMidiProjectStatusType.NotActive;
+                projectStatus.ProjectName = WindowService.GetCubaseProjectTitle();
+                projectStatus.Message = "Project Status retrieved successfully";
+            }
+            return WebSocketMidiCommandMessage.CreateFromProjectStatus(projectStatus);
+        }
+
         static WebSocketMidiCommandMessage GetMidiTransportLocation()
         {
             Log?.Information("Received command to get Midi TransportLocation");
+            if (!MidiService.MonitoringTransport) // if we are not monitoring - request it 
+            {
+                MidiService.StartTransportMonitoring();
+                Task.Delay(500).Wait();
+            }
             return WebSocketMidiCommandMessage.CreateFromTransportCollection(MidiService.TransportLocation);
         }
 

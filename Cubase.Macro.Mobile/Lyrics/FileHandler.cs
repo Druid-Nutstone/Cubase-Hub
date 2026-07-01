@@ -102,7 +102,7 @@ namespace Cubase.Macro.Mobile.Lyrics
 
             if (!File.Exists(CubaseMacroMobileConstants.LyricCollection)) 
             {
-                messageHandler("There are no lyrics. Enable the midi connection and restart this app");
+                messageHandler($"There are no lyrics in {CubaseMacroMobileConstants.BaseFolder}. Enable the midi connection and restart this app");
                 return null; 
             }
 

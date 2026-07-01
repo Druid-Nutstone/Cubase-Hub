@@ -17,8 +17,20 @@ namespace Cubase.Macro.Common.Models
 
         public static LyricResponseModel Deserialise(string message)
         {
+            if (string.IsNullOrWhiteSpace(message))
+            {
+                return CreateWithError("Message is null or empty");
+            };
+
             var json = Encoding.UTF8.GetString(Convert.FromBase64String(message));
-            return JsonSerializer.Deserialize<LyricResponseModel>(json);
+            try
+            {
+                return JsonSerializer.Deserialize<LyricResponseModel>(json);
+            }
+            catch (Exception ex)
+            {
+                return CreateWithError($"Failed to deserialise LyricResponseModel: {ex.Message}");
+            }
         }
 
         public string Serialise()

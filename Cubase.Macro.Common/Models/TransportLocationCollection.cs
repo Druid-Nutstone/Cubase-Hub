@@ -40,8 +40,15 @@ namespace Cubase.Macro.Common.Models
 
         public static TransportLocationCollection Deserialise(string message)
         {
-            var json = Encoding.UTF8.GetString(Convert.FromBase64String(message));
-            return JsonSerializer.Deserialize<TransportLocationCollection>(json);
+            try
+            {
+                var json = Encoding.UTF8.GetString(Convert.FromBase64String(message));
+                return JsonSerializer.Deserialize<TransportLocationCollection>(json);
+            }
+            catch (Exception ex)
+            {
+                return new TransportLocationCollection() { TransportType = TransportType.NotSpecified };
+            }
         }
 
         public string Serialise()

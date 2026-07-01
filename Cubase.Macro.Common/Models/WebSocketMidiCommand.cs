@@ -14,6 +14,8 @@ namespace Cubase.Macro.Common.Models
         MidiLyricStopTransportMonitoring = 5,
         MidiLyricIndex = 6,
         MidiLyricContent = 7,
-        Error = 6
+        MidiProjectStatus = 8,
+        MidiHeartBeat = 9,
+        Error = 10
     }
 }

@@ -1,9 +1,11 @@
 ﻿using Cubase.Macro.Common.Lyrics.Scrolling;
 using Cubase.Macro.Common.Lyrics.Services;
 using Cubase.Macro.Common.Socket;
+using Cubase.Macro.Mobile.Configuration;
 using Cubase.Macro.Mobile.Lyrics;
 using Cubase.Macro.Mobile.Nav;
 using Cubase.Macro.Mobile.Services;
+using Microsoft.Extensions.DependencyInjection.Extensions;
 using Microsoft.Extensions.Logging;
 
 namespace Cubase.Macro.Mobile
@@ -23,13 +25,15 @@ namespace Cubase.Macro.Mobile
 
             builder.Services.AddSingleton<CubaseMacroWebSocketClient>();
             builder.Services.AddSingleton<AppShell>();
-            builder.Services.AddSingleton<LyricViewer>();
+            builder.Services.AddTransient<LyricViewer>();
+            builder.Services.TryAddTransient<ConfigurationPage>();
             builder.Services.AddSingleton<NavPage>();
             builder.Services.AddSingleton<FileHandler>();
             builder.Services.AddSingleton<ILyricService, LyricService>();
+            builder.Services.AddSingleton<IMobileConfigurationService, MobileConfigurationService>(); 
             builder.Services.AddSingleton<IColourService, ColourService>();
             builder.Services.AddSingleton<IlyricMidiService, MobileLyricService>();
-            builder.Services.AddSingleton<MainPage>();
+            builder.Services.AddTransient<MainPage>();
 
 #if DEBUG
     		builder.Logging.AddDebug();

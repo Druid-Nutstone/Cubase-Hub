@@ -1,22 +1,29 @@
 ﻿using Cubase.Macro.Common.Models;
+using System.Diagnostics;
 using System.Net.WebSockets;
 using System.Text;
+using static System.Runtime.InteropServices.JavaScript.JSType;
 
 namespace Cubase.Macro.Common.Socket
 {
     public class CubaseMacroWebSocketClient : IDisposable
     {
-        private readonly ClientWebSocket client = new ClientWebSocket();
+        private ClientWebSocket client;
         private Task? receiveTask;
         private CancellationTokenSource cts = new();
 
+        private Task heartbeatTask;
+
         private TaskCompletionSource<WebSocketMidiCommandMessage>? pendingResponse;
 
-        public WebSocketState State => client.State;
-
-        public bool IsConnected => client.State == WebSocketState.Open;
-
-        public bool Connected { get; private set; } = false;
+        public bool Connected 
+        { 
+            get
+            {
+                return client?.State == WebSocketState.Open;
+            } 
+            private set; 
+        } = false;
 
         public void Dispose()
         {
@@ -33,35 +40,75 @@ namespace Cubase.Macro.Common.Socket
         // --------------------------------------------------
         public async Task<bool> Connect(string ipAddress, Action<string> errorHandler, int port = 8014)
         {
-            if (client.State == WebSocketState.Open)
+            if (this.client != null && this.client.State == WebSocketState.Open)
             {
                 this.Connected = true;
                 return true;
             }
 
+            // 2. If it's closed or aborted, we MUST dispose it and create a new one
+            if (this.client != null)
+            {
+                // some sort of other error occurred, so we need to dispose the client and create a new one
+                this.client.Dispose();
+            }
+
+            // Reset/Recreate the client and the cancellation token source
+           
+            this.client = new ClientWebSocket();
+            this.client.Options.KeepAliveInterval = TimeSpan.FromSeconds(20);
+            this.client.Options.KeepAliveInterval = TimeSpan.Zero;
+            var ctsConnect = new CancellationTokenSource();
+
             try
             {
-                using var cts = new CancellationTokenSource();
                 // Set the timeout duration
-                cts.CancelAfter(TimeSpan.FromSeconds(20));
+                ctsConnect.CancelAfter(TimeSpan.FromSeconds(10));
 
-                await client.ConnectAsync(
+                await this.client.ConnectAsync(
                     new Uri($"ws://{ipAddress}:{port}/ws"),
-                    cts.Token);
+                    ctsConnect.Token);
             }
             catch (Exception ex)
             {
                 errorHandler.Invoke(ex.Message);
                 return false;
             }
-            if (client.State != WebSocketState.Open)
+            if (this.client.State != WebSocketState.Open)
                 return false;
 
             // Start receive loop on background thread
-            receiveTask = Task.Run(ReceiveLoop);
+            receiveTask = ReceiveLoop();
             this.Connected = true;
-
+            //this.StartHeartbeat();
             return true;
+        }
+
+
+        // not used currently !!
+        private void StartHeartbeat()
+        {
+            heartbeatTask = Task.Run(async () =>
+            {
+                while (this.client.State == WebSocketState.Open)
+                {
+                    try
+                    {
+                        var heartbeatRespone = await SendAndWait(
+                                       WebSocketMidiCommandMessage.CreateFromCommand(
+                                          WebSocketMidiCommand.MidiHeartBeat), (err) => { }); ;
+
+                        Debug.WriteLine($"{DateTime.Now.ToString()} Heartbeat sent, response: {heartbeatRespone?.Message}");
+                        await Task.Delay(
+                            TimeSpan.FromSeconds(20)); // keep it under 30 seconds to avoid timeout on the server side
+                    }
+                    catch (Exception ex)
+                    {
+                        Debug.WriteLine($"Heartbeat failed: {ex.Message}");
+                        break;
+                    }
+                }
+            });
         }
 
         // --------------------------------------------------
@@ -74,6 +121,14 @@ namespace Cubase.Macro.Common.Socket
                     WebSocketMidiCommand.MidiCommandList), onError);
 
             return response?.GetMacroCollection();
+        }
+
+        public async Task<CubaseMidiProjectStatus?> GetProjectStatus(Action<string> onError)
+        {
+            var response = await SendAndWait(
+                WebSocketMidiCommandMessage.CreateFromCommand(
+                    WebSocketMidiCommand.MidiProjectStatus), onError);
+            return response?.GetCubaseMidiProjectStatus();
         }
 
         public async Task<bool> StartTransportMonitoring(Action<string> onError)
@@ -146,29 +201,45 @@ namespace Cubase.Macro.Common.Socket
             WebSocketMidiCommandMessage message, Action<string> onError,
             int timeoutMs = 5000)
         {
-            if (!IsConnected)
+            if (!this.Connected)
             {
                 onError.Invoke("Web socket is NOT connected");
                 return WebSocketMidiCommandMessage.CreateError("Web socket not connected");
             }
+            
+            /*
+            if (this.State != WebSocketState.Open)
+            {
+                onError.Invoke("Web socket is NOT open");
+                return WebSocketMidiCommandMessage.CreateError("Web socket not open");
+            }
+            */
+
             pendingResponse = new TaskCompletionSource<WebSocketMidiCommandMessage>(
                 TaskCreationOptions.RunContinuationsAsynchronously);
 
             // Send
             var data = Encoding.UTF8.GetBytes(message.Serialise());
-            await client.SendAsync(
-                new ArraySegment<byte>(data),
-                WebSocketMessageType.Text,
-                true,
-                CancellationToken.None);
 
-            // Wait for response or timeout
-            var completed = await Task.WhenAny(
-                pendingResponse.Task,
-                Task.Delay(timeoutMs));
+            try
+            {
 
-            if (completed != pendingResponse.Task)
-                return null; // timeout
+                await this.client.SendAsync(
+                    new ArraySegment<byte>(data),
+                    WebSocketMessageType.Text,
+                    true,
+                    CancellationToken.None);
+
+                // Wait for response or timeout
+                var completed = await Task.WhenAny(
+                    pendingResponse.Task,
+                    Task.Delay(timeoutMs));
+
+                if (completed != pendingResponse.Task)
+                    return null; // timeout
+            } catch (Exception ex) {
+                Debug.WriteLine($"Error occurred while sending message: {ex.Message}");
+            }
 
             return await pendingResponse.Task;
         }
@@ -183,20 +254,20 @@ namespace Cubase.Macro.Common.Socket
             try
             {
                 while (!cts.Token.IsCancellationRequested &&
-                       client.State == WebSocketState.Open)
+                       this.client.State == WebSocketState.Open)
                 {
                     using var ms = new MemoryStream();
                     WebSocketReceiveResult result;
 
                     do
                     {
-                        result = await client.ReceiveAsync(
+                        result = await this.client.ReceiveAsync(
                             new ArraySegment<byte>(buffer),
                             cts.Token);
 
                         if (result.MessageType == WebSocketMessageType.Close)
                         {
-                            await client.CloseAsync(
+                            await this.client.CloseAsync(
                                 WebSocketCloseStatus.NormalClosure,
                                 "Closing",
                                 CancellationToken.None);
@@ -220,10 +291,12 @@ namespace Cubase.Macro.Common.Socket
             }
             catch (OperationCanceledException)
             {
+                Debug.WriteLine("Operation canceled");
                 // expected on shutdown
             }
             catch (Exception ex)
             {
+                Debug.WriteLine($"Error occurred in receive loop: {ex.Message}");
                 pendingResponse?.TrySetException(ex);
             }
         }

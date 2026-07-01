@@ -19,8 +19,15 @@ namespace Cubase.Macro.Common.Models
 
         public static LyricContent Deserialise(string message)
         {
-            var json = Encoding.UTF8.GetString(Convert.FromBase64String(message));
-            return JsonSerializer.Deserialize<LyricContent>(json);
+            try
+            {
+                var json = Encoding.UTF8.GetString(Convert.FromBase64String(message));
+                return JsonSerializer.Deserialize<LyricContent>(json);
+            }
+            catch (Exception ex)
+            {
+                return new LyricContent();
+            }
         }
     }
 }

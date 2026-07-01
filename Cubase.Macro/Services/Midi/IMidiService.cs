@@ -9,6 +9,8 @@ namespace Cubase.Macro.Services.Midi
 
         public bool VolumeChanging { get;  set; }
 
+        bool MonitoringTransport { get; }
+
         public CueLevelCollection CueCollection { get; }
 
         public TrackCollection TrackCollection { get; }
@@ -26,6 +28,8 @@ namespace Cubase.Macro.Services.Midi
         public void RegisterForGetCueLevelsEndCallbacks(Action onGetCueLevelsEnd);
 
         public void DeRegisterForGetCueLevelsEndCallbacks(Action onGetCueLevelsEnd);
+
+        public void RegisterForTransportMonitoring(Action<bool> onMonitoringChanged);
 
         public void VerifyDriver();
 

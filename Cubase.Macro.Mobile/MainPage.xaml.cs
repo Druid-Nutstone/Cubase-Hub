@@ -46,7 +46,7 @@ namespace Cubase.Macro.Mobile
 
         public async Task RefreshMacros()
         {
-            if (this.client != null && this.client.State == System.Net.WebSockets.WebSocketState.Open)
+            if (this.client != null && this.client.Connected)
             {
                 this.CollectionsLayout.Clear();
 

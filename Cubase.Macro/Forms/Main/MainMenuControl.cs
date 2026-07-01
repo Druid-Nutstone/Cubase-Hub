@@ -61,6 +61,11 @@ namespace Cubase.Macro.Forms.Main
 
         }
 
+        public void SetTransportMonitorState(bool monitorState)
+        {
+            this.ButtonStartStopTransportMonitoring.SetStateWithoutCallback(monitorState);
+        }
+
         private void ToggleTransportMonitoring(bool startStop)
         {
             this.MainForm.ToggleTransportMonitoring(startStop);

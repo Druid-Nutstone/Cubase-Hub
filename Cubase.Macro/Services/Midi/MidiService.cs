@@ -33,6 +33,8 @@ namespace Cubase.Macro.Services.Midi
 
         private bool inGettingCueLevels = false;
 
+        private bool monitoringTransport = false;
+
         private System.Timers.Timer cueTimer = new();
 
         public Action<bool>? OnCommandComplete { get; set; }
@@ -41,6 +43,10 @@ namespace Cubase.Macro.Services.Midi
         public List<Action> GetCueLevelsEndCallbacks { get; } = new List<Action>();
 
         public List<Action> UpdatedCueLevelsEndCallbacks { get; } = new List<Action>();
+
+        private List<Action<bool>> registeredTransportCallbacks { get; set; } = new List<Action<bool>>();
+
+        public bool MonitoringTransport { get { return monitoringTransport; } } 
 
         public Action<CubaseMidiResponse> OnMidiResponse { get; set; }
 
@@ -371,6 +377,16 @@ namespace Cubase.Macro.Services.Midi
             this.GetCueLevelsEndCallbacks.Remove(onGetCueLevelsEnd);
         }
 
+        public void RegisterForTransportMonitoring(Action<bool> onTransportMonitorChanged)
+        {
+            this.registeredTransportCallbacks.Add(onTransportMonitorChanged);
+        }
+
+        public void DeRegisterForTransportMonitoring(Action<bool> onTransportMonitorChanged)
+        {
+            this.registeredTransportCallbacks.Remove(onTransportMonitorChanged);
+        }
+
         public void GetCueCollection()
         {
             this.inGettingCueLevels = true;
@@ -379,12 +395,25 @@ namespace Cubase.Macro.Services.Midi
 
         public void StartTransportMonitoring()
         {
-            this.SendSysExMessage(MidiCommand.StartTransportEventMonitoring, "{}");
+            if (this.Initialised)
+            {
+                this.SendSysExMessage(MidiCommand.StartTransportEventMonitoring, "{}");
+                this.monitoringTransport = true;
+                foreach (var transportMonitor in this.registeredTransportCallbacks)
+                {
+                    transportMonitor.Invoke(true);
+                }
+            }
         }
 
         public void StopTransportMonitoring()
         {
             this.SendSysExMessage(MidiCommand.StopTransportEventMonitoring, "{}");
+            this.monitoringTransport = false;
+            foreach (var transportMonitor in this.registeredTransportCallbacks)
+            {
+                transportMonitor.Invoke(false);
+            }
         }
 
         public void RegisterForUpdateCueLevelsEndCallbacks(Action onUpdateCueLevelsEnd)
