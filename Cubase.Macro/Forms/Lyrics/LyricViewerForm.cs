@@ -50,7 +50,7 @@ namespace Cubase.Macro.Forms.Lyrics
             this.lyricService = lyricService;
             this.lyricMidiService = lyricMidiService;
             SaveButton.Bind(SaveLyrics, "Save", "Save Lyrics to file");
-            SaveButton.Enabled = false;
+            SaveButton.Enabled = true;
             ScrollButton.Enabled = true;
             MidiEnabled.Visible = false;
             MidiEnabled.CheckedChanged += MidiEnabled_CheckedChanged;

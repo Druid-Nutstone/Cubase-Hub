@@ -18,6 +18,8 @@ public partial class LyricViewer : ContentPage
 
     private readonly IMobileConfigurationService configurationService;
 
+    private readonly SemaphoreSlim timerLock = new SemaphoreSlim(1, 1);
+
     private MobileLyricCollection lyrics;
 
     private int BPM = -1; // beats per minute  
@@ -283,7 +285,7 @@ public partial class LyricViewer : ContentPage
     {
         await this.menuHandler.EnableButtons();
         await this.StopAutoScroll();
-        // by default hide the chords - this SHOULD BE DONE BE PROFILE !
+        // by default hide the chords - this SHOULD BE DONE BY PROFILE !
         await MainThread.InvokeOnMainThreadAsync(async () =>
         {
             StartBar = 0;
@@ -291,6 +293,7 @@ public partial class LyricViewer : ContentPage
             BPM = -1;
             var lyricBuffer = this.lyricService.ParseLyrics(content, 0, ' ');
             this.lyrics = new MobileLyricCollection(lyricBuffer);
+            this.lyricRows = new();
             this.RefreshLyrics(lyrics);
             // start by NOT showing any chords 
             await this.ShowHideChords(false);
@@ -346,47 +349,61 @@ public partial class LyricViewer : ContentPage
 
     private async void TimerElapsed(object? sender, EventArgs e)
     {
-        if (IsCubaseAvailable())
+        if (!await timerLock.WaitAsync(0))
         {
-            timer.Stop(); // don't want any other messages to be sent while we are waiting for a response from Cubase
-            var transportLocation = await this.webSocketClient.GetTransportLocation(this.ProcessError);
-            if (transportLocation != null)
+            // If the lock is already held, another execution is in progress.
+            // Simply return to skip this tick.
+            return;
+        }
+
+        try
+        {
+            if (IsCubaseAvailable())
             {
-                if (transportLocation.TransportType == Common.Models.TransportType.BarsBeats)
+                var transportLocation = await this.webSocketClient.GetTransportLocation(this.ProcessError);
+                if (transportLocation != null)
                 {
-                    var lyricItemBar = this.lyrics.GetBar(transportLocation.BarBeatTime + 1);
-                    await Task.Delay(350);
+                    Debug.WriteLine($"Transport Location: {transportLocation.TransportType} - Bar: {transportLocation.BarBeatTime}");
+
+                    if (transportLocation.TransportType == Common.Models.TransportType.BarsBeats)
+                    {
+                        var lyricItemBar = this.lyrics.GetBar(transportLocation.BarBeatTime + 1);
+                        await Task.Delay(350);
+                        if (lyricItemBar != null)
+                        {
+                            // await Task.Delay(100); // allow last lyric line to be sung!?
+                            SetBarLocation(lyricItemBar.Bar);
+                        }
+                    }
+                }
+            }
+            else // manual calculation
+            {
+                if (BPM > -1 && BPB > -1)
+                {
+                    double totalSeconds = stopwatch.Elapsed.TotalSeconds;
+                    double secondsPerBeat = 60.0 / BPM;
+                    // 2. Seconds per full bar
+                    double secondsPerBar = secondsPerBeat * BPB;
+                    // 3. Calculate current bar (adding 1 because we start counting at Bar 1)
+                    double currentBar = (int)(totalSeconds / secondsPerBar) + StartBar;
+                    if (currentBar > this.lyrics.MaxBar())
+                    {
+                        timer.Stop();
+                        return;
+                    }
+
+                    var lyricItemBar = this.lyrics.GetBar((int)currentBar);
                     if (lyricItemBar != null)
                     {
-                        // await Task.Delay(100); // allow last lyric line to be sung!?
                         SetBarLocation(lyricItemBar.Bar);
                     }
                 }
             }
-            timer.Start(); // restart the timer after processing
         }
-        else // manual calculation
+        finally
         {
-            if (BPM > -1 && BPB > -1)
-            {
-                double totalSeconds = stopwatch.Elapsed.TotalSeconds;
-                double secondsPerBeat = 60.0 / BPM;
-                // 2. Seconds per full bar
-                double secondsPerBar = secondsPerBeat * BPB;
-                // 3. Calculate current bar (adding 1 because we start counting at Bar 1)
-                double currentBar = (int)(totalSeconds / secondsPerBar) + StartBar;
-                if (currentBar > this.lyrics.MaxBar())
-                {
-                    timer.Stop();
-                    return;
-                }
-
-                var lyricItemBar = this.lyrics.GetBar((int)currentBar);
-                if (lyricItemBar != null)
-                {
-                    SetBarLocation(lyricItemBar.Bar);
-                }
-            }
+            timerLock.Release();
         }
 
         bool IsCubaseAvailable()

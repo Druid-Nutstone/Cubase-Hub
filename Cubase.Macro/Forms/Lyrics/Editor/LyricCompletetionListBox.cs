@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Cubase.Macro.Common.Lyrics;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Text;
@@ -6,35 +7,31 @@ using static System.Net.Mime.MediaTypeNames;
 
 namespace Cubase.Macro.Forms.Lyrics.Editor
 {
-    public class LyricCompletetionListBox : ListBox
+    public class LyricCompletetionListBox : TextBox
     {
         [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
         public Action<LyricControlCommand?> OnSelected { get; set; }
 
+        private List<LyricControlCommand> commandList;
+
         public LyricCompletetionListBox() : base()
         {
-            this.DrawMode = DrawMode.OwnerDrawFixed;
-            this.ItemHeight = 40;
+            this.AutoCompleteMode = AutoCompleteMode.Suggest;
+            //this.DrawMode = DrawMode.OwnerDrawFixed;
+            //this.ItemHeight = 40;
             this.BorderStyle = BorderStyle.None;
+            ThemeApplier.ApplyDarkTheme(this);
         }
 
-        protected override void OnDrawItem(DrawItemEventArgs e)
-        {
-            e.DrawBackground();
-            using (Brush textBrush = new SolidBrush(DarkTheme.TextColor))
-            {
-                var txt = ((LyricControlCommand)this.Items[e.Index]).Description; 
-                // Draw the text, centered vertically within the item height
-                e.Graphics.DrawString(txt, e.Font, textBrush, e.Bounds.X, e.Bounds.Y + 10);
-            }
-            e.DrawFocusRectangle();
-        }
+
 
         public void Populate(List<LyricControlCommand> list)
         {
-            this.Items.Clear();
-            this.Items.AddRange(list.ToArray());
-            this.DisplayMember = nameof(LyricControlCommand.Description);
+            this.commandList = list;
+            this.AutoCompleteCustomSource = new AutoCompleteStringCollection();
+            this.AutoCompleteCustomSource.AddRange(list.Select(x => $"{x.Description}{'\a'} {x.Keyword.ToString()} {x.Text}").ToArray());
+            this.AutoCompleteMode = AutoCompleteMode.SuggestAppend;
+            this.AutoCompleteSource = AutoCompleteSource.CustomSource;
         }
 
         protected override void OnKeyDown(KeyEventArgs e)
@@ -53,19 +50,12 @@ namespace Cubase.Macro.Forms.Lyrics.Editor
         }
 
 
-        public void MoveDown()
-        {
-            this.SelectedIndex = this.SelectedIndex + 1 > this.Items.Count ? this.Items.Count-1 : this.SelectedIndex + 1;
-        }
-
-        public void MoveUp()
-        {
-            this.SelectedIndex = this.SelectedIndex - 1 < 0 ? 0 : this.SelectedIndex - 1;
-        }
-
         public LyricControlCommand GetSelected()
         {
-            return this.Items[SelectedIndex] as LyricControlCommand;
+            var cntrlbits = this.Text.Split('\a');
+            var extra = cntrlbits[1].Split(' ', StringSplitOptions.RemoveEmptyEntries);
+            var keyWord = (ControlLyricKeyword)Enum.Parse(typeof(ControlLyricKeyword), extra[0]);
+            return this.commandList.FirstOrDefault(x => x.Keyword == keyWord);
         }
 
     }

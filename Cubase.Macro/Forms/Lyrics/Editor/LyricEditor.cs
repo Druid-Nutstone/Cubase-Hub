@@ -30,6 +30,7 @@ namespace Cubase.Macro.Forms.Lyrics.Editor
         public LyricEditor(ILyricService lyricService) : base() 
         { 
             this.lyricService = lyricService;
+            this.Font = new Font(this.Font.FontFamily, 16);
         }
 
         public void Initialise(IEnumerable<string> sourceCode, string fileName)
@@ -110,8 +111,24 @@ namespace Cubase.Macro.Forms.Lyrics.Editor
                 {
                     if (lyricControl != null)
                     {
-                        this.InsertAtPointer(lyricControl.Text.StartsWith(this.controlCharStart) ? lyricControl.Text.Substring(1) : lyricControl.Text);
-                        if (lyricControl.Text.Contains(':'))
+                        var insertText = lyricControl.Text;
+
+                        if (insertText.Contains(':'))
+                        {
+                            insertText = insertText.Substring(1);
+                            if (!string.IsNullOrEmpty(lyricControl.DefaultValue))
+                            {
+                                var colonIndex = insertText.IndexOf(':');
+                                insertText = insertText.Insert(colonIndex + 1, lyricControl.DefaultValue+"}");
+                            }
+                        }
+                        else
+                        {
+                            insertText = insertText.Substring(1);
+                        }
+
+                        this.InsertAtPointer(insertText);
+                        if (lyricControl.Text.Contains(':') && string.IsNullOrEmpty(lyricControl.DefaultValue))
                         {
                             var valueLocation = lyricControl.Text.IndexOf(":");
                             this.SelectionStart += valueLocation - 1;

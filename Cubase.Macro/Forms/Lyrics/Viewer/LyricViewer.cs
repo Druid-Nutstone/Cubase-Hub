@@ -31,9 +31,12 @@ namespace Cubase.Macro.Forms.Lyrics.Viewer
 
         private readonly ILyricService lyricService;
 
+        private LyricBuffer lyricBuffer;
+
         private int lastHighlightedLine = -1;
 
         private int linePadding = 2;
+
 
         private char indicator = '\u25B6';
 
@@ -184,8 +187,8 @@ namespace Cubase.Macro.Forms.Lyrics.Viewer
         {
             this.Clear(); // Clear existing content
             this.sourceCode = sourceCode.ToArray();
-            var lyrics = this.lyricService.ParseLyrics(this.sourceCode, this.linePadding, indicator);
-            this.Text = lyrics.ToText();
+            this.lyricBuffer = this.lyricService.ParseLyrics(this.sourceCode, this.linePadding, indicator);
+            this.Text = this.lyricBuffer.ToText();
             this.RefreshContent();
         }
 
@@ -198,6 +201,12 @@ namespace Cubase.Macro.Forms.Lyrics.Viewer
 
         protected override void RefreshContent()
         {
+            var fontSize = this.lyricService.LyricCollection?.GetControlValue(ControlLyricKeyword.Font_Size);
+            if (fontSize != null)
+            {
+                this.Font = new Font(this.Font.FontFamily, int.Parse(fontSize));
+            }
+
             if (!this.IsHandleCreated)
             {
                 return;
