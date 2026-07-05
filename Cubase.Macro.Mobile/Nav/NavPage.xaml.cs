@@ -24,10 +24,15 @@ public partial class NavPage : ContentPage
         {
             await Shell.Current.GoToAsync("ConfigurationPage");
         };
+        Logging.Clicked += async (s, e) =>
+        {
+            await Shell.Current.GoToAsync("LoggingPage");
+        };
         SetButtonEvents(RetryConnection);
         SetButtonEvents(MidiCommand);
         SetButtonEvents(Lyrics);
         SetButtonEvents(MidiConfiguration);
+        SetButtonEvents(Logging);
         RetryConnection.Clicked += async (s, e) =>
         {
             await this.ConnectToMidiServicer();

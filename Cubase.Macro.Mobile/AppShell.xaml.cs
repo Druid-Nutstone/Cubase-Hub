@@ -1,5 +1,6 @@
 ﻿using Cubase.Macro.Common.Socket;
 using Cubase.Macro.Mobile.Configuration;
+using Cubase.Macro.Mobile.Logging;
 using Cubase.Macro.Mobile.Lyrics;
 using Cubase.Macro.Mobile.Nav;
 
@@ -14,6 +15,7 @@ namespace Cubase.Macro.Mobile
             Routing.RegisterRoute("LyricViewer", typeof(LyricViewer));
             Routing.RegisterRoute("MainPage", typeof(MainPage));
             Routing.RegisterRoute("NavPage", typeof(NavPage));
+            Routing.RegisterRoute("LoggingPage", typeof(LoggingPage));
             Routing.RegisterRoute("ConfigurationPage", typeof(ConfigurationPage));
         }
     }

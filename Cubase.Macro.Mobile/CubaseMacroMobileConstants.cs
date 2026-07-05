@@ -12,6 +12,8 @@ namespace Cubase.Macro.Mobile
 
         public static string ConfigurationFile = Path.Combine(BaseFolder, "MobileConfiguration.json");
 
+        public static string LogFilePath = Path.Combine(BaseFolder, "Logs");
+
         public static string LyricCollection = Path.Combine(LyricSourceFolder, "LyricIndexCollection.json");
 
         public static Color DefaultBackgroundColour = Color.FromRgba("#1E1E1E");

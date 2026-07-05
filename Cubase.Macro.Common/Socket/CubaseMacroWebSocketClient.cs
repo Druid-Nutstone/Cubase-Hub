@@ -1,4 +1,5 @@
 ﻿using Cubase.Macro.Common.Models;
+using Microsoft.Extensions.Logging;
 using System.Diagnostics;
 using System.Net.WebSockets;
 using System.Text;
@@ -12,6 +13,8 @@ namespace Cubase.Macro.Common.Socket
         private Task? receiveTask;
         private CancellationTokenSource cts = new();
 
+        private readonly ILogger<CubaseMacroWebSocketClient> logger;
+
         private Task heartbeatTask;
 
         private TaskCompletionSource<WebSocketMidiCommandMessage>? pendingResponse;
@@ -24,6 +27,11 @@ namespace Cubase.Macro.Common.Socket
             } 
             private set; 
         } = false;
+
+        public CubaseMacroWebSocketClient(ILogger<CubaseMacroWebSocketClient> logger) : base()
+        {
+            this.logger = logger;
+        }
 
         public void Dispose()
         {
@@ -72,11 +80,15 @@ namespace Cubase.Macro.Common.Socket
             catch (Exception ex)
             {
                 errorHandler.Invoke(ex.Message);
+                logger.LogError(ex, "Error occurred while connecting to WebSocket");
                 return false;
             }
             if (this.client.State != WebSocketState.Open)
+            {
+                logger.LogError($"Failed to connect to WebSocket. web socket state {this.client.State}");
                 return false;
-
+            }
+            logger.LogInformation($"Connected to WebSocket at ws://{ipAddress}:{port}/ws"); 
             // Start receive loop on background thread
             receiveTask = ReceiveLoop();
             this.Connected = true;
@@ -292,13 +304,15 @@ namespace Cubase.Macro.Common.Socket
             catch (OperationCanceledException)
             {
                 Debug.WriteLine("Operation canceled");
+                logger.LogInformation("WebSocket operation canceled");
                 // expected on shutdown
             }
             catch (Exception ex)
             {
-                Debug.WriteLine($"Error occurred in receive loop: {ex.Message}");
+                logger.LogError(ex, "Error occurred in receive loop");
                 pendingResponse?.TrySetException(ex);
             }
+          logger.LogWarning($"Receive loop exited, WebSocket state: {this.client.State}. is CTS Token cancelled? {cts.Token.IsCancellationRequested}");  
         }
     }
 }

@@ -19,7 +19,7 @@ namespace Cubase.Macro.Tests.Sockets
 
             await Task.Delay(200); // important
 
-            var client = new CubaseMacroWebSocketClient();
+            var client = new CubaseMacroWebSocketClient(null);
 
             var connected = await client.Connect("locahost", (msg) => { });
             if (connected)

@@ -9,6 +9,12 @@
 
 
         <VerticalStackLayout Spacing="20">
+            <Button x:Name="Logging" 
+                    Text="Logs" 
+                    IsEnabled="True"
+                    BackgroundColor ="IndianRed"
+                    TextColor="Black"
+                    WidthRequest="200" />
             <Button x:Name="MidiConfiguration" 
                     Text="Configuration" 
                     IsEnabled="True"

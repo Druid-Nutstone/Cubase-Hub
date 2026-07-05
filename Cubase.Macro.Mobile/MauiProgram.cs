@@ -7,6 +7,7 @@ using Cubase.Macro.Mobile.Nav;
 using Cubase.Macro.Mobile.Services;
 using Microsoft.Extensions.DependencyInjection.Extensions;
 using Microsoft.Extensions.Logging;
+using Serilog;
 
 namespace Cubase.Macro.Mobile
 {
@@ -34,10 +35,27 @@ namespace Cubase.Macro.Mobile
             builder.Services.AddSingleton<IColourService, ColourService>();
             builder.Services.AddSingleton<IlyricMidiService, MobileLyricService>();
             builder.Services.AddTransient<MainPage>();
+            builder.Logging.ClearProviders();
 
-#if DEBUG
-    		builder.Logging.AddDebug();
-#endif
+            builder.Logging.AddSerilog();
+
+            var logPath = CubaseMacroMobileConstants.LogFilePath;
+
+            if (!Directory.Exists(logPath))
+            {
+                Directory.CreateDirectory(logPath);
+            }
+
+            var logFile = Path.Combine(logPath, "app-.txt");
+
+
+            Log.Logger = new LoggerConfiguration()
+               .MinimumLevel.Debug()
+               .WriteTo.File(
+               logFile,
+               rollingInterval: RollingInterval.Day,
+               retainedFileCountLimit: 10)
+               .CreateLogger();
 
             return builder.Build();
         }
