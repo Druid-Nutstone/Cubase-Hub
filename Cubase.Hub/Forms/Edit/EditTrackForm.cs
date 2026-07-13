@@ -62,6 +62,9 @@ namespace Cubase.Hub.Forms.Edit
             this.Length.Bind(nameof(MixDown.Duration), this.mixDown);
             this.Size.Bind(nameof(MixDown.Size), this.mixDown);
             this.AudioType.Bind(nameof(MixDown.AudioType), this.mixDown);
+            this.Engineer.Bind(nameof(MixDown.Engineer), this.mixDown);
+            this.Producer.Bind(nameof(MixDown.Producer), this.mixDown);
+            this.Studio.Bind(nameof(MixDown.Studio), this.mixDown);
             this.Genre.AutoCompleteCustomSource.Clear();
             this.Genre.AutoCompleteCustomSource.AddRange(CubaseHubConstants.TagGenres);
             this.Genre.Bind(nameof(MixDown.Genre), this.mixDown);
