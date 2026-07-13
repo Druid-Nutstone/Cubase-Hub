@@ -293,6 +293,9 @@ namespace Cubase.Hub.Forms.Albums
                     mix.Year = this.CurrentAlbumConfiguration.Year;
                     mix.Artist = CurrentAlbumConfiguration.Artist;
                     mix.Genre = CurrentAlbumConfiguration.Genre;
+                    mix.Producer = CurrentAlbumConfiguration.Producer;
+                    mix.Engineer = CurrentAlbumConfiguration.Engineer;
+                    mix.Studio = CurrentAlbumConfiguration.Label;
                     this.trackService.SetTagsFromMixDown(mix);
                 }
                 this.LoadTracks();

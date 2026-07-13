@@ -256,6 +256,27 @@ namespace Cubase.Hub.Services.Models
             set => SetProperty(ref _markForDistribution, value);
         }
 
+        private string _producer;
+        public string Producer
+        {
+            get => _producer;
+            set => SetProperty(ref _producer, value);
+        }
+
+        private string _engineer;
+        public string Engineer
+        {
+            get => _engineer;
+            set => SetProperty(ref _engineer, value);
+        }
+
+        private string _studio;
+        public string Studio
+        {
+            get => _studio;
+            set => SetProperty(ref _studio, value);
+        }
+
         public string ExportLocation { get; set; }
         
         public DateTime LastModified { get; set; }
@@ -288,6 +309,9 @@ namespace Cubase.Hub.Services.Models
             this._trackNumber = mix.TrackNumber;
             this.ExportLocation = mix.ExportLocation;
             this._markForDistribution = mix.MarkForDistribution;
+            this._engineer = mix.Engineer;
+            this._producer = mix.Producer;
+            this._studio = mix.Studio;
         }
 
 

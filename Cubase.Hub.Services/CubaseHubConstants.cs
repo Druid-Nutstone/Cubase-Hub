@@ -14,6 +14,12 @@ namespace Cubase.Hub.Services
 
         public static string TrackArt = nameof(TrackArt);
 
+        public static string ProducerTag = "Producer";
+
+        public static string EngineerTag = "Engineer";
+
+        public static string StudioTag = "Studio";
+
         public static string DefaultAlbumArt => "NoImage.png";
 
         public static string CubaseHubLog = "CubaseHubLog-";

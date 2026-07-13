@@ -7,6 +7,7 @@ using System;
 using System.Collections.Generic;
 using System.Text;
 using TagLib;
+using TagLib.Id3v2;
 using TagLib.Mpeg;
 namespace Cubase.Hub.Services.Audio
 {
@@ -89,6 +90,9 @@ namespace Cubase.Hub.Services.Audio
             fileTag.Tag.AlbumArtists = [mixDown.Artist ?? string.Empty];
             fileTag.Tag.Performers = mixDown.Performers.Split(";");
             fileTag.Tag.Comment = mixDown.Comment;
+            SetMetaDataTag(CubaseHubConstants.ProducerTag, mixDown.Producer, fileTag);
+            SetMetaDataTag(CubaseHubConstants.EngineerTag, mixDown.Engineer, fileTag);
+            SetMetaDataTag(CubaseHubConstants.StudioTag, mixDown.Studio, fileTag);
             fileTag.Save();
         }
 
@@ -112,6 +116,31 @@ namespace Cubase.Hub.Services.Audio
             mixDown.BitRate = $"{tags.Properties.AudioBitrate} kbps";
             mixDown.SampleRate = tags.Properties.AudioSampleRate;
             mixDown.Comment = tags.Tag.Comment;
+            // populate meta data 
+            mixDown.Producer = GetMetaDataTag(CubaseHubConstants.ProducerTag, tags);
+            mixDown.Engineer = GetMetaDataTag(CubaseHubConstants.EngineerTag, tags);
+            mixDown.Studio = GetMetaDataTag(CubaseHubConstants.StudioTag, tags);
+        }
+
+        private void SetMetaDataTag(string tagName, string data, TagLib.File tagger)
+        {
+            var tag = (TagLib.Id3v2.Tag)tagger.GetTag(TagTypes.Id3v2, true);
+
+            // Create or update a UserTextInformationFrame for "PRODUCER"
+            // The "description" is the key (Producer), the "text" is the value
+            var frame = UserTextInformationFrame.Get(tag, tagName, true);
+            frame.Text = new[] { data };
+        }
+
+        private string? GetMetaDataTag(string tagName, TagLib.File tagger)
+        {
+            var tag = (TagLib.Id3v2.Tag)tagger.GetTag(TagTypes.Id3v2, true);
+
+            if (tag == null) return null;
+
+            // Find the frame by description
+            var frame = UserTextInformationFrame.Get(tag, tagName, false);
+            return frame?.Text.FirstOrDefault();
         }
 
         private string ConvertLengthToString(long length)
