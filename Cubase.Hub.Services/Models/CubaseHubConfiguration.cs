@@ -24,6 +24,8 @@ namespace Cubase.Hub.Services.Models
 
         public string? AlbumExportLocation { get; set; } 
 
+        public string? WebsiteExportLocation { get; set; } 
+
         public string? LastExportFolderLocation { get; set; }
 
         public AlbumExportCollection? AlbumExports { get; set; } = new AlbumExportCollection();

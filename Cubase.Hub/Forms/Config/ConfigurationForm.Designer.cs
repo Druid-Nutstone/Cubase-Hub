@@ -35,6 +35,9 @@
             SourceCubaseFolders = new TextBox();
             AddSourceFolderButton = new Button();
             panel2 = new Panel();
+            WebSiteExportLocation = new TextBox();
+            label8 = new Label();
+            EnableBackgroundServices = new Cubase.Hub.Controls.BoundControls.BoundCheckbox();
             label7 = new Label();
             AutoDiscoveryService = new Cubase.Hub.Controls.BoundControls.BoundEnumComboBox();
             label6 = new Label();
@@ -50,7 +53,6 @@
             BrowseCubaseExeButton = new Button();
             CubaseExeLocation = new TextBox();
             label2 = new Label();
-            EnableBackgroundServices = new Cubase.Hub.Controls.BoundControls.BoundCheckbox();
             panel1.SuspendLayout();
             panel2.SuspendLayout();
             SuspendLayout();
@@ -59,7 +61,7 @@
             // 
             panel1.Controls.Add(ButtonSave);
             panel1.Dock = DockStyle.Bottom;
-            panel1.Location = new Point(0, 568);
+            panel1.Location = new Point(0, 671);
             panel1.Name = "panel1";
             panel1.Size = new Size(800, 52);
             panel1.TabIndex = 0;
@@ -101,6 +103,8 @@
             // 
             // panel2
             // 
+            panel2.Controls.Add(WebSiteExportLocation);
+            panel2.Controls.Add(label8);
             panel2.Controls.Add(EnableBackgroundServices);
             panel2.Controls.Add(label7);
             panel2.Controls.Add(AutoDiscoveryService);
@@ -123,14 +127,42 @@
             panel2.Dock = DockStyle.Fill;
             panel2.Location = new Point(0, 0);
             panel2.Name = "panel2";
-            panel2.Size = new Size(800, 568);
+            panel2.Size = new Size(800, 671);
             panel2.TabIndex = 4;
+            // 
+            // WebSiteExportLocation
+            // 
+            WebSiteExportLocation.Anchor = AnchorStyles.Top | AnchorStyles.Left | AnchorStyles.Right;
+            WebSiteExportLocation.Location = new Point(22, 489);
+            WebSiteExportLocation.Name = "WebSiteExportLocation";
+            WebSiteExportLocation.Size = new Size(666, 27);
+            WebSiteExportLocation.TabIndex = 21;
+            // 
+            // label8
+            // 
+            label8.AutoSize = true;
+            label8.Font = new Font("Segoe UI", 9F, FontStyle.Bold);
+            label8.Location = new Point(22, 466);
+            label8.Name = "label8";
+            label8.Size = new Size(180, 20);
+            label8.TabIndex = 20;
+            label8.Text = "Website Export Location";
+            // 
+            // EnableBackgroundServices
+            // 
+            EnableBackgroundServices.AutoSize = true;
+            EnableBackgroundServices.Location = new Point(250, 572);
+            EnableBackgroundServices.Name = "EnableBackgroundServices";
+            EnableBackgroundServices.Size = new Size(215, 24);
+            EnableBackgroundServices.TabIndex = 19;
+            EnableBackgroundServices.Text = "Enable Auto Deploy Service";
+            EnableBackgroundServices.UseVisualStyleBackColor = true;
             // 
             // label7
             // 
             label7.AutoSize = true;
             label7.Font = new Font("Segoe UI", 9F, FontStyle.Bold);
-            label7.Location = new Point(245, 473);
+            label7.Location = new Point(245, 545);
             label7.Name = "label7";
             label7.Size = new Size(204, 20);
             label7.TabIndex = 18;
@@ -139,7 +171,7 @@
             // AutoDiscoveryService
             // 
             AutoDiscoveryService.FormattingEnabled = true;
-            AutoDiscoveryService.Location = new Point(28, 498);
+            AutoDiscoveryService.Location = new Point(28, 570);
             AutoDiscoveryService.Name = "AutoDiscoveryService";
             AutoDiscoveryService.Size = new Size(151, 28);
             AutoDiscoveryService.TabIndex = 17;
@@ -148,7 +180,7 @@
             // 
             label6.AutoSize = true;
             label6.Font = new Font("Segoe UI", 9F, FontStyle.Bold);
-            label6.Location = new Point(22, 473);
+            label6.Location = new Point(22, 545);
             label6.Name = "label6";
             label6.Size = new Size(178, 20);
             label6.TabIndex = 16;
@@ -259,21 +291,11 @@
             label2.TabIndex = 4;
             label2.Text = "Cubase Exe Location";
             // 
-            // EnableBackgroundServices
-            // 
-            EnableBackgroundServices.AutoSize = true;
-            EnableBackgroundServices.Location = new Point(250, 500);
-            EnableBackgroundServices.Name = "EnableBackgroundServices";
-            EnableBackgroundServices.Size = new Size(215, 24);
-            EnableBackgroundServices.TabIndex = 19;
-            EnableBackgroundServices.Text = "Enable Auto Deploy Service";
-            EnableBackgroundServices.UseVisualStyleBackColor = true;
-            // 
             // ConfigurationForm
             // 
             AutoScaleDimensions = new SizeF(8F, 20F);
             AutoScaleMode = AutoScaleMode.Font;
-            ClientSize = new Size(800, 620);
+            ClientSize = new Size(800, 723);
             Controls.Add(panel2);
             Controls.Add(panel1);
             Icon = (Icon)resources.GetObject("$this.Icon");
@@ -309,5 +331,7 @@
         private Label label6;
         private Label label7;
         private Controls.BoundControls.BoundCheckbox EnableBackgroundServices;
+        private TextBox WebSiteExportLocation;
+        private Label label8;
     }
 }

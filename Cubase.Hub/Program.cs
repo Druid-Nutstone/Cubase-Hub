@@ -128,6 +128,7 @@ namespace Cubase.Hub
                 }
 
 
+
                 if (args[0] == "mixes")
                 {
                     var form = serviceProvider.GetRequiredService<CompletedMixesForm>();

@@ -21,7 +21,9 @@ namespace Cubase.Hub.Controls.Album.Manage
         private MixControl mixControl;
 
 
-        public MixControlContextMenu(MixDown mixDown, IServiceProvider serviceProvider, MixControl mixControl) : base()
+        public MixControlContextMenu(MixDown mixDown, 
+                                     IServiceProvider serviceProvider, 
+                                     MixControl mixControl) : base()
         {
             this.MixDown = mixDown; 
             this.mixControl = mixControl;

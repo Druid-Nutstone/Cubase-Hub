@@ -105,7 +105,8 @@ namespace Cubase.Hub.Forms.Config
             this.Configuration.CubaseExeLocation = this.CubaseExeLocation.Text;
             this.Configuration.CubaseUserTemplateLocation = this.CubaseUserTemplateLocation.Text;
             this.Configuration.CubaseTemplateLocation = this.CubaseTemplateLocation.Text;
-            this.Configuration.AlbumExportLocation = this.AlbumExportLocation.Text; 
+            this.Configuration.AlbumExportLocation = this.AlbumExportLocation.Text;
+            this.Configuration.WebsiteExportLocation = this.WebSiteExportLocation.Text;
             this.configurationService.SaveConfiguration((err) =>
             {
                 this.messageService.ShowError("An error occurred while saving the configuration. Please try again.");
@@ -135,6 +136,7 @@ namespace Cubase.Hub.Forms.Config
             CubaseTemplateLocation.Text = this.Configuration.CubaseTemplateLocation;
             this.EnableBackgroundServices.Bind(nameof(Configuration.EnableBackGroundServices), this.Configuration);
             AlbumExportLocation.Text = this.Configuration.AlbumExportLocation;
+            WebSiteExportLocation.Text = this.Configuration.WebsiteExportLocation;
             if (this.configurationService.Configuration.DistributionConfiguration != null)
             {
                 this.AutoDiscoveryService.SelectedItem = this.configurationService.Configuration.DistributionConfiguration.DistributionProvider.ToString();

@@ -106,6 +106,7 @@ namespace Cubase.Hub.Forms.Albums
             this.UploadTracks.Visible = false;
             this.UploadTracks.Click += UploadTracks_Click;
             this.UploadTracks.Enabled = false;
+            this.CopyToWebSite.Click += CopyToWebSite_Click;
             if (this.configurationService?.Configuration?.DistributionConfiguration?.DistributionProvider != DistributionProvider.None)
             {
                 this.distributerForm = this.serviceProvider.GetKeyedService<IDistributerForm>(this.configurationService?.Configuration?.DistributionConfiguration?.DistributionProvider);
@@ -115,6 +116,53 @@ namespace Cubase.Hub.Forms.Albums
                     this.UploadTracks.Visible = true;
                     this.UploadTracks.Text = $"Upload to {distributerForm.ProviderName}";
                 }
+            }
+        }
+
+        private void CopyToWebSite_Click(object? sender, EventArgs e)
+        {
+            var targetDirectory = this.configurationService.Configuration?.WebsiteExportLocation;
+            if (string.IsNullOrEmpty(targetDirectory))
+            {
+                this.messageService.ShowError("There is no web site source directory configured. use the config to create one");
+                return;
+            }
+
+            if (this.CurrentMixes == null)
+            {
+                this.messageService.ShowError("Open an album !");
+                return;
+            }
+
+            var selectedMixes = this.CurrentMixes.GetSelectedMixes();
+            if (selectedMixes.Count == 0)
+            {
+                this.messageService.ShowError("Selected the tracks you want to copy to the website");
+            }
+            var msgBox = this.messageService.OpenMessage("Copying mixes to website", this);
+            try
+            {
+                foreach (var mix in selectedMixes)
+                {
+                    var sourceFile = mix.FileName;
+                    // build target directory
+                    var targetDir = Path.Combine(targetDirectory, mix.Album);
+                    if (!Directory.Exists(targetDir))
+                    {
+                        Directory.CreateDirectory(targetDir);
+                    }
+                    var targetFile = Path.Combine(targetDir, Path.GetFileName(sourceFile));
+                    msgBox.SetMessage($"Copying {Path.GetFileName(mix.FileName)}");
+                    File.Copy(mix.FileName, targetFile, true);
+                }
+            }
+            catch (Exception ex)
+            {
+                this.messageService.ShowError($"Could not copy track to website. {Environment.NewLine}{ex.Message}");
+            }
+            finally
+            {
+                msgBox?.Close();
             }
         }
 

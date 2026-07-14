@@ -131,6 +131,10 @@ namespace Cubase.Hub.Services.Album
             if (albumFinalMixLocation != null) 
             { 
                 var albumArtLocation = Path.Combine(albumFinalMixLocation, CubaseHubConstants.AlbumArt);
+                if (!Directory.Exists(albumArtLocation))
+                {
+                    Directory.CreateDirectory(albumArtLocation);
+                }
                 return Directory.GetFiles(albumArtLocation, "*.*")?.FirstOrDefault();
             }
             return null;
