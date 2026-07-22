@@ -9,17 +9,17 @@ namespace Cubase.Macro.Forms.Lyrics.Editor
     {
         public LyricControlCommandCollection()
         {
-            this.Add(LyricControlCommand.Create(ControlLyricKeyword.Title, "{title:}", "Song Title", null));
-            this.Add(LyricControlCommand.Create(ControlLyricKeyword.Font_Size, "{font_size:}", "Font Size", "24"));
+            this.Add(LyricControlCommand.Create(ControlLyricKeyword.Title, "{title:xxx}", "Song Title", null));
+            this.Add(LyricControlCommand.Create(ControlLyricKeyword.Font_Size, "{font_size:24}", "Font Size", "24"));
             this.Add(LyricControlCommand.Create(ControlLyricKeyword.Duration, "{duration:00:00}", "Total duraction of track in mm:ss", null));
-            this.Add(LyricControlCommand.Create(ControlLyricKeyword.Beats_Per_Bar, "{beats_per_bar:", "Time signature (4/4 = 4 , 3/4 = 3)", ""));
-            this.Add(LyricControlCommand.Create(ControlLyricKeyword.Tempo, "{tempo:", "BPM", "120"));
-            this.Add(LyricControlCommand.Create(ControlLyricKeyword.Sov, "{sov:}", "Verse Start", null));
-            this.Add(LyricControlCommand.Create(ControlLyricKeyword.Bar, "{bar:}", "Bar number to move to", "0"));
+            this.Add(LyricControlCommand.Create(ControlLyricKeyword.Beats_Per_Bar, "{beats_per_bar:4", "Time signature (4/4 = 4 , 3/4 = 3)", ""));
+            this.Add(LyricControlCommand.Create(ControlLyricKeyword.Tempo, "{tempo:120}", "BPM", "120"));
+            this.Add(LyricControlCommand.Create(ControlLyricKeyword.Sov, "{sov:xxx}", "Verse Start", null));
+            this.Add(LyricControlCommand.Create(ControlLyricKeyword.Bar, "{bar:0}", "Bar number to move to", "0"));
             this.Add(LyricControlCommand.Create(ControlLyricKeyword.Eov, "{eov}", "Verse End", null));
-            this.Add(LyricControlCommand.Create(ControlLyricKeyword.Soc, "{soc:}", "Chorus Start", null));
+            this.Add(LyricControlCommand.Create(ControlLyricKeyword.Soc, "{soc:xxx}", "Chorus Start", null));
             this.Add(LyricControlCommand.Create(ControlLyricKeyword.Eoc, "{eoc}", "Chorus End", null));
-            this.Add(LyricControlCommand.Create(ControlLyricKeyword.SoS, "{sos:}", "Section Start (Bridge, Solo etc)", null));
+            this.Add(LyricControlCommand.Create(ControlLyricKeyword.SoS, "{sos:xxx}", "Section Start (Bridge, Solo etc)", null));
             this.Add(LyricControlCommand.Create(ControlLyricKeyword.Eos, "{eos}", "Section End", null));
         }
     }

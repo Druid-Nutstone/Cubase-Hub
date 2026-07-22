@@ -19,13 +19,16 @@ namespace Cubase.Macro.Forms.Lyrics.Editor
 
         private void InitialiseMenus()
         {
+            var controls = new LyricControlCommandCollection();
+            foreach (var cntrl in controls)
+            {
+                this.Items.Add(new InsertControl(this.lyricEditor, cntrl));
+            }
             this.Items.Add(new CopyMenuItem(this.lyricEditor));
             this.Items.Add(new PasteMenuItem(this.lyricEditor));
             this.Items.Add(new InsertAlbumMenu(this.lyricEditor, this.lyricMetaData));
         }
     }
-
-
 
     public class BaseMenuItem : ToolStripMenuItem
     {
@@ -33,6 +36,35 @@ namespace Cubase.Macro.Forms.Lyrics.Editor
         public BaseMenuItem(LyricEditor lyricEditor, string text) : base(text)
         {
             this.lyricEditor = lyricEditor;
+        }
+    }
+
+    public class BaseControlItem : BaseMenuItem 
+    { 
+        public BaseControlItem(LyricEditor lyricEditor, string text) : base(lyricEditor , text)
+        {
+            
+        }
+
+        public void InsertControl(LyricControlCommand lyricControlCommand)
+        {
+            this.lyricEditor.InsertControl(lyricControlCommand.Text); 
+        }
+    }
+
+    public class InsertControl : BaseControlItem
+    {
+        private LyricControlCommand LyricControlCommand;
+        
+        public InsertControl(LyricEditor lyricEditor, LyricControlCommand lyricControlCommand) : base(lyricEditor, lyricControlCommand.Description) 
+        { 
+            this.LyricControlCommand = lyricControlCommand;
+        }
+
+        protected override void OnClick(EventArgs e)
+        {
+            base.OnClick(e);
+            this.InsertControl(this.LyricControlCommand); 
         }
     }
 

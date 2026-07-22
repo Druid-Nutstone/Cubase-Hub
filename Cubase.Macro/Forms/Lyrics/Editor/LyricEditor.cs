@@ -17,10 +17,7 @@ namespace Cubase.Macro.Forms.Lyrics.Editor
     public class LyricEditor : BaseRichEdit
     {
 
-        private LyricCompletetionForm completetionControl;
-        private bool autoCompletetionActive = false;
-
-        private char controlCharStart = '{';
+        private char[] controlCharStart = ['{', '[', ']', '}', ':'];
 
         [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
         public string FileName { get; private set; } = string.Empty;
@@ -76,74 +73,26 @@ namespace Cubase.Macro.Forms.Lyrics.Editor
             return metaData;
         }
 
-        protected override void OnKeyUp(KeyEventArgs e)
-        {
-            base.OnKeyUp(e);
-            if (completetionControl == null)
-            {
-               this.RefreshContent();
-            }
-        }
-
         protected override void OnTextChanged(EventArgs e)
         {
             base.OnTextChanged(e);
+            this.ColourCode();
             int cursor = this.SelectionStart;
-            if (cursor > 0 && this.Text[cursor - 1] == this.controlCharStart)
+            if (cursor > 0 && this.controlCharStart.Contains(this.Text[cursor - 1])) 
             {
-                ShowControlSelections();
+                this.ColourCode();
             }
         }
 
-        private void ShowControlSelections()
+        public void InsertControl(string insertText)
         {
-            if (completetionControl == null || completetionControl.IsDisposed)
+            this.InsertAtPointer(insertText);
+            if (insertText.Contains(":"))
             {
-                completetionControl = new LyricCompletetionForm(); 
-                // Position relative to cursor
-                System.Drawing.Point p = this.GetPositionFromCharIndex(this.SelectionStart);
-                p = this.PointToScreen(p);
-                completetionControl.Location = new System.Drawing.Point(p.X, p.Y + 24); // Offset below cursor
-                completetionControl.Show(this);
-                autoCompletetionActive = true;
-                
-                completetionControl.OnSelected = (lyricControl) => 
-                {
-                    if (lyricControl != null)
-                    {
-                        var insertText = lyricControl.Text;
-
-                        if (insertText.Contains(':'))
-                        {
-                            insertText = insertText.Substring(1);
-                            if (!string.IsNullOrEmpty(lyricControl.DefaultValue))
-                            {
-                                var colonIndex = insertText.IndexOf(':');
-                                insertText = insertText.Insert(colonIndex + 1, lyricControl.DefaultValue+"}");
-                            }
-                        }
-                        else
-                        {
-                            insertText = insertText.Substring(1);
-                        }
-
-                        this.InsertAtPointer(insertText);
-                        if (lyricControl.Text.Contains(':') && string.IsNullOrEmpty(lyricControl.DefaultValue))
-                        {
-                            var valueLocation = lyricControl.Text.IndexOf(":");
-                            this.SelectionStart += valueLocation - 1;
-                        }
-                        else
-                        {
-                            // move selection to end of line 
-                            this.SelectionStart = this.SelectionStart + lyricControl.Text.Length - 1;
-                            this.AppendText(Environment.NewLine);
-                        }
-                    }
-                    this.Focus();
-                    completetionControl = null;
-                };
+                this.SelectionStart = this.SelectionStart + insertText.IndexOf(':');
             }
+            //this.AppendText(Environment.NewLine);
+            this.ColourCode();
         }
 
         public void ColourCode()
