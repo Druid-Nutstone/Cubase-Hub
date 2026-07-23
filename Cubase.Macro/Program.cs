@@ -20,6 +20,7 @@ using Cubase.Macro.Forms.Cues;
 using Cubase.Macro.Common.Lyrics.Services;
 using Cubase.Macro.Common.Lyrics.Scrolling;
 using Cubase.Macro.Services.Lyrics;
+using System.Diagnostics;
 
 namespace Cubase.Macro
 {
@@ -92,6 +93,19 @@ namespace Cubase.Macro
                     var lyricForm = host.Services.GetService<LyricViewerForm>();
                     Application.Run(lyricForm);
                 }
+                if (options == "midicontrol")
+                {
+                    var config = host.Services.GetService<IConfigurationService>();
+                    config?.ReloadConfiguration();
+                    var externalMidiControl = config.Configuration.LyricViewerFilePath;
+                    if (!string.IsNullOrEmpty(externalMidiControl))
+                    {
+                        Process openMidiControl = new Process();
+                        openMidiControl.StartInfo.FileName = externalMidiControl;
+                        openMidiControl.Start();
+                        return;
+                    }
+                }
             }
         }
 
@@ -143,31 +157,15 @@ namespace Cubase.Macro
                 IconResourcePath = Application.ExecutablePath,
                 IconResourceIndex = 0
             });
-            jumpList.Apply();
-        }
-
-        static IServiceProvider InstallServices()
-        {
-            var serviceCollection = new ServiceCollection();
-
-            serviceCollection.AddLogging(builder =>
+            jumpList.JumpItems.Add(new JumpTask
             {
-                builder.ClearProviders();
-                builder.AddSerilog();
+                Title = "Open Midi Control",
+                Arguments = "midicontrol",
+                ApplicationPath = Application.ExecutablePath,
+                IconResourcePath = Application.ExecutablePath,
+                IconResourceIndex = 0
             });
-
-            serviceCollection
-                .AddSingleton<IKeyboardService, KeyboardService>()
-                .AddSingleton<IWindowService, WindowService>()
-                .AddSingleton<IConfigurationService, ConfigurationService>()
-                .AddSingleton<IMidiService, MidiService>()
-                .AddSingleton<IWindowsControllerService, WindowsControllerService>()
-                .AddScoped<SettingsMainControl>()
-                .AddScoped<SettingsForm>()
-                .AddScoped<MainForm>();
-
-            var provider = serviceCollection.BuildServiceProvider();
-            return provider;
+            jumpList.Apply();
         }
 
 
