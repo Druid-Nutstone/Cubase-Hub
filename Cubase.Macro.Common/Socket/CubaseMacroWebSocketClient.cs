@@ -38,7 +38,10 @@ namespace Cubase.Macro.Common.Socket
             try
             {
                 cts.Cancel();
-                client.Dispose();
+                if (client != null)
+                {
+                    client.Dispose();
+                }
             }
             catch { }
         }

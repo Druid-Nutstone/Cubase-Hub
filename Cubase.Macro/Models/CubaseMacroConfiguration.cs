@@ -29,6 +29,8 @@ namespace Cubase.Macro.Models
 
         public int LyricFontSize { get; set; } = 12;
 
+        public string LyricViewerFilePath { get; set; } = "C:\\Dev\\Cubase-Hub\\Cubase.Macro.Mobile\\bin\\Debug\\net10.0-windows10.0.19041.0\\win-x64\\Cubase.Macro.Mobile.exe";
+
         public bool Save()
         {
             try

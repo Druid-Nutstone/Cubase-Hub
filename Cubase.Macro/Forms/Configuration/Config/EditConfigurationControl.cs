@@ -33,6 +33,8 @@ namespace Cubase.Macro.Forms.Configuration.Config
             CubaseRestartWindowsMidiService.CheckedChanged += SaveConfig;
             LyricFontSize.Bind(nameof(CubaseMacroConfiguration.LyricFontSize), this.cubaseMacroConfiguration);
             LyricFontSize.LostFocus += SaveConfig;
+            lyricEditorPath.Bind(nameof(CubaseMacroConfiguration.LyricViewerFilePath), this.cubaseMacroConfiguration);
+            lyricEditorPath.LostFocus += SaveConfig;
         }
 
         private void SaveConfig(object? sender, EventArgs e)

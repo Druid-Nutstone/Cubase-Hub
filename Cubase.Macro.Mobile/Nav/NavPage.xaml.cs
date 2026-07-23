@@ -1,6 +1,7 @@
 using Cubase.Macro.Common.Socket;
 using Cubase.Macro.Mobile.Configuration;
 using Cubase.Macro.Mobile.Lyrics;
+using Cubase.Macro.Mobile.Services.Mswin;
 using System.Net.WebSockets;
 
 namespace Cubase.Macro.Mobile.Nav;
@@ -9,17 +10,19 @@ public partial class NavPage : ContentPage
 {
 	private readonly CubaseMacroWebSocketClient webSocket;
 	private readonly FileHandler fileHandler;
-
+    private readonly IMsWinService msWinService;
 	private readonly IMobileConfigurationService configurationService;
 
     public NavPage(CubaseMacroWebSocketClient webSocket, 
 		           FileHandler fileHandler, 
-				   IMobileConfigurationService configurationService)
+				   IMsWinService msWinService,
+                   IMobileConfigurationService configurationService)
 	{
 		InitializeComponent();
 		this.webSocket = webSocket;
 		this.configurationService = configurationService; 
 		this.fileHandler = fileHandler;
+        this.msWinService = msWinService;
 		MidiConfiguration.Clicked += async (s, e) =>
         {
             await Shell.Current.GoToAsync("ConfigurationPage");
@@ -49,6 +52,10 @@ public partial class NavPage : ContentPage
         {
             await Shell.Current.GoToAsync("LyricViewer");
         };
+        if (this.msWinService.HaveParameters())
+        {
+            Shell.Current.GoToAsync("LyricViewer");
+        }
     }
 
     protected override async void OnAppearing()

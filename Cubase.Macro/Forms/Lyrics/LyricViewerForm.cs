@@ -9,6 +9,7 @@ using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
+using System.Diagnostics;
 using System.Drawing;
 using System.IO;
 using System.Text;
@@ -178,12 +179,19 @@ namespace Cubase.Macro.Forms.Lyrics
 
         private void LoadLyricViewer()
         {
-            EditButton.Bind(this.EditLyric, "E", "Edit Lyrics");
             MidiEnabled.Visible = this.lyricMidiService.IsMidiAvailable();
-            lyricEditorType = LyricEditorType.Viewer;
-            this.viewer = new LyricViewer(this.lyricService);
-            viewer.ScrollUpdateEvent = this.UpdateTransportLocation;
-            this.LoadMainPanel(viewer);
+            var externalViewer = this.configurationService.Configuration.LyricViewerFilePath;
+            var source = editor?.Lines;
+            var tempFilePath = Path.Combine(Path.GetTempPath(), "TestLyric.txt");
+            File.WriteAllLines(tempFilePath, source);
+            var openProcess = new Process();
+            openProcess.StartInfo.FileName = externalViewer;
+            openProcess.StartInfo.Arguments = $"{'"'.ToString()}{tempFilePath}{'"'.ToString()}";
+            openProcess.Start();
+            //lyricEditorType = LyricEditorType.Viewer;
+            //this.viewer = new LyricViewer(this.lyricService);
+            //viewer.ScrollUpdateEvent = this.UpdateTransportLocation;
+            //this.LoadMainPanel(viewer);
         }
 
         private void UpdateTransportLocation(ScrollResponse response)

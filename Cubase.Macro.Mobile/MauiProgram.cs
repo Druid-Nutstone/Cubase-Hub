@@ -5,6 +5,7 @@ using Cubase.Macro.Mobile.Configuration;
 using Cubase.Macro.Mobile.Lyrics;
 using Cubase.Macro.Mobile.Nav;
 using Cubase.Macro.Mobile.Services;
+using Cubase.Macro.Mobile.Services.Mswin;
 using Microsoft.Extensions.DependencyInjection.Extensions;
 using Microsoft.Extensions.Logging;
 using Serilog;
@@ -34,6 +35,7 @@ namespace Cubase.Macro.Mobile
             builder.Services.AddSingleton<IMobileConfigurationService, MobileConfigurationService>(); 
             builder.Services.AddSingleton<IColourService, ColourService>();
             builder.Services.AddSingleton<IlyricMidiService, MobileLyricService>();
+            builder.Services.AddSingleton<IMsWinService, MsWinService>();
             builder.Services.AddTransient<MainPage>();
             builder.Logging.ClearProviders();
 

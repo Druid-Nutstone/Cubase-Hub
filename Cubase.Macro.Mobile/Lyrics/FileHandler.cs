@@ -56,6 +56,8 @@ namespace Cubase.Macro.Mobile.Lyrics
             });
         }
 
+
+
         public async Task CheckForFileUpdates()
         {
             if (!Directory.Exists(CubaseMacroMobileConstants.LyricSourceFolder))

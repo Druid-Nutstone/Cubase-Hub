@@ -42,6 +42,8 @@
             CubaseRestartWindowsMidiService = new Cubase.Macro.BoundControls.BoundCheckbox();
             label6 = new Label();
             LyricFontSize = new Cubase.Macro.BoundControls.BoundTextBox();
+            label7 = new Label();
+            lyricEditorPath = new Cubase.Macro.BoundControls.BoundTextBox();
             SuspendLayout();
             // 
             // label1
@@ -143,7 +145,7 @@
             // CubaseRestartWindowsMidiService
             // 
             CubaseRestartWindowsMidiService.AutoSize = true;
-            CubaseRestartWindowsMidiService.Location = new Point(24, 370);
+            CubaseRestartWindowsMidiService.Location = new Point(24, 491);
             CubaseRestartWindowsMidiService.Name = "CubaseRestartWindowsMidiService";
             CubaseRestartWindowsMidiService.Size = new Size(231, 24);
             CubaseRestartWindowsMidiService.TabIndex = 11;
@@ -167,10 +169,29 @@
             LyricFontSize.Size = new Size(84, 27);
             LyricFontSize.TabIndex = 13;
             // 
+            // label7
+            // 
+            label7.AutoSize = true;
+            label7.Font = new Font("Segoe UI", 9F, FontStyle.Bold);
+            label7.Location = new Point(24, 382);
+            label7.Name = "label7";
+            label7.Size = new Size(167, 20);
+            label7.TabIndex = 14;
+            label7.Text = "Lyric Editor Path (.exe)";
+            // 
+            // lyricEditorPath
+            // 
+            lyricEditorPath.Location = new Point(24, 405);
+            lyricEditorPath.Name = "lyricEditorPath";
+            lyricEditorPath.Size = new Size(323, 27);
+            lyricEditorPath.TabIndex = 15;
+            // 
             // EditConfigurationControl
             // 
             AutoScaleDimensions = new SizeF(8F, 20F);
             AutoScaleMode = AutoScaleMode.Font;
+            Controls.Add(lyricEditorPath);
+            Controls.Add(label7);
             Controls.Add(LyricFontSize);
             Controls.Add(label6);
             Controls.Add(CubaseRestartWindowsMidiService);
@@ -186,7 +207,7 @@
             Controls.Add(ResetVisibilityKey);
             Controls.Add(label1);
             Name = "EditConfigurationControl";
-            Size = new Size(366, 421);
+            Size = new Size(366, 554);
             ResumeLayout(false);
             PerformLayout();
         }
@@ -207,5 +228,7 @@
         private BoundControls.BoundCheckbox CubaseRestartWindowsMidiService;
         private Label label6;
         private BoundControls.BoundTextBox LyricFontSize;
+        private Label label7;
+        private BoundControls.BoundTextBox lyricEditorPath;
     }
 }

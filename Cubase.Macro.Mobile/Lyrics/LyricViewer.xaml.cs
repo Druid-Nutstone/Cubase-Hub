@@ -3,6 +3,7 @@ using Cubase.Macro.Common.Lyrics.Services;
 using Cubase.Macro.Common.Models;
 using Cubase.Macro.Common.Socket;
 using Cubase.Macro.Mobile.Configuration;
+using Cubase.Macro.Mobile.Services.Mswin;
 using System.Diagnostics;
 using System.Xml.Serialization;
 
@@ -10,6 +11,8 @@ namespace Cubase.Macro.Mobile.Lyrics;
 
 public partial class LyricViewer : ContentPage
 {
+    private readonly IMsWinService msWinService;
+    
     private readonly ILyricService lyricService;
 
     private readonly CubaseMacroWebSocketClient webSocketClient;
@@ -42,6 +45,7 @@ public partial class LyricViewer : ContentPage
 
     public LyricViewer(ILyricService lyricService,
                        FileHandler fileHandler,
+                       IMsWinService msWinService,
                        IMobileConfigurationService mobileConfigurationService,
                        CubaseMacroWebSocketClient webSocketClient)
     {
@@ -50,9 +54,28 @@ public partial class LyricViewer : ContentPage
         this.lyricService = lyricService;
         this.fileHandler = fileHandler;
         this.webSocketClient = webSocketClient;
+        this.msWinService = msWinService;
         this.configurationService = mobileConfigurationService;
         this.menuHandler = new MenuHandler(this.Menu, this);
         this.bottomMenuHandler = new BottomMenuHandler(this.BottomMenu, this);
+    }
+
+    private async Task<bool> LoadWinFileIfRequired()
+    {
+        if (this.msWinService.HaveLyricFile())
+        {
+            if (File.Exists(this.msWinService.LyricFile))
+            {
+                var lyricContent = File.ReadAllLines(this.msWinService.LyricFile);
+                await this.LoadFile(lyricContent);
+                return true;
+            }
+            else
+            {
+                this.ProcessError($"Cannot find file {this.msWinService.LyricFile}");
+            }
+        }
+        return false;
     }
 
 
@@ -258,26 +281,30 @@ public partial class LyricViewer : ContentPage
         timer.Interval = TimeSpan.FromMilliseconds(500);
         timer.Tick += TimerElapsed;
         await this.menuHandler.BuildMenu();
-        await this.menuHandler.DisableButtons();
-        if (webSocketClient.Connected)
-        {
-            var lyricContent = await this.webSocketClient.GetCurrentLyric(this.ProcessError);
-            if (lyricContent != null)
-            {
-                if (lyricContent.IsSuccess)
-                {
-                    await this.LoadFile(lyricContent.LyricContent);
-                }
-                else
-                {
-                    this.ProcessError(lyricContent.ErrorMessage);
-                }
-            }
-        }
-        else
+       
+        if (!await this.LoadWinFileIfRequired())
         {
             await this.menuHandler.DisableButtons();
-            await this.ShowFiles();
+            if (webSocketClient.Connected)
+            {
+                var lyricContent = await this.webSocketClient.GetCurrentLyric(this.ProcessError);
+                if (lyricContent != null)
+                {
+                    if (lyricContent.IsSuccess)
+                    {
+                        await this.LoadFile(lyricContent.LyricContent);
+                    }
+                    else
+                    {
+                        this.ProcessError(lyricContent.ErrorMessage);
+                    }
+                }
+            }
+            else
+            {
+                await this.menuHandler.DisableButtons();
+                await this.ShowFiles();
+            }
         }
     }
 
