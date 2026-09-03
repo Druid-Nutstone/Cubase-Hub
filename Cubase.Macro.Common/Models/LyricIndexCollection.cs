@@ -16,7 +16,7 @@ namespace Cubase.Macro.Common.Models
         public LyricIndexCollection PopulateLyricFiles(string baseDirectory)
         {
             this.Lyrics.Clear();
-            var availableLyrics = Directory.GetFiles(baseDirectory, "*.txt").ToList();
+            var availableLyrics = Directory.GetFiles(baseDirectory, "*.nln").ToList();
             availableLyrics.ForEach(x => this.Lyrics.Add(new Lyric() 
             { 
                FileName = Path.GetFileName(x),

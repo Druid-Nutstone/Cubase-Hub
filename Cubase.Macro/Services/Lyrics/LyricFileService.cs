@@ -45,8 +45,8 @@ namespace Cubase.Macro.Services.Lyrics
 
         public LyricIndexCollection GetLyricIndex()
         {
-            var lyricCollection = LyricIndexCollection.DeserialiseFromFile(CubaseMacroConstants.LyricIndexFile);
-            return lyricCollection.PopulateLyricFiles(CubaseMacroConstants.DropBoxBaseDirectory);    
+            return LyricIndexCollection.DeserialiseFromFile(CubaseMacroConstants.LyricIndexFile);
+    
         }
 
         public LyricResponseModel GetProjectCurrentLyrics()

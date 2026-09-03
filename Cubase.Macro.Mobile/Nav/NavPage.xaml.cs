@@ -70,7 +70,8 @@ public partial class NavPage : ContentPage
 		{
             RetryConnection.IsVisible = true;
 			RetryConnection.IsEnabled = true;
-			await EnableLyrics();
+            await this.GetFileUpdates();
+            await EnableLyrics();
         }
 		else
 		{
@@ -88,7 +89,11 @@ public partial class NavPage : ContentPage
     private async Task GetFileUpdates()
 	{
         SetMessage("Checking for lyric updates..");
-        await this.fileHandler.CheckForFileUpdates();
+        await this.fileHandler.CheckForFileUpdates((err) => 
+        {
+            SetMessage($"Could not get updated lyric files: {err}");
+        });
+        SetMessage("Ready");
     }
 
 	private async Task EnableButtons()

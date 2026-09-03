@@ -1,11 +1,14 @@
 using Cubase.Macro.Common.Lyrics;
 using Cubase.Macro.Common.Lyrics.Services;
+using Cubase.Macro.Common.Lyrics.Services.Scrolling;
 using Cubase.Macro.Common.Models;
 using Cubase.Macro.Common.Socket;
 using Cubase.Macro.Mobile.Configuration;
 using Cubase.Macro.Mobile.Services.Mswin;
 using System.Diagnostics;
 using System.Xml.Serialization;
+using static System.Net.Mime.MediaTypeNames;
+using Image = Microsoft.Maui.Controls.Image;
 
 namespace Cubase.Macro.Mobile.Lyrics;
 
@@ -13,8 +16,6 @@ public partial class LyricViewer : ContentPage
 {
     private readonly IMsWinService msWinService;
     
-    private readonly ILyricService lyricService;
-
     private readonly CubaseMacroWebSocketClient webSocketClient;
 
     private readonly FileHandler fileHandler;
@@ -23,7 +24,9 @@ public partial class LyricViewer : ContentPage
 
     private readonly SemaphoreSlim timerLock = new SemaphoreSlim(1, 1);
 
-    private MobileLyricCollection lyrics;
+    private readonly IScrollerService scrollerService;
+
+    private List<LyricSection> lyrics;
 
     private int BPM = -1; // beats per minute  
 
@@ -43,15 +46,14 @@ public partial class LyricViewer : ContentPage
 
     private CubaseMidiProjectStatus midiProjectStatus;
 
-    public LyricViewer(ILyricService lyricService,
-                       FileHandler fileHandler,
+    public LyricViewer(FileHandler fileHandler,
                        IMsWinService msWinService,
+                       IScrollerService scrollerService,
                        IMobileConfigurationService mobileConfigurationService,
                        CubaseMacroWebSocketClient webSocketClient)
     {
         InitializeComponent();
         this.BackgroundColor = CubaseMacroMobileConstants.DefaultBackgroundColour;
-        this.lyricService = lyricService;
         this.fileHandler = fileHandler;
         this.webSocketClient = webSocketClient;
         this.msWinService = msWinService;
@@ -66,7 +68,7 @@ public partial class LyricViewer : ContentPage
         {
             if (File.Exists(this.msWinService.LyricFile))
             {
-                var lyricContent = File.ReadAllLines(this.msWinService.LyricFile);
+                var lyricContent = Cubase.Macro.Common.Models.LyricContainer.Load(this.msWinService.LyricFile, (err) => { });
                 await this.LoadFile(lyricContent);
                 return true;
             }
@@ -81,14 +83,6 @@ public partial class LyricViewer : ContentPage
 
     public async Task ShowHideChords(bool isVisible)
     {
-        for (int i = 0; i < lyricRows.Count; i++)
-        {
-            var lyric = (LyricLabel)lyricRows[i].Children[1];
-            if (lyric.LineType == LyricLineType.Chord)
-            {
-                lyric.IsVisible = isVisible;
-            }
-        }
     }
 
     public async Task StartAutoScroll()
@@ -284,31 +278,13 @@ public partial class LyricViewer : ContentPage
        
         if (!await this.LoadWinFileIfRequired())
         {
+            // todo need to just get the current cubase project and then load it from local disk 
             await this.menuHandler.DisableButtons();
-            if (webSocketClient.Connected)
-            {
-                var lyricContent = await this.webSocketClient.GetCurrentLyric(this.ProcessError);
-                if (lyricContent != null)
-                {
-                    if (lyricContent.IsSuccess)
-                    {
-                        await this.LoadFile(lyricContent.LyricContent);
-                    }
-                    else
-                    {
-                        this.ProcessError(lyricContent.ErrorMessage);
-                    }
-                }
-            }
-            else
-            {
-                await this.menuHandler.DisableButtons();
-                await this.ShowFiles();
-            }
+            await this.ShowFiles();
         }
     }
 
-    public async Task LoadFile(IEnumerable<string> content)
+    public async Task LoadFile(LyricContainer content)
     {
         await this.menuHandler.EnableButtons();
         await this.StopAutoScroll();
@@ -318,16 +294,11 @@ public partial class LyricViewer : ContentPage
             StartBar = 0;
             BPB = -1;
             BPM = -1;
-            var lyricBuffer = this.lyricService.ParseLyrics(content, 0, ' ');
-            this.lyrics = new MobileLyricCollection(lyricBuffer);
+            this.lyrics = content.Sections;
             this.lyricRows = new();
-            this.RefreshLyrics(lyrics);
+            this.RefreshLyrics(this.lyrics, content.FontSize);
             // start by NOT showing any chords 
             await this.ShowHideChords(false);
-            if (this.lyricService.LyricCollection != null)
-            {
-                this.ProcessControlStatements(this.lyricService.LyricCollection);
-            }
             await this.CloseFiles();
         });
     }
@@ -335,43 +306,6 @@ public partial class LyricViewer : ContentPage
     private async void ProcessError(string errorMessage)
     {
         await DisplayAlertAsync("Error!", $"{errorMessage} {Environment.NewLine} Midi server IP: {this.configurationService.Configuration.MidiServerIpAddress}", "OK");
-    }
-
-    private void ProcessControlStatements(LyricChordCollection sections)
-    {
-        var requestedFontSize = sections.GetControlValue(ControlLyricKeyword.Font_Size);
-        if (requestedFontSize != null)
-        {
-            var fs = int.Parse(requestedFontSize);
-            this.SetFontSize((lbl) =>
-            {
-                if (lbl is Label)
-                {
-                    ((Label)lbl).FontSize = fs;
-                }
-                if (lbl is Image)
-                {
-                    ((Image)lbl).WidthRequest = fs;
-                    ((Image)lbl).HeightRequest = fs;
-
-                }
-            });
-        }
-        var bpmControl = sections.GetControlValue(ControlLyricKeyword.Tempo);
-        if (bpmControl != null)
-        {
-            BPM = int.Parse(bpmControl);
-        }
-        var bpbControl = sections.GetControlValue(ControlLyricKeyword.Beats_Per_Bar);
-        if (bpbControl != null)
-        {
-            BPB = int.Parse(bpbControl);
-        }
-        var startBar = sections.GetControlValue(ControlLyricKeyword.Start_Bar);
-        if (startBar != null)
-        {
-            StartBar = int.Parse(startBar);
-        }
     }
 
     private async void TimerElapsed(object? sender, EventArgs e)
@@ -387,45 +321,45 @@ public partial class LyricViewer : ContentPage
         {
             if (IsCubaseAvailable())
             {
-                var transportLocation = await this.webSocketClient.GetTransportLocation(this.ProcessError);
-                if (transportLocation != null)
-                {
-                    Debug.WriteLine($"Transport Location: {transportLocation.TransportType} - Bar: {transportLocation.BarBeatTime}");
+                //var transportLocation = await this.webSocketClient.GetTransportLocation(this.ProcessError);
+                //if (transportLocation != null)
+                //{
+                //    Debug.WriteLine($"Transport Location: {transportLocation.TransportType} - Bar: {transportLocation.BarBeatTime}");
 
-                    if (transportLocation.TransportType == Common.Models.TransportType.BarsBeats)
-                    {
-                        var lyricItemBar = this.lyrics.GetBar(transportLocation.BarBeatTime + 1);
-                        await Task.Delay(350);
-                        if (lyricItemBar != null)
-                        {
-                            // await Task.Delay(100); // allow last lyric line to be sung!?
-                            SetBarLocation(lyricItemBar.Bar);
-                        }
-                    }
-                }
+                //    if (transportLocation.TransportType == Common.Models.TransportType.BarsBeats)
+                //    {
+                //        var lyricItemBar = this.lyrics.GetBar(transportLocation.BarBeatTime + 1);
+                //        await Task.Delay(350);
+                //        if (lyricItemBar != null)
+                //        {
+                //            // await Task.Delay(100); // allow last lyric line to be sung!?
+                //            SetBarLocation(lyricItemBar.Bar);
+                //        }
+                //    }
+                //}
             }
             else // manual calculation
             {
-                if (BPM > -1 && BPB > -1)
-                {
-                    double totalSeconds = stopwatch.Elapsed.TotalSeconds;
-                    double secondsPerBeat = 60.0 / BPM;
-                    // 2. Seconds per full bar
-                    double secondsPerBar = secondsPerBeat * BPB;
-                    // 3. Calculate current bar (adding 1 because we start counting at Bar 1)
-                    double currentBar = (int)(totalSeconds / secondsPerBar) + StartBar;
-                    if (currentBar > this.lyrics.MaxBar())
-                    {
-                        timer.Stop();
-                        return;
-                    }
+            //    if (BPM > -1 && BPB > -1)
+            //    {
+            //        double totalSeconds = stopwatch.Elapsed.TotalSeconds;
+            //        double secondsPerBeat = 60.0 / BPM;
+            //        // 2. Seconds per full bar
+            //        double secondsPerBar = secondsPerBeat * BPB;
+            //        // 3. Calculate current bar (adding 1 because we start counting at Bar 1)
+            //        double currentBar = (int)(totalSeconds / secondsPerBar) + StartBar;
+            //        if (currentBar > this.lyrics.MaxBar())
+            //        {
+            //            timer.Stop();
+            //            return;
+            //        }
 
-                    var lyricItemBar = this.lyrics.GetBar((int)currentBar);
-                    if (lyricItemBar != null)
-                    {
-                        SetBarLocation(lyricItemBar.Bar);
-                    }
-                }
+            //        var lyricItemBar = this.lyrics.GetBar((int)currentBar);
+            //        if (lyricItemBar != null)
+            //        {
+            //            SetBarLocation(lyricItemBar.Bar);
+            //        }
+            //    }
             }
         }
         finally
@@ -455,18 +389,18 @@ public partial class LyricViewer : ContentPage
 
     private void SetBarLocation(int targetBar)
     {
-        CurrentBar?.Text = targetBar.ToString();
-        CurrentBar?.InvalidateMeasure();
-        var lyricItemBar = this.lyrics.GetBar(targetBar);
-        if (lyricItemBar != null)
-        {
-            var index = this.lyrics.GetIndex(lyricItemBar);
-            if (index >= 0 && index < lyricRows.Count)
-            {
-                UpdateArrowVisibility(index);
-                EnsureVisible(index);
-            }
-        }
+        //CurrentBar?.Text = targetBar.ToString();
+        //CurrentBar?.InvalidateMeasure();
+        //var lyricItemBar = this.lyrics.GetBar(targetBar);
+        //if (lyricItemBar != null)
+        //{
+        //    var index = this.lyrics.GetIndex(lyricItemBar);
+        //    if (index >= 0 && index < lyricRows.Count)
+        //    {
+        //        UpdateArrowVisibility(index);
+        //        EnsureVisible(index);
+        //    }
+        //}
     }
 
     private void UpdateArrowVisibility(int targetIndex)
@@ -526,102 +460,148 @@ public partial class LyricViewer : ContentPage
 
     private async void EnsureVisible(int index)
     {
-        var targetRow = lyricRows[index];
+        //var targetRow = lyricRows[index];
 
-        // Determine the end of the section
-        var endRowLyric = this.lyrics.Where(x => x.Lyric.Trim().Length == 0 || x.Bar > -1)
-                                 .Skip(index)
-                                 .FirstOrDefault();
+        //// Determine the end of the section
+        //var endRowLyric = this.lyrics.Where(x => x.Lyric.Trim().Length == 0 || x.Bar > -1)
+        //                         .Skip(index)
+        //                         .FirstOrDefault();
 
-        int endRowLineIndex = (endRowLyric != null) ? this.lyrics.IndexOf(endRowLyric) : this.lyrics.Count - 1;
-        var endRow = lyricRows[endRowLineIndex];
+        //int endRowLineIndex = (endRowLyric != null) ? this.lyrics.IndexOf(endRowLyric) : this.lyrics.Count - 1;
+        //var endRow = lyricRows[endRowLineIndex];
 
-        double viewportHeight = LyricScrollView.Height;
-        double desiredFraction = 0.20;
+        //double viewportHeight = LyricScrollView.Height;
+        //double desiredFraction = 0.20;
 
-        // Calculate how much space the target section takes up
-        double targetSectionHeight = endRow.Y + endRow.Height - targetRow.Y;
+        //// Calculate how much space the target section takes up
+        //double targetSectionHeight = endRow.Y + endRow.Height - targetRow.Y;
 
-        // 1. Calculate the ideal scroll position (target at 1/3)
-        double idealScrollTo = targetRow.Y - (viewportHeight * desiredFraction);
+        //// 1. Calculate the ideal scroll position (target at 1/3)
+        //double idealScrollTo = targetRow.Y - (viewportHeight * desiredFraction);
 
-        // 2. Calculate the maximum safe scroll position
-        // If we scroll past (targetRow.Y), the top of the section goes off-screen.
-        // If the section is huge, we don't want to scroll past targetRow.Y.
-        double maxScrollTo = targetRow.Y;
+        //// 2. Calculate the maximum safe scroll position
+        //// If we scroll past (targetRow.Y), the top of the section goes off-screen.
+        //// If the section is huge, we don't want to scroll past targetRow.Y.
+        //double maxScrollTo = targetRow.Y;
 
-        // 3. Determine the final position
-        // If the section is larger than the available space (2/3 of viewport), 
-        // clamp it to the start of the section.
-        double scrollTo;
-        if (targetSectionHeight > (viewportHeight * (1 - desiredFraction)))
-        {
-            // Section is too big; pin the top of the section to the top of the viewport 
-            // (or slightly below if you prefer a small padding)
-            scrollTo = Math.Max(0, targetRow.Y);
-        }
-        else
-        {
-            // Section fits; use the 1/3 offset
-            scrollTo = Math.Max(0, idealScrollTo);
-        }
-        await LyricScrollView.ScrollToAsync(0, scrollTo, false);
+        //// 3. Determine the final position
+        //// If the section is larger than the available space (2/3 of viewport), 
+        //// clamp it to the start of the section.
+        //double scrollTo;
+        //if (targetSectionHeight > (viewportHeight * (1 - desiredFraction)))
+        //{
+        //    // Section is too big; pin the top of the section to the top of the viewport 
+        //    // (or slightly below if you prefer a small padding)
+        //    scrollTo = Math.Max(0, targetRow.Y);
+        //}
+        //else
+        //{
+        //    // Section fits; use the 1/3 offset
+        //    scrollTo = Math.Max(0, idealScrollTo);
+        //}
+        //await LyricScrollView.ScrollToAsync(0, scrollTo, false);
     }
 
 
 
-    private void RefreshLyrics(MobileLyricCollection lyrics)
+    private void RefreshLyrics(List<LyricSection> lyrics, int fontSize)
     {
         LyricContainer.Children.Clear();
 
         foreach (var lyricModel in lyrics)
         {
-            // 1. Create your custom row
-            var row = new Grid
+            var lyricLines = lyricModel.Lyrics.Split(new[] { "\r\n", "\n" }, StringSplitOptions.None);
+
+            int searchStartIndex = 0;
+
+            foreach (var rawLyricLine in lyricLines)
             {
-                ColumnDefinitions = {
+                var lyricLine = rawLyricLine.TrimEnd('\r');
+
+                // Find the exact absolute start index of this line in the original text
+                int lineStartIndex = lyricModel.Lyrics.IndexOf(lyricLine, searchStartIndex);
+                if (lineStartIndex == -1) lineStartIndex = searchStartIndex;
+
+                var chords = lyricModel.Chords
+                                       .Where(x => x.CharacterIndex >= lineStartIndex && x.CharacterIndex < lineStartIndex + lyricLine.Length)
+                                       .ToList();
+
+                if (chords.Any())
+                {
+                    // Calculate position relative to this line's actual start index
+                    var relativeChords = chords.Select(x => new ChordSection() { CharacterIndex = x.CharacterIndex - lineStartIndex, Chord = x.Chord });
+                    var chordLabelText = "";
+                    int currentLength = 0;
+
+                    foreach (var chord in relativeChords)
+                    {
+                        int spacesNeeded = chord.CharacterIndex - currentLength;
+
+                        if (spacesNeeded > 0)
+                        {
+                            chordLabelText += new string(' ', spacesNeeded);
+                            currentLength += spacesNeeded;
+                        }
+
+                        chordLabelText += chord.Chord;
+                        currentLength += chord.Chord.Length;
+                    }
+
+                    var chordText = new LyricLabel
+                    {
+                        Text = chordLabelText,
+                        TextColor = Colors.Red,
+                        Type = LineType.Chord,
+                        FontSize = fontSize,
+                        IsVisible = true
+                    };
+                    this.AddRow(chordText);
+                }
+
+                var lyricText = new LyricLabel
+                {
+                    Text = lyricLine,
+                    TextColor = Colors.White,
+                    Type = LineType.Lyric,
+                    FontSize = fontSize,
+                    IsVisible = true
+                };
+                this.AddRow(lyricText);
+
+                foreach (var chord in chords)
+                {
+                    lyricModel.Chords.Remove(chord);
+                }
+
+                // Advance past this line for the next search iteration
+                searchStartIndex = lineStartIndex + lyricLine.Length;
+            }
+        }
+    }
+
+    private void AddRow(LyricLabel lyricLabel)
+    {
+        var row = new Grid
+        {
+            ColumnDefinitions = {
                 new ColumnDefinition(40), // Arrow
                 new ColumnDefinition(GridLength.Star) // Text
             }
-            };
+        };
 
-            /*
-            var arrow = new Label
-            {
-                Text = "\u25B6",
-                TextColor = Colors.Red,
-                IsVisible = false,
-                BackgroundColor = Color.FromArgb("#1E1E1E"),
-                Padding = new Thickness(0),
-                // Center the text to ensure it doesn't align weirdly
-                VerticalTextAlignment = TextAlignment.Center,
-                HorizontalTextAlignment = TextAlignment.Center,
-                // Ensure the line height doesn't force extra space
-                LineBreakMode = LineBreakMode.NoWrap
-            };
-            */
-            var arrow = new Image
-            {
-                Source = "pointer.png",
-                WidthRequest = 16,
-                HeightRequest = 16,
-                IsVisible = false
+        var arrow = new Image
+        {
+            Source = "pointer.png",
+            WidthRequest = 16,
+            HeightRequest = 16,
+            IsVisible = false
 
-            };
-            var text = new LyricLabel
-            {
-                Text = lyricModel.Lyric,
-                LineType = lyricModel.LineType,
-                TextColor = lyricModel.ForegoundColour,
-                IsVisible = true
-            };
+        };
 
-            row.Add(arrow, 0, 0);
-            row.Add(text, 1, 0);
-            lyricRows.Add(row);
-            // 2. Add to the container
-            LyricContainer.Children.Add(row);
-        }
+        row.Add(arrow, 0, 0);
+        row.Add(lyricLabel, 1, 0);
+        lyricRows.Add(row);
+        LyricContainer.Children.Add(row);
     }
 
 }

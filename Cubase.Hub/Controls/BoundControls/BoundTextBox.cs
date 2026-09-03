@@ -17,8 +17,9 @@ namespace Cubase.Hub.Controls.BoundControls
 
         }
 
-        public void Bind(string propertyName, object dataSource, DataSourceUpdateMode propertyUpdateType = DataSourceUpdateMode.OnPropertyChanged)
+        public void Bind(string propertyName, object dataSource, DataSourceUpdateMode propertyUpdateType = DataSourceUpdateMode.OnPropertyChanged, string? toolTipText = null)
         {
+            this.ToolTipText = toolTipText;
             this.DataBindings.Clear();
             this.DataBindings.Add(new Binding("Text", dataSource, propertyName, true, propertyUpdateType));
             if (!string.IsNullOrEmpty(this.ToolTipText))

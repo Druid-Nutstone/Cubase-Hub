@@ -94,6 +94,7 @@
 	</ItemGroup>
 
 	<ItemGroup>
+	  <ProjectReference Include="..\..\Nutstone-Server\Nutstone.Server.Common\Nutstone.Server.Common.csproj" />
 	  <ProjectReference Include="..\Cubase.Macro.Common\Cubase.Macro.Common.csproj" />
 	</ItemGroup>
 

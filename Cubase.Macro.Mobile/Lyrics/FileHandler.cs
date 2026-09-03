@@ -1,5 +1,8 @@
 ﻿using Cubase.Macro.Common.Models;
 using Cubase.Macro.Common.Socket;
+using Cubase.Macro.Mobile.Configuration;
+using Nutstone.Server.Common.Client;
+using Nutstone.Server.Common.Models;
 using System;
 using System.Collections.Generic;
 using System.Text;
@@ -10,6 +13,8 @@ namespace Cubase.Macro.Mobile.Lyrics
     {
         private CubaseMacroWebSocketClient webSocketClient;
 
+        private readonly IMobileConfigurationService mobileConfigurationService;
+
         private VerticalStackLayout Container;
 
         private Action<string> ErrorHandler;
@@ -18,9 +23,15 @@ namespace Cubase.Macro.Mobile.Lyrics
 
         private LyricViewer lyricViewer;
 
-        public FileHandler(CubaseMacroWebSocketClient webSocketClient)
+        private NutstoneFilesClient lyricsFilesClient;
+
+        public FileHandler(CubaseMacroWebSocketClient webSocketClient, 
+                           IMobileConfigurationService mobileConfigurationService)
         {
+            mobileConfigurationService.InitialiseConfiguration();
             this.webSocketClient = webSocketClient;
+            this.mobileConfigurationService = mobileConfigurationService;
+            this.lyricsFilesClient = new NutstoneFilesClient(mobileConfigurationService.Configuration.NutstoneServer, mobileConfigurationService.Configuration.SecurityKeys);    
         }
 
         public async Task Initialise(VerticalStackLayout container,
@@ -50,7 +61,7 @@ namespace Cubase.Macro.Mobile.Lyrics
                 };
                 fileLabel.Clicked += (s, e) =>
                 {
-                    lyricViewer.LoadFile(File.ReadAllLines(ly.FileName.LyricFullPath()));
+                    lyricViewer.LoadFile(LyricContainer.Load(ly.FileName.LyricFullPath(), (err) => { }));
                 };
                 this.Container.Children.Add(fileLabel);
             });
@@ -58,44 +69,51 @@ namespace Cubase.Macro.Mobile.Lyrics
 
 
 
-        public async Task CheckForFileUpdates()
+        public async Task CheckForFileUpdates(Action<string> onError)
         {
             if (!Directory.Exists(CubaseMacroMobileConstants.LyricSourceFolder))
             {
                 Directory.CreateDirectory(CubaseMacroMobileConstants.LyricSourceFolder);
             }
-            if (this.webSocketClient.Connected)
+
+            // using nutstone server to get the files 
+
+            var availableLyrics = await this.lyricsFilesClient.GetFileIndex(this.mobileConfigurationService.Configuration.LyricDirectory, (err) => 
             {
-                var lyricCollection = await this.webSocketClient.GetLyricIndex(this.ErrorHandler);
+                onError?.Invoke(err.Message);           
+            });
 
-                if (lyricCollection != null)
+            if (availableLyrics != null)
+            {
+                foreach (var lyric in availableLyrics.Files)
                 {
-                    lyricCollection.SerialiseToFile(CubaseMacroMobileConstants.LyricCollection);
-
-                    // get or update any existing files 
-                    foreach (var lyric in lyricCollection.Lyrics)
+                    var localFileVersion = Path.Combine(CubaseMacroMobileConstants.LyricSourceFolder, lyric.Name);
+                    
+                    if (!File.Exists(localFileVersion))
                     {
-                        if (!File.Exists(lyric.FileName.LyricFullPath()))
+                        await SaveLatestFileContent(lyric, onError);
+
+                    }
+                    else
+                    {
+                        if (File.GetLastWriteTimeUtc(lyric.Name.LyricFullPath()) < lyric.LastModifiedFileDate)
                         {
-                            await SaveLatestFileContent(lyric);
-                        }
-                        else
-                        {
-                            if (File.GetLastWriteTimeUtc(lyric.FileName.LyricFullPath()) < lyric.LastModified)
-                            {
-                                await SaveLatestFileContent(lyric);
-                            }
+                            await SaveLatestFileContent(lyric, onError);
                         }
                     }
                 }
+                var lyricIndex = new LyricIndexCollection();
+                lyricIndex.PopulateLyricFiles(CubaseMacroMobileConstants.LyricSourceFolder);
+                lyricIndex.SerialiseToFile(CubaseMacroMobileConstants.LyricCollection);
             }
-            async Task SaveLatestFileContent(Lyric lyric)
+
+            async Task<bool> SaveLatestFileContent(FileModel lyric, Action<string> onError)
             {
-                var lyricContent = await this.webSocketClient.GetLyricContent(lyric, (err) => { });
-                if (lyricContent != null)
-                {
-                    File.WriteAllLines(lyric.FileName.LyricFullPath(), lyricContent.Content);
-                }
+                var targetFile = Path.Combine(CubaseMacroMobileConstants.LyricSourceFolder, lyric.Name);
+
+                var lyricContentDownloaded = await this.lyricsFilesClient.DownloadFile(lyric.Id, targetFile, (err) => { onError?.Invoke(err.Message); });
+
+                return lyricContentDownloaded;
             }
         }
 

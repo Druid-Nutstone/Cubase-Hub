@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Nutstone.Server.Common.Models;
+using System;
 using System.Collections.Generic;
 using System.Text;
 using System.Text.Json;
@@ -16,6 +17,17 @@ namespace Cubase.Macro.Mobile.Configuration
 #endif       
 
         public IEnumerable<string>? AvailableIpAddresses { get; set; } = ["192.168.1.110", "192.168.4.110", "192.168.4.9"];
+
+        public string NutstoneServer { get; set; } = "https://nutstone.com";
+
+        public AuthorisationKeys SecurityKeys { get; set; } =
+            new AuthorisationKeys()
+            {
+                AuthHeader = "X-Api-Key",
+                Read = "8C1A426E-5235-41CC-9B1C-595E0646B63F"
+            };
+
+        public string LyricDirectory { get; set; } = "Lyrics";
 
         public void Save()
         {

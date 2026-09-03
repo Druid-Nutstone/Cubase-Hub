@@ -2,7 +2,6 @@
   "profiles": {
     "Windows Machine": {
       "commandName": "Project",
-      "commandLineArgs": "\"C:\\Users\\david\\Dropbox\\Lyrics\\eyes without a face.txt\"",
       "nativeDebugging": false
     }
   }

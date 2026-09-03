@@ -167,6 +167,7 @@ namespace Cubase.Macro.Services.WebSockets
             return WebSocketMidiCommandMessage.CreateFromLyricResponse(LyricFileService.GetProjectCurrentLyrics());
         }
 
+        [Obsolete]
         static WebSocketMidiCommandMessage GetMidiLyricIndex()
         {
             Log?.Information("Received command to get Midi Lyric Index");

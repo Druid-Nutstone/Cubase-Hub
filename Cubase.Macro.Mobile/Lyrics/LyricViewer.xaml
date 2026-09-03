@@ -52,7 +52,19 @@
         </HorizontalStackLayout>
 
         <ScrollView x:Name="LyricScrollView" Grid.Row="1" Grid.Column="1">
-            <VerticalStackLayout x:Name="LyricContainer" Padding="0,20" />
+            <VerticalStackLayout x:Name="LyricContainer" Padding="0,20">
+                <!--
+            <VerticalStackLayout.Resources>
+                    <ResourceDictionary>
+                        <Style TargetType="Label">
+                            <Setter Property="FontFamily" Value="Courier New" />
+                        </Style>
+                    </ResourceDictionary>
+                </VerticalStackLayout.Resources>
+            </VerticalStackLayout> 
+            -->
+            </VerticalStackLayout>
+
         </ScrollView>
 
         <Grid 

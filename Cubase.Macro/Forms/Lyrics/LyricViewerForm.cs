@@ -1,8 +1,11 @@
 ﻿using Cubase.Macro.Common.Lyrics;
 using Cubase.Macro.Common.Lyrics.Services;
+using Cubase.Macro.Common.Lyrics.Services.Scrolling;
 using Cubase.Macro.Common.Models;
 using Cubase.Macro.Forms.Lyrics.Editor;
+using Cubase.Macro.Forms.Lyrics.Editor.New;
 using Cubase.Macro.Forms.Lyrics.Viewer;
+using Cubase.Macro.Forms.Lyrics.Viewer.New;
 using Cubase.Macro.Services.Config;
 using Cubase.Macro.Services.Midi;
 using System;
@@ -29,26 +32,26 @@ namespace Cubase.Macro.Forms.Lyrics
         private string EndAutoScroll = "End Scrolling";
 
         private readonly IConfigurationService configurationService;
-        private readonly ILyricService lyricService;
         private readonly IlyricMidiService lyricMidiService;
-        private LyricEditor? editor;
-        private LyricViewer? viewer;
+        private readonly IScrollerService scrollerService;
+        private LyricEditorContainer? editor;
+        private LyricViewerContainer? viewer;
         private LyricEditorType lyricEditorType;
 
         [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
         public string FileName { get; set; }
 
         [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
-        public IEnumerable<string> SourceLyrics { get; set; } = new List<string>();
+        public LyricContainer SourceLyrics { get; set; }
 
         public LyricViewerForm(IConfigurationService configurationService,
                                IlyricMidiService lyricMidiService,
-                               ILyricService lyricService)
+                               IScrollerService scrollerService)                      
         {
             InitializeComponent();
             ThemeApplier.ApplyDarkTheme(this);
             this.configurationService = configurationService;
-            this.lyricService = lyricService;
+            this.scrollerService = scrollerService;
             this.lyricMidiService = lyricMidiService;
             SaveButton.Bind(SaveLyrics, "Save", "Save Lyrics to file");
             SaveButton.Enabled = true;
@@ -63,21 +66,31 @@ namespace Cubase.Macro.Forms.Lyrics
 
         private void MidiEnabled_CheckedChanged(object? sender, EventArgs e)
         {
-            this.lyricService.UseMidi(MidiEnabled.Checked); 
         }
 
         private void OpenLyrics()
         {
-            var fileOpen = new OpenFileDialog();
-            fileOpen.InitialDirectory = CubaseMacroConstants.DropBoxBaseDirectory;
-            fileOpen.Filter = "Lyric Files (*.txt)|*.txt";
-            fileOpen.Title = "Open Lyric File";
+            var fileOpen = new OpenFileDialog()
+            {
+                InitialDirectory = CubaseMacroConstants.NutstoneLyricBaseDirectory,
+                Filter = $"Lyric Files (*{CubaseMacroConstants.NutstoneLyricNotation})|*{CubaseMacroConstants.NutstoneLyricNotation}",
+                Title = "Open Lyric File",
+
+                // 1. CRUCIAL: Breaks the OS "last used history" cache tracking rule
+                RestoreDirectory = false,
+
+                // 2. STABILITY: Forces the Win32 dialog engine to strictly evaluate 
+                // the network path string viability before fallback routines kick in
+                CheckPathExists = true
+            };
+
             if (fileOpen.ShowDialog() == DialogResult.OK)
             {
                 this.FileName = fileOpen.FileName;
                 this.LoadFile();
             }
         }
+
 
         protected override void OnShown(EventArgs e)
         {
@@ -88,16 +101,16 @@ namespace Cubase.Macro.Forms.Lyrics
 
         private void SaveLyrics()
         {
-            this.SourceLyrics = editor.Lines;
-            var fileSave = new SaveFileDialog();
-            fileSave.FileName = this.FileName;
-            fileSave.InitialDirectory = CubaseMacroConstants.DropBoxBaseDirectory;
-            if (fileSave.ShowDialog() == DialogResult.OK)
+            var sourceFile = this.editor?.Lyrics.Save(CubaseMacroConstants.NutstoneLyricBaseDirectory, (err) => 
             {
-                this.FileName = fileSave.FileName;
-                File.WriteAllLines(fileSave.FileName, this.SourceLyrics);
-                MessageBox.Show($"Lyrics and Chords saved to {fileSave.FileName}");
+                MessageBox.Show($"Error saving lyrics: {err}");
+            });
+            if (!string.IsNullOrEmpty(sourceFile))
+            {
+                this.FileName = sourceFile;
+                MessageBox.Show($"Lyrics and Chords saved to {sourceFile}");
             }
+
         }
 
         private void StartScrolling()
@@ -105,13 +118,31 @@ namespace Cubase.Macro.Forms.Lyrics
             if (ScrollButton.Text == StartAutoScroll)
             {
                 ScrollButton.Text = EndAutoScroll;
-                this.viewer?.StartAutoScroll();
+                if (MidiEnabled.Checked)
+                {
+                    // todo process midi ! 
+                }
+                else
+                {
+                    this.scrollerService.StartDurationTimer(this.SourceLyrics, this.OnGotoDurationBar, this.OnTransportLocationUpdate);
+                }
             }
             else
             {
-                this.viewer?.EndAutoScroll();
+                this.scrollerService.Stop();
                 ScrollButton.Text = StartAutoScroll;
             }
+        }
+
+        private void OnGotoDurationBar(int bar)
+        {
+            this.viewer?.GotoBar(bar);
+        } 
+
+        private void OnTransportLocationUpdate(TimeSpan response)
+        {
+            this.TransPortLocation.Text = $"{(int)response.TotalMinutes:D2}:{response.Seconds:D2}";
+            this.TransPortLocation.Update();
         }
 
         private void EditLyric()
@@ -128,7 +159,7 @@ namespace Cubase.Macro.Forms.Lyrics
                 SaveButton.Enabled = false;
                 ScrollButton.Enabled = true;
                 MidiEnabled.Visible = this.lyricMidiService.IsMidiAvailable(); 
-                this.SourceLyrics = editor?.Lines;
+                this.SourceLyrics = editor?.Lyrics;
                 this.LoadLyricViewer();
             }
             this.LoadFromSource();
@@ -150,11 +181,14 @@ namespace Cubase.Macro.Forms.Lyrics
             {
                 if (lyricEditorType == LyricEditorType.Editor)
                 {
-                    this.editor?.Initialise(SourceLyrics, this.FileName);
+                    if (!string.IsNullOrEmpty(this.FileName))
+                    {
+                        this.editor.Initialise(this.FileName);
+                    }
                 }
                 else
                 {
-                    this.viewer?.Initialise(SourceLyrics);
+                    //this.viewer?.Initialise(SourceLyrics);
                 }
                 this.SetTitle();
             }
@@ -165,7 +199,10 @@ namespace Cubase.Macro.Forms.Lyrics
             if (!string.IsNullOrEmpty(this.FileName))
             {
                 this.SetTitle();
-                this.SourceLyrics = File.ReadAllLines(this.FileName);
+                this.SourceLyrics = LyricContainer.Load(this.FileName, (err) => 
+                { 
+                   MessageBox.Show("Could not load lyric file: " + err);
+                });
                 this.LoadFromSource();
             }
         }
@@ -181,17 +218,10 @@ namespace Cubase.Macro.Forms.Lyrics
         {
             MidiEnabled.Visible = this.lyricMidiService.IsMidiAvailable();
             var externalViewer = this.configurationService.Configuration.LyricViewerFilePath;
-            var source = editor?.Lines;
-            var tempFilePath = Path.Combine(Path.GetTempPath(), "TestLyric.txt");
-            File.WriteAllLines(tempFilePath, source);
-            var openProcess = new Process();
-            openProcess.StartInfo.FileName = externalViewer;
-            openProcess.StartInfo.Arguments = $"{'"'.ToString()}{tempFilePath}{'"'.ToString()}";
-            openProcess.Start();
-            //lyricEditorType = LyricEditorType.Viewer;
-            //this.viewer = new LyricViewer(this.lyricService);
-            //viewer.ScrollUpdateEvent = this.UpdateTransportLocation;
-            //this.LoadMainPanel(viewer);
+            this.viewer = new LyricViewerContainer();
+            this.viewer.Initialise(this.SourceLyrics);
+            this.lyricEditorType = LyricEditorType.Viewer;
+            this.LoadMainPanel(viewer);
         }
 
         private void UpdateTransportLocation(ScrollResponse response)
@@ -215,7 +245,7 @@ namespace Cubase.Macro.Forms.Lyrics
         {
             EditButton.Bind(this.EditLyric, "V", "View Lyrics");
             lyricEditorType = LyricEditorType.Editor;
-            this.editor = new LyricEditor(this.lyricService);
+            this.editor = new LyricEditorContainer();
             this.LoadMainPanel(editor);
         }
 
@@ -224,7 +254,6 @@ namespace Cubase.Macro.Forms.Lyrics
         {
             this.MainPanel.Controls.Clear();
             cntrl.Dock = DockStyle.Fill;
-            // ((ILyricEditor)cntrl).SetFontSize(12);
             this.MainPanel.Controls.Add(cntrl);
         }
     }

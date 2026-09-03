@@ -170,6 +170,7 @@ namespace Cubase.Macro.Common.Socket
             return response?.GetTransportLocationCollection();
         }
 
+        [Obsolete("Files are held on public nustone server")]
         public async Task<LyricResponseModel?> GetCurrentLyric(Action<string> onError)
         {
             var response = await SendAndWait(
@@ -178,6 +179,7 @@ namespace Cubase.Macro.Common.Socket
             return response?.GetLyricResponseModel();
         }
 
+        [Obsolete("Files are held on public nustone server")]
         public async Task<LyricIndexCollection?> GetLyricIndex(Action<string> onError)
         {
             var response = await SendAndWait(
@@ -186,6 +188,7 @@ namespace Cubase.Macro.Common.Socket
             return response?.GetLyricIndex();
         }
 
+        [Obsolete("Files are held on public nustone server")]
         public async Task<LyricContent?> GetLyricContent(Lyric lyric, Action<string> onError)
         {
             var response = await SendAndWait(

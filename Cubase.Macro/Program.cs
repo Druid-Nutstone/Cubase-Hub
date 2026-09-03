@@ -21,6 +21,7 @@ using Cubase.Macro.Common.Lyrics.Services;
 using Cubase.Macro.Common.Lyrics.Scrolling;
 using Cubase.Macro.Services.Lyrics;
 using System.Diagnostics;
+using Cubase.Macro.Common.Lyrics.Services.Scrolling;
 
 namespace Cubase.Macro
 {
@@ -192,7 +193,7 @@ namespace Cubase.Macro
                         .AddSingleton<IWindowService, WindowService>()
                         .AddSingleton<IConfigurationService, ConfigurationService>()
                         .AddSingleton<IMidiService, MidiService>()
-                        .AddSingleton<ILyricService, LyricService>()
+                        .AddSingleton<IScrollerService, ScrollerService>()
                         .AddSingleton<IColourService, RicheditColourService>()
                         .AddSingleton<IlyricMidiService, RichEditLyricMidiService>()
                         .AddSingleton<IWindowsControllerService, WindowsControllerService>()

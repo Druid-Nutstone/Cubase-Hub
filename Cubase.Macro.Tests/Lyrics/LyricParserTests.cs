@@ -9,16 +9,6 @@ namespace Cubase.Macro.Tests.Lyrics
     public class LyricParserTests
     {
         private string testFile = @"C:\DeleteMe\angie baby.txt";
-
-        private LyricChordParser sut = new LyricChordParser();
-
-        [TestMethod]
-        public void Can_Parse_Lyrics()
-        {
-            var lyricCollection = sut.Parse(testFile);
-            var output = lyricCollection?.RenderToText();
-            File.WriteAllLines("C:\\Deleteme\\lyricparsertest.txt", output);
-        }
     
     }
 }

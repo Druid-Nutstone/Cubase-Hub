@@ -11,6 +11,8 @@ namespace Cubase.Macro.Common.Models
 
         public static string CubaseMacroLog = "CubaseMacroLog-";
 
+        public static string NutstoneLyricNotation = ".nln";
+
         public static string Midi = nameof(Midi);
         
         public static string UserAppDataFolderPath =
@@ -30,6 +32,9 @@ namespace Cubase.Macro.Common.Models
 
         public static string MidiJavascriptFileName = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments), "Steinberg", "Cubase", "MIDI Remote", "Driver Scripts", "Local", "Nutstone", "VirtualDevice", "Nutstone_VirtualDevice.js");
 
+        public static string NutstoneLyricBaseDirectory = "\\\\192.168.1.100\\Utilities\\Files\\Downloads\\Lyrics";
+
+        [Obsolete("Use Nutstone LyricBaseDirectory instead")]
         public static string DropBoxBaseDirectory = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.UserProfile), "Dropbox", "Lyrics");
 
         // C:\Users\david\OneDrive\Documents\Steinberg\Cubase\User Presets\Project Logical Editor

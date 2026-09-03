@@ -64,6 +64,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\Cubase.Hub\Cubase.Hub.csproj" />
     <ProjectReference Include="..\Cubase.Macro.Common\Cubase.Macro.Common.csproj" />
   </ItemGroup>
 

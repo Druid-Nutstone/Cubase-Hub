@@ -5,26 +5,11 @@ using System.Text;
 
 namespace Cubase.Macro.Mobile.Lyrics
 {
+    [Obsolete]
     public class MobileLyricCollection : List<MobileLyric>
     {
         public MobileLyricCollection() { }
     
-        public MobileLyricCollection(LyricBuffer lyrics)
-        {
-            foreach (var lyric in lyrics)
-            {
-                if (lyric.Lyric != null)
-                {
-                    this.Add(new MobileLyric()
-                    {
-                        Lyric = lyric.Lyric,
-                        Bar = lyric.Bar,
-                        LineType = lyric.LineType,
-                        ForegoundColour = (Color)lyric.ForeColour
-                    });
-                }
-            }
-        }
 
         public int MaxBar()
         {
@@ -52,8 +37,6 @@ namespace Cubase.Macro.Mobile.Lyrics
         public string Lyric {  get; set; }
 
         public int Bar { get; set; } = -1;
-
-        public LyricLineType LineType { get; set; }
 
         public Color ForegoundColour { get; set; }
     

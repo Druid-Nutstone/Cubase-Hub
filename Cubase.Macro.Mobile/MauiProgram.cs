@@ -1,5 +1,6 @@
 ﻿using Cubase.Macro.Common.Lyrics.Scrolling;
 using Cubase.Macro.Common.Lyrics.Services;
+using Cubase.Macro.Common.Lyrics.Services.Scrolling;
 using Cubase.Macro.Common.Socket;
 using Cubase.Macro.Mobile.Configuration;
 using Cubase.Macro.Mobile.Lyrics;
@@ -21,6 +22,7 @@ namespace Cubase.Macro.Mobile
                 .UseMauiApp<App>()
                 .ConfigureFonts(fonts =>
                 {
+                    fonts.AddFont("JetBrainsMono-Regular.ttf", "CustomMono");
                     fonts.AddFont("OpenSans-Regular.ttf", "OpenSansRegular");
                     fonts.AddFont("OpenSans-Semibold.ttf", "OpenSansSemibold");
                 });
@@ -31,11 +33,11 @@ namespace Cubase.Macro.Mobile
             builder.Services.TryAddTransient<ConfigurationPage>();
             builder.Services.AddSingleton<NavPage>();
             builder.Services.AddSingleton<FileHandler>();
-            builder.Services.AddSingleton<ILyricService, LyricService>();
             builder.Services.AddSingleton<IMobileConfigurationService, MobileConfigurationService>(); 
             builder.Services.AddSingleton<IColourService, ColourService>();
             builder.Services.AddSingleton<IlyricMidiService, MobileLyricService>();
             builder.Services.AddSingleton<IMsWinService, MsWinService>();
+            builder.Services.AddSingleton<IScrollerService, ScrollerService>();
             builder.Services.AddTransient<MainPage>();
             builder.Logging.ClearProviders();
 
