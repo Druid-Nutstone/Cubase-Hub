@@ -1,5 +1,4 @@
-﻿using System;
-using System.ComponentModel;
+﻿using System.ComponentModel;
 using System.Runtime.CompilerServices;
 using System.Text.Json;
 using System.Text.Json.Serialization;
@@ -37,8 +36,8 @@ namespace Cubase.Hub.Services.Models
 
         public MixDown? FindMixDown(MixDown mixDown)
         {
-            return this.DistributionMixes.FirstOrDefault(x => x.FileName == mixDown.FileName); 
-        } 
+            return this.DistributionMixes.FirstOrDefault(x => x.FileName == mixDown.FileName);
+        }
 
         public bool IsMixdownForDistribution(string fileName)
         {
@@ -47,10 +46,10 @@ namespace Cubase.Hub.Services.Models
 
         public void UpdateMixDistribution(MixDown mixDown)
         {
-            if (this.DistributionMixes.Any(_ => _.FileName == mixDown.FileName && mixDown.MarkForDistribution)) 
+            if (this.DistributionMixes.Any(_ => _.FileName == mixDown.FileName && mixDown.MarkForDistribution))
             {
-                this.AddForDistribution(mixDown);   
-            }   
+                this.AddForDistribution(mixDown);
+            }
         }
 
         public MixDownCollection CheckForUpdatedDistributionMixes(List<MixDown> mixDowns)
@@ -73,14 +72,14 @@ namespace Cubase.Hub.Services.Models
             return mixdownCollection;
         }
 
-        public void RemoveFromDistribution(MixDown mixDown) 
+        public void RemoveFromDistribution(MixDown mixDown)
         {
             if (this.DistributionMixes.Any(x => x.FileName == mixDown.FileName))
             {
                 this.DistributionMixes.RemoveAt(this.DistributionMixes.FindIndex(x => x.FileName == mixDown.FileName));
                 this.SaveToDirectory(this._sourceLocation);
             }
-        } 
+        }
 
         public event PropertyChangedEventHandler PropertyChanged;
 
@@ -190,7 +189,7 @@ namespace Cubase.Hub.Services.Models
                 File.WriteAllText(targetPath, JsonSerializer.Serialize(this, new JsonSerializerOptions() { WriteIndented = true }));
                 return true;
             }
-            catch (Exception e) 
+            catch (Exception e)
             {
                 return false;
             }
@@ -207,6 +206,6 @@ namespace Cubase.Hub.Services.Models
             return null;
         }
 
-        public MixDownCollection DistributionMixes { get; set; } = new MixDownCollection(); 
+        public MixDownCollection DistributionMixes { get; set; } = new MixDownCollection();
     }
 }

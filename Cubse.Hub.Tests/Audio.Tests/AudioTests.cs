@@ -1,7 +1,4 @@
 ﻿using Cubase.Hub.Services.Models;
-using System;
-using System.Collections.Generic;
-using System.Text;
 
 namespace Cubse.Hub.Tests.Audio.Tests
 {
@@ -21,6 +18,6 @@ namespace Cubse.Hub.Tests.Audio.Tests
 
             this.audioService.AudioSetTagsFromMixDowm(mixdown);
         }
-    
+
     }
 }

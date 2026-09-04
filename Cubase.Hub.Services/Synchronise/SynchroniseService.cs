@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-
-namespace Cubase.Hub.Services.Synchronise
+﻿namespace Cubase.Hub.Services.Synchronise
 {
     public class SynchroniseService : ISynchroniseService
     {
@@ -12,7 +8,7 @@ namespace Cubase.Hub.Services.Synchronise
         {
             foreach (var handler in eventHandlers)
             {
-               handler.Invoke(syncEvent);
+                handler.Invoke(syncEvent);
             }
         }
 

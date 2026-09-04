@@ -43,15 +43,14 @@
             </VerticalStackLayout>
         </Border>
 
-        <HorizontalStackLayout 
-            BackgroundColor="#1E1E1E" 
-            Grid.Row="0" Grid.Column="0" Grid.ColumnSpan="2"
-            HeightRequest="40"
-            HorizontalOptions="Fill"
-            x:Name="Menu">
-        </HorizontalStackLayout>
+        <Grid 
+           BackgroundColor="#2A2A2A"
+           Grid.Row="0" Grid.Column="0" Grid.ColumnSpan="2"
+           HeightRequest="40">
+            <HorizontalStackLayout x:Name="Menu" />
+        </Grid>
 
-        <ScrollView x:Name="LyricScrollView" Grid.Row="1" Grid.Column="1">
+        <ScrollView x:Name="LyricScrollView" Grid.Row="1" Grid.Column="1" Grid.ColumnSpan="2">
             <VerticalStackLayout x:Name="LyricContainer" Padding="0,20">
                 <!--
             <VerticalStackLayout.Resources>
@@ -70,7 +69,7 @@
         <Grid 
            Grid.Row="2" Grid.Column="0" Grid.ColumnSpan="2"
            HeightRequest="40"
-           BackgroundColor="#1E1E1E" 
+           BackgroundColor= "#2A2A2A"
            x:Name="BottomMenu">
 
             <Grid.ColumnDefinitions>
@@ -79,7 +78,9 @@
             </Grid.ColumnDefinitions>
 
             <HorizontalStackLayout Grid.Column="1" Spacing="5" Margin="0,0,10,0">
-                <Label Text="Bar: " VerticalOptions="Center" TextColor="White" />
+                <Label Text="Duration: " VerticalOptions="Center" TextColor="White" />
+                <Label x:Name="SongTime" VerticalOptions="Center" TextColor="White" Margin="10" />
+                <Label Text="Bar/Time: " VerticalOptions="Center" TextColor="White" />
                 <Label x:Name="CurrentBar" VerticalOptions="Center" TextColor="White" />
             </HorizontalStackLayout>
         </Grid>

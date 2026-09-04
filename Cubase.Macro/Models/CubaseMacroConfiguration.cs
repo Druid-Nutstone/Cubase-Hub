@@ -1,9 +1,5 @@
 ﻿using Cubase.Macro.Common.Models;
-using System;
-using System.Collections.Generic;
 using System.IO;
-using System.Runtime.CompilerServices;
-using System.Text;
 using System.Text.Json;
 
 namespace Cubase.Macro.Models
@@ -12,7 +8,7 @@ namespace Cubase.Macro.Models
     {
 
         public int MacroPanelHeight { get; set; } = -1;
-        
+
         public string ResetVisibilityKey { get; set; }
 
         public int MenuHeight { get; set; } = 80;
@@ -44,7 +40,7 @@ namespace Cubase.Macro.Models
                 return false;
             }
         }
-        
+
         public static CubaseMacroConfiguration Load()
         {
             if (File.Exists(CubaseMacroConstants.ConfigurationFileName))

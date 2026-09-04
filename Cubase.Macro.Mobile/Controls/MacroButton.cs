@@ -1,15 +1,12 @@
 ﻿using Cubase.Macro.Common.Models;
-using System;
-using System.Collections.Generic;
-using System.Text;
 
 namespace Cubase.Macro.Mobile.Controls
 {
     public class MacroButton : Button
     {
         private CubaseMacro macro;
-        
-        public bool Toggled {  get; set; } = false;
+
+        public bool Toggled { get; set; } = false;
 
         public Action<CubaseMacro, bool>? OnMacroClicked { get; set; }
 
@@ -64,7 +61,7 @@ namespace Cubase.Macro.Mobile.Controls
             if (!this.Toggled)
             {
                 this.BackgroundColor = macro.BackgroundColourARGB.ToMauiColor();
-                this.TextColor = macro.ForegroundColourARGB.ToMauiColor(); 
+                this.TextColor = macro.ForegroundColourARGB.ToMauiColor();
             }
             else
             {

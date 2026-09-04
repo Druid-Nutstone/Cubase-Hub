@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-
-namespace Cubase.Hub.Services.Background
+﻿namespace Cubase.Hub.Services.Background
 {
     public interface IBackgroundService
     {
@@ -12,7 +8,6 @@ namespace Cubase.Hub.Services.Background
 
         void Stop();
 
-        void Resume(); 
+        void Resume();
     }
 }
- 

@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-
-namespace Cubase.Macro.Common.Models
+﻿namespace Cubase.Macro.Common.Models
 {
     public class TransportLocaton
     {
@@ -11,7 +7,7 @@ namespace Cubase.Macro.Common.Models
         public TransportType LocationType { get; set; }
     }
 
-    public enum TransportType 
+    public enum TransportType
     {
         Seconds = 0,
         BarsBeats = 1,

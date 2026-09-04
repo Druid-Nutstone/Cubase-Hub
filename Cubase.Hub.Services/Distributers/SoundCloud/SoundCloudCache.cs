@@ -1,6 +1,4 @@
-﻿using Cubase.Hub.Services.Models;
-using System.Text.Json;
-using System.Text.Json.Serialization;
+﻿using System.Text.Json;
 
 namespace Cubase.Hub.Services.Distributers.SoundCloud
 {
@@ -17,8 +15,8 @@ namespace Cubase.Hub.Services.Distributers.SoundCloud
         [JsonIgnore]
         public List<AlbumLocation> UpdatedAlbums { get; set; } = new List<AlbumLocation>(); 
         */
-        public SoundCloudCache() 
-        { 
+        public SoundCloudCache()
+        {
         }
 
         /*
@@ -63,7 +61,7 @@ namespace Cubase.Hub.Services.Distributers.SoundCloud
             {
                 File.Delete(SoundCloudCacheLocation);
             }
-        } 
+        }
 
         public static SoundCloudCache Create()
         {

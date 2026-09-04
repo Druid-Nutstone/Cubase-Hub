@@ -7,20 +7,13 @@ using Cubase.Hub.Services.Messages;
 using Cubase.Hub.Services.Models;
 using Cubase.Hub.Services.Track;
 using Microsoft.Extensions.DependencyInjection;
-using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Data;
-using System.Drawing;
-using System.Text;
-using System.Windows.Forms;
 
 namespace Cubase.Hub.Forms.CompletedMixes
 {
     public partial class CompletedMixesForm : BaseWindows11Form
     {
         private readonly ITrackService trackService;
-        
+
         private readonly IConfigurationService configurationService;
 
         private readonly IAlbumService albumService;
@@ -29,7 +22,7 @@ namespace Cubase.Hub.Forms.CompletedMixes
 
         private readonly IServiceProvider serviceProvider;
 
-        private IDistributerForm distributerForm;   
+        private IDistributerForm distributerForm;
 
         public CompletedMixesForm()
         {
@@ -49,7 +42,7 @@ namespace Cubase.Hub.Forms.CompletedMixes
             this.serviceProvider = serviceProvider;
             this.configurationService = configurationService;
             ThemeApplier.ApplyDarkTheme(this);
-            if (this.configurationService?.Configuration?.DistributionConfiguration?.DistributionProvider  != DistributionProvider.None)
+            if (this.configurationService?.Configuration?.DistributionConfiguration?.DistributionProvider != DistributionProvider.None)
             {
                 this.distributerForm = this.serviceProvider.GetKeyedService<IDistributerForm>(this.configurationService?.Configuration?.DistributionConfiguration?.DistributionProvider);
                 if (distributerForm != null)
@@ -98,11 +91,11 @@ namespace Cubase.Hub.Forms.CompletedMixes
         {
             if (!this.configurationService.IsLoaded)
             {
-                this.configurationService.LoadConfiguration(() => 
+                this.configurationService.LoadConfiguration(() =>
                 {
-                    this.messageService.ShowError("Cannot load configuration");        
-                }); 
-            } 
+                    this.messageService.ShowError("Cannot load configuration");
+                });
+            }
             if (this.configurationService.Configuration.PlayWindowLocation != null)
             {
                 if (this.configurationService.Configuration.PlayWindowLocation.isMaximised)

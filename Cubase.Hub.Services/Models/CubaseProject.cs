@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-
-namespace Cubase.Hub.Services.Models
+﻿namespace Cubase.Hub.Services.Models
 {
     public class CubaseProject
     {
@@ -10,9 +6,9 @@ namespace Cubase.Hub.Services.Models
 
         public string Name { get; set; }
 
-        public string FolderPath { get; set; }  
+        public string FolderPath { get; set; }
 
-        public string Album {  get; set; }
+        public string Album { get; set; }
 
         public string AlbumPath { get; set; }
 
@@ -20,7 +16,7 @@ namespace Cubase.Hub.Services.Models
 
         public List<string> Mixes { get; set; } = new List<string>();
 
-        public static CubaseProject Create(string name, string fullPath, string folderPath, string albumName, string albumPath,  List<string>? mixes = null)
+        public static CubaseProject Create(string name, string fullPath, string folderPath, string albumName, string albumPath, List<string>? mixes = null)
         {
             var lastModified = System.IO.File.GetLastWriteTime(fullPath);
 

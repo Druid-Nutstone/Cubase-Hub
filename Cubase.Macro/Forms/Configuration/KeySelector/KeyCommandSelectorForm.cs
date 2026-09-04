@@ -1,12 +1,7 @@
 ﻿using Cubase.Macro.Common.Models;
 using Cubase.Macro.Models;
-using System;
-using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
-using System.Drawing;
-using System.Text;
-using System.Windows.Forms;
 
 namespace Cubase.Macro.Forms.Configuration.KeySelector
 {
@@ -26,15 +21,15 @@ namespace Cubase.Macro.Forms.Configuration.KeySelector
         {
             InitializeComponent();
             SearchForText.TextChanged += SearchForText_TextChanged;
-            ClearButton.Click += ClearButton_Click; 
+            ClearButton.Click += ClearButton_Click;
             ThemeApplier.ApplyDarkTheme(this);
             this.allCommands = new CubaseKeyCommandParser().Parse();
             this.keyCommandListView.Populate(this.allCommands);
             this.BuildFilter();
             this.FilterBy.SelectedIndexChanged += FilterBy_SelectedIndexChanged;
             this.OnKeySelected = OnKeySelected;
-            this.keyCommandListView.OnKeySelected = (cmd) => 
-            { 
+            this.keyCommandListView.OnKeySelected = (cmd) =>
+            {
                 this.OnKeySelected.Invoke(cmd);
                 this.Close();
             };
@@ -50,7 +45,7 @@ namespace Cubase.Macro.Forms.Configuration.KeySelector
         {
             var filtered = this.allCommands.Select(x => x.Category).Distinct();
             this.FilterBy.Items.AddRange(filtered.ToArray());
-        } 
+        }
 
         private void FilterBy_SelectedIndexChanged(object? sender, EventArgs e)
         {
@@ -68,7 +63,7 @@ namespace Cubase.Macro.Forms.Configuration.KeySelector
         private void ClearButton_Click(object? sender, EventArgs e)
         {
             this.SearchForText.Text = "";
-            this.keyCommandListView.Populate(this.allCommands);    
+            this.keyCommandListView.Populate(this.allCommands);
         }
 
         private void SearchForText_TextChanged(object? sender, EventArgs e)

@@ -1,16 +1,8 @@
-﻿using Cubase.Hub.Services.Audio;
-using Cubase.Hub.Services.FileAndDirectory;
+﻿using Cubase.Hub.Services.FileAndDirectory;
 using Cubase.Hub.Services.Messages;
 using Cubase.Hub.Services.Models;
 using Cubase.Hub.Services.Track;
-using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Data;
-using System.Drawing;
 using System.IO;
-using System.Text;
-using System.Windows.Forms;
 
 namespace Cubase.Hub.Forms.Mixes.MixActions
 {
@@ -21,10 +13,10 @@ namespace Cubase.Hub.Forms.Mixes.MixActions
             InitializeComponent();
         }
 
-        public void RunAction(MixDownCollection mixDowns, 
+        public void RunAction(MixDownCollection mixDowns,
                               string targetDirectory,
-                              ITrackService trackService, 
-                              IMessageService messageService, 
+                              ITrackService trackService,
+                              IMessageService messageService,
                               IDirectoryService directoryService,
                               Func<int, string, bool> onProgress)
         {

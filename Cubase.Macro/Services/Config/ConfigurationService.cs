@@ -1,7 +1,4 @@
 ﻿using Cubase.Macro.Models;
-using System;
-using System.Collections.Generic;
-using System.Text;
 
 namespace Cubase.Macro.Services.Config
 {
@@ -11,7 +8,7 @@ namespace Cubase.Macro.Services.Config
 
         public ConfigurationService()
         {
-            
+
         }
 
         public void ReloadConfiguration()

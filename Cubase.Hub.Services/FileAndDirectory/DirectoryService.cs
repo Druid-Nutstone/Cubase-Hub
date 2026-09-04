@@ -1,15 +1,11 @@
-﻿using Cubase.Hub.Services.Config;
-using Cubase.Hub.Services.Models;
-using System;
-using System.Collections.Generic;
+﻿using Cubase.Hub.Services.Models;
 using System.Diagnostics;
-using System.Text;
 
 namespace Cubase.Hub.Services.FileAndDirectory
 {
     public class DirectoryService : IDirectoryService
     {
-        
+
         public DirectoryService()
         {
         }
@@ -42,15 +38,15 @@ namespace Cubase.Hub.Services.FileAndDirectory
                     dir,
                     $"*{CubaseHubConstants.CubaseAlbumFileExtension}",
                     SearchOption.AllDirectories
-                ).Select(x => new AlbumLocation() 
-                { 
-                    AlbumPath = Directory.GetParent(x).FullName, 
+                ).Select(x => new AlbumLocation()
+                {
+                    AlbumPath = Directory.GetParent(x).FullName,
                     AlbumName = Path.GetFileName(Path.GetDirectoryName(x))
                 }));
             }
             return albumCollection;
         }
-        
+
         public List<string> GetCubaseProjects(string sourceFolderPath)
         {
             var files = Directory.GetFiles(
@@ -94,7 +90,7 @@ namespace Cubase.Hub.Services.FileAndDirectory
                      .ToList()
                      .ForEach(dir =>
                      {
-                         mixDownCollection.CreateFromFiles(GetMixDownFiles(dir));   
+                         mixDownCollection.CreateFromFiles(GetMixDownFiles(dir));
                      });
 
             string[] GetMixDownFiles(string root)
@@ -103,7 +99,7 @@ namespace Cubase.Hub.Services.FileAndDirectory
                 {
                     return Directory.GetFiles(root);
                 }
-                return [];  
+                return [];
             }
             return mixDownCollection;
         }

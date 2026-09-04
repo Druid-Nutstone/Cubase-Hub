@@ -1,7 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-using System.Text.Json.Serialization;
+﻿using System.Text.Json.Serialization;
 
 namespace Cubase.Hub.Services.Distributers.SoundCloud
 {
@@ -18,11 +15,11 @@ namespace Cubase.Hub.Services.Distributers.SoundCloud
             }
             this[index] = playlist;
         }
-        
+
         public bool HaveAlbum(string albumName)
         {
             return this.FirstOrDefault(x => x.Title == albumName) != null;
-        } 
+        }
 
         public SoundCloudPlaylist GetAlbum(string albumName)
         {
@@ -31,7 +28,7 @@ namespace Cubase.Hub.Services.Distributers.SoundCloud
 
         public SoundCloudTrack? GetTrack(string trackName)
         {
-            return this.SelectMany(x => x.Tracks?.Where(y => y.Title == trackName))?.FirstOrDefault(); 
+            return this.SelectMany(x => x.Tracks?.Where(y => y.Title == trackName))?.FirstOrDefault();
         }
     }
 
@@ -105,6 +102,6 @@ namespace Cubase.Hub.Services.Distributers.SoundCloud
 
         [JsonPropertyName("tracks")]
         public List<SoundCloudTrack>? Tracks { get; set; }
-   
+
     }
 }

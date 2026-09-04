@@ -1,7 +1,4 @@
-﻿using System;
-using System.Drawing;
-using System.Windows.Forms;
-using Cubase.Macro.Common.Models;
+﻿using Cubase.Macro.Common.Models;
 
 namespace Cubase.Macro.Forms.Lyrics.Editor.New
 {
@@ -60,7 +57,7 @@ namespace Cubase.Macro.Forms.Lyrics.Editor.New
             lblTitle = new Label
             {
                 Text = $"{this.section.Name.ToUpper()}{barText}",
-                Font = new Font("Segoe UI", this.section.FontSize+1, FontStyle.Bold),
+                Font = new Font("Segoe UI", this.section.FontSize + 1, FontStyle.Bold),
                 ForeColor = Color.FromArgb(255, 180, 0), // Clean orange/amber header accent color
                 AutoSize = true,
                 Anchor = AnchorStyles.Left,

@@ -3,12 +3,12 @@ namespace Cubase.Macro.Mobile.Configuration;
 
 public partial class ConfigurationPage : ContentPage
 {
-	private readonly IMobileConfigurationService configurationService;
+    private readonly IMobileConfigurationService configurationService;
 
     public ConfigurationPage(IMobileConfigurationService configurationService)
-	{
-		InitializeComponent();
-		this.configurationService = configurationService;
+    {
+        InitializeComponent();
+        this.configurationService = configurationService;
         SaveConfiguration.Clicked += async (s, e) =>
         {
             this.configurationService.Configuration.MidiServerIpAddress = ServerIPAddress.Text;
@@ -23,7 +23,7 @@ public partial class ConfigurationPage : ContentPage
         ServerIPAddress.Text = this.configurationService.Configuration.MidiServerIpAddress;
         IpAddressPicker.Items.Clear();
         IpAddressPicker.ItemsSource = (System.Collections.IList)this.configurationService.Configuration.AvailableIpAddresses;
-        IpAddressPicker.SelectedIndexChanged += (s, e) => 
+        IpAddressPicker.SelectedIndexChanged += (s, e) =>
         {
             ServerIPAddress.Text = IpAddressPicker.SelectedItem.ToString();
         };

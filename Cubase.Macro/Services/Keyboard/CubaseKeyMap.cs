@@ -1,10 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace Cubase.Macro.Services.Keyboard
+﻿namespace Cubase.Macro.Services.Keyboard
 {
     public static class CubaseKeyMap
     {

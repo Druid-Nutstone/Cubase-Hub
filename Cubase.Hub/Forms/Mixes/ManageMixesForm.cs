@@ -1,18 +1,10 @@
 ﻿using Cubase.Hub.Forms.BaseForm;
 using Cubase.Hub.Forms.Mixes.MixActions;
-using Cubase.Hub.Services.Audio;
 using Cubase.Hub.Services.Config;
 using Cubase.Hub.Services.FileAndDirectory;
 using Cubase.Hub.Services.Messages;
 using Cubase.Hub.Services.Models;
 using Cubase.Hub.Services.Track;
-using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Data;
-using System.Drawing;
-using System.Text;
-using System.Windows.Forms;
 
 namespace Cubase.Hub.Forms.Mixes
 {
@@ -73,7 +65,7 @@ namespace Cubase.Hub.Forms.Mixes
             if (fileIndex < 0)
             {
                 this.FileName.Text = "Complete";
-                this.FileName.ForeColor = Color.Green; 
+                this.FileName.ForeColor = Color.Green;
                 this.CurrentFile.Text = "";
             }
             else

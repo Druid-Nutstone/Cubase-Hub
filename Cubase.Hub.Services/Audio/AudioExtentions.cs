@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-
-namespace Cubase.Hub.Services.Audio
+﻿namespace Cubase.Hub.Services.Audio
 {
     public static class AudioExtentions
     {

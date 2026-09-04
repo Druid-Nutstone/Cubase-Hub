@@ -1,27 +1,27 @@
+using Cubase.Macro.Common.Lyrics.Scrolling;
+using Cubase.Macro.Common.Lyrics.Services;
+using Cubase.Macro.Common.Lyrics.Services.Scrolling;
+using Cubase.Macro.Common.Models;
 using Cubase.Macro.Forms.Configuration;
+using Cubase.Macro.Forms.Cues;
+using Cubase.Macro.Forms.Lyrics;
 using Cubase.Macro.Services.Config;
 using Cubase.Macro.Services.Keyboard;
+using Cubase.Macro.Services.Lyrics;
 using Cubase.Macro.Services.Midi;
+using Cubase.Macro.Services.WebSockets;
 using Cubase.Macro.Services.Window;
 using Cubase.Macro.Services.WindowsServices;
+using Microsoft.AspNetCore.Builder;
+using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using Serilog;
+using System.Diagnostics;
 using System.IO;
-using Microsoft.AspNetCore.Hosting;
 using System.Runtime.InteropServices;
 using System.Windows.Shell;
-using Microsoft.Extensions.Hosting;
-using Microsoft.AspNetCore.Builder;
-using Cubase.Macro.Services.WebSockets;
-using Cubase.Macro.Common.Models;
-using Cubase.Macro.Forms.Lyrics;
-using Cubase.Macro.Forms.Cues;
-using Cubase.Macro.Common.Lyrics.Services;
-using Cubase.Macro.Common.Lyrics.Scrolling;
-using Cubase.Macro.Services.Lyrics;
-using System.Diagnostics;
-using Cubase.Macro.Common.Lyrics.Services.Scrolling;
 
 namespace Cubase.Macro
 {
@@ -46,7 +46,7 @@ namespace Cubase.Macro
             SetCurrentProcessExplicitAppUserModelID("DavidNuttall.CubaseMacro");
 
             var host = CreateHostApiAndServices();
-            
+
             // var services = InstallServices();
 
             SetJumpListItems();
@@ -64,12 +64,12 @@ namespace Cubase.Macro
                   rollingInterval: RollingInterval.Day,
                   retainedFileCountLimit: 10)
                 .CreateLogger();
-            
+
             LoadForm(host, args);
 
         }
 
-        static void LoadForm(IHost host, string[] args) 
+        static void LoadForm(IHost host, string[] args)
         {
             if (args.Count() < 1)
             {
@@ -83,7 +83,7 @@ namespace Cubase.Macro
             }
             else
             {
-                var options = args[0]; 
+                var options = args[0];
                 if (options == "settings")
                 {
                     var configForm = host.Services.GetService<SettingsForm>();
@@ -126,7 +126,7 @@ namespace Cubase.Macro
 
                 if (shouldReloadWindowsMidiService)
                 {
-                    windowsService.StopMidiWindowsService(); 
+                    windowsService.StopMidiWindowsService();
                 }
             }
 
@@ -135,7 +135,7 @@ namespace Cubase.Macro
 
             if (shouldReloadWindowsMidiService)
             {
-                 windowsService.StartMidiWindowsService();
+                windowsService.StartMidiWindowsService();
             }
         }
 
@@ -206,7 +206,7 @@ namespace Cubase.Macro
                 })
                 .ConfigureWebHostDefaults(webBuilder =>
                 {
-                    webBuilder.ConfigureKestrel(options => 
+                    webBuilder.ConfigureKestrel(options =>
                     {
                         options.ListenAnyIP(8014);
                         options.Limits.KeepAliveTimeout = TimeSpan.FromMinutes(2);
@@ -221,7 +221,7 @@ namespace Cubase.Macro
                                 {
                                     var midi = context.RequestServices.GetRequiredService<IMidiService>();
                                     var config = context.RequestServices.GetRequiredService<IConfigurationService>();
-                                    var lyricFileService = context.RequestServices.GetRequiredService<ILyricFileService>(); 
+                                    var lyricFileService = context.RequestServices.GetRequiredService<ILyricFileService>();
                                     var windowService = context.RequestServices.GetRequiredService<IWindowService>();
                                     var ip = context.Connection.RemoteIpAddress?.ToString();
                                     var port = context.Connection.RemotePort;

@@ -1,9 +1,4 @@
 ﻿using Cubase.Hub.Services.Models;
-using Microsoft.VisualBasic;
-using System;
-using System.Collections.Generic;
-using System.Runtime.CompilerServices;
-using System.Text;
 using System.Text.Json.Serialization;
 
 namespace Cubase.Hub.Services.Distributers.SoundCloud
@@ -12,7 +7,7 @@ namespace Cubase.Hub.Services.Distributers.SoundCloud
     {
         [JsonPropertyName("track")]
         public UpdateTrackMetaDataRequestTrack Track { get; set; }
-    
+
         public static UpdateTrackMetaDataRequest CreateFromMixdown(MixDown mixDown)
         {
             var year = mixDown.Year == 0 ? DateTime.Now.Year : (int)mixDown.Year;
@@ -20,14 +15,14 @@ namespace Cubase.Hub.Services.Distributers.SoundCloud
             return new UpdateTrackMetaDataRequest()
             {
                 Track = new UpdateTrackMetaDataRequestTrack()
-                 {
-                     Title = mixDown.Title,
-                     Description = BuildDescription(),
-                     Genre = mixDown.Genre ?? "Not Specified",
-                     ReleaseDate = new DateOnly(year, 1, 1).ToString("yyyy-MM-dd"),
-                     TagList = $"{mixDown.Artist} {mixDown.Genre} {mixDown.Year}",
-                     LabelName = mixDown.Artist ?? string.Empty
-                 }
+                {
+                    Title = mixDown.Title,
+                    Description = BuildDescription(),
+                    Genre = mixDown.Genre ?? "Not Specified",
+                    ReleaseDate = new DateOnly(year, 1, 1).ToString("yyyy-MM-dd"),
+                    TagList = $"{mixDown.Artist} {mixDown.Genre} {mixDown.Year}",
+                    LabelName = mixDown.Artist ?? string.Empty
+                }
             };
 
             string BuildDescription()
@@ -46,7 +41,7 @@ namespace Cubase.Hub.Services.Distributers.SoundCloud
             }
         }
 
-     }
+    }
 
 
     public class UpdateTrackMetaDataRequestTrack

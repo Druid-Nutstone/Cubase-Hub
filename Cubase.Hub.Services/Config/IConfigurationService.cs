@@ -1,7 +1,4 @@
 ﻿using Cubase.Hub.Services.Models;
-using System;
-using System.Collections.Generic;
-using System.Text;
 
 namespace Cubase.Hub.Services.Config
 {
@@ -11,7 +8,7 @@ namespace Cubase.Hub.Services.Config
 
         bool LoadConfiguration(Action? OnLoadError);
 
-        CubaseHubConfiguration? Configuration { get; }     
+        CubaseHubConfiguration? Configuration { get; }
 
         bool SaveConfiguration(Action<string>? OnSaveError);
 

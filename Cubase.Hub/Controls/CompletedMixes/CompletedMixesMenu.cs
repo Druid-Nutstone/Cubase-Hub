@@ -1,9 +1,6 @@
 ﻿using Cubase.Hub.Services.Album;
 using Cubase.Hub.Services.Models;
 using Microsoft.Extensions.DependencyInjection;
-using System;
-using System.Collections.Generic;
-using System.Text;
 using System.ComponentModel;
 
 namespace Cubase.Hub.Controls.CompletedMixes

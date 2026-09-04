@@ -1,11 +1,9 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
+﻿using System.Text;
 using System.Text.Json;
 
 namespace Cubase.Macro.Common.Models
 {
-    public class TransportLocationCollection 
+    public class TransportLocationCollection
     {
         public TransportLocationCollection()
         {
@@ -31,8 +29,8 @@ namespace Cubase.Macro.Common.Models
             }
         }
         public TransportType TransportType { get; set; }
-    
-        public string SecondsTime {  get; set; }
+
+        public string SecondsTime { get; set; }
 
         public int BarBeatTime { get; set; }
 

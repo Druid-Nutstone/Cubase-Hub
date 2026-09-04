@@ -1,7 +1,4 @@
 ﻿using Cubase.Hub.Forms.BaseForm;
-using System;
-using System.Drawing;
-using System.Windows.Forms;
 
 namespace Cubase.Hub.Controls.MainFormControls
 {

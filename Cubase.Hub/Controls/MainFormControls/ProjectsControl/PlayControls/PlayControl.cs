@@ -1,17 +1,6 @@
-﻿using Cubase.Hub.Services.Audio;
-using Cubase.Hub.Services.Track;
+﻿using Cubase.Hub.Services.Track;
 using NAudio.Wave;
-using System;
-using System.Collections.Generic;
 using System.ComponentModel;
-using System.Data;
-using System.Diagnostics;
-using System.Drawing;
-using System.Runtime.CompilerServices;
-using System.Text;
-using System.Windows.Forms;
-using TagLib.Mpeg;
-using static System.Windows.Forms.VisualStyles.VisualStyleElement;
 
 namespace Cubase.Hub.Controls.MainFormControls.ProjectsControl.PlayControls
 {

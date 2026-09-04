@@ -1,12 +1,6 @@
 ﻿using Cubase.Macro.Common.Models;
-using System;
-using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
-using System.Diagnostics;
-using System.Drawing;
-using System.Text;
-using System.Windows.Forms;
 
 namespace Cubase.Macro.Forms.Cues.CueControls
 {
@@ -50,7 +44,7 @@ namespace Cubase.Macro.Forms.Cues.CueControls
                 this.OnRefreshMixer?.Invoke();
             };
             this.CueNames.SelectedIndexChanged += CueNames_SelectedIndexChanged;
-            this.ResetFadersButton.Click += ResetFadersButton_Click; 
+            this.ResetFadersButton.Click += ResetFadersButton_Click;
         }
 
         private void ResetFadersButton_Click(object? sender, EventArgs e)
@@ -64,7 +58,7 @@ namespace Cubase.Macro.Forms.Cues.CueControls
                 enabledLevels
                     .OrderBy(x => x.TrackIndex)
                     .ToList();
-        
+
             foreach (var cueLevel in ActiveCues)
             {
                 OnResetFader?.Invoke(cueLevel, defaultCue);
@@ -188,7 +182,7 @@ namespace Cubase.Macro.Forms.Cues.CueControls
                     .OrderBy(x => x.TrackIndex)
                     .ToList();
 
-   
+
             if (this.MainPanel.Controls.Count > 0)
             {
                 this.UpdateMixer(ActiveCues);
@@ -199,11 +193,11 @@ namespace Cubase.Macro.Forms.Cues.CueControls
             this.MainPanel.Controls.Clear();
             foreach (var currentCueLevel in ActiveCues)
             {
-                var slider = new CueSlider(currentCueLevel, 
-                    this.CueChanged, 
-                    this.MuteChanged, 
+                var slider = new CueSlider(currentCueLevel,
+                    this.CueChanged,
+                    this.MuteChanged,
                     this.SoloChanged,
-                    this.OnResetFaderRequest, 
+                    this.OnResetFaderRequest,
                     this.OnVolumeMoving);
                 this.MainPanel.Controls.Add(slider);
             }

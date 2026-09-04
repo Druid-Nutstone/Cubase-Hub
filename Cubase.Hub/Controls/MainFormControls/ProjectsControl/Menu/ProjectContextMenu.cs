@@ -1,17 +1,11 @@
 ﻿using Cubase.Hub.Controls.Menus;
-using Cubase.Hub.Forms.BaseForm;
 using Cubase.Hub.Forms.Export;
 using Cubase.Hub.Services.FileAndDirectory;
 using Cubase.Hub.Services.Messages;
 using Cubase.Hub.Services.Models;
 using Microsoft.Extensions.DependencyInjection;
-using System;
-using System.Collections.Generic;
 using System.ComponentModel;
 using System.IO;
-using System.Runtime.CompilerServices;
-using System.Text;
-using System.Windows.Forms;
 
 namespace Cubase.Hub.Controls.MainFormControls.ProjectsControl.Menu
 {
@@ -33,7 +27,7 @@ namespace Cubase.Hub.Controls.MainFormControls.ProjectsControl.Menu
         public void Initialise(CubaseProject cubaseProject, IServiceProvider serviceProvider)
         {
             this.Items.Clear();
-            this.Items.Add(new OpenProjectFolder(cubaseProject, serviceProvider)); 
+            this.Items.Add(new OpenProjectFolder(cubaseProject, serviceProvider));
             this.Items.Add(new DeleteProjectCPR(cubaseProject, serviceProvider));
             this.Items.Add(new ExportProject(cubaseProject, serviceProvider));
         }
@@ -44,7 +38,7 @@ namespace Cubase.Hub.Controls.MainFormControls.ProjectsControl.Menu
     {
         [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
         public CubaseProject CubaseProject { get; set; }
-        
+
         protected IServiceProvider ServiceProvider { get; private set; }
 
         public BaseProjectMenuItem(string text, CubaseProject cubaseProject, IServiceProvider serviceProvider) : base(text)
@@ -64,11 +58,11 @@ namespace Cubase.Hub.Controls.MainFormControls.ProjectsControl.Menu
         }
 
         protected IDirectoryService DirectoryService => this.ServiceProvider.GetService<IDirectoryService>();
-    
-        protected IMessageService MessageService => this.ServiceProvider.GetService<IMessageService>(); 
+
+        protected IMessageService MessageService => this.ServiceProvider.GetService<IMessageService>();
     }
 
-    public class  OpenProjectFolder : BaseProjectMenuItem
+    public class OpenProjectFolder : BaseProjectMenuItem
     {
         public OpenProjectFolder(CubaseProject cubaseProject, IServiceProvider serviceProvider) : base("Open Track Folder", cubaseProject, serviceProvider)
         {
@@ -89,7 +83,7 @@ namespace Cubase.Hub.Controls.MainFormControls.ProjectsControl.Menu
 
         protected override void OnClick(EventArgs e)
         {
-            var exportForm = this.ServiceProvider.GetService<ExportForm>(); 
+            var exportForm = this.ServiceProvider.GetService<ExportForm>();
             exportForm?.SetProject(this.CubaseProject);
             exportForm?.SetExportType(ExportType.Project);
             exportForm?.ShowDialog();

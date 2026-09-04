@@ -1,11 +1,7 @@
-﻿using Cubase.Hub.Services.Audio;
-using Cubase.Hub.Services.Config;
+﻿using Cubase.Hub.Services.Config;
 using Cubase.Hub.Services.FileAndDirectory;
 using Cubase.Hub.Services.Models;
 using Cubase.Hub.Services.Track;
-using System;
-using System.Collections.Generic;
-using System.Text;
 
 namespace Cubase.Hub.Services.Album
 {
@@ -19,7 +15,7 @@ namespace Cubase.Hub.Services.Album
 
         private readonly ITrackService trackService;
 
-        public AlbumService(IConfigurationService configurationService, 
+        public AlbumService(IConfigurationService configurationService,
                             ITrackService trackService,
                             IDirectoryService directoryService)
         {
@@ -27,7 +23,7 @@ namespace Cubase.Hub.Services.Album
             this.trackService = trackService;
             this.directoryService = directoryService;
         }
-        
+
         public List<AlbumLocation>? GetAlbumList(Action<string> onError)
         {
             var result = this.directoryService.GetCubaseAlbums(this.configurationService.Configuration.SourceCubaseFolders);
@@ -106,7 +102,7 @@ namespace Cubase.Hub.Services.Album
         public string AlbumExportLocation(AlbumLocation albumLocation)
         {
             return this.configurationService?.Configuration?.AlbumExports?.FirstOrDefault(x => x.Name.Equals(albumLocation.AlbumName))?.Location;
-         }
+        }
 
         public string GetAlbumExportLocationForAlbum(string albumName)
         {
@@ -128,8 +124,8 @@ namespace Cubase.Hub.Services.Album
         public string? GetAlbumArt(AlbumLocation albumLocation)
         {
             var albumFinalMixLocation = this.configurationService.GetFinalMixLocationFromAlbumName(albumLocation.AlbumName);
-            if (albumFinalMixLocation != null) 
-            { 
+            if (albumFinalMixLocation != null)
+            {
                 var albumArtLocation = Path.Combine(albumFinalMixLocation, CubaseHubConstants.AlbumArt);
                 if (!Directory.Exists(albumArtLocation))
                 {

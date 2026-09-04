@@ -1,10 +1,6 @@
-﻿using Cubase.Hub.Services.Models;
-using System;
-using System.Collections.Generic;
-using System.Text;
+﻿using Cubase.Hub.Forms.BaseForm;
+using Cubase.Hub.Services.Models;
 using System.ComponentModel;
-using System.Diagnostics;
-using Cubase.Hub.Forms.BaseForm;
 
 namespace Cubase.Hub.Controls.MainFormControls.ProjectsControl.ProjectItem
 {
@@ -30,7 +26,7 @@ namespace Cubase.Hub.Controls.MainFormControls.ProjectsControl.ProjectItem
             base.OnClick(e);
             if (this.HasAlbum)
             {
-                this.OnAlbumClicked?.Invoke(this.Project);  
+                this.OnAlbumClicked?.Invoke(this.Project);
             }
         }
 

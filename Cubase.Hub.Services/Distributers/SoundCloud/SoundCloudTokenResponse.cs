@@ -1,16 +1,12 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Runtime.CompilerServices;
-using System.Text;
-using System.Text.Json;
+﻿using System.Text.Json;
 using System.Text.Json.Serialization;
 
 namespace Cubase.Hub.Services.Distributers.SoundCloud
-{ 
+{
     public class SoundCloudTokenResponse
     {
         private static string SoundCloudTokenLocation => Path.Combine(CubaseHubConstants.UserAppDataFolderPath, "soundcloudtoken.json");
-        
+
         [JsonPropertyName("access_token")]
         public string AccessToken { get; set; }
 
@@ -29,10 +25,10 @@ namespace Cubase.Hub.Services.Distributers.SoundCloud
         [JsonIgnore]
         public bool HasExpired => ExpiresAt <= DateTime.UtcNow;
 
-        public void SetExpires() 
-        { 
-           this.ExpiresAt = DateTime.UtcNow.AddSeconds(ExpiresIn);  
-        } 
+        public void SetExpires()
+        {
+            this.ExpiresAt = DateTime.UtcNow.AddSeconds(ExpiresIn);
+        }
 
         public void Save()
         {
@@ -40,7 +36,7 @@ namespace Cubase.Hub.Services.Distributers.SoundCloud
             File.WriteAllText(SoundCloudTokenLocation, asText);
         }
 
-        public bool Exists => File.Exists(SoundCloudTokenLocation); 
+        public bool Exists => File.Exists(SoundCloudTokenLocation);
 
         public static SoundCloudTokenResponse? Load()
         {
@@ -55,7 +51,7 @@ namespace Cubase.Hub.Services.Distributers.SoundCloud
         {
             if (File.Exists(SoundCloudTokenLocation))
             {
-                File.Delete(SoundCloudTokenLocation);   
+                File.Delete(SoundCloudTokenLocation);
             }
         }
 

@@ -1,9 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
+﻿using Cubase.Hub.Services;
 using System.ComponentModel;
 using System.IO;
-using Cubase.Hub.Services;
 
 namespace Cubase.Hub.Controls.Media.AlbumCover
 {
@@ -14,13 +11,13 @@ namespace Cubase.Hub.Controls.Media.AlbumCover
         public string AlbumCoverFileName { get; set; }
 
         [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
-        public Action OnClicked {  get; set; }
+        public Action OnClicked { get; set; }
 
-        public AlbumCoverControl() : base() 
+        public AlbumCoverControl() : base()
         {
-            this.SizeMode = PictureBoxSizeMode.StretchImage; 
+            this.SizeMode = PictureBoxSizeMode.StretchImage;
             this.Cursor = Cursors.Hand;
-            this.Click += (s,e) => { this.OnClicked?.Invoke(); };
+            this.Click += (s, e) => { this.OnClicked?.Invoke(); };
         }
 
         protected override void OnHandleCreated(EventArgs e)
@@ -28,7 +25,7 @@ namespace Cubase.Hub.Controls.Media.AlbumCover
             base.OnHandleCreated(e);
             this.RefreshImage();
         }
-        
+
 
         public void RefreshImage()
         {

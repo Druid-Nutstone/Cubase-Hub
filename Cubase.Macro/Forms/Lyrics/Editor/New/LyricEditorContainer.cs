@@ -1,11 +1,5 @@
 ﻿using Cubase.Macro.Common.Models;
-using System;
-using System.Collections.Generic;
 using System.ComponentModel;
-using System.Data;
-using System.Drawing;
-using System.Text;
-using System.Windows.Forms;
 
 namespace Cubase.Macro.Forms.Lyrics.Editor.New
 {
@@ -17,7 +11,7 @@ namespace Cubase.Macro.Forms.Lyrics.Editor.New
         private SectionsControl SectionContainer = new SectionsControl();
 
         [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
-        public Action<int> OnFontSizeChanged {  get; set; } 
+        public Action<int> OnFontSizeChanged { get; set; }
 
         public LyricEditorContainer()
         {

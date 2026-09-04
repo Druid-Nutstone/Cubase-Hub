@@ -3,9 +3,6 @@ using Cubase.Macro.Common.Socket;
 using Cubase.Macro.Mobile.Configuration;
 using Nutstone.Server.Common.Client;
 using Nutstone.Server.Common.Models;
-using System;
-using System.Collections.Generic;
-using System.Text;
 
 namespace Cubase.Macro.Mobile.Lyrics
 {
@@ -25,13 +22,13 @@ namespace Cubase.Macro.Mobile.Lyrics
 
         private NutstoneFilesClient lyricsFilesClient;
 
-        public FileHandler(CubaseMacroWebSocketClient webSocketClient, 
+        public FileHandler(CubaseMacroWebSocketClient webSocketClient,
                            IMobileConfigurationService mobileConfigurationService)
         {
             mobileConfigurationService.InitialiseConfiguration();
             this.webSocketClient = webSocketClient;
             this.mobileConfigurationService = mobileConfigurationService;
-            this.lyricsFilesClient = new NutstoneFilesClient(mobileConfigurationService.Configuration.NutstoneServer, mobileConfigurationService.Configuration.SecurityKeys);    
+            this.lyricsFilesClient = new NutstoneFilesClient(mobileConfigurationService.Configuration.NutstoneServer, mobileConfigurationService.Configuration.SecurityKeys);
         }
 
         public async Task Initialise(VerticalStackLayout container,
@@ -67,7 +64,12 @@ namespace Cubase.Macro.Mobile.Lyrics
             });
         }
 
-
+        public async Task<string?> LoadProjectLyricIfAvailable(string projectName)
+        {
+            if (projectName == null) return null;
+            return Directory.GetFiles(CubaseMacroMobileConstants.LyricSourceFolder, $"*{CubaseMacroConstants.NutstoneLyricNotation}")
+                     .FirstOrDefault(x => Path.GetFileNameWithoutExtension(x).Equals(projectName, StringComparison.OrdinalIgnoreCase));
+        }
 
         public async Task CheckForFileUpdates(Action<string> onError)
         {
@@ -78,9 +80,9 @@ namespace Cubase.Macro.Mobile.Lyrics
 
             // using nutstone server to get the files 
 
-            var availableLyrics = await this.lyricsFilesClient.GetFileIndex(this.mobileConfigurationService.Configuration.LyricDirectory, (err) => 
+            var availableLyrics = await this.lyricsFilesClient.GetFileIndex(this.mobileConfigurationService.Configuration.LyricDirectory, (err) =>
             {
-                onError?.Invoke(err.Message);           
+                onError?.Invoke(err.Message);
             });
 
             if (availableLyrics != null)
@@ -88,7 +90,7 @@ namespace Cubase.Macro.Mobile.Lyrics
                 foreach (var lyric in availableLyrics.Files)
                 {
                     var localFileVersion = Path.Combine(CubaseMacroMobileConstants.LyricSourceFolder, lyric.Name);
-                    
+
                     if (!File.Exists(localFileVersion))
                     {
                         await SaveLatestFileContent(lyric, onError);
@@ -120,10 +122,10 @@ namespace Cubase.Macro.Mobile.Lyrics
         private async Task<LyricIndexCollection?> GetLyricCollection(Action<string> messageHandler)
         {
 
-            if (!File.Exists(CubaseMacroMobileConstants.LyricCollection)) 
+            if (!File.Exists(CubaseMacroMobileConstants.LyricCollection))
             {
                 messageHandler($"There are no lyrics in {CubaseMacroMobileConstants.BaseFolder}. Enable the midi connection and restart this app");
-                return null; 
+                return null;
             }
 
             return LyricIndexCollection.DeserialiseFromFile(CubaseMacroMobileConstants.LyricCollection);

@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-
-namespace Cubse.Hub.Tests.Config.Tests
+﻿namespace Cubse.Hub.Tests.Config.Tests
 {
     [TestClass]
     public class ConfigTests : BaseTest

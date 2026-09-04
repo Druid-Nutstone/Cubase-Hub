@@ -14,7 +14,7 @@ namespace Cubase.Macro.Mobile
         public MainPage(CubaseMacroWebSocketClient cubaseMacroWebSocketClient, FileHandler fileHandler)
         {
             this.BackgroundColor = CubaseMacroMobileConstants.DefaultBackgroundColour;
-            this.client  = cubaseMacroWebSocketClient;
+            this.client = cubaseMacroWebSocketClient;
             this.fileHandler = fileHandler;
             InitializeComponent();
         }
@@ -96,7 +96,7 @@ namespace Cubase.Macro.Mobile
                         }
                     }
                 }
-            }        
-        } 
+            }
+        }
     }
 }

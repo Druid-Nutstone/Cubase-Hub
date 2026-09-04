@@ -1,6 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
+﻿using System.Text;
 using System.Text.Json;
 
 namespace Cubase.Macro.Common.Models
@@ -28,7 +26,7 @@ namespace Cubase.Macro.Common.Models
             }
             catch (Exception ex)
             {
-                return new CubaseMidiProjectStatus() { ProjectStatus = CubaseMidiProjectStatusType.Unknown};
+                return new CubaseMidiProjectStatus() { ProjectStatus = CubaseMidiProjectStatusType.Unknown };
             }
         }
     }

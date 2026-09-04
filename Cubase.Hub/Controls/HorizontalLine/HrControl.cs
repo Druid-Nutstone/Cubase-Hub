@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-
-namespace Cubase.Hub.Controls.HorizontalLine
+﻿namespace Cubase.Hub.Controls.HorizontalLine
 {
     public class HrControl : Label
     {

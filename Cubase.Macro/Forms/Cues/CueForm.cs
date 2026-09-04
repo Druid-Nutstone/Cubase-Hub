@@ -2,14 +2,6 @@
 using Cubase.Macro.Models;
 using Cubase.Macro.Services.Config;
 using Cubase.Macro.Services.Midi;
-using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Data;
-using System.Diagnostics;
-using System.Drawing;
-using System.Text;
-using System.Windows.Forms;
 
 namespace Cubase.Macro.Forms.Cues
 {

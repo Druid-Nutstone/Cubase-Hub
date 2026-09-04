@@ -1,13 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Data;
-using System.Drawing;
-using System.Printing;
-using System.Text;
-using System.Windows.Forms;
-
-namespace Cubase.Macro.Forms.Configuration.ColourPicker
+﻿namespace Cubase.Macro.Forms.Configuration.ColourPicker
 {
     public partial class ColourPickerControl : UserControl
     {

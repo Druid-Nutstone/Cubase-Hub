@@ -1,5 +1,4 @@
 ﻿using Cubase.Macro.Common.Socket;
-using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 
 namespace Cubase.Macro.Mobile
@@ -29,7 +28,7 @@ namespace Cubase.Macro.Mobile
             var socket = this.serviceProvider.GetRequiredService<CubaseMacroWebSocketClient>();
 
             var mainWindow = new Window(shell);
-            mainWindow.Destroying += (s, o) => 
+            mainWindow.Destroying += (s, o) =>
             {
                 socket?.Close();
                 socket?.Dispose();

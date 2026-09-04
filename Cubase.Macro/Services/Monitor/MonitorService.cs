@@ -1,8 +1,5 @@
 ﻿using Cubase.Macro.Services.Window;
 using Microsoft.Extensions.Logging;
-using System;
-using System.Collections.Generic;
-using System.Text;
 
 namespace Cubase.Macro.Services.Monitor
 {
@@ -14,9 +11,9 @@ namespace Cubase.Macro.Services.Monitor
         private int FormLeft;
 
         private bool RunningTrue = true;
-        
-        private readonly ILogger<MonitorService> logger;    
-        
+
+        private readonly ILogger<MonitorService> logger;
+
         public MonitorService(IWindowService windowService, ILogger<MonitorService> logger)
         {
             this.windowService = windowService;
@@ -31,7 +28,7 @@ namespace Cubase.Macro.Services.Monitor
         public void PositionCubase(int width)
         {
             this.FormLeft = width;
-            int threadSleepTimeWhenCubaseIsRunning = 10000; 
+            int threadSleepTimeWhenCubaseIsRunning = 10000;
             int threadlSleepTimeWhenCubaseIsNotRunning = 1000;
             int threadSleepTime = threadlSleepTimeWhenCubaseIsNotRunning;
             Task.Run(() =>
@@ -57,26 +54,26 @@ namespace Cubase.Macro.Services.Monitor
                     }
                     Thread.Sleep(threadSleepTime);
                 }
-                
+
                 void SetCubasePosition()
                 {
 
-                        //var hWnd = this.windowService.GetCubaseHandle();
-                        //if (hWnd == IntPtr.Zero)
-                        //    return;
+                    //var hWnd = this.windowService.GetCubaseHandle();
+                    //if (hWnd == IntPtr.Zero)
+                    //    return;
 
-                        // GetWindowRect(hWnd, out var rect);
+                    // GetWindowRect(hWnd, out var rect);
 
-                        var rect = this.windowService.GetCubaseBounds();
+                    var rect = this.windowService.GetCubaseBounds();
 
-                        // small tolerance avoids endless repositioning due to tiny diffs
-                        const int tolerance = 2;
+                    // small tolerance avoids endless repositioning due to tiny diffs
+                    const int tolerance = 2;
 
-                        if (Math.Abs(rect.Left - FormLeft) > tolerance)
-                        {
-                            this.logger.LogInformation("Positioning Cubase to left {FormLeft}", FormLeft);
-                            this.windowService.PositionCubase(FormLeft);
-                        }
+                    if (Math.Abs(rect.Left - FormLeft) > tolerance)
+                    {
+                        this.logger.LogInformation("Positioning Cubase to left {FormLeft}", FormLeft);
+                        this.windowService.PositionCubase(FormLeft);
+                    }
                 }
             });
         }

@@ -1,13 +1,5 @@
 ﻿using Cubase.Macro.Common.Models;
 using Cubase.Macro.Forms.Configuration.KeyEditors;
-using Cubase.Macro.Models;
-using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Data;
-using System.Drawing;
-using System.Text;
-using System.Windows.Forms;
 
 namespace Cubase.Macro.Forms.Configuration
 {

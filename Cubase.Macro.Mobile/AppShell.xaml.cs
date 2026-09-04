@@ -1,5 +1,4 @@
-﻿using Cubase.Macro.Common.Socket;
-using Cubase.Macro.Mobile.Configuration;
+﻿using Cubase.Macro.Mobile.Configuration;
 using Cubase.Macro.Mobile.Logging;
 using Cubase.Macro.Mobile.Lyrics;
 using Cubase.Macro.Mobile.Nav;

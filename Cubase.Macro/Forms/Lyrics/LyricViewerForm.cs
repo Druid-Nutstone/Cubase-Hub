@@ -2,21 +2,11 @@
 using Cubase.Macro.Common.Lyrics.Services;
 using Cubase.Macro.Common.Lyrics.Services.Scrolling;
 using Cubase.Macro.Common.Models;
-using Cubase.Macro.Forms.Lyrics.Editor;
 using Cubase.Macro.Forms.Lyrics.Editor.New;
-using Cubase.Macro.Forms.Lyrics.Viewer;
 using Cubase.Macro.Forms.Lyrics.Viewer.New;
 using Cubase.Macro.Services.Config;
-using Cubase.Macro.Services.Midi;
-using System;
-using System.Collections.Generic;
 using System.ComponentModel;
-using System.Data;
-using System.Diagnostics;
-using System.Drawing;
 using System.IO;
-using System.Text;
-using System.Windows.Forms;
 
 namespace Cubase.Macro.Forms.Lyrics
 {
@@ -46,7 +36,7 @@ namespace Cubase.Macro.Forms.Lyrics
 
         public LyricViewerForm(IConfigurationService configurationService,
                                IlyricMidiService lyricMidiService,
-                               IScrollerService scrollerService)                      
+                               IScrollerService scrollerService)
         {
             InitializeComponent();
             ThemeApplier.ApplyDarkTheme(this);
@@ -101,7 +91,7 @@ namespace Cubase.Macro.Forms.Lyrics
 
         private void SaveLyrics()
         {
-            var sourceFile = this.editor?.Lyrics.Save(CubaseMacroConstants.NutstoneLyricBaseDirectory, (err) => 
+            var sourceFile = this.editor?.Lyrics.Save(CubaseMacroConstants.NutstoneLyricBaseDirectory, (err) =>
             {
                 MessageBox.Show($"Error saving lyrics: {err}");
             });
@@ -137,7 +127,7 @@ namespace Cubase.Macro.Forms.Lyrics
         private void OnGotoDurationBar(int bar)
         {
             this.viewer?.GotoBar(bar);
-        } 
+        }
 
         private void OnTransportLocationUpdate(TimeSpan response)
         {
@@ -158,7 +148,7 @@ namespace Cubase.Macro.Forms.Lyrics
             {
                 SaveButton.Enabled = false;
                 ScrollButton.Enabled = true;
-                MidiEnabled.Visible = this.lyricMidiService.IsMidiAvailable(); 
+                MidiEnabled.Visible = this.lyricMidiService.IsMidiAvailable();
                 this.SourceLyrics = editor?.Lyrics;
                 this.LoadLyricViewer();
             }
@@ -199,9 +189,9 @@ namespace Cubase.Macro.Forms.Lyrics
             if (!string.IsNullOrEmpty(this.FileName))
             {
                 this.SetTitle();
-                this.SourceLyrics = LyricContainer.Load(this.FileName, (err) => 
-                { 
-                   MessageBox.Show("Could not load lyric file: " + err);
+                this.SourceLyrics = LyricContainer.Load(this.FileName, (err) =>
+                {
+                    MessageBox.Show("Could not load lyric file: " + err);
                 });
                 this.LoadFromSource();
             }
@@ -211,7 +201,7 @@ namespace Cubase.Macro.Forms.Lyrics
         {
             var titleType = lyricEditorType == LyricEditorType.Editor ? "Edit" : "View";
             var titleFile = string.IsNullOrEmpty(this.FileName) ? "No File" : Path.GetFileNameWithoutExtension(this.FileName);
-            this.Text = $"{titleType} - {titleFile}";  
+            this.Text = $"{titleType} - {titleFile}";
         }
 
         private void LoadLyricViewer()

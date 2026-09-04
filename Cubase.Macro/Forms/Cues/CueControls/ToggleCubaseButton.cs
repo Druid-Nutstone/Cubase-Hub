@@ -1,8 +1,4 @@
-﻿using Microsoft.AspNetCore.Components.Server.ProtectedBrowserStorage;
-using System;
-using System.Collections.Generic;
-using System.Text;
-using System.ComponentModel;
+﻿using System.ComponentModel;
 
 namespace Cubase.Macro.Forms.Cues.CueControls
 {
@@ -15,15 +11,15 @@ namespace Cubase.Macro.Forms.Cues.CueControls
         private Color offForegroundColour = Color.Empty;
 
         private Color defaultBack = Color.Empty;
-        
+
 
 
         private Action<bool> OnClicked;
 
         [DesignerSerializationVisibility(DesignerSerializationVisibility.Visible)]
-        public bool OnOff {  get; set; }
+        public bool OnOff { get; set; }
 
-        public ToggleCubaseButton() : base() 
+        public ToggleCubaseButton() : base()
         {
             this.Size = new System.Drawing.Size(30, 30);
             this.TextAlign = ContentAlignment.MiddleCenter;
@@ -77,8 +73,8 @@ namespace Cubase.Macro.Forms.Cues.CueControls
 
         private void SetColours()
         {
-            this.BackColor = this.OnOff  ? this.onBackgroundColour : this.offBackgroundColour;
-            this.ForeColor = this.OnOff  ? this.onForegroundColour : this.offForegroundColour;
+            this.BackColor = this.OnOff ? this.onBackgroundColour : this.offBackgroundColour;
+            this.ForeColor = this.OnOff ? this.onForegroundColour : this.offForegroundColour;
         }
     }
 }

@@ -1,10 +1,6 @@
 ﻿using Cubase.Macro.Common.Models;
 using Cubase.Macro.Forms.Main.Buttons;
-using Cubase.Macro.Models;
 using Cubase.Macro.Services;
-using System;
-using System.Collections.Generic;
-using System.Text;
 
 namespace Cubase.Macro.Forms.Main.Menus
 {
@@ -25,7 +21,7 @@ namespace Cubase.Macro.Forms.Main.Menus
 
             Padding = new Padding(10);
         }
-         
+
         public void ClearMacros()
         {
             this.Controls.Clear();

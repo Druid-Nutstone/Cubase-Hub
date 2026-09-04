@@ -1,11 +1,4 @@
 ﻿using Cubase.Hub.Forms.BaseForm;
-using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Data;
-using System.Drawing;
-using System.Text;
-using System.Windows.Forms;
 
 namespace Cubase.Hub.Forms.Message
 {
@@ -14,7 +7,7 @@ namespace Cubase.Hub.Forms.Message
         public NonBlockingMessage()
         {
             InitializeComponent();
-            
+
             // this.ClientSize = new Size(1, 1);
 
             // Optional: remove border if you want a “popup” look

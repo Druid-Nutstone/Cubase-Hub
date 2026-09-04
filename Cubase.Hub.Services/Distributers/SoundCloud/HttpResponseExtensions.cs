@@ -1,7 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-using System.Text.Json;
+﻿using System.Text.Json;
 
 namespace Cubase.Hub.Services.Distributers.SoundCloud
 {
@@ -41,12 +38,12 @@ namespace Cubase.Hub.Services.Distributers.SoundCloud
 
         public static string GetErrorResponse(this HttpResponseMessage message)
         {
-            return message.Content.ReadAsStringAsync().Result;  
+            return message.Content.ReadAsStringAsync().Result;
         }
 
         public static string GetResponseAsString(this HttpResponseMessage message)
         {
             return message.Content.ReadAsStringAsync().Result;
-        }    
+        }
     }
 }

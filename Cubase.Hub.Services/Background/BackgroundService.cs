@@ -6,13 +6,7 @@ using Cubase.Hub.Services.Synchronise;
 using Cubase.Hub.Services.Track;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
-using System;
-using System.Collections;
 using System.Collections.Concurrent;
-using System.Collections.Generic;
-using System.IO;
-using System.Text;
-using TagLib.Ape;
 
 
 namespace Cubase.Hub.Services.Background

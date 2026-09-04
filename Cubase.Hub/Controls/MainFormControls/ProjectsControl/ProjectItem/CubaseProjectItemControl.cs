@@ -7,13 +7,7 @@ using Cubase.Hub.Services.FileAndDirectory;
 using Cubase.Hub.Services.Messages;
 using Cubase.Hub.Services.Models;
 using Cubase.Hub.Services.Track;
-using System;
-using System.Collections.Generic;
 using System.ComponentModel;
-using System.Data;
-using System.Drawing;
-using System.Text;
-using System.Windows.Forms;
 
 namespace Cubase.Hub.Controls.MainFormControls.ProjectsForm
 {
@@ -63,8 +57,8 @@ namespace Cubase.Hub.Controls.MainFormControls.ProjectsForm
             this.manageAlbumsForm = manageAlbumsForm;
             this.cubaseService = cubaseService;
             this.serviceProvider = serviceProvider;
-            this.directoryService = directoryService;  
-            this.messageService = messageService;   
+            this.directoryService = directoryService;
+            this.messageService = messageService;
             this.trackService = trackService;
             this.Initialise();
             this.DoubleBuffered = true;
@@ -114,8 +108,8 @@ namespace Cubase.Hub.Controls.MainFormControls.ProjectsForm
 
         private void ProjectLink_LinkClicked(object? sender, EventArgs e)
         {
-            this.cubaseService.OpenCubaseProject(this.ProjectLink.Project.FullPath ?? string.Empty, (err) => 
-            { 
+            this.cubaseService.OpenCubaseProject(this.ProjectLink.Project.FullPath ?? string.Empty, (err) =>
+            {
                 this.messageService.ShowError($"Error opening project: {err}");
             });
         }

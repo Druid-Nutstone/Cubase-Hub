@@ -1,7 +1,4 @@
 ﻿using Cubase.Hub.Services.Models;
-using System;
-using System.Collections.Generic;
-using System.Text;
 
 namespace Cubase.Hub.Forms.Distributers
 {
@@ -13,8 +10,8 @@ namespace Cubase.Hub.Forms.Distributers
 
         UserControl MainControl { get; }
 
-        void SetAlbum(AlbumConfiguration albumConfiguration, MixDownCollection mixDowns); 
-    
+        void SetAlbum(AlbumConfiguration albumConfiguration, MixDownCollection mixDowns);
+
         UserControl TrackControl { get; }
 
         void UploadMixes(MixDownCollection mixDowns);

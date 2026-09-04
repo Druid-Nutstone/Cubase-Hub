@@ -33,7 +33,7 @@ namespace Cubase.Macro.Mobile
             builder.Services.TryAddTransient<ConfigurationPage>();
             builder.Services.AddSingleton<NavPage>();
             builder.Services.AddSingleton<FileHandler>();
-            builder.Services.AddSingleton<IMobileConfigurationService, MobileConfigurationService>(); 
+            builder.Services.AddSingleton<IMobileConfigurationService, MobileConfigurationService>();
             builder.Services.AddSingleton<IColourService, ColourService>();
             builder.Services.AddSingleton<IlyricMidiService, MobileLyricService>();
             builder.Services.AddSingleton<IMsWinService, MsWinService>();

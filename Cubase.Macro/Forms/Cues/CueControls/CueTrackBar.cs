@@ -1,8 +1,4 @@
-﻿using System;
-using System.ComponentModel;
-using System.Diagnostics;
-using System.Drawing;
-using System.Windows.Forms;
+﻿using System.ComponentModel;
 
 namespace Cubase.Macro.Forms.Cues.CueControls
 {
@@ -14,7 +10,7 @@ namespace Cubase.Macro.Forms.Cues.CueControls
         private int bottomMargin = 10;
         private int dragOffsetY;
         private bool thumbHover;
-        private bool usingRightClick = false; 
+        private bool usingRightClick = false;
 
         [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
         public Action<double> OnVolumeChanged { get; set; }
@@ -341,7 +337,7 @@ namespace Cubase.Macro.Forms.Cues.CueControls
 
             Cursor = thumbHover ? (dragging ? Cursors.SizeNS : Cursors.Hand)
                 : Cursors.Default;
-           
+
             if (dragging)
             {
                 UpdateFromMouse(e.Y - dragOffsetY);

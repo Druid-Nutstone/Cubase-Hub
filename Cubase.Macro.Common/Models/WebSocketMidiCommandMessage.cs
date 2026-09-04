@@ -1,7 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-using System.Text.Json;
+﻿using System.Text.Json;
 
 namespace Cubase.Macro.Common.Models
 {
@@ -15,7 +12,7 @@ namespace Cubase.Macro.Common.Models
         {
             return JsonSerializer.Serialize(this);
         }
-        
+
         public static WebSocketMidiCommandMessage Deserialise(string message)
         {
             return JsonSerializer.Deserialize<WebSocketMidiCommandMessage>(message);
@@ -66,7 +63,7 @@ namespace Cubase.Macro.Common.Models
             return new WebSocketMidiCommandMessage() { Command = command };
         }
 
-        public static WebSocketMidiCommandMessage CreateFromCommandWithMessage(WebSocketMidiCommand command, string message )
+        public static WebSocketMidiCommandMessage CreateFromCommandWithMessage(WebSocketMidiCommand command, string message)
         {
             return new WebSocketMidiCommandMessage() { Command = command, Message = message };
         }
@@ -79,7 +76,7 @@ namespace Cubase.Macro.Common.Models
                 Message = lyric.Serialise()
             };
         }
-        
+
         public static WebSocketMidiCommandMessage CreateFromMacroCollection(CubaseRemoteMidiMacroCollection cubaseMacroCollection)
         {
             return new WebSocketMidiCommandMessage()

@@ -1,6 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
+﻿using System.Text;
 using System.Text.Json;
 
 namespace Cubase.Macro.Common.Models
@@ -20,7 +18,8 @@ namespace Cubase.Macro.Common.Models
             if (string.IsNullOrWhiteSpace(message))
             {
                 return CreateWithError("Message is null or empty");
-            };
+            }
+            ;
 
             var json = Encoding.UTF8.GetString(Convert.FromBase64String(message));
             try
@@ -46,7 +45,7 @@ namespace Cubase.Macro.Common.Models
 
         public static LyricResponseModel Create(string trackName, IEnumerable<string> lyricContent)
         {
-            return new LyricResponseModel() { TrackName = trackName, LyricContent = lyricContent, IsSuccess = true };    
+            return new LyricResponseModel() { TrackName = trackName, LyricContent = lyricContent, IsSuccess = true };
         }
 
     }

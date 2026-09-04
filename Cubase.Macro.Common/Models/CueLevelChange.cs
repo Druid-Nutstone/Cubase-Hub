@@ -1,14 +1,10 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-
-namespace Cubase.Macro.Common.Models
+﻿namespace Cubase.Macro.Common.Models
 {
     // TrackName: tracks[channelIndex].Name, CueIndex: cueIndex, CueLevel: tracks[channelIndex].CueLevels[cueIndex]}
     public class CueLevelChange
     {
         public string Id { get; set; }
-        
+
         public string CueName { get; set; }
 
         public string TrackName { get; set; }

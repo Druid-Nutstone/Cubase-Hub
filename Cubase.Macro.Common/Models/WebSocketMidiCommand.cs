@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-
-namespace Cubase.Macro.Common.Models
+﻿namespace Cubase.Macro.Common.Models
 {
     public enum WebSocketMidiCommand
     {

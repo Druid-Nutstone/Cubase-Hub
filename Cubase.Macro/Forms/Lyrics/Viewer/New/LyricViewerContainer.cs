@@ -1,13 +1,6 @@
 ﻿using Cubase.Macro.Common.Models;
 using Cubase.Macro.Forms.Lyrics.Editor.New;
-using System;
-using System.Collections.Generic;
 using System.Diagnostics;
-using System.Drawing;
-using System.Text;
-using System.Threading;
-using System.Threading.Tasks;
-using System.Windows.Forms;
 
 namespace Cubase.Macro.Forms.Lyrics.Viewer.New
 {

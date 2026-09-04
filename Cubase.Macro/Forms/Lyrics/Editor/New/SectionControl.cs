@@ -1,11 +1,4 @@
 ﻿using Cubase.Macro.Common.Models;
-using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Data;
-using System.Drawing;
-using System.Text;
-using System.Windows.Forms;
 
 namespace Cubase.Macro.Forms.Lyrics.Editor.New
 {
@@ -21,7 +14,7 @@ namespace Cubase.Macro.Forms.Lyrics.Editor.New
 
         public SectionControl(LyricSection section) : base()
         {
-            InitializeComponent();  
+            InitializeComponent();
             this.section = section;
             this.PopulateControls();
         }

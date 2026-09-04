@@ -1,8 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Runtime.InteropServices;
+﻿using Cubase.Macro.Services.Window;
 using Microsoft.Extensions.Logging;
-using Cubase.Macro.Services.Window;
+using System.Runtime.InteropServices;
 
 namespace Cubase.Macro.Services.Keyboard
 {

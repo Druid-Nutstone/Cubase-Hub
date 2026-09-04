@@ -1,22 +1,17 @@
 ﻿using Cubase.Hub.Services.Models;
 using FFMpegCore;
 using FFMpegCore.Enums;
-using FFMpegCore.Pipes;
 using NAudio.Wave;
-using System;
-using System.Collections.Generic;
-using System.Text;
 using TagLib;
 using TagLib.Id3v2;
-using TagLib.Mpeg;
 namespace Cubase.Hub.Services.Audio
 {
     public class AudioService : IAudioService
     {
         public IWavePlayer? Player { get; private set; }
-        public AudioFileReader? Audio { get; private set; } 
+        public AudioFileReader? Audio { get; private set; }
 
-        public AudioService() 
+        public AudioService()
         {
             GlobalFFOptions.Configure(options =>
             {
@@ -24,7 +19,7 @@ namespace Cubase.Hub.Services.Audio
             });
 
         }
-    
+
         public IWavePlayer Play(string musicfile, Action<StoppedEventArgs> onStopped)
         {
             if (Player != null)
@@ -49,10 +44,10 @@ namespace Cubase.Hub.Services.Audio
             return this.GetTempWavFile();
         }
 
-        private string GetTempWavFile() 
+        private string GetTempWavFile()
         {
             return Path.Combine(Path.GetTempPath(), "TempWav.Wav");
-        } 
+        }
 
         private IWavePlayer internalPlayFile(string musicfile, Action<StoppedEventArgs> onStopped)
         {
@@ -74,7 +69,7 @@ namespace Cubase.Hub.Services.Audio
             Audio?.Dispose();
             if (System.IO.File.Exists(this.GetTempWavFile()))
             {
-                System.IO.File.Delete(this.GetTempWavFile());   
+                System.IO.File.Delete(this.GetTempWavFile());
             }
         }
 

@@ -1,7 +1,4 @@
 ﻿using Cubase.Hub.Services.Models;
-using System;
-using System.Collections.Generic;
-using System.Text;
 
 namespace Cubase.Hub.Services.Album
 {
@@ -28,7 +25,7 @@ namespace Cubase.Hub.Services.Album
         void InitialiseAlbumArt(string albumExportLocation);
 
         string InitialiseAlbumExportLocation(AlbumLocation albumLocation, Action<string> onError);
-    
+
         string? GetAlbumArt(AlbumLocation albumLocation);
 
         string? GetAlbumArt(AlbumConfiguration albumConfiguration);

@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-
-namespace Cubase.Hub.Services
+﻿namespace Cubase.Hub.Services
 {
     public static class CubaseHubConstants
     {
@@ -10,7 +6,7 @@ namespace Cubase.Hub.Services
 
         public static string MixdownDirectory = "Mixdown";
 
-        public static string AlbumArt = nameof(AlbumArt);   
+        public static string AlbumArt = nameof(AlbumArt);
 
         public static string TrackArt = nameof(TrackArt);
 
@@ -23,7 +19,7 @@ namespace Cubase.Hub.Services
         public static string DefaultAlbumArt => "NoImage.png";
 
         public static string CubaseHubLog = "CubaseHubLog-";
-            
+
         public static string UserAppDataFolderPath =
             System.IO.Path.Combine(
                 Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData),

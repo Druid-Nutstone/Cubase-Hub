@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-
-namespace Cubase.Macro.Models
+﻿namespace Cubase.Macro.Models
 {
     public class CubaseMidiResponse
     {

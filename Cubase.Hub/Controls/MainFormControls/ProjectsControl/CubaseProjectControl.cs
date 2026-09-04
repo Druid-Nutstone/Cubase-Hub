@@ -1,10 +1,6 @@
 ﻿using Cubase.Hub.Controls.HorizontalLine;
 using Cubase.Hub.Controls.MainFormControls.ProjectsForm;
 using Cubase.Hub.Forms.BaseForm;
-using System;
-using System.Collections.Generic;
-using System.Text;
-using System.Windows.Forms;
 
 namespace Cubase.Hub.Controls.MainFormControls.ProjectsControl
 {
@@ -18,7 +14,7 @@ namespace Cubase.Hub.Controls.MainFormControls.ProjectsControl
             ColumnCount = 1;
             RowCount = 0;
             GrowStyle = TableLayoutPanelGrowStyle.AddRows;
-            this.DoubleBuffered = true; 
+            this.DoubleBuffered = true;
             // ✅ THIS IS CRITICAL
             ColumnStyles.Clear();
             ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 100f));
@@ -31,8 +27,8 @@ namespace Cubase.Hub.Controls.MainFormControls.ProjectsControl
             this.RowStyles.Clear();
             this.RowCount = 0;
         }
-        
-        public void AddProjectItem(CubaseProjectItemControl item) 
+
+        public void AddProjectItem(CubaseProjectItemControl item)
         {
             // Add a new row
             this.RowCount++;
@@ -74,7 +70,7 @@ namespace Cubase.Hub.Controls.MainFormControls.ProjectsControl
                     }
                 }
                 this.ResumeLayout();
-            };  
+            };
 
         }
 

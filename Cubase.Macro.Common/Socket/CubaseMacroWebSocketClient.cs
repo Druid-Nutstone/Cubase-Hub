@@ -3,7 +3,6 @@ using Microsoft.Extensions.Logging;
 using System.Diagnostics;
 using System.Net.WebSockets;
 using System.Text;
-using static System.Runtime.InteropServices.JavaScript.JSType;
 
 namespace Cubase.Macro.Common.Socket
 {
@@ -19,13 +18,13 @@ namespace Cubase.Macro.Common.Socket
 
         private TaskCompletionSource<WebSocketMidiCommandMessage>? pendingResponse;
 
-        public bool Connected 
-        { 
+        public bool Connected
+        {
             get
             {
                 return client?.State == WebSocketState.Open;
-            } 
-            private set; 
+            }
+            private set;
         } = false;
 
         public CubaseMacroWebSocketClient(ILogger<CubaseMacroWebSocketClient> logger) : base()
@@ -65,7 +64,7 @@ namespace Cubase.Macro.Common.Socket
             }
 
             // Reset/Recreate the client and the cancellation token source
-           
+
             this.client = new ClientWebSocket();
             this.client.Options.KeepAliveInterval = TimeSpan.FromSeconds(20);
             this.client.Options.KeepAliveInterval = TimeSpan.Zero;
@@ -74,7 +73,7 @@ namespace Cubase.Macro.Common.Socket
             try
             {
                 // Set the timeout duration
-                ctsConnect.CancelAfter(TimeSpan.FromSeconds(10));
+                ctsConnect.CancelAfter(TimeSpan.FromSeconds(5));
 
                 await this.client.ConnectAsync(
                     new Uri($"ws://{ipAddress}:{port}/ws"),
@@ -91,7 +90,7 @@ namespace Cubase.Macro.Common.Socket
                 logger.LogError($"Failed to connect to WebSocket. web socket state {this.client.State}");
                 return false;
             }
-            logger.LogInformation($"Connected to WebSocket at ws://{ipAddress}:{port}/ws"); 
+            logger.LogInformation($"Connected to WebSocket at ws://{ipAddress}:{port}/ws");
             // Start receive loop on background thread
             receiveTask = ReceiveLoop();
             this.Connected = true;
@@ -224,7 +223,7 @@ namespace Cubase.Macro.Common.Socket
                 onError.Invoke("Web socket is NOT connected");
                 return WebSocketMidiCommandMessage.CreateError("Web socket not connected");
             }
-            
+
             /*
             if (this.State != WebSocketState.Open)
             {
@@ -255,7 +254,9 @@ namespace Cubase.Macro.Common.Socket
 
                 if (completed != pendingResponse.Task)
                     return null; // timeout
-            } catch (Exception ex) {
+            }
+            catch (Exception ex)
+            {
                 Debug.WriteLine($"Error occurred while sending message: {ex.Message}");
             }
 
@@ -318,7 +319,7 @@ namespace Cubase.Macro.Common.Socket
                 logger.LogError(ex, "Error occurred in receive loop");
                 pendingResponse?.TrySetException(ex);
             }
-          logger.LogWarning($"Receive loop exited, WebSocket state: {this.client.State}. is CTS Token cancelled? {cts.Token.IsCancellationRequested}");  
+            logger.LogWarning($"Receive loop exited, WebSocket state: {this.client.State}. is CTS Token cancelled? {cts.Token.IsCancellationRequested}");
         }
     }
 }

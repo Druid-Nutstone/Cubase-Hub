@@ -7,7 +7,7 @@ namespace Cubase.Macro.Services.Midi
     {
         public void Initialise();
 
-        public bool VolumeChanging { get;  set; }
+        public bool VolumeChanging { get; set; }
 
         bool MonitoringTransport { get; }
 
@@ -51,8 +51,8 @@ namespace Cubase.Macro.Services.Midi
 
         Action? OnReadyReceived { get; set; }
 
-        Action<CubaseMidiResponse> OnMidiResponse {  get; set; }
-        
+        Action<CubaseMidiResponse> OnMidiResponse { get; set; }
+
         bool Initialised { get; }
 
     }

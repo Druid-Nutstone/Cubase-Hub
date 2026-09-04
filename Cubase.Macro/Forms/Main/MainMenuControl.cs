@@ -1,16 +1,8 @@
 ﻿using Cubase.Macro.Common.Models;
 using Cubase.Macro.Forms.Main.Buttons;
 using Cubase.Macro.Forms.Main.Menus;
-using Cubase.Macro.Models;
 using Cubase.Macro.Services.Config;
-using Microsoft.Extensions.Logging;
-using System;
-using System.Collections.Generic;
 using System.ComponentModel;
-using System.Data;
-using System.Drawing;
-using System.Text;
-using System.Windows.Forms;
 
 namespace Cubase.Macro.Forms.Main
 {

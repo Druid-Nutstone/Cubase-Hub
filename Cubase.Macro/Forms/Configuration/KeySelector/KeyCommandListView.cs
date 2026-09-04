@@ -1,9 +1,5 @@
-﻿using Cubase.Macro.Models;
-using System;
-using System.Collections.Generic;
-using System.Text;
+﻿using Cubase.Macro.Common.Models;
 using System.ComponentModel;
-using Cubase.Macro.Common.Models;
 
 namespace Cubase.Macro.Forms.Configuration.KeySelector
 {

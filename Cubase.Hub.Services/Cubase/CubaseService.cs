@@ -1,7 +1,4 @@
 ﻿using Cubase.Hub.Services.Config;
-using System;
-using System.Collections.Generic;
-using System.Text;
 
 namespace Cubase.Hub.Services.Cubase
 {
@@ -9,9 +6,9 @@ namespace Cubase.Hub.Services.Cubase
     {
         private IConfigurationService configurationService;
 
-        public CubaseService(IConfigurationService configurationService) 
-        { 
-          this.configurationService = configurationService; 
+        public CubaseService(IConfigurationService configurationService)
+        {
+            this.configurationService = configurationService;
         }
 
         public void OpenCubaseProject(string projectPath, Action<string>? OnError)

@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-
-namespace Cubase.Macro.Mobile.Services.Mswin
+﻿namespace Cubase.Macro.Mobile.Services.Mswin
 {
     public class MsWinService : IMsWinService
     {

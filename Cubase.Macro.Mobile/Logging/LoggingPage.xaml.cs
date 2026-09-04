@@ -2,10 +2,10 @@ namespace Cubase.Macro.Mobile.Logging;
 
 public partial class LoggingPage : ContentPage
 {
-   
+
     public LoggingPage()
-	{
-		InitializeComponent();
+    {
+        InitializeComponent();
     }
 
     private async Task InitialiseViewer()

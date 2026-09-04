@@ -1,9 +1,5 @@
 ﻿using Cubase.Macro.Common.Models;
 using Cubase.Macro.Forms.Main.Buttons;
-using Cubase.Macro.Models;
-using System;
-using System.Collections.Generic;
-using System.Text;
 
 namespace Cubase.Macro.Forms.Main.Menus
 {
@@ -15,7 +11,7 @@ namespace Cubase.Macro.Forms.Main.Menus
         {
             Dock = DockStyle.Top;
             AutoSize = true;
-            AutoSizeMode = AutoSizeMode.GrowAndShrink; 
+            AutoSizeMode = AutoSizeMode.GrowAndShrink;
             GrowStyle = TableLayoutPanelGrowStyle.AddRows;
             DoubleBuffered = true;
             Padding = new Padding(10);
@@ -28,7 +24,7 @@ namespace Cubase.Macro.Forms.Main.Menus
             this.Controls.Clear();
             this.RowStyles.Clear();
             this.RowCount = 0;
-            this.SetupColumns(); 
+            this.SetupColumns();
         }
 
         private void SetupColumns()

@@ -1,7 +1,4 @@
 ﻿using Cubase.Macro.Common.Lyrics.Scrolling;
-using System;
-using System.Collections.Generic;
-using System.Text;
 
 namespace Cubase.Macro.Forms.Lyrics
 {

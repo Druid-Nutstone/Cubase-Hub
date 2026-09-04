@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-
-namespace Cubase.Hub.Services.Models
+﻿namespace Cubase.Hub.Services.Models
 {
     public enum CompressionLevel
     {
@@ -15,5 +11,5 @@ namespace Cubase.Hub.Services.Models
         Medium2 = 2,
         Medium1 = 1,
         None = 0,
-     }
+    }
 }

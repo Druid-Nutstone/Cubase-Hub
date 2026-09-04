@@ -2,27 +2,16 @@
 using Cubase.Macro.Forms;
 using Cubase.Macro.Forms.Cues;
 using Cubase.Macro.Forms.Lyrics;
-using Cubase.Macro.Forms.Main;
 using Cubase.Macro.Forms.Main.Buttons;
-using Cubase.Macro.Models;
 using Cubase.Macro.Services;
 using Cubase.Macro.Services.Config;
 using Cubase.Macro.Services.Keyboard;
 using Cubase.Macro.Services.Midi;
-using Cubase.Macro.Services.Monitor;
-using Cubase.Macro.Services.Mouse;
 using Cubase.Macro.Services.Window;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
-using System;
-using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
-using System.Drawing;
-using System.Runtime.InteropServices;
-using System.Text;
-using System.Windows.Forms;
-using System.Windows.Input;
 
 namespace Cubase.Macro
 {
@@ -56,7 +45,7 @@ namespace Cubase.Macro
         [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
         public bool PositionCubaseWithMouse { get; set; } = true;
 
-        public MainForm(IKeyboardService keyboardService, 
+        public MainForm(IKeyboardService keyboardService,
                         IConfigurationService configurationService,
                         IWindowService windowService,
                         IMidiService midiService,
@@ -97,7 +86,7 @@ namespace Cubase.Macro
 
         private void MouseAllOut(object? sender, EventArgs e)
         {
-            
+
             if (!this.Bounds.Contains(System.Windows.Forms.Cursor.Position))
             {
                 this.windowService.BringCubaseToFront();
@@ -157,9 +146,9 @@ namespace Cubase.Macro
                         RunMacro([CubaseKeyCommand.Deserialise(this.configurationService.Configuration.ResetVisibilityKey)], currentMacro);
                     }
                 }
-                else 
-                { 
-                   MessageBox.Show("No Reset Visibility Key configured. Please set a Reset Visibility Key in settings to ensure the menu is visible after navigating back.");
+                else
+                {
+                    MessageBox.Show("No Reset Visibility Key configured. Please set a Reset Visibility Key in settings to ensure the menu is visible after navigating back.");
                 }
             }
             var parentMenu = this.macros.FindParentIdRecursive(this.macros.Macros.First(), currentMacro.ParentId.Value);
@@ -221,7 +210,8 @@ namespace Cubase.Macro
             }
         }
 
-        public void Minimise()         {
+        public void Minimise()
+        {
 
             this.WindowState = FormWindowState.Minimized;
             this.MaximiseCubase();
@@ -257,7 +247,7 @@ namespace Cubase.Macro
         protected override void OnResize(EventArgs e)
         {
             base.OnResize(e);
-            if (this.WindowState != FormWindowState.Minimized) 
+            if (this.WindowState != FormWindowState.Minimized)
             {
                 if (this.PositionCubaseWithMouse)
                 {
@@ -276,7 +266,7 @@ namespace Cubase.Macro
             }
         }
 
-       
+
         private void RunMidiMacro(CubaseKeyCommand command)
         {
             var haveMidiResponse = false;
@@ -288,7 +278,7 @@ namespace Cubase.Macro
                     this.logger.LogInformation($"Command {command.Name} has been processed");
                 }
             };
-            
+
             this.midiService.SendMidiMessage(command);
 
             var count = 0;
@@ -300,7 +290,7 @@ namespace Cubase.Macro
             }
             if (count > 100)
             {
-                 this.logger.LogError($"Did not receive a response for midi command {command.Name}");
+                this.logger.LogError($"Did not receive a response for midi command {command.Name}");
                 var commandResponse = MessageBox.Show("Cubase midi is not responding. Shall I restart the midi service?", "Midi not responding", MessageBoxButtons.YesNo, MessageBoxIcon.Question);
                 if (commandResponse == DialogResult.Yes)
                 {
@@ -313,9 +303,9 @@ namespace Cubase.Macro
         {
             HaveError = false;
             bool okToContinue = true;
-            ToBack();   
+            ToBack();
             Thread.Sleep(300);
-            
+
             foreach (var command in macros)
             {
                 if (okToContinue)
@@ -421,7 +411,7 @@ namespace Cubase.Macro
                 }
             }
             lyricForm.Show();
-        } 
+        }
 
         public void ReloadScripts()
         {

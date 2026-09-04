@@ -1,9 +1,5 @@
 ﻿using Cubase.Macro.Common.Models;
 using Cubase.Macro.Forms.Lyrics.Editor.New;
-using System;
-using System.Collections.Generic;
-using System.Drawing; // Ensure System.Drawing is loaded for Font/Color
-using System.Windows.Forms;
 
 namespace Cubase.Macro.Forms.Lyrics.Viewer.New
 {

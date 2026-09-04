@@ -1,7 +1,4 @@
 ﻿using Cubase.Hub.Services.Models;
-using System;
-using System.Collections.Generic;
-using System.Text;
 using System.Text.Json.Serialization;
 
 namespace Cubase.Hub.Services.Distributers.SoundCloud
@@ -10,7 +7,7 @@ namespace Cubase.Hub.Services.Distributers.SoundCloud
     {
         [JsonPropertyName("playlist")]
         public PlaylistCreateData Playlist { get; set; }
-    
+
         public static CreatePlaylistRequest CreateFromAlbum(AlbumConfiguration albumConfiguration, string description, PlayListType playListType = PlayListType.album)
         {
             return new CreatePlaylistRequest()
@@ -19,7 +16,7 @@ namespace Cubase.Hub.Services.Distributers.SoundCloud
                 {
                     Title = albumConfiguration.Title,
                     Description = description,
-                    ReleaseDate = $"01/01/{ albumConfiguration.Year }",
+                    ReleaseDate = $"01/01/{albumConfiguration.Year}",
                     Genre = albumConfiguration.Genre,
                     LabelName = albumConfiguration.Label ?? albumConfiguration.Artist,
                     TagList = albumConfiguration.Artist,

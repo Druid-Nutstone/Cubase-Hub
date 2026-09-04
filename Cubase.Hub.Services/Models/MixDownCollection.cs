@@ -1,18 +1,14 @@
 ﻿using Cubase.Hub.Services.Track;
-using System;
-using System.Collections.Generic;
 using System.ComponentModel;
-using System.Diagnostics;
 using System.Runtime.CompilerServices;
-using System.Text;
 
 namespace Cubase.Hub.Services.Models
 {
     public class MixDownCollection : List<MixDown>
     {
-        public MixDownCollection() 
-        { 
-        
+        public MixDownCollection()
+        {
+
         }
 
         public MixDownCollection(IEnumerable<MixDown> collection) : base(collection)
@@ -29,7 +25,7 @@ namespace Cubase.Hub.Services.Models
 
         public IEnumerable<MixDown> ThatHaveMixDownAsTitle()
         {
-            return this.Where(x => x.Title == CubaseHubConstants.MixdownDirectory 
+            return this.Where(x => x.Title == CubaseHubConstants.MixdownDirectory
                                               || string.IsNullOrEmpty(x.Title));
         }
 
@@ -42,7 +38,7 @@ namespace Cubase.Hub.Services.Models
                 if (lookup.TryGetValue(item.FileName, out var track))
                 {
                     track.MarkForDistribution = true;
-                } 
+                }
             }
         }
 
@@ -64,7 +60,7 @@ namespace Cubase.Hub.Services.Models
 
         public MixDownCollection OrderByDate()
         {
-            return new MixDownCollection(this.OrderBy(x => x.LastModified)); 
+            return new MixDownCollection(this.OrderBy(x => x.LastModified));
         }
 
         public MixDownCollection OrderByType()
@@ -97,13 +93,13 @@ namespace Cubase.Hub.Services.Models
 
         public void RemoveSelectedMixes()
         {
-            for (int i=0; i < this.Count; i++)
+            for (int i = 0; i < this.Count; i++)
             {
                 if (this[i].Selected)
                 {
                     this.Remove(this[i]);
                 }
-            }    
+            }
         }
 
         public bool AreAnyMixesSelected()
@@ -113,7 +109,7 @@ namespace Cubase.Hub.Services.Models
 
         public void CreateFromFiles(string[] files)
         {
-            foreach(var file in files)
+            foreach (var file in files)
             {
                 this.Add(MixDown.CreateFromFile(file));
             }
@@ -278,7 +274,7 @@ namespace Cubase.Hub.Services.Models
         }
 
         public string ExportLocation { get; set; }
-        
+
         public DateTime LastModified { get; set; }
 
         public int SampleRate { get; set; }
@@ -299,7 +295,7 @@ namespace Cubase.Hub.Services.Models
 
         public void UpdateFromAnotherMix(MixDown mix)
         {
-            this._title = mix.Title;    
+            this._title = mix.Title;
             this._album = mix.Album;
             this._artist = mix.Artist;
             this._audioType = mix.AudioType;
@@ -323,7 +319,7 @@ namespace Cubase.Hub.Services.Models
                 this.Album = albumConfiguration.Title;
                 result = true;
             }
-            
+
             if (string.IsNullOrEmpty(this.Artist))
             {
                 this.Artist = albumConfiguration.Artist;

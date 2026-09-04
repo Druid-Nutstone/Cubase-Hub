@@ -1,12 +1,5 @@
 ﻿using Cubase.Macro.Common.Models;
-using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Data;
 using System.Diagnostics;
-using System.Drawing;
-using System.Text;
-using System.Windows.Forms;
 
 namespace Cubase.Macro.Forms.Configuration
 {
@@ -26,7 +19,7 @@ namespace Cubase.Macro.Forms.Configuration
 
         private void OpenLyrics_Click(object? sender, EventArgs e)
         {
-            
+
         }
 
         private void OpenConfig_Click(object? sender, EventArgs e)
@@ -47,7 +40,7 @@ namespace Cubase.Macro.Forms.Configuration
         {
             this.DataPanel.Controls.Clear();
             control.Dock = DockStyle.Fill;
-            this.DataPanel.Controls.Add(control);   
+            this.DataPanel.Controls.Add(control);
         }
     }
 }

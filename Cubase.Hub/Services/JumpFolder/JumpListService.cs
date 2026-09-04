@@ -1,9 +1,5 @@
-﻿using Cubase.Hub.Properties;
-using Cubase.Hub.Services.Config;
-using System;
-using System.Collections.Generic;
+﻿using Cubase.Hub.Services.Config;
 using System.IO;
-using System.Text;
 using System.Windows.Shell;
 
 namespace Cubase.Hub.Services.JumpFolder

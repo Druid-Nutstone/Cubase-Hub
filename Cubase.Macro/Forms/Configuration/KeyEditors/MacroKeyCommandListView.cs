@@ -1,8 +1,4 @@
 ﻿using Cubase.Macro.Common.Models;
-using Cubase.Macro.Models;
-using System;
-using System.Collections.Generic;
-using System.Text;
 
 namespace Cubase.Macro.Forms.Configuration.KeyEditors
 {
@@ -52,7 +48,7 @@ namespace Cubase.Macro.Forms.Configuration.KeyEditors
             AutoFit();
         }
     }
-    
+
     public class MacroKeyCommandListViewItem : ListViewItem
     {
         public CubaseKeyCommand Command { get; private set; }

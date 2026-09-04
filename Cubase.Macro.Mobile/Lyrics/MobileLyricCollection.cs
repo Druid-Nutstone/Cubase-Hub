@@ -1,15 +1,10 @@
-﻿using Cubase.Macro.Common.Lyrics;
-using System;
-using System.Collections.Generic;
-using System.Text;
-
-namespace Cubase.Macro.Mobile.Lyrics
+﻿namespace Cubase.Macro.Mobile.Lyrics
 {
     [Obsolete]
     public class MobileLyricCollection : List<MobileLyric>
     {
         public MobileLyricCollection() { }
-    
+
 
         public int MaxBar()
         {
@@ -18,9 +13,9 @@ namespace Cubase.Macro.Mobile.Lyrics
 
         public MobileLyric? GetBar(int bar)
         {
-           return  this.Where(l => l.Bar <= bar)
-                       .OrderByDescending(l => l.Bar)
-                       .FirstOrDefault();
+            return this.Where(l => l.Bar <= bar)
+                        .OrderByDescending(l => l.Bar)
+                        .FirstOrDefault();
 
             // return this.FirstOrDefault(x => x.Bar == bar);
         }
@@ -29,16 +24,16 @@ namespace Cubase.Macro.Mobile.Lyrics
         {
             return this.IndexOf(mobileLyric);
         }
-    
+
     }
 
     public class MobileLyric
     {
-        public string Lyric {  get; set; }
+        public string Lyric { get; set; }
 
         public int Bar { get; set; } = -1;
 
         public Color ForegoundColour { get; set; }
-    
+
     }
 }

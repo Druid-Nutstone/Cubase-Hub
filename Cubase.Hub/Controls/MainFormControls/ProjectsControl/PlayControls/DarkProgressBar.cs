@@ -1,7 +1,4 @@
 ﻿using Cubase.Hub.Forms.BaseForm;
-using System;
-using System.Collections.Generic;
-using System.Text;
 using System.ComponentModel;
 
 namespace Cubase.Hub.Controls.MainFormControls.ProjectsControl.PlayControls

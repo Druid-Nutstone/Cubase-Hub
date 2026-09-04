@@ -1,7 +1,4 @@
 ﻿using Cubase.Macro.Forms.Cues.CueControls;
-using System;
-using System.Collections.Generic;
-using System.Text;
 
 namespace Cubase.Macro.Forms.Main.Buttons
 {
@@ -11,7 +8,7 @@ namespace Cubase.Macro.Forms.Main.Buttons
 
         private Color backColour;
 
-        public ActionButton() : base() 
+        public ActionButton() : base()
         {
             this.Size = new System.Drawing.Size(30, 30);
             this.TextAlign = ContentAlignment.MiddleCenter;

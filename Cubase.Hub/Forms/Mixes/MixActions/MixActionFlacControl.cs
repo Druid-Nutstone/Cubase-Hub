@@ -1,24 +1,15 @@
-﻿using Cubase.Hub.Services.Audio;
-using Cubase.Hub.Services.FileAndDirectory;
+﻿using Cubase.Hub.Services.FileAndDirectory;
 using Cubase.Hub.Services.Messages;
 using Cubase.Hub.Services.Models;
 using Cubase.Hub.Services.Track;
-using FFMpegCore.Enums;
-using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Data;
-using System.Drawing;
 using System.IO;
-using System.Text;
-using System.Windows.Forms;
 
 namespace Cubase.Hub.Forms.Mixes.MixActions
 {
     public partial class MixActionFlacControl : UserControl, IMixActionControl
     {
         private FlacConfiguration FlacConfiguration = new FlacConfiguration();
-        
+
         public MixActionFlacControl()
         {
             InitializeComponent();
@@ -31,7 +22,7 @@ namespace Cubase.Hub.Forms.Mixes.MixActions
             this.BitRate.SelectedIndex = 2;
             this.BitRate.SelectedIndexChanged += BitRate_SelectedIndexChanged;
             this.SampleRate.Items.Clear();
-            this.SampleRate.Items.AddRange(["16000khz","44100khz","48000khz","64000khz", "96000khz"]);
+            this.SampleRate.Items.AddRange(["16000khz", "44100khz", "48000khz", "64000khz", "96000khz"]);
             this.SampleRate.SelectedIndex = 2;
             this.SampleRate.SelectedIndexChanged += SampleRate_SelectedIndexChanged;
         }
@@ -51,10 +42,10 @@ namespace Cubase.Hub.Forms.Mixes.MixActions
             this.FlacConfiguration.CompressionLevel = Enum.Parse<CompressionLevel>(this.CompressionComboBox.SelectedItem as string, true);
         }
 
-        public void RunAction(MixDownCollection mixDowns, 
+        public void RunAction(MixDownCollection mixDowns,
                               string targetDirectory,
-                              ITrackService trackService, 
-                              IMessageService messageService, 
+                              ITrackService trackService,
+                              IMessageService messageService,
                               IDirectoryService directoryService,
                               Func<int, string, bool> onProgress)
         {

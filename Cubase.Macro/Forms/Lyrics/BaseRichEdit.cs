@@ -1,7 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Runtime.InteropServices;
-using System.Text;
+﻿using System.Runtime.InteropServices;
 
 namespace Cubase.Macro.Forms.Lyrics
 {
@@ -35,8 +32,8 @@ namespace Cubase.Macro.Forms.Lyrics
             bool wParam,
             IntPtr lParam);
 
-        
-        public BaseRichEdit() : base() 
+
+        public BaseRichEdit() : base()
         {
             ThemeApplier.ApplyDarkTheme(this);
             this.ForeColor = Color.White;
@@ -52,13 +49,13 @@ namespace Cubase.Macro.Forms.Lyrics
 
         public void IncreaseFont()
         {
-            this.Font = new Font(this.Font.FontFamily, this.Font.Size+1);
+            this.Font = new Font(this.Font.FontFamily, this.Font.Size + 1);
             this.RefreshContent();
         }
 
         public void DecreaseFont()
         {
-            this.Font = new Font(this.Font.FontFamily, this.Font.Size-1);
+            this.Font = new Font(this.Font.FontFamily, this.Font.Size - 1);
             this.RefreshContent();
         }
 

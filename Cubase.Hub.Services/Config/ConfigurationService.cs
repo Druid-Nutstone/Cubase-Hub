@@ -1,8 +1,5 @@
 ﻿using Cubase.Hub.Services.FileAndDirectory;
 using Cubase.Hub.Services.Models;
-using System;
-using System.Collections.Generic;
-using System.Text;
 using System.Text.Json;
 
 namespace Cubase.Hub.Services.Config
@@ -15,8 +12,8 @@ namespace Cubase.Hub.Services.Config
 
         private DateTime LastModified = DateTime.MinValue;
 
-        public bool IsLoaded { get => this.configuration != null; set { } } 
-        
+        public bool IsLoaded { get => this.configuration != null; set { } }
+
         public CubaseHubConfiguration? Configuration => this.configuration;
 
         public ConfigurationService(IDirectoryService directoryService)
@@ -63,9 +60,9 @@ namespace Cubase.Hub.Services.Config
         {
             if (this.configuration == null)
             {
-                this.LoadConfiguration(() => 
+                this.LoadConfiguration(() =>
                 {
-                    this.configuration = new CubaseHubConfiguration(); 
+                    this.configuration = new CubaseHubConfiguration();
                 });
             }
         }

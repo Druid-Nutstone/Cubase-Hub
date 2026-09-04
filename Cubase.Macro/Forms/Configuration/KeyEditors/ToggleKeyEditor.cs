@@ -1,12 +1,5 @@
 ﻿using Cubase.Macro.Common.Models;
-using Cubase.Macro.Models;
-using System;
-using System.Collections.Generic;
 using System.ComponentModel;
-using System.Data;
-using System.Drawing;
-using System.Text;
-using System.Windows.Forms;
 
 namespace Cubase.Macro.Forms.Configuration.KeyEditors
 {
@@ -39,7 +32,7 @@ namespace Cubase.Macro.Forms.Configuration.KeyEditors
         private void BindControls()
         {
             MacroToggleOn.Initialise(this.macro.ToggleOnKeys);
-            MacroToggleOff.Initialise(this.macro.ToggleOffKeys);    
+            MacroToggleOff.Initialise(this.macro.ToggleOffKeys);
         }
     }
 }

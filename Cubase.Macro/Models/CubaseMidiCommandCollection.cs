@@ -1,14 +1,11 @@
 ﻿using Cubase.Macro.Common.Models;
-using System;
-using System.Collections.Generic;
 using System.IO;
-using System.Text;
 using System.Text.Json;
 using System.Text.RegularExpressions;
 
 namespace Cubase.Macro.Models
 {
-    
+
     public class CubaseMidiCommandCollection : List<CubaseMidiCommand>
     {
         public static CubaseMidiCommandCollection Load()
@@ -59,7 +56,7 @@ namespace Cubase.Macro.Models
 
     public class CubaseMidiCommand
     {
-        public string Command { get; set; } 
+        public string Command { get; set; }
 
         public int Note { get; set; } = 0;
 

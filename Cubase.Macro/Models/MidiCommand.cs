@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-
-namespace Cubase.Macro.Models
+﻿namespace Cubase.Macro.Models
 {
     /*
 var sysexCommand = {
@@ -26,24 +22,24 @@ var sysexCommand = {
 
     public enum MidiCommand
     {
-       Ready,
-       ClearChannels,
-       CueLevelChange,
-       ChannelChange, 
-       UpdateCueLevel,
-       UpdateCueLevelComplete,
-       GetCueLevels,
-       GetCueLevelsComplete,
-       CommandValueChanged,
-       CommandComplete,
-       Failed,
-       AckUpdate,
-       TrackDeleted,
-       Reload,
-       UpdateMute,
-       UpdateSolo,
-       LocationChanged,
-       StartTransportEventMonitoring,
-       StopTransportEventMonitoring
+        Ready,
+        ClearChannels,
+        CueLevelChange,
+        ChannelChange,
+        UpdateCueLevel,
+        UpdateCueLevelComplete,
+        GetCueLevels,
+        GetCueLevelsComplete,
+        CommandValueChanged,
+        CommandComplete,
+        Failed,
+        AckUpdate,
+        TrackDeleted,
+        Reload,
+        UpdateMute,
+        UpdateSolo,
+        LocationChanged,
+        StartTransportEventMonitoring,
+        StopTransportEventMonitoring
     }
 }

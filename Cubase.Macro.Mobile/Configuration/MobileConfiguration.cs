@@ -1,7 +1,4 @@
 ﻿using Nutstone.Server.Common.Models;
-using System;
-using System.Collections.Generic;
-using System.Text;
 using System.Text.Json;
 
 namespace Cubase.Macro.Mobile.Configuration
@@ -38,7 +35,7 @@ namespace Cubase.Macro.Mobile.Configuration
             }
             File.WriteAllText(CubaseMacroMobileConstants.ConfigurationFile, JsonSerializer.Serialize(this, new JsonSerializerOptions() { WriteIndented = true }));
         }
-        
+
         public static MobileConfiguration LoadFromFile()
         {
             if (File.Exists(CubaseMacroMobileConstants.ConfigurationFile))

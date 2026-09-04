@@ -1,17 +1,9 @@
 ﻿using Cubase.Macro.Services.Config;
 using Microsoft.Extensions.Logging;
-using System;
-using System.Collections.Generic;
 using System.Diagnostics;
-using System.Drawing;
-using System.Linq;
 using System.Runtime.InteropServices;
-using System.Runtime.InteropServices.ObjectiveC;
 using System.Text;
-using System.Threading;
 using System.Windows;
-using System.Windows.Forms;
-using static System.Windows.Forms.VisualStyles.VisualStyleElement.TextBox;
 
 namespace Cubase.Macro.Services.Window
 {
@@ -61,7 +53,7 @@ namespace Cubase.Macro.Services.Window
 
         delegate bool EnumWindowsProc(IntPtr hWnd, IntPtr lParam);
 
-        [DllImport("user32.dll")] 
+        [DllImport("user32.dll")]
         private static extern bool EnumWindows(EnumWindowsProc lpEnumFunc, IntPtr lParam);
 
         [DllImport("user32.dll", CharSet = CharSet.Auto)]
@@ -178,10 +170,10 @@ namespace Cubase.Macro.Services.Window
             SetWindowPos(
                 hWnd,
                 HWND_TOP,
-                leftOffset-boundsTolerence,
+                leftOffset - boundsTolerence,
                 screen.Top,
-                width+(boundsTolerence * 2),
-                height+ boundsTolerence,
+                width + (boundsTolerence * 2),
+                height + boundsTolerence,
                 SWP_SHOWWINDOW
             );
         }
@@ -202,7 +194,7 @@ namespace Cubase.Macro.Services.Window
         public bool IsCubasePositioned(int left)
         {
             var bounds = GetCubaseBounds();
-            return bounds != Rectangle.Empty && (bounds.Left == (left-boundsTolerence));
+            return bounds != Rectangle.Empty && (bounds.Left == (left - boundsTolerence));
         }
 
         private IntPtr FindCubaseMainWindow()
@@ -286,7 +278,7 @@ namespace Cubase.Macro.Services.Window
 
         public bool IsCubaseActive(bool logit = true)
         {
-            return this.GetCubaseHandle() != IntPtr.Zero;   
+            return this.GetCubaseHandle() != IntPtr.Zero;
         }
 
         public bool IsCubaseMainWindowActive()
@@ -305,7 +297,7 @@ namespace Cubase.Macro.Services.Window
 
         public bool IsCubaseFullscreen(int left)
         {
-            return GetCubaseBounds().Left == left;  
+            return GetCubaseBounds().Left == left;
         }
 
         public void MaximiseCubase()
@@ -345,7 +337,7 @@ namespace Cubase.Macro.Services.Window
         {
             var cubaseHandle = this.FindCubaseMainWindow();
             if (cubaseHandle == IntPtr.Zero) return null;
-            var hwnd = Process.GetProcesses().FirstOrDefault(p => p.MainWindowTitle.StartsWith(this.configurationService.Configuration.CubaseProjectWindowName, StringComparison.OrdinalIgnoreCase) && p.MainWindowHandle == cubaseHandle);
+            var hwnd = Process.GetProcesses().FirstOrDefault(p => p.MainWindowTitle.StartsWith(this.configurationService.Configuration.CubaseProjectWindowName, StringComparison.OrdinalIgnoreCase));
             if (hwnd != null)
             {
                 if (hwnd.MainWindowTitle.Contains("-"))

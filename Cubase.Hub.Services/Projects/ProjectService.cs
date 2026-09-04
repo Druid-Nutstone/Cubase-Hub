@@ -1,38 +1,35 @@
 ﻿using Cubase.Hub.Services.Config;
 using Cubase.Hub.Services.FileAndDirectory;
 using Cubase.Hub.Services.Models;
-using System;
-using System.Collections.Generic;
-using System.Text;
 
 namespace Cubase.Hub.Services.Projects
 {
     public class ProjectService : IProjectService
     {
-        
-        private readonly IConfigurationService configurationService;    
+
+        private readonly IConfigurationService configurationService;
 
         private readonly IDirectoryService directoryService;
 
         public CubaseProjectCollection Projects { get; private set; }
 
-        public ProjectService(IConfigurationService configurationService, 
+        public ProjectService(IConfigurationService configurationService,
                               IDirectoryService directoryService)
         {
             this.configurationService = configurationService;
             this.directoryService = directoryService;
         }
-        
+
         public CubaseProjectCollection? LoadProjects(Action<string> OnError)
         {
             if (this.configurationService.Configuration == null)
             {
                 // as a fall back - see if we can load the config here 
-                var config = this.configurationService.LoadConfiguration(() => 
+                var config = this.configurationService.LoadConfiguration(() =>
                 {
                     OnError?.Invoke("No configuration loaded");
                 });
-                if (config == null)                 
+                if (config == null)
                 {
                     return null;
                 }
@@ -44,7 +41,7 @@ namespace Cubase.Hub.Services.Projects
                 foreach (var project in projectsInFolder)
                 {
                     this.MapCubaseProject(project, this.Projects);
-                }   
+                }
             }
             return this.Projects;
         }

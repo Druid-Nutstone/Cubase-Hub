@@ -1,16 +1,12 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-
-namespace Cubase.Macro.Common.Models
+﻿namespace Cubase.Macro.Common.Models
 {
     public class CueLevelCollection : List<Cue>
     {
         private Dictionary<MidiCueMessageType, Action<CueLevelChange, CueLevel>> cueMessageHandlers;
-        
-        public CueLevelCollection() 
+
+        public CueLevelCollection()
         {
-           cueMessageHandlers = new Dictionary<MidiCueMessageType, Action<CueLevelChange, CueLevel>>()
+            cueMessageHandlers = new Dictionary<MidiCueMessageType, Action<CueLevelChange, CueLevel>>()
            {
                { MidiCueMessageType.Volume, HandleVolumeChange },
                { MidiCueMessageType.Enable, HandleEnableChange },
@@ -19,7 +15,7 @@ namespace Cubase.Macro.Common.Models
                { MidiCueMessageType.RecordEnable, HandleRecordEnableChange },
                { MidiCueMessageType.Selected, HandleSelectedChange },
                { MidiCueMessageType.TrackType, HandleTrackTypeChange }
-           };  
+           };
         }
 
         private void HandleSelectedChange(CueLevelChange cueLevelChange, CueLevel cueLevel)
@@ -79,8 +75,8 @@ namespace Cubase.Macro.Common.Models
 
         private void HandleSoloChange(CueLevelChange cueLevelChange, CueLevel cueLevel)
         {
-             cueLevel.Solo = cueLevelChange.Solo;
-             this.HaveAtLeastOneChange = true;
+            cueLevel.Solo = cueLevelChange.Solo;
+            this.HaveAtLeastOneChange = true;
         }
 
         private void HandleRecordEnableChange(CueLevelChange cueLevelChange, CueLevel cueLevel)
@@ -133,14 +129,14 @@ namespace Cubase.Macro.Common.Models
             }
         }
 
-        public bool HaveAtLeastOneChange {  get; set; } = false;
+        public bool HaveAtLeastOneChange { get; set; } = false;
 
         public string[] GetCueNames()
         {
             return this.Select(c => c.Name).ToArray();
         }
 
-        public void TrackDeleted(TrackDeletedCommand trackDeletedCommand )
+        public void TrackDeleted(TrackDeletedCommand trackDeletedCommand)
         {
             foreach (var cue in this)
             {
@@ -184,7 +180,7 @@ namespace Cubase.Macro.Common.Models
                 this.HaveAtLeastOneChange = true;
             }
             cueLevel.Id = cueLevelChange.Id;
-            cueLevel.Volume = cueLevelChange.CueLevel; 
+            cueLevel.Volume = cueLevelChange.CueLevel;
             cueLevel.TrackIndex = cueLevelChange.TrackIndex;
             cueLevel.Mute = cueLevelChange.Mute;
             cueLevel.Solo = cueLevelChange.Solo;
@@ -194,7 +190,7 @@ namespace Cubase.Macro.Common.Models
             if (cueLevelChange.CueEnabled > -1)
             {
                 cueLevel.Enabled =
-                    cueLevelChange.CueEnabled > 0;  
+                    cueLevelChange.CueEnabled > 0;
             }
         }
     }
@@ -209,14 +205,14 @@ namespace Cubase.Macro.Common.Models
     public class CueLevel
     {
         public string Id { get; set; }
-        
+
         public int TrackIndex { get; set; }
 
         public string TrackName { get; set; }
 
         public double Volume { get; set; } = 0;
 
-        public bool Enabled { get; set; } 
+        public bool Enabled { get; set; }
 
         public bool Mute { get; set; }
 

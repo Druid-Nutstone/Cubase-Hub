@@ -1,7 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-using System.ComponentModel;
+﻿using System.ComponentModel;
 
 namespace Cubase.Macro.BoundControls
 {
@@ -24,7 +21,7 @@ namespace Cubase.Macro.BoundControls
             if (!string.IsNullOrEmpty(this.ToolTipText))
             {
                 this.tooltip = new ToolTip();
-                this.tooltip.SetToolTip(this,this.ToolTipText);
+                this.tooltip.SetToolTip(this, this.ToolTipText);
             }
         }
     }

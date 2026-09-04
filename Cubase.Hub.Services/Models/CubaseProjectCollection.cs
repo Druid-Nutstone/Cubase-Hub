@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-
-namespace Cubase.Hub.Services.Models
+﻿namespace Cubase.Hub.Services.Models
 {
     public class CubaseProjectCollection : List<CubaseProject>
     {
@@ -10,7 +6,7 @@ namespace Cubase.Hub.Services.Models
         {
 
         }
-        
+
         public CubaseProjectCollection(IEnumerable<CubaseProject> projects)
         {
             this.AddRange(projects);
@@ -26,7 +22,7 @@ namespace Cubase.Hub.Services.Models
                     AlbumName = g.Key,
                     AlbumPath = g.First().AlbumPath
                 });
-        } 
+        }
 
 
 
@@ -74,9 +70,9 @@ namespace Cubase.Hub.Services.Models
             return new CubaseProjectCollection(result);
         }
 
-        private IEnumerable<CubaseProject> Search(string text) 
+        private IEnumerable<CubaseProject> Search(string text)
         {
-            var temp = new List<CubaseProject>();   
+            var temp = new List<CubaseProject>();
             foreach (var project in this)
             {
                 if (project.Name.Contains(text, StringComparison.OrdinalIgnoreCase) ||

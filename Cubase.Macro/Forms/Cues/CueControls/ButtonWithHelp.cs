@@ -1,9 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-using System.Windows.Forms;
-
-namespace Cubase.Macro.Forms.Cues.CueControls
+﻿namespace Cubase.Macro.Forms.Cues.CueControls
 {
     public class ButtonWithHelp : Button
     {

@@ -1,9 +1,6 @@
 ﻿using Cubase.Macro.Common.Lyrics.Services;
 using Cubase.Macro.Common.Models;
 using Cubase.Macro.Services.Midi;
-using System;
-using System.Collections.Generic;
-using System.Text;
 
 namespace Cubase.Macro.Forms.Lyrics
 {
@@ -24,7 +21,7 @@ namespace Cubase.Macro.Forms.Lyrics
             {
                 return this.midiService.TransportLocation;
             }
-            return new TransportLocationCollection(); 
+            return new TransportLocationCollection();
         }
 
         public bool IsMidiAvailable()

@@ -1,7 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-using System.ComponentModel;
+﻿using System.ComponentModel;
 
 namespace Cubase.Hub.Controls.MainFormControls.ProjectsControl.PlayControls
 {
@@ -39,7 +36,7 @@ namespace Cubase.Hub.Controls.MainFormControls.ProjectsControl.PlayControls
 
         [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
         public Color BarBackColor { get; set; } = Color.FromArgb(40, 40, 40);
-        
+
         [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
         public Color BarFillColor { get; set; } = Color.FromArgb(0, 160, 255);
 

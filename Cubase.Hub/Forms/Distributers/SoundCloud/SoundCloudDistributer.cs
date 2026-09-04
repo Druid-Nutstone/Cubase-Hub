@@ -1,18 +1,10 @@
 ﻿using Cubase.Hub.Controls.Album.Manage;
 using Cubase.Hub.Forms.BaseForm;
 using Cubase.Hub.Services.Album;
-using Cubase.Hub.Services.Background;
 using Cubase.Hub.Services.Distributers.SoundCloud;
 using Cubase.Hub.Services.Messages;
 using Cubase.Hub.Services.Models;
 using Cubase.Hub.Services.Synchronise;
-using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Data;
-using System.Drawing;
-using System.Text;
-using System.Windows.Forms;
 
 namespace Cubase.Hub.Forms.Distributers.SoundCloud
 {
@@ -21,7 +13,7 @@ namespace Cubase.Hub.Forms.Distributers.SoundCloud
         private readonly IAlbumService albumService;
 
         private readonly IServiceProvider serviceProvider;
-        
+
         private readonly ISynchroniseService synchroniseService;
 
         private SoundCloudDistributionProvider soundCloud;
@@ -51,11 +43,11 @@ namespace Cubase.Hub.Forms.Distributers.SoundCloud
         }
 
         public SoundCloudDistributer(
-            IMessageService messageService,    
+            IMessageService messageService,
             IAlbumService albumService,
             IServiceProvider serviceProvider,
             ISynchroniseService synchroniseService,
-            SoundCloudDistributionProvider soundCloud) 
+            SoundCloudDistributionProvider soundCloud)
         {
             InitializeComponent();
             this.soundCloud = soundCloud;
@@ -78,17 +70,17 @@ namespace Cubase.Hub.Forms.Distributers.SoundCloud
         public void SetAlbum(AlbumConfiguration albumConfiguration, MixDownCollection mixDowns)
         {
             this.RefreshTrackList();
-            this.albumConfiguration = albumConfiguration; 
+            this.albumConfiguration = albumConfiguration;
             this.mixDowns = mixDowns;
             this.mainControl.SetAlbum(albumConfiguration, mixDowns);
         }
 
-        public UserControl MainControl 
-        { 
+        public UserControl MainControl
+        {
             get
             {
                 return this.mainControl;
-            } 
+            }
             private set
             {
 
@@ -110,7 +102,7 @@ namespace Cubase.Hub.Forms.Distributers.SoundCloud
 
         public void UploadSingleTrack(MixDown mixDown)
         {
-            this.UploadSelected(mixDown);   
+            this.UploadSelected(mixDown);
         }
 
         public void Initialise()
@@ -157,11 +149,11 @@ namespace Cubase.Hub.Forms.Distributers.SoundCloud
             if (selectedMixes.Count == 0)
             {
                 this.messageService.ShowError($"No tracks have been selected");
-                return; 
+                return;
             }
             this.MsgHandler = new SoundCloudMessageForm();
             this.MsgHandler.Show();
-            
+
             SoundCloudPlaylist? album = null;
 
             if (selectedMixes.Count > 0)
@@ -243,7 +235,7 @@ namespace Cubase.Hub.Forms.Distributers.SoundCloud
             }
 
             this.MsgHandler.Close();
-        
+
             void UpdateAlbumArt(SoundCloudPlaylist soundCloudPlaylist)
             {
                 this.soundCloud?.OrderAlbumTracks(soundCloudPlaylist.Title, this.ShowSoundCloudError, (progress) => { });
@@ -296,12 +288,12 @@ namespace Cubase.Hub.Forms.Distributers.SoundCloud
 
         private void ShowSoundCloudError(string error)
         {
-           if (this.MsgHandler != null)
+            if (this.MsgHandler != null)
             {
                 this.MsgHandler.Close();
                 this.MsgHandler = null;
             }
-            this.messageService.ShowError(error); 
+            this.messageService.ShowError(error);
         }
     }
 }

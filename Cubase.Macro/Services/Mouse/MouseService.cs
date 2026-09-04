@@ -1,10 +1,7 @@
 ﻿using Cubase.Macro.Services.Window;
 using Microsoft.Extensions.Logging;
-using System;
 using System.Diagnostics;
-using System.Drawing;
 using System.Runtime.InteropServices;
-using System.Windows.Forms;
 
 namespace Cubase.Macro.Services.Mouse
 {
@@ -226,7 +223,7 @@ namespace Cubase.Macro.Services.Mouse
                 cursor.Y >= mainForm.Bounds.Top &&
                 cursor.Y <= mainForm.Bounds.Bottom;
             }
-           
+
         }
 
         private void ShowForm()

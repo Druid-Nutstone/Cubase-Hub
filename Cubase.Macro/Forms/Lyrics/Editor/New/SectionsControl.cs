@@ -1,13 +1,10 @@
 ﻿using Cubase.Macro.Common.Models;
-using System;
-using System.Collections.Generic;
-using System.Text;
 
 namespace Cubase.Macro.Forms.Lyrics.Editor.New
 {
     public class SectionsControl : TableLayoutPanel
     {
-        public SectionsControl() : base() 
+        public SectionsControl() : base()
         {
             // 1. Force a strict single-column layout architecture
             this.ColumnCount = 1;

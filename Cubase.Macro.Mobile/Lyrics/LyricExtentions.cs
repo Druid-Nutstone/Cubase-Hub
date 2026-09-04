@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-
-namespace Cubase.Macro.Mobile.Lyrics
+﻿namespace Cubase.Macro.Mobile.Lyrics
 {
     public static class LyricExtentions
     {

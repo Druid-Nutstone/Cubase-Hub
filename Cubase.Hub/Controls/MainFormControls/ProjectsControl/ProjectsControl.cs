@@ -7,13 +7,7 @@ using Cubase.Hub.Services.Messages;
 using Cubase.Hub.Services.Models;
 using Cubase.Hub.Services.Projects;
 using Microsoft.Extensions.DependencyInjection;
-using System;
-using System.Collections.Generic;
-using System.ComponentModel;
 using System.Data;
-using System.Drawing;
-using System.Text;
-using System.Windows.Forms;
 
 namespace Cubase.Hub.Controls.MainFormControls.ProjectsForm
 {
@@ -123,10 +117,10 @@ namespace Cubase.Hub.Controls.MainFormControls.ProjectsForm
             if (this.projects != null)
             {
                 this.configurationService.Configuration.RecentProjects = this.projects.Select(p => p.FullPath).Take(5);
-                this.configurationService.SaveConfiguration((err) => 
-                { 
-                   this.messageService.ShowError($"Failed to save configuration: {err}");
-                });    
+                this.configurationService.SaveConfiguration((err) =>
+                {
+                    this.messageService.ShowError($"Failed to save configuration: {err}");
+                });
 
                 this.albumLocations = this.projects.GetAlbums();
                 projectPanel = this.GetInstanceOf<CubaseProjectControl>();

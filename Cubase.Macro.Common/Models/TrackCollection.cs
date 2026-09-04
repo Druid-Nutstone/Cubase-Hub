@@ -1,9 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-using System.Transactions;
-
-namespace Cubase.Macro.Common.Models
+﻿namespace Cubase.Macro.Common.Models
 {
     public class TrackCollection : List<Track>
     {
@@ -32,7 +27,7 @@ namespace Cubase.Macro.Common.Models
     public class Track
     {
         public string Id { get; set; }
-        
+
         public string Name { get; set; }
 
         public string TrackType { get; set; }
@@ -43,9 +38,9 @@ namespace Cubase.Macro.Common.Models
 
         public bool RecordEnable { get; set; }
 
-        public bool Selected {  get; set; } 
+        public bool Selected { get; set; }
 
-        public double Volume { get; set; } 
+        public double Volume { get; set; }
 
     }
 }

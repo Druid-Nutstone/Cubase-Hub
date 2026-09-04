@@ -4,7 +4,6 @@ using Cubase.Macro.Services.Config;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using System.Collections.Concurrent;
-using System.Diagnostics;
 using System.Text;
 using System.Text.Json;
 
@@ -27,7 +26,7 @@ namespace Cubase.Macro.Services.Midi
 
         private TrackCollection tracks = new TrackCollection();
 
-        private TransportLocationCollection transportLocation = new TransportLocationCollection(); 
+        private TransportLocationCollection transportLocation = new TransportLocationCollection();
 
         private bool disposed;
 
@@ -46,7 +45,7 @@ namespace Cubase.Macro.Services.Midi
 
         private List<Action<bool>> registeredTransportCallbacks { get; set; } = new List<Action<bool>>();
 
-        public bool MonitoringTransport { get { return monitoringTransport; } } 
+        public bool MonitoringTransport { get { return monitoringTransport; } }
 
         public Action<CubaseMidiResponse> OnMidiResponse { get; set; }
 

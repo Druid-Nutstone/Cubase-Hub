@@ -1,9 +1,6 @@
 ﻿using Cubase.Macro.Common.Models;
 using Cubase.Macro.Services.Window;
-using System;
-using System.Collections.Generic;
 using System.IO;
-using System.Text;
 
 namespace Cubase.Macro.Services.Lyrics
 {
@@ -19,8 +16,8 @@ namespace Cubase.Macro.Services.Lyrics
         public LyricResponseModel GetLyric(Lyric fileName)
         {
             var targetFile = Path.Combine(CubaseMacroConstants.DropBoxBaseDirectory, fileName.FileName);
-            
-            if (File.Exists(targetFile)) 
+
+            if (File.Exists(targetFile))
             {
                 return this.GetLyricResponseModelFromFile(targetFile);
             }
@@ -33,7 +30,7 @@ namespace Cubase.Macro.Services.Lyrics
             {
                 FileName = fileName.FileName
             };
-            
+
             var targetFile = Path.Combine(CubaseMacroConstants.DropBoxBaseDirectory, fileName.FileName);
 
             if (File.Exists(targetFile))
@@ -46,7 +43,7 @@ namespace Cubase.Macro.Services.Lyrics
         public LyricIndexCollection GetLyricIndex()
         {
             return LyricIndexCollection.DeserialiseFromFile(CubaseMacroConstants.LyricIndexFile);
-    
+
         }
 
         public LyricResponseModel GetProjectCurrentLyrics()

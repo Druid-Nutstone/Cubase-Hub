@@ -1,8 +1,5 @@
 ﻿using Cubase.Macro.Forms.Cues.CueControls;
-using System;
-using System.Collections.Generic;
 using System.Runtime.InteropServices;
-using System.Text;
 
 namespace Cubase.Macro.Forms
 {
@@ -137,7 +134,7 @@ namespace Cubase.Macro.Forms
             }
 
             if (control is TrackBar trackBar)
-            {   
+            {
                 trackBar.BackColor = DarkTheme.PanelColor;
                 trackBar.ForeColor = DarkTheme.TextColor;
             }
@@ -152,7 +149,7 @@ namespace Cubase.Macro.Forms
                 linkLabel.DisabledLinkColor = DarkTheme.MutedText;
                 linkLabel.ForeColor = DarkTheme.TextColor; // still required
             }
-            
+
             foreach (Control child in control.Controls)
                 ApplyDarkThemeSelected(child);
         }
@@ -162,7 +159,7 @@ namespace Cubase.Macro.Forms
         {
             var saveBackColor = control.BackColor;
             var saveForeColor = control.ForeColor;
-            
+
             control.BackColor = DarkTheme.BackColor;
             control.ForeColor = DarkTheme.TextColor;
 
@@ -170,7 +167,7 @@ namespace Cubase.Macro.Forms
             if (control is ToggleCubaseButton)
             {
                 control.BackColor = saveBackColor;
-                control.ForeColor = saveForeColor; 
+                control.ForeColor = saveForeColor;
             }
 
             if (control is Panel or TableLayoutPanel)
@@ -231,7 +228,7 @@ namespace Cubase.Macro.Forms
                 linkLabel.ForeColor = DarkTheme.TextColor; // still required
             }
 
-            control.Enabled = enabled;  
+            control.Enabled = enabled;
 
             foreach (Control child in control.Controls)
                 ApplyDarkTheme(child);

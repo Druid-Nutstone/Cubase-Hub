@@ -1,16 +1,9 @@
 ﻿using Cubase.Hub.Forms.BaseForm;
 using Cubase.Hub.Services;
-using Cubase.Hub.Services.Audio;
 using Cubase.Hub.Services.Messages;
 using Cubase.Hub.Services.Models;
 using Cubase.Hub.Services.Track;
-using System;
-using System.Collections.Generic;
 using System.ComponentModel;
-using System.Data;
-using System.Drawing;
-using System.Text;
-using System.Windows.Forms;
 
 namespace Cubase.Hub.Forms.Edit
 {
@@ -19,7 +12,7 @@ namespace Cubase.Hub.Forms.Edit
         private readonly ITrackService trackService;
 
         private readonly IMessageService messageService;
-        
+
         private MixDown mixDown;
 
         [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
@@ -38,7 +31,7 @@ namespace Cubase.Hub.Forms.Edit
         {
             if (this.mixDown != null)
             {
-                var msgHandler = this.messageService.OpenMessage($"Updating mix {this.mixDown.Title}", this); 
+                var msgHandler = this.messageService.OpenMessage($"Updating mix {this.mixDown.Title}", this);
                 this.trackService.SetTagsFromMixDowm(this.mixDown);
                 msgHandler.Close();
             }
@@ -46,7 +39,7 @@ namespace Cubase.Hub.Forms.Edit
 
         public void Initialise(string audioFile)
         {
-            this.UpdateButton.Enabled = false;  
+            this.UpdateButton.Enabled = false;
             this.AudioFile = audioFile;
             this.mixDown = this.trackService.PopulateTagsFromFile(this.AudioFile);
             this.mixDown.PropertyChanged += MixDown_PropertyChanged;

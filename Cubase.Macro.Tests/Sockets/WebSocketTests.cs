@@ -1,9 +1,4 @@
 ﻿using Cubase.Macro.Common.Socket;
-using Microsoft.VisualStudio.TestPlatform.TestHost;
-using System;
-using System.Collections.Generic;
-using System.Net.WebSockets;
-using System.Text;
 
 namespace Cubase.Macro.Tests.Sockets
 {
@@ -28,6 +23,6 @@ namespace Cubase.Macro.Tests.Sockets
             }
 
         }
-    
+
     }
 }

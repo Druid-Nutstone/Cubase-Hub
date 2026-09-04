@@ -1,9 +1,4 @@
-﻿using Cubase.Hub.Controls.MainFormControls.ProjectsControl.Menu;
-using Cubase.Hub.Services.Models;
-using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Text;
+﻿using System.ComponentModel;
 
 namespace Cubase.Hub.Controls.Menus
 {

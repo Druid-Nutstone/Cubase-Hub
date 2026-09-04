@@ -1,10 +1,5 @@
-﻿using Cubase.Hub.Services.Distributers;
-using Cubase.Hub.Services.Models;
-using Microsoft.Extensions.DependencyInjection;
-using System;
-using System.Collections.Generic;
+﻿using Cubase.Hub.Services.Models;
 using System.Diagnostics;
-using System.Text;
 using System.Text.Json;
 
 namespace Cubse.Hub.Tests.SoundCloud.Tests
@@ -19,10 +14,10 @@ namespace Cubse.Hub.Tests.SoundCloud.Tests
         [TestMethod]
         public void Can_Connect_To_SoundCloud()
         {
-            var connected = this.soundCloudDistributionProvider.Connect((err) => 
-            { 
-               Debug.WriteLine(err);
-            });    
+            var connected = this.soundCloudDistributionProvider.Connect((err) =>
+            {
+                Debug.WriteLine(err);
+            });
             Assert.IsTrue(connected);
         }
 
@@ -33,7 +28,7 @@ namespace Cubse.Hub.Tests.SoundCloud.Tests
             var albumLoc = this.albumService.GetAlbumList(this.OnError).FirstOrDefault(x => x.AlbumName == "Martin");
             var albumConfiguration = this.albumService.GetAlbumConfigurationFromAlbumLocation(albumLoc);
             var mixDowns = this.trackService.GetMixesForAlbum(albumLoc);
-            var allContributers = string.Join(" ",(string.Join(' ', mixDowns.Select(x => string.Join(" ",x.Performers.Split(';'))))).Split(" ").Distinct());
+            var allContributers = string.Join(" ", (string.Join(' ', mixDowns.Select(x => string.Join(" ", x.Performers.Split(';'))))).Split(" ").Distinct());
             var performers = string.Join(" ", string.Join("", allContributers).Split(";").Distinct());
             var x = string.Join(Environment.NewLine, new[]
             {
@@ -98,7 +93,7 @@ namespace Cubse.Hub.Tests.SoundCloud.Tests
                 var playList = playLists.GetAlbum(this.albumTitle);
                 if (playList != null)
                 {
-                    this.soundCloudDistributionProvider.DeleteAlbum(playList, this.OnError); 
+                    this.soundCloudDistributionProvider.DeleteAlbum(playList, this.OnError);
                 }
             }
         }
@@ -111,7 +106,7 @@ namespace Cubse.Hub.Tests.SoundCloud.Tests
                 var playList = this.soundCloudDistributionProvider.GetPlayLists(this.OnError);
                 var saveTo = JsonSerializer.Serialize(playList, new JsonSerializerOptions() { WriteIndented = true });
                 File.WriteAllText(@"C:\deleteme\playlist.json", saveTo);
-             }
+            }
         }
 
 

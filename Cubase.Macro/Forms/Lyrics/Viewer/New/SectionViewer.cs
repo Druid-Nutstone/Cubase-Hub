@@ -1,7 +1,4 @@
-﻿using System;
-using System.Drawing;
-using System.Windows.Forms;
-using Cubase.Macro.Common.Models;
+﻿using Cubase.Macro.Common.Models;
 
 namespace Cubase.Macro.Forms.Lyrics.Editor.New
 {

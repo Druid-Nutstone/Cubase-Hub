@@ -1,13 +1,9 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-
-namespace Cubase.Macro.Models
+﻿namespace Cubase.Macro.Models
 {
     public class CueUpdateRequest
     {
         public string Id { get; set; }
-        
+
         // index of the cue in the channel (0-3)
         public int CueSlotIndex { get; set; }
 

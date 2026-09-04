@@ -1,9 +1,6 @@
 ﻿using Cubase.Macro.Common.Lyrics.Services;
 using Cubase.Macro.Common.Models;
 using Cubase.Macro.Common.Socket;
-using System;
-using System.Collections.Generic;
-using System.Text;
 
 namespace Cubase.Macro.Mobile.Lyrics
 {
@@ -11,11 +8,11 @@ namespace Cubase.Macro.Mobile.Lyrics
     {
         private readonly CubaseMacroWebSocketClient webSocketClient;
 
-        public MobileLyricService(CubaseMacroWebSocketClient websocketClient) 
-        { 
+        public MobileLyricService(CubaseMacroWebSocketClient websocketClient)
+        {
             this.webSocketClient = websocketClient;
         }
-        
+
         public TransportLocationCollection GetTransportLocation()
         {
             throw new NotImplementedException("CANNOT BE USED ON MOBILE APP!");

@@ -1,6 +1,4 @@
 ﻿using Cubase.Hub.Forms.BaseForm;
-using System.Drawing;
-using System.Windows.Forms;
 
 public class DarkToolStripRenderer : ToolStripProfessionalRenderer
 {

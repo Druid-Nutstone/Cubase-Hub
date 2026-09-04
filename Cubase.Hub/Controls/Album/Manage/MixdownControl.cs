@@ -1,13 +1,8 @@
 ﻿using Cubase.Hub.Forms.BaseForm;
-using Cubase.Hub.Services.Audio;
 using Cubase.Hub.Services.Messages;
 using Cubase.Hub.Services.Models;
 using Cubase.Hub.Services.Track;
-using System;
-using System.Collections.Generic;
 using System.ComponentModel;
-using System.Text;
-using System.Windows.Forms;
 
 namespace Cubase.Hub.Controls.Album.Manage
 {
@@ -38,7 +33,7 @@ namespace Cubase.Hub.Controls.Album.Manage
         public void ShowMixes(MixDownCollection mixes, Action<MixDown, string> onMixChanged, Action<MixDown> onPlay, ITrackService trackService, IMessageService messageService, IServiceProvider serviceProvider)
         {
             this.OnMixChanged = onMixChanged;
-            this.OnPlay = onPlay;   
+            this.OnPlay = onPlay;
             this.Controls.Clear();
             this.RowStyles.Clear();
             this.RowCount = 0;
@@ -56,7 +51,7 @@ namespace Cubase.Hub.Controls.Album.Manage
 
                 mixDowncontrol.OnPlay += (mix) => { this.OnPlay?.Invoke(mix); };
 
-                mixDowncontrol.OnMixChanged += (m,p) =>
+                mixDowncontrol.OnMixChanged += (m, p) =>
                 {
 
                     this.OnMixChanged?.Invoke(m, p);

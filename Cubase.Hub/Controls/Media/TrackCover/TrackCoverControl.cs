@@ -1,9 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
+﻿using Cubase.Hub.Services;
 using System.ComponentModel;
 using System.IO;
-using Cubase.Hub.Services;
 
 namespace Cubase.Hub.Controls.Media.TrackCover
 {
@@ -16,9 +13,9 @@ namespace Cubase.Hub.Controls.Media.TrackCover
         [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
         public Action OnClicked { get; set; }
 
-        public TrackCoverControl() : base() 
+        public TrackCoverControl() : base()
         {
-            this.SizeMode = PictureBoxSizeMode.StretchImage; 
+            this.SizeMode = PictureBoxSizeMode.StretchImage;
         }
 
         protected override void OnHandleCreated(EventArgs e)
@@ -29,7 +26,7 @@ namespace Cubase.Hub.Controls.Media.TrackCover
             this.Click += (s, e) => { this.OnClicked?.Invoke(); };
         }
 
-        public void RefreshImage() 
+        public void RefreshImage()
         {
             if (string.IsNullOrEmpty(TrackCoverFileName))
             {

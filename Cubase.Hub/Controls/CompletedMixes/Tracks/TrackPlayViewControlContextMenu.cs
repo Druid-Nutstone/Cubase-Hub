@@ -5,11 +5,8 @@ using Cubase.Hub.Services.Messages;
 using Cubase.Hub.Services.Models;
 using Cubase.Hub.Services.Track;
 using Microsoft.Extensions.DependencyInjection;
-using System;
-using System.Collections.Generic;
 using System.ComponentModel;
 using System.IO;
-using System.Text;
 
 namespace Cubase.Hub.Controls.CompletedMixes.Tracks
 {
@@ -19,7 +16,7 @@ namespace Cubase.Hub.Controls.CompletedMixes.Tracks
         private readonly IServiceProvider ServiceProvider;
         private TrackPlayViewControl Parent;
 
-        public TrackPlayViewControlContextMenu(TrackPlayViewControl parent,MixDown mixDown, IServiceProvider serviceProvider) : base()
+        public TrackPlayViewControlContextMenu(TrackPlayViewControl parent, MixDown mixDown, IServiceProvider serviceProvider) : base()
         {
             this.MixDown = mixDown;
             this.Parent = parent;

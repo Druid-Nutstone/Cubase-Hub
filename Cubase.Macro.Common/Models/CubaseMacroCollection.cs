@@ -1,7 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Drawing;
-using System.IO;
+﻿using System.Drawing;
 using System.Text;
 using System.Text.Json;
 
@@ -43,13 +40,13 @@ namespace Cubase.Macro.Common.Models
         {
             var json = JsonSerializer.Serialize(this, new JsonSerializerOptions() { WriteIndented = true });
             File.WriteAllText(CubaseMacroConstants.MacroConfigurationFileName, json);
-        } 
-        
+        }
+
         public static CubaseMacroCollection Load()
         {
             if (File.Exists(CubaseMacroConstants.MacroConfigurationFileName))
             {
-                return JsonSerializer.Deserialize<CubaseMacroCollection>(File.ReadAllText(CubaseMacroConstants.MacroConfigurationFileName));  
+                return JsonSerializer.Deserialize<CubaseMacroCollection>(File.ReadAllText(CubaseMacroConstants.MacroConfigurationFileName));
             }
             else
             {
@@ -59,12 +56,12 @@ namespace Cubase.Macro.Common.Models
             }
         }
 
-        
+
         public CubaseMacro FindParentFromBase(Guid id)
         {
             return this.FindParentIdRecursive(this.Macros?.First(), id);
         }
-        
+
         public CubaseMacro FindParentIdRecursive(CubaseMacro macro, Guid id)
         {
             if (macro.Id == id)
@@ -93,7 +90,7 @@ namespace Cubase.Macro.Common.Models
         public Guid? ParentId { get; set; }
 
         public string TitleToggle { get; set; }
-        
+
         public bool ReturnToParentMenuAfterExecution { get; set; } = false;
 
         public CubaseMacroType MacroType { get; set; }
@@ -110,13 +107,13 @@ namespace Cubase.Macro.Common.Models
 
         public CubaseMacroButtonType ButtonType { get; set; } = CubaseMacroButtonType.NotApplicable;
 
-        public CubaseMacroToggleState ToggleState { get; set; } = CubaseMacroToggleState.NotApplicable;    
+        public CubaseMacroToggleState ToggleState { get; set; } = CubaseMacroToggleState.NotApplicable;
 
-        public List<CubaseKeyCommand> ToggleOnKeys { get; set; } = new List<CubaseKeyCommand>();  
+        public List<CubaseKeyCommand> ToggleOnKeys { get; set; } = new List<CubaseKeyCommand>();
 
-        public List<CubaseKeyCommand> ToggleOffKeys { get; set; } = new List<CubaseKeyCommand>();   
+        public List<CubaseKeyCommand> ToggleOffKeys { get; set; } = new List<CubaseKeyCommand>();
 
-        public List<CubaseMacro> Macros{ get; set; } = new List<CubaseMacro>();
+        public List<CubaseMacro> Macros { get; set; } = new List<CubaseMacro>();
 
         public bool MenuChangesVisibility { get; set; } = false;
 
@@ -124,7 +121,7 @@ namespace Cubase.Macro.Common.Models
         {
             var json = JsonSerializer.Serialize(this, new JsonSerializerOptions() { WriteIndented = false });
             return Convert.ToBase64String(Encoding.UTF8.GetBytes(json));
-        } 
+        }
 
         public static CubaseMacro Deserialize(string base64String)
         {

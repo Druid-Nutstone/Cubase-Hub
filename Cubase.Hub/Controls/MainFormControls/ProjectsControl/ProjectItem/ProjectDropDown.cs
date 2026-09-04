@@ -1,10 +1,6 @@
 ﻿using Cubase.Hub.Controls.MainFormControls.ProjectsForm;
 using Cubase.Hub.Services.Models;
-using System;
-using System.Collections.Generic;
-using System.Text;
 using System.ComponentModel;
-using System.Runtime.CompilerServices;
 
 namespace Cubase.Hub.Controls.MainFormControls.ProjectsControl.ProjectItem
 {
@@ -19,12 +15,12 @@ namespace Cubase.Hub.Controls.MainFormControls.ProjectsControl.ProjectItem
         [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
         public Action<CubaseProjectItemControlState>? OnStateChanged { get; set; }
 
-        public ProjectDropDown() : base()    
+        public ProjectDropDown() : base()
         {
-           this.SizeMode = PictureBoxSizeMode.StretchImage;
-           this.Size = new System.Drawing.Size(24, 24);    
-           this.Image = Properties.Resources.arrow_down;
-           this.Cursor = Cursors.Hand;
+            this.SizeMode = PictureBoxSizeMode.StretchImage;
+            this.Size = new System.Drawing.Size(24, 24);
+            this.Image = Properties.Resources.arrow_down;
+            this.Cursor = Cursors.Hand;
         }
 
         protected override void OnEnabledChanged(EventArgs e)
@@ -39,25 +35,25 @@ namespace Cubase.Hub.Controls.MainFormControls.ProjectsControl.ProjectItem
                 this.UpdateImage();
             }
         }
-        
+
         protected override void OnClick(EventArgs e)
         {
             base.OnClick(e);
             if (!this.haveMixes) return;
-        
+
             if (this.ControlState == CubaseProjectItemControlState.Minimized)
             {
-                this.Image = Properties.Resources.arrow_up; 
+                this.Image = Properties.Resources.arrow_up;
                 this.ControlState = CubaseProjectItemControlState.Expanded;
-                this.OnStateChanged?.Invoke(this.ControlState); 
+                this.OnStateChanged?.Invoke(this.ControlState);
             }
             else
             {
-                this.Image = Properties.Resources.arrow_down; 
+                this.Image = Properties.Resources.arrow_down;
                 this.ControlState = CubaseProjectItemControlState.Minimized;
                 this.OnStateChanged?.Invoke(this.ControlState);
             }
-        
+
         }
 
         public void Initialise(CubaseProject project)

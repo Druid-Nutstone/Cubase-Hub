@@ -1,7 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq; // Missing in your snippet, required for .ToList() / .OrderBy()
-using System.Text;
+﻿using System.Text;
 using System.Text.Json.Serialization;
 using System.Text.RegularExpressions;
 
@@ -194,7 +191,7 @@ namespace Cubase.Macro.Common.Models
                         {
                             Chord = "",
                             Bar = this.Bar,
-                            FontSize = this.FontSize,   
+                            FontSize = this.FontSize,
                             Text = line.Substring(0, initialLocalOffset)
                         });
                     }

@@ -1,8 +1,5 @@
 ﻿using Cubase.Macro.Common.Models;
-using System;
-using System.Collections.Generic;
 using System.IO;
-using System.Runtime.CompilerServices;
 using System.Xml.Linq;
 
 namespace Cubase.Macro.Models
@@ -38,7 +35,7 @@ namespace Cubase.Macro.Models
                     .LoadFromJavascript()
                     .Select(midiCmd =>
                                     CubaseKeyCommand.CreateMidi(midiCmd.Command, midiCmd.Note, midiCmd.Channel)));
-            
+
             /*
             commands.Add(CubaseKeyCommand.CreateMidi("Start", 2, 0));
             commands.Add(CubaseKeyCommand.CreateMidi("Show Guitars", 0, 2));

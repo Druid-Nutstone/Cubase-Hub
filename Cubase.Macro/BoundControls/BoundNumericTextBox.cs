@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-
-namespace Cubase.Macro.BoundControls
+﻿namespace Cubase.Macro.BoundControls
 {
     public class BoundNumericTextBox : TextBox
     {

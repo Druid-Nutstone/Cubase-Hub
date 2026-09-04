@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq.Expressions;
-using System.Text;
-using System.Text.Json;
+﻿using System.Text.Json;
 
 namespace Cubase.Macro.Common.Models
 {
@@ -21,7 +17,7 @@ namespace Cubase.Macro.Common.Models
         public int FontSize { get; set; } = 12;
 
         public List<LyricSection> Sections { get; set; } = new List<LyricSection>();
-    
+
         public void SetSectionFontSize(int? fontSize = -1)
         {
             this.FontSize = fontSize > 0 ? fontSize.Value : this.FontSize;

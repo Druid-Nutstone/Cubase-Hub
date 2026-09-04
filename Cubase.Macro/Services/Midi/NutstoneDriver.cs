@@ -1,9 +1,7 @@
 ﻿using Cubase.Macro.Models;
-using System;
 using System.Runtime.InteropServices;
 using System.Text;
 using System.Text.Json;
-using System.Threading;
 
 namespace Cubase.Macro.Services.Midi
 {

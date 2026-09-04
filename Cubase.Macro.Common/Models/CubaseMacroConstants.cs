@@ -1,9 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-using System.IO;
-
-namespace Cubase.Macro.Common.Models
+﻿namespace Cubase.Macro.Common.Models
 {
     public static class CubaseMacroConstants
     {
@@ -14,7 +9,7 @@ namespace Cubase.Macro.Common.Models
         public static string NutstoneLyricNotation = ".nln";
 
         public static string Midi = nameof(Midi);
-        
+
         public static string UserAppDataFolderPath =
             System.IO.Path.Combine(
                 Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData),
@@ -25,9 +20,9 @@ namespace Cubase.Macro.Common.Models
         public static string KeyCommandsFileLocation { get; set; } = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData), "Steinberg", "Cubase 15_64", "Key Commands.xml");
 
         public static string MacroConfigurationFileName = Path.Combine(UserAppDataFolderPath, "CubaseMacro.json");
-    
+
         public static string ConfigurationFileName = Path.Combine(UserAppDataFolderPath, "CubaseMacroConfig.json");
-    
+
         public static string MidiConfigurationFileName = Path.Combine(UserAppDataFolderPath, "CubaseMidiMacroConfig.json");
 
         public static string MidiJavascriptFileName = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments), "Steinberg", "Cubase", "MIDI Remote", "Driver Scripts", "Local", "Nutstone", "VirtualDevice", "Nutstone_VirtualDevice.js");

@@ -1,7 +1,4 @@
 ﻿using Cubase.Hub.Forms.Message;
-using System;
-using System.Collections.Generic;
-using System.Text;
 
 namespace Cubase.Hub.Services.Messages
 {
@@ -9,13 +6,13 @@ namespace Cubase.Hub.Services.Messages
     {
         void RegisterForMessages(Action<string, bool> provider);
 
-        void ShowMessage(string message, bool waitCursor);   
-    
-        void ShowError(string errorMessage); 
-        
-        NonBlockingMessage OpenMessage(string message, Control parent); 
+        void ShowMessage(string message, bool waitCursor);
 
-        DialogResult AskMessage(string message);   
+        void ShowError(string errorMessage);
+
+        NonBlockingMessage OpenMessage(string message, Control parent);
+
+        DialogResult AskMessage(string message);
 
     }
 }

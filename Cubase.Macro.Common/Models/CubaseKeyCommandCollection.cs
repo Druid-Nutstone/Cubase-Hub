@@ -1,20 +1,15 @@
-﻿using System;
-using System.Buffers.Text;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
+﻿using System.Text;
 using System.Text.Json;
-using System.Threading.Tasks;
 
 namespace Cubase.Macro.Common.Models
 {
-    public class CubaseKeyCommandCollection : List<CubaseKeyCommand>    
+    public class CubaseKeyCommandCollection : List<CubaseKeyCommand>
     {
-        public CubaseKeyCommandCollection() 
-        { 
-        
+        public CubaseKeyCommandCollection()
+        {
+
         }
-        
+
         public static CubaseKeyCommandCollection Deserialise(string message)
         {
             var json = Encoding.UTF8.GetString(Convert.FromBase64String(message));
@@ -31,7 +26,7 @@ namespace Cubase.Macro.Common.Models
         {
             this.AddRange(source);
         }
-        
+
         public CubaseKeyCommandCollection GetFilteredBy(string category)
         {
             return new CubaseKeyCommandCollection(this.Where(c => c.Category == category));
@@ -39,14 +34,14 @@ namespace Cubase.Macro.Common.Models
 
         public List<CubaseKeyCommand> GetAllocated()
         {
-            return this.Where(c => !string.IsNullOrWhiteSpace(c.Key)).ToList(); 
+            return this.Where(c => !string.IsNullOrWhiteSpace(c.Key)).ToList();
         }
 
         public List<string> GetCategories()
         {
             return this.Select(c => c.Category).Distinct().OrderBy(c => c).ToList();
         }
-        
+
         public List<string> GetKeys()
         {
             return this.Select(c => c.Key).Where(k => !string.IsNullOrWhiteSpace(k)).Distinct().OrderBy(k => k).ToList();
@@ -64,7 +59,7 @@ namespace Cubase.Macro.Common.Models
 
         public List<CubaseKeyCommand> GetByKey(string key)
         {
-            return this.Where(x => x.Key.Contains(key, StringComparison.OrdinalIgnoreCase)).ToList();   
+            return this.Where(x => x.Key.Contains(key, StringComparison.OrdinalIgnoreCase)).ToList();
         }
 
 

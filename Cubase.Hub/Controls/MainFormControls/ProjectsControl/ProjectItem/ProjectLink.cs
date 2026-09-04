@@ -1,9 +1,6 @@
 ﻿using Cubase.Hub.Services.Models;
-using System;
-using System.Collections.Generic;
 using System.ComponentModel;
 using System.IO;
-using System.Text;
 
 namespace Cubase.Hub.Controls.MainFormControls.ProjectsControl.ProjectItem
 {
@@ -15,7 +12,7 @@ namespace Cubase.Hub.Controls.MainFormControls.ProjectsControl.ProjectItem
         public ProjectLink() : base()
         {
             this.Cursor = System.Windows.Forms.Cursors.Hand;
-            this.Font = new System.Drawing.Font(this.Font.FontFamily, this.Font.Size+2, FontStyle.Bold);
+            this.Font = new System.Drawing.Font(this.Font.FontFamily, this.Font.Size + 2, FontStyle.Bold);
         }
 
         protected override void OnMouseDown(MouseEventArgs e)

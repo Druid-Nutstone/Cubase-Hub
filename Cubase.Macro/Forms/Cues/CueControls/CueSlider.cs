@@ -1,13 +1,5 @@
 ﻿using Cubase.Macro.Common.Models;
-using System;
-using System.Collections.Generic;
 using System.ComponentModel;
-using System.Data;
-using System.Diagnostics;
-using System.Drawing;
-using System.Resources;
-using System.Text;
-using System.Windows.Forms;
 
 namespace Cubase.Macro.Forms.Cues.CueControls
 {
@@ -32,10 +24,10 @@ namespace Cubase.Macro.Forms.Cues.CueControls
         [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
         public Action<bool> OnVolumeMoving { get; set; }
 
-        public CueSlider(CueLevel cueLevel, 
-                                  Action<CueLevel> onVolumeChanged, 
-                                  Action<CueLevel> onMuteChanged, 
-                                  Action<CueLevel> onSoloChanged, 
+        public CueSlider(CueLevel cueLevel,
+                                  Action<CueLevel> onVolumeChanged,
+                                  Action<CueLevel> onMuteChanged,
+                                  Action<CueLevel> onSoloChanged,
                                   Action<CueLevel> onResetFader,
                                   Action<bool> onVolumeMoving)
         {

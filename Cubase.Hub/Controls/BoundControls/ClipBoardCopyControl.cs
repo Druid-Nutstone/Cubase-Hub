@@ -1,7 +1,4 @@
 ﻿using Cubase.Hub.Properties;
-using System;
-using System.Collections.Generic;
-using System.Text;
 using System.ComponentModel;
 
 namespace Cubase.Hub.Controls.BoundControls
@@ -13,10 +10,10 @@ namespace Cubase.Hub.Controls.BoundControls
         [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
         public Func<string> GetClipBoardText { get; set; }
 
-        public ClipBoardCopyControl() : base() 
+        public ClipBoardCopyControl() : base()
         {
             this.Image = Resources.ed_copy;
-            this.SizeMode = PictureBoxSizeMode.AutoSize;    
+            this.SizeMode = PictureBoxSizeMode.AutoSize;
             this.Cursor = Cursors.Hand;
             this.tooltip = new ToolTip();
             this.tooltip.SetToolTip(this, "Click to copy to clipboard");

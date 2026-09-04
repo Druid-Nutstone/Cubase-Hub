@@ -1,13 +1,7 @@
-﻿using Cubase.Hub.Controls.Album.Manage;
-using Cubase.Hub.Controls.Media.Play;
+﻿using Cubase.Hub.Controls.Media.Play;
 using Cubase.Hub.Forms.BaseForm;
 using Cubase.Hub.Forms.Distributers;
-using Cubase.Hub.Services.Messages;
 using Cubase.Hub.Services.Models;
-using Cubase.Hub.Services.Track;
-using System;
-using System.Collections.Generic;
-using System.Text;
 
 namespace Cubase.Hub.Controls.CompletedMixes.Tracks
 {
@@ -28,7 +22,7 @@ namespace Cubase.Hub.Controls.CompletedMixes.Tracks
             Padding = new Padding(10);
         }
 
-        public void ShowMixes(MixDownCollection mixes, IServiceProvider serviceProvider, PlayTrackControl playTrackControl, IDistributerForm? distributerForm )
+        public void ShowMixes(MixDownCollection mixes, IServiceProvider serviceProvider, PlayTrackControl playTrackControl, IDistributerForm? distributerForm)
         {
             this.Controls.Clear();
             this.RowStyles.Clear();

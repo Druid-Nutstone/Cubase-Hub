@@ -1,9 +1,6 @@
 ﻿using Cubase.Macro.Common.Models;
 using Cubase.Macro.Forms.Configuration.Config;
 using Cubase.Macro.Models;
-using System;
-using System.Collections.Generic;
-using System.Text;
 
 namespace Cubase.Macro.Forms.Configuration
 {
@@ -30,14 +27,14 @@ namespace Cubase.Macro.Forms.Configuration
             this.macroUpdatedEventHandler = MacroUpdatedEventHandler;
             this.nodeSelected = NodeSelected;
             this.dataPanel = DataPanel;
-            this.cubaseMacroConfiguration = cubaseMacroConfiguration;   
+            this.cubaseMacroConfiguration = cubaseMacroConfiguration;
         }
 
         public void Build(CubaseMacroCollection macros)
         {
             this.macros = macros;
             this.Nodes.Clear();
-            this.Nodes.Add(new PrimaryMacroTreeNode(macros, dataPanel, macroUpdatedEventHandler)); 
+            this.Nodes.Add(new PrimaryMacroTreeNode(macros, dataPanel, macroUpdatedEventHandler));
             this.Nodes.Add(new CommonMacrosTreeNode(macros, dataPanel, macroUpdatedEventHandler));
             this.Nodes.Add(new ConfigurationTreeNode(this.cubaseMacroConfiguration));
             this.ExpandAll();
@@ -132,12 +129,12 @@ namespace Cubase.Macro.Forms.Configuration
             {
 
             }
-        
+
             public bool IsItMe(string lastPath)
             {
                 return lastPath == this.FullPath;
             }
-        
+
         }
 
         public class ConfigurationTreeNode : BaseMacroTreeNode

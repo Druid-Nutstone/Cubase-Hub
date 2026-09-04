@@ -1,9 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-using System.Threading.Channels;
-
-namespace Cubase.Macro.Common.Models
+﻿namespace Cubase.Macro.Common.Models
 {
     // var payLoad = JSON.stringify({ChannelIndex: channelIndex, CueSlot: cueIdx, Volume: value});
 

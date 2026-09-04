@@ -7,14 +7,7 @@ using Cubase.Hub.Services.FileAndDirectory;
 using Cubase.Hub.Services.Messages;
 using Cubase.Hub.Services.Models;
 using Cubase.Hub.Services.Projects;
-using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Data;
-using System.Drawing;
 using System.IO;
-using System.Text;
-using System.Windows.Forms;
 
 namespace Cubase.Hub.Forms.Tracks
 {
@@ -30,7 +23,7 @@ namespace Cubase.Hub.Forms.Tracks
 
         private readonly IMessageService messageService;
 
-        public NewTrackForm(IProjectService projectService, 
+        public NewTrackForm(IProjectService projectService,
                             IDirectoryService directoryService,
                             IMessageService messageService,
                             IConfigurationService configurationService,
@@ -38,7 +31,7 @@ namespace Cubase.Hub.Forms.Tracks
         {
             InitializeComponent();
             this.projectService = projectService;
-            this.cubaseService = cubaseService; 
+            this.cubaseService = cubaseService;
             this.configurationService = configurationService;
             this.directoryService = directoryService;
             this.messageService = messageService;
@@ -67,7 +60,7 @@ namespace Cubase.Hub.Forms.Tracks
             var album = this.SelectedAlbum.SelectedItem as AlbumLocation;
             var template = this.SelectedTemplate.SelectedItem as Template;
             var trackDirectory = Path.Combine(album.AlbumPath, this.TrackName.Text);
-            
+
             if (!this.directoryService.MakeSureDirectoryExists(trackDirectory))
             {
                 this.messageService.ShowError($"Could NOTcreate {trackDirectory}");
@@ -77,8 +70,8 @@ namespace Cubase.Hub.Forms.Tracks
             var targetTemplate = Path.Combine(trackDirectory, $"{this.TrackName.Text.Trim()}{CubaseHubConstants.CubaseFileExtension}");
 
             if (!this.directoryService.MakeSureDirectoryExists(Path.Combine(trackDirectory, CubaseHubConstants.MixdownDirectory)))
-            { 
-                this.messageService.ShowError($"Could NOT create {Path.Combine(trackDirectory, CubaseHubConstants.MixdownDirectory)}. you will have to do it manually"); 
+            {
+                this.messageService.ShowError($"Could NOT create {Path.Combine(trackDirectory, CubaseHubConstants.MixdownDirectory)}. you will have to do it manually");
             }
 
             Clipboard.SetText(trackDirectory);
@@ -91,13 +84,13 @@ namespace Cubase.Hub.Forms.Tracks
             File.SetLastWriteTime(targetTemplate, now);
             File.SetLastAccessTime(targetTemplate, now);
 
-            this.cubaseService.OpenCubaseProject(targetTemplate, (err) => 
-            { 
-               this.messageService.ShowError($"An error occurred while opening the new track in Cubase: {err}");
+            this.cubaseService.OpenCubaseProject(targetTemplate, (err) =>
+            {
+                this.messageService.ShowError($"An error occurred while opening the new track in Cubase: {err}");
             });
 
             AlbumCommands.Instance.RefreshTracks();
-            
+
             this.Close();
 
         }

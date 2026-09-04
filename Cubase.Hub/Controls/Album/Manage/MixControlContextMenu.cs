@@ -1,16 +1,12 @@
 ﻿using Cubase.Hub.Controls.Menus;
 using Cubase.Hub.Forms.Edit;
-using Cubase.Hub.Services.Audio;
 using Cubase.Hub.Services.Distributers;
 using Cubase.Hub.Services.Messages;
 using Cubase.Hub.Services.Models;
 using Cubase.Hub.Services.Track;
 using Microsoft.Extensions.DependencyInjection;
-using System;
-using System.Collections.Generic;
 using System.ComponentModel;
 using System.IO;
-using System.Text;
 
 namespace Cubase.Hub.Controls.Album.Manage
 {
@@ -21,15 +17,15 @@ namespace Cubase.Hub.Controls.Album.Manage
         private MixControl mixControl;
 
 
-        public MixControlContextMenu(MixDown mixDown, 
-                                     IServiceProvider serviceProvider, 
+        public MixControlContextMenu(MixDown mixDown,
+                                     IServiceProvider serviceProvider,
                                      MixControl mixControl) : base()
         {
-            this.MixDown = mixDown; 
+            this.MixDown = mixDown;
             this.mixControl = mixControl;
             this.ServiceProvider = serviceProvider;
             // hack 
-            this.Items.Add(new ToolStripMenuItem("Loading...") { Enabled = false });    
+            this.Items.Add(new ToolStripMenuItem("Loading...") { Enabled = false });
         }
 
         protected override void OnOpening(CancelEventArgs e)
@@ -76,8 +72,8 @@ namespace Cubase.Hub.Controls.Album.Manage
         protected IMessageService MessageService => this.ServiceProvider.GetService<IMessageService>();
 
         protected EditTrackForm EditTrack => this.ServiceProvider.GetService<EditTrackForm>();
-    
-    
+
+
     }
 
     public class DistributerMenu : BaseMixdownMenuItem
@@ -100,9 +96,9 @@ namespace Cubase.Hub.Controls.Album.Manage
 
         protected override void OnClick(EventArgs e)
         {
-            var distroProvider  = this.ServiceProvider.GetKeyedService<IDistributer>(this.Text);
+            var distroProvider = this.ServiceProvider.GetKeyedService<IDistributer>(this.Text);
             var msgHandler = this.MessageService.OpenMessage($"Creating distribution release for {this.Text} for audio file {Path.GetFileName(this.MixDown.FileName)}", this.Parent);
-            var state = distroProvider?.Distribute(this.MixDown, (err) => 
+            var state = distroProvider?.Distribute(this.MixDown, (err) =>
             {
                 msgHandler.Close();
                 this.MessageService.ShowError($"Could not create a distribution release {err}");
@@ -169,8 +165,8 @@ namespace Cubase.Hub.Controls.Album.Manage
         protected override void OnClick(EventArgs e)
         {
             var msg = this.MessageService.OpenMessage($"Copying {this.MixDown.Title} to export directory...", this.Parent);
-            var target = Path.Combine(this.MixDown.ExportLocation,Path.GetFileName(this.MixDown.FileName)); 
-            File.Copy(this.MixDown.FileName, target, true); 
+            var target = Path.Combine(this.MixDown.ExportLocation, Path.GetFileName(this.MixDown.FileName));
+            File.Copy(this.MixDown.FileName, target, true);
             msg.Close();
         }
     }

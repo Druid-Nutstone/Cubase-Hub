@@ -1,8 +1,4 @@
 ﻿using Cubase.Macro.Models;
-using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Text;
 
 namespace Cubase.Macro.Services
 {
@@ -29,7 +25,7 @@ namespace Cubase.Macro.Services
 
         public void SetConfiguration(CubaseMacroConfiguration configuration)
         {
-            this.cubaseMacroConfiguration = configuration;  
+            this.cubaseMacroConfiguration = configuration;
         }
 
     }

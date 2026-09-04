@@ -1,8 +1,5 @@
 ﻿using Cubase.Hub.Controls.MainFormControls.ProjectsControl.ProjectItem;
-using System;
-using System.Collections.Generic;
 using System.Runtime.InteropServices;
-using System.Text;
 
 namespace Cubase.Hub.Forms.BaseForm
 {
@@ -137,7 +134,7 @@ namespace Cubase.Hub.Forms.BaseForm
             }
 
             if (control is TrackBar trackBar)
-            {   
+            {
                 trackBar.BackColor = DarkTheme.PanelColor;
                 trackBar.ForeColor = DarkTheme.TextColor;
             }
@@ -159,7 +156,7 @@ namespace Cubase.Hub.Forms.BaseForm
                 linkLabel.DisabledLinkColor = DarkTheme.MutedText;
                 linkLabel.ForeColor = DarkTheme.TextColor; // still required
             }
-            
+
             foreach (Control child in control.Controls)
                 ApplyDarkThemeSelected(child);
         }
@@ -226,7 +223,7 @@ namespace Cubase.Hub.Forms.BaseForm
                 linkLabel.ForeColor = DarkTheme.TextColor; // still required
             }
 
-            control.Enabled = enabled;  
+            control.Enabled = enabled;
 
             foreach (Control child in control.Controls)
                 ApplyDarkTheme(child);

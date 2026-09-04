@@ -1,7 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Text;
+﻿using System.ComponentModel;
 
 namespace Cubase.Macro.BoundControls
 {
@@ -27,7 +24,7 @@ namespace Cubase.Macro.BoundControls
         }
 
         [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
-        public Action<object>? OnEnumSelected { get; set; }    
+        public Action<object>? OnEnumSelected { get; set; }
 
         private void Populate()
         {

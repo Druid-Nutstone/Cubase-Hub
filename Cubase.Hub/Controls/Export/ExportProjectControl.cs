@@ -2,14 +2,7 @@
 using Cubase.Hub.Services.FileAndDirectory;
 using Cubase.Hub.Services.Messages;
 using Cubase.Hub.Services.Models;
-using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Data;
-using System.Drawing;
 using System.IO;
-using System.Text;
-using System.Windows.Forms;
 
 namespace Cubase.Hub.Controls.Export
 {
@@ -60,7 +53,7 @@ namespace Cubase.Hub.Controls.Export
 
             this.ProjectProgress.Maximum = projectFiles.Length;
             this.ProjectProgress.Minimum = 0;
-            this.Cursor = Cursors.WaitCursor;   
+            this.Cursor = Cursors.WaitCursor;
             foreach (var projectFile in projectFiles)
             {
 
@@ -76,7 +69,7 @@ namespace Cubase.Hub.Controls.Export
                 ProgressLabel.Text = $"Exporting {Path.GetFileName(targetPath)}";
                 Application.DoEvents();
             }
-            this.Cursor = Cursors.Default;  
+            this.Cursor = Cursors.Default;
             this.ProjectProgress.Value = 0;
             ProgressLabel.Text = $"Export Complete!";
         }
@@ -91,9 +84,9 @@ namespace Cubase.Hub.Controls.Export
             {
                 this.TargetDirectory.Text = folderBrowser.SelectedPath;
                 this.configurationService.Configuration.LastExportFolderLocation = this.TargetDirectory.Text;
-                this.configurationService.SaveConfiguration((err) => 
-                { 
-                   this.messageService.ShowError($"Failed to save configuration: {err}");
+                this.configurationService.SaveConfiguration((err) =>
+                {
+                    this.messageService.ShowError($"Failed to save configuration: {err}");
                 });
             }
         }

@@ -1,18 +1,11 @@
 ﻿using Cubase.Hub.Services.Album;
 using Cubase.Hub.Services.Models;
 using Cubase.Hub.Services.Track;
-using System;
-using System.Collections.Generic;
 using System.Diagnostics;
 using System.Net;
 using System.Net.Http.Headers;
 using System.Net.Http.Json;
-using System.Net.NetworkInformation;
-using System.Reflection.Metadata;
-using System.Runtime.InteropServices;
 using System.Text;
-using TagLib.Matroska;
-using static System.Runtime.InteropServices.JavaScript.JSType;
 
 namespace Cubase.Hub.Services.Distributers.SoundCloud
 {
@@ -286,7 +279,7 @@ namespace Cubase.Hub.Services.Distributers.SoundCloud
             var newPlayList = this.PostAndGetSync<SoundCloudPlaylist, CreatePlaylistRequest>("/playlists", postData, onError);
 
             newPlayList = this.UpdateAlbumArtWork(newPlayList, albumConfiguration, onError);
-            
+
             var playLists = this.GetPlayLists(onError);
             playLists.AddOrUpdatePlayList(newPlayList);
             return newPlayList;
@@ -304,7 +297,7 @@ namespace Cubase.Hub.Services.Distributers.SoundCloud
                 }
             }
             return soundCloudPlaylist;
-        } 
+        }
 
         public bool UpdateAlbum(SoundCloudPlaylist soundCloudPlaylist, AlbumConfiguration albumConfiguration, string description, Action<string> onError)
         {

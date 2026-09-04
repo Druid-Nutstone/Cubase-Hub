@@ -1,7 +1,4 @@
 ﻿using Cubase.Macro.Common.Models;
-using System;
-using System.Collections.Generic;
-using System.Text;
 
 namespace Cubase.Macro.Tests.Lyrics
 {
@@ -12,8 +9,8 @@ namespace Cubase.Macro.Tests.Lyrics
         public void Can_Create_LyricSection()
         {
             var lyricSection = LyricSection.Create("Verse 1", 1, "Text comments");
-            var lyrics = new List<string>() 
-            { 
+            var lyrics = new List<string>()
+            {
                 "this is [c#maj]line 1 of the lyric",
                 "this [Amaj]is line 2 of the lyric"
             };
@@ -48,7 +45,7 @@ namespace Cubase.Macro.Tests.Lyrics
             lyricSection.AddLyrics(lyricText);
             lyrics.Sections.Add(lyricSection);
             var savedFilePath = lyrics.Save("C:\\deleteme\\", (error) => { Assert.Fail(error); });
-        
+
             if (savedFilePath != null)
             {
                 var loadedLyrics = LyricContainer.Load(savedFilePath, (error) => { Assert.Fail(error); });

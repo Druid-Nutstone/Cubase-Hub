@@ -1,10 +1,4 @@
 ﻿using Cubase.Macro.Common.Models;
-using Cubase.Macro.Forms.Configuration.ColourPicker;
-using Cubase.Macro.Models;
-using Microsoft.Windows.Themes;
-using System;
-using System.Collections.Generic;
-using System.Text;
 using Timer = System.Windows.Forms.Timer;
 
 namespace Cubase.Macro.Forms.Main.Buttons
@@ -17,7 +11,7 @@ namespace Cubase.Macro.Forms.Main.Buttons
 
         private System.Windows.Forms.Timer animate;
 
-        private Color[] borderColours = new Color[] {Color.DarkGreen, Color.White};
+        private Color[] borderColours = new Color[] { Color.DarkGreen, Color.White };
 
         public MacroButton(CubaseMacro macro, Action<CubaseMacro, MacroButton> OnMacroClicked) : base()
         {
@@ -49,7 +43,7 @@ namespace Cubase.Macro.Forms.Main.Buttons
         {
             this.Cursor = Cursors.Hand;
             this.Update();
-        }   
+        }
 
         public void SetColoursAndTitle()
         {

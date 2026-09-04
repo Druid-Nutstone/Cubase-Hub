@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-
-namespace Cubase.Hub.Services.Models
+﻿namespace Cubase.Hub.Services.Models
 {
     public class CubaseHubConfiguration
     {
@@ -13,18 +9,18 @@ namespace Cubase.Hub.Services.Models
         public string? CubaseUserTemplateLocation { get; set; }
 
         public string? CubaseTemplateLocation { get; set; }
-    
-        public WindowSettings? MainWindowLocation {  get; set; } 
+
+        public WindowSettings? MainWindowLocation { get; set; }
 
         public WindowSettings? AlbumWindowLocation { get; set; }
 
         public WindowSettings? PlayWindowLocation { get; set; }
 
-        public DistributionConfiguration? DistributionConfiguration { get; set; } = new DistributionConfiguration();    
+        public DistributionConfiguration? DistributionConfiguration { get; set; } = new DistributionConfiguration();
 
-        public string? AlbumExportLocation { get; set; } 
+        public string? AlbumExportLocation { get; set; }
 
-        public string? WebsiteExportLocation { get; set; } 
+        public string? WebsiteExportLocation { get; set; }
 
         public string? LastExportFolderLocation { get; set; }
 
@@ -32,7 +28,7 @@ namespace Cubase.Hub.Services.Models
 
         public IEnumerable<string>? RecentProjects { get; set; } = new List<string>();
 
-        public bool EnableBackGroundServices { get; set; } = true; 
+        public bool EnableBackGroundServices { get; set; } = true;
     }
 
     public class WindowSettings

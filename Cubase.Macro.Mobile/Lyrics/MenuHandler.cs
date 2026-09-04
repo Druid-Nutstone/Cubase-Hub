@@ -1,9 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-using static System.Net.Mime.MediaTypeNames;
-
-namespace Cubase.Macro.Mobile.Lyrics
+﻿namespace Cubase.Macro.Mobile.Lyrics
 {
     public class MenuHandler
     {
@@ -13,18 +8,47 @@ namespace Cubase.Macro.Mobile.Lyrics
 
         private List<MenuButton> menuButtons = new List<MenuButton>();
 
-        private Color defaultButtonBackgroundColour = Color.FromArgb("#473C3B");
+        private Color defaultButtonBackgroundColour = Color.FromArgb("#2A2A2A");
+
+        private double defaultFontSize;
 
         public MenuHandler(HorizontalStackLayout container, LyricViewer viewer)
         {
             this.container = container;
             this.viewer = viewer;
+            var testbut = new Button();
+            defaultFontSize = testbut.FontSize;
+            testbut = null;
             menuButtons.Clear();
+        }
+
+        public void SetForMobilePortrait(double width)
+        {
+            // Calculate equal split, but cap individual button width to a max of 75px
+            var calculatedWidth = width / this.menuButtons.Count;
+            var maxButtonWidth = Math.Min(calculatedWidth, 70);
+
+            this.menuButtons.ForEach(button =>
+            {
+                button.MenuItem.FontSize = 9.5;
+                button.MenuItem.Padding = new Thickness(1);
+                button.MenuItem.MaximumWidthRequest = maxButtonWidth;
+            });
+        }
+
+        public void SetForNormalDisplay()
+        {
+            this.menuButtons.ForEach(button =>
+            {
+                button.MenuItem.WidthRequest = 140;
+                button.MenuItem.MaximumWidthRequest = button.MenuItem.WidthRequest;
+                button.MenuItem.FontSize = defaultFontSize;
+            });
         }
 
         public async Task ResetScroll()
         {
-            this.menuButtons.FirstOrDefault(m => m.ButtonName == KnownMenuButton.StartStopScroll)?.MakeInActive();  
+            this.menuButtons.FirstOrDefault(m => m.ButtonName == KnownMenuButton.StartStopScroll)?.MakeInActive();
         }
 
         public async Task SetLyricButtonSelected()
@@ -57,8 +81,8 @@ namespace Cubase.Macro.Mobile.Lyrics
         {
             this.container.Children.Clear();
 
-            var lyricButton = MenuButton.Create("Hide Lyrics", "Show Lyrics", Colors.Green, defaultButtonBackgroundColour, async (btn) => 
-            { 
+            var lyricButton = MenuButton.Create("Hide Lyrics", "Show Lyrics", Colors.Green, defaultButtonBackgroundColour, async (btn) =>
+            {
                 if (btn.Pressed)
                 {
                     await this.viewer.ShowFiles();
@@ -78,22 +102,22 @@ namespace Cubase.Macro.Mobile.Lyrics
             this.container.Children.Add(fontPlus.MenuItem);
             this.menuButtons.Add(fontPlus);
 
-            var fontMinus = MenuButton.Create("Font -", "Font -", defaultButtonBackgroundColour, defaultButtonBackgroundColour, async (btn) => 
+            var fontMinus = MenuButton.Create("Font -", "Font -", defaultButtonBackgroundColour, defaultButtonBackgroundColour, async (btn) =>
             {
                 await this.viewer.DecreaseFontSize();
             }, KnownMenuButton.FontMinus);
             this.container.Children.Add(fontMinus.MenuItem);
             this.menuButtons.Add(fontMinus);
 
-            var showHideChords = MenuButton.Create("Hide Chords", "Show Chords", Colors.Orange, defaultButtonBackgroundColour, async (btn) => 
-            { 
-                 await this.viewer.ShowHideChords(btn.Pressed);
+            var showHideChords = MenuButton.Create("Hide Chords", "Show Chords", Colors.Orange, defaultButtonBackgroundColour, async (btn) =>
+            {
+                await this.viewer.ShowHideChords(btn.Pressed);
             }, KnownMenuButton.ShowHideChords);
             this.container.Children.Add(showHideChords.MenuItem);
             this.menuButtons.Add(showHideChords);
 
-            var startStopScroll = MenuButton.Create("Stop Auto Scroll", "Start Auto Scroll", Colors.DarkSalmon, defaultButtonBackgroundColour, async (btn) => 
-            { 
+            var startStopScroll = MenuButton.Create("Stop Scroll", "Start Scroll", Colors.DarkSalmon, defaultButtonBackgroundColour, async (btn) =>
+            {
                 if (btn.Pressed)
                 {
                     await this.viewer.StartAutoScroll();
@@ -118,8 +142,8 @@ namespace Cubase.Macro.Mobile.Lyrics
 
         public string InActiveText { get; set; }
 
-        public Color ActiveColour {  get; set; } 
-    
+        public Color ActiveColour { get; set; }
+
         public Color InActiveColour { get; set; }
 
         public bool Pressed { get; set; } = false;
@@ -127,12 +151,13 @@ namespace Cubase.Macro.Mobile.Lyrics
         public KnownMenuButton ButtonName { get; set; }
 
         public Func<MenuButton, Task> OnClicked { get; set; }
-        
-        
+
+
         public void MakeActive()
         {
             this.Pressed = true;
             this.MenuItem.BackgroundColor = this.ActiveColour;
+            this.MenuItem.TextColor = Colors.Black;
             this.MenuItem.Text = this.ActiveText;
         }
 
@@ -141,6 +166,7 @@ namespace Cubase.Macro.Mobile.Lyrics
             this.Pressed = false;
             this.MenuItem.BackgroundColor = this.InActiveColour;
             this.MenuItem.Text = this.InActiveText;
+            this.MenuItem.TextColor = Colors.White;
         }
 
 
@@ -149,8 +175,11 @@ namespace Cubase.Macro.Mobile.Lyrics
             var newButton = new Button()
             {
                 Text = inactiveText,
-                HeightRequest = 40,
+                TextColor = Colors.White,
+                BorderColor = Colors.DimGray,
+                BorderWidth = 0.4,
                 MinimumWidthRequest = 110,
+                FontAttributes = FontAttributes.Bold,
                 CornerRadius = 0,               // Make corners square
                 HorizontalOptions = LayoutOptions.Start,
                 BackgroundColor = inActiveColour

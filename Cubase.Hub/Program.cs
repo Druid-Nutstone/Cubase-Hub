@@ -28,18 +28,13 @@ using Cubase.Hub.Services.JumpFolder;
 using Cubase.Hub.Services.Messages;
 using Cubase.Hub.Services.Models;
 using Cubase.Hub.Services.Projects;
-using Cubase.Hub.Services.Track;
-using Microsoft.Extensions.Logging;
-using Microsoft.Extensions.Logging.Abstractions;
-using Microsoft.Extensions.DependencyInjection;
-using Serilog;
-using Serilog.Extensions.Logging;
-using Serilog.Sinks.File;
-using System;
-using System.IO;
-using System.Runtime.CompilerServices;
-using System.Runtime.InteropServices;
 using Cubase.Hub.Services.Synchronise;
+using Cubase.Hub.Services.Track;
+using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Logging;
+using Serilog;
+using System.IO;
+using System.Runtime.InteropServices;
 namespace Cubase.Hub
 {
     internal static class Program
@@ -74,12 +69,12 @@ namespace Cubase.Hub
             Application.EnableVisualStyles();
             Application.SetCompatibleTextRenderingDefault(false);
             var serviceProvider = InstallServices();
-            var cubaseService = serviceProvider.GetRequiredService<ICubaseService>();   
+            var cubaseService = serviceProvider.GetRequiredService<ICubaseService>();
             var configurationService = serviceProvider.GetRequiredService<IConfigurationService>();
             var haveConfiguration = configurationService.LoadConfiguration(() =>
             {
                 var configForm = serviceProvider.GetRequiredService<ConfigurationForm>();
-                Application.Run(configForm);    
+                Application.Run(configForm);
             });
             if (haveConfiguration)
             {
@@ -111,8 +106,8 @@ namespace Cubase.Hub
             {
                 if (args[0] == "open")
                 {
-                    cubaseService.OpenCubaseProject(args[1], (err) => 
-                    { 
+                    cubaseService.OpenCubaseProject(args[1], (err) =>
+                    {
                         MessageBox.Show($"Error opening project: {err}", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
                     });
                     // open last project logic
@@ -196,7 +191,7 @@ namespace Cubase.Hub
                 .AddTransient<ITrackService, TrackService>()
                 .AddSingleton<IJumpListService, JumpListService>()
                 .AddKeyedTransient<IDistributer, RouteNoteDistributer>(Distributers.RouteNote)
-                .AddSingleton<IBackgroundService, BackgroundService>() 
+                .AddSingleton<IBackgroundService, BackgroundService>()
                 .AddSingleton<ISynchroniseService, SynchroniseService>()
                 .AddSingleton<IProjectService, ProjectService>();
 

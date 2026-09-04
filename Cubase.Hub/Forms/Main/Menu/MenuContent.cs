@@ -4,13 +4,9 @@ using Cubase.Hub.Forms.Config;
 using Cubase.Hub.Forms.Tracks;
 using Cubase.Hub.Services;
 using Cubase.Hub.Services.Background;
-using Cubase.Hub.Services.Config;
 using Microsoft.Extensions.DependencyInjection;
-using System;
-using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
-using System.Text;
 
 namespace Cubase.Hub.Forms.Main.Menu
 {
@@ -20,9 +16,9 @@ namespace Cubase.Hub.Forms.Main.Menu
 
         public MenuContent(IServiceProvider serviceProvider)
         {
-            this.serviceProvider = serviceProvider; 
+            this.serviceProvider = serviceProvider;
         }
-        
+
         public void Initialise(MenuStrip menuStrip, MainForm mainForm)
         {
             menuStrip.Items.Clear();
@@ -37,8 +33,8 @@ namespace Cubase.Hub.Forms.Main.Menu
 
     public class BaseToolStripMenuItem : ToolStripMenuItem
     {
-        protected MainForm MainForm; 
-        
+        protected MainForm MainForm;
+
         protected IServiceProvider ServiceProvider;
 
         public BaseToolStripMenuItem(MainForm mainForm, IServiceProvider serviceProvider)
@@ -94,7 +90,7 @@ namespace Cubase.Hub.Forms.Main.Menu
             {
                 Process p = new Process()
                 {
-                   StartInfo = new ProcessStartInfo() { Arguments = latestLog.FullName, FileName = "notepad", UseShellExecute = true }
+                    StartInfo = new ProcessStartInfo() { Arguments = latestLog.FullName, FileName = "notepad", UseShellExecute = true }
                 };
                 p.Start();
             }
@@ -151,7 +147,7 @@ namespace Cubase.Hub.Forms.Main.Menu
 
 
 
-    public class AlbumMenu : BaseToolStripMenuItem 
+    public class AlbumMenu : BaseToolStripMenuItem
     {
         public AlbumMenu(MainForm mainForm, IServiceProvider serviceProvider) : base(mainForm, serviceProvider)
         {
@@ -172,7 +168,7 @@ namespace Cubase.Hub.Forms.Main.Menu
 
         protected override void OnClick(EventArgs e)
         {
-            var newAlbumForm = this.ServiceProvider.GetService<NewAlbumForm>(); 
+            var newAlbumForm = this.ServiceProvider.GetService<NewAlbumForm>();
             newAlbumForm?.ShowDialog();
         }
     }
@@ -224,7 +220,7 @@ namespace Cubase.Hub.Forms.Main.Menu
     {
         public FileMenu(MainForm mainForm, IServiceProvider serviceProvider) : base(mainForm, serviceProvider)
         {
-            this.Text = "File"; 
+            this.Text = "File";
             this.DropDownItems.Add(new FileMenuExit(mainForm, serviceProvider));
         }
     }

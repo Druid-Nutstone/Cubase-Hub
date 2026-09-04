@@ -1,13 +1,9 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-
-namespace Cubase.Macro.Mobile.Configuration
+﻿namespace Cubase.Macro.Mobile.Configuration
 {
     public class MobileConfigurationService : IMobileConfigurationService
     {
         public MobileConfiguration Configuration { get; set; }
-    
+
         public MobileConfigurationService()
         {
 
@@ -21,6 +17,6 @@ namespace Cubase.Macro.Mobile.Configuration
                 this.Configuration.Save();
             }
         }
-    
+
     }
 }

@@ -1,6 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
+﻿using System.Text;
 using System.Text.Json;
 
 namespace Cubase.Macro.Common.Models
@@ -12,7 +10,7 @@ namespace Cubase.Macro.Common.Models
 
         }
 
-        public CubaseRemoteMidiMacroCollection(IEnumerable<CubaseMacro> items) : base(items) 
+        public CubaseRemoteMidiMacroCollection(IEnumerable<CubaseMacro> items) : base(items)
         {
 
         }
