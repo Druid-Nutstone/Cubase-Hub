@@ -1,4 +1,4 @@
-﻿using Cubase.Macro.Common.Models;
+﻿using Cubase.Macro.Common.Models.Lyrics;
 
 namespace Cubase.Macro.Tests.Lyrics
 {

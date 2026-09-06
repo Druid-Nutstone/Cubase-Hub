@@ -398,11 +398,11 @@ namespace Cubase.Macro
         public void ShowLyrics()
         {
             var lyricForm = this.serviceProvider.GetService<LyricViewerForm>();
-            var dropBoxDir = CubaseMacroConstants.DropBoxBaseDirectory;
+            var dropBoxDir = CubaseMacroConstants.NutstoneLyricBaseDirectory;
             var projectName = this.windowService.GetCubaseProjectTitle();
             if (!string.IsNullOrEmpty(projectName))
             {
-                var realProjectName = $"{projectName}.txt";
+                var realProjectName = $"{projectName}{CubaseMacroConstants.NutstoneLyricNotation}";
                 var fullProjectLyricFile = System.IO.Path.Combine(dropBoxDir, realProjectName);
                 if (System.IO.File.Exists(fullProjectLyricFile))
                 {

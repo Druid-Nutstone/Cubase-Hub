@@ -1,4 +1,4 @@
-﻿using Cubase.Macro.Common.Models;
+﻿using Cubase.Macro.Common.Models.Lyrics;
 using System.ComponentModel;
 
 namespace Cubase.Macro.Forms.Lyrics.Editor.New

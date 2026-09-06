@@ -1,7 +1,6 @@
 ﻿using Cubase.Macro.Common.Models;
 using Cubase.Macro.Common.Socket;
 using Cubase.Macro.Mobile.Controls;
-using Cubase.Macro.Mobile.Lyrics;
 
 namespace Cubase.Macro.Mobile
 {
@@ -9,13 +8,10 @@ namespace Cubase.Macro.Mobile
     {
         private readonly CubaseMacroWebSocketClient client;
 
-        private readonly FileHandler fileHandler;
-
-        public MainPage(CubaseMacroWebSocketClient cubaseMacroWebSocketClient, FileHandler fileHandler)
+        public MainPage(CubaseMacroWebSocketClient cubaseMacroWebSocketClient)
         {
             this.BackgroundColor = CubaseMacroMobileConstants.DefaultBackgroundColour;
             this.client = cubaseMacroWebSocketClient;
-            this.fileHandler = fileHandler;
             InitializeComponent();
         }
 

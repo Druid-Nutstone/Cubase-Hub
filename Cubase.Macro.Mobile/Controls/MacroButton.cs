@@ -2,7 +2,7 @@
 
 namespace Cubase.Macro.Mobile.Controls
 {
-    public class MacroButton : Button
+    public class MacroButton : BaseButton
     {
         private CubaseMacro macro;
 
@@ -18,18 +18,7 @@ namespace Cubase.Macro.Mobile.Controls
             WidthRequest = 120;
             HeightRequest = 50;
             this.Initialise();
-            this.Pressed += MacroButton_Pressed;
-            this.Released += MacroButton_Released;
-        }
 
-        private async void MacroButton_Released(object? sender, EventArgs e)
-        {
-            await this.ScaleToAsync(0.9, 100);
-        }
-
-        private async void MacroButton_Pressed(object? sender, EventArgs e)
-        {
-            await this.ScaleToAsync(1, 100);
         }
 
         private void MacroButton_Clicked(object? sender, EventArgs e)

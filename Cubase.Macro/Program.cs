@@ -1,13 +1,12 @@
-using Cubase.Macro.Common.Lyrics.Scrolling;
-using Cubase.Macro.Common.Lyrics.Services;
 using Cubase.Macro.Common.Lyrics.Services.Scrolling;
 using Cubase.Macro.Common.Models;
+using Cubase.Macro.Common.Socket;
 using Cubase.Macro.Forms.Configuration;
 using Cubase.Macro.Forms.Cues;
 using Cubase.Macro.Forms.Lyrics;
 using Cubase.Macro.Services.Config;
 using Cubase.Macro.Services.Keyboard;
-using Cubase.Macro.Services.Lyrics;
+
 using Cubase.Macro.Services.Midi;
 using Cubase.Macro.Services.WebSockets;
 using Cubase.Macro.Services.Window;
@@ -194,10 +193,8 @@ namespace Cubase.Macro
                         .AddSingleton<IConfigurationService, ConfigurationService>()
                         .AddSingleton<IMidiService, MidiService>()
                         .AddSingleton<IScrollerService, ScrollerService>()
-                        .AddSingleton<IColourService, RicheditColourService>()
-                        .AddSingleton<IlyricMidiService, RichEditLyricMidiService>()
+                        .AddSingleton<CubaseMacroWebSocketClient>()
                         .AddSingleton<IWindowsControllerService, WindowsControllerService>()
-                        .AddSingleton<ILyricFileService, LyricFileService>()
                         .AddScoped<SettingsMainControl>()
                         .AddScoped<SettingsForm>()
                         .AddTransient<CueForm>()
@@ -221,14 +218,13 @@ namespace Cubase.Macro
                                 {
                                     var midi = context.RequestServices.GetRequiredService<IMidiService>();
                                     var config = context.RequestServices.GetRequiredService<IConfigurationService>();
-                                    var lyricFileService = context.RequestServices.GetRequiredService<ILyricFileService>();
                                     var windowService = context.RequestServices.GetRequiredService<IWindowService>();
                                     var ip = context.Connection.RemoteIpAddress?.ToString();
                                     var port = context.Connection.RemotePort;
 
                                     Log.Information($"WebSocket connection from {ip}:{port}");
                                     using var ws = await context.WebSockets.AcceptWebSocketAsync();
-                                    await CubaseSockets.HandleWebSocket(ws, midi, Log.Logger, lyricFileService, windowService, config);
+                                    await CubaseSockets.HandleWebSocket(ws, midi, Log.Logger, windowService, config);
                                 }
                                 else
                                 {

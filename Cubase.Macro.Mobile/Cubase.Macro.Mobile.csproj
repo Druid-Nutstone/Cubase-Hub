@@ -99,10 +99,6 @@
 	</ItemGroup>
 
 	<ItemGroup>
-	  <Folder Include="Services\Startup\" />
-	</ItemGroup>
-
-	<ItemGroup>
 	  <MauiXaml Update="Configuration\ConfigurationPage.xaml">
 	    <Generator>MSBuild:Compile</Generator>
 	  </MauiXaml>

@@ -6,6 +6,8 @@
 
         public static string LyricSourceFolder = Path.Combine(BaseFolder, "Lyrics");
 
+        public static string SetlistSourceFolder = Path.Combine(LyricSourceFolder, "SetList");
+
         public static string ConfigurationFile = Path.Combine(BaseFolder, "MobileConfiguration.json");
 
         public static string LogFilePath = Path.Combine(BaseFolder, "Logs");

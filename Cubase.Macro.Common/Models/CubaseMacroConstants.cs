@@ -8,6 +8,8 @@
 
         public static string NutstoneLyricNotation = ".nln";
 
+        public static string NutstoneSetListNotation = ".nsn";
+
         public static string Midi = nameof(Midi);
 
         public static string UserAppDataFolderPath =
@@ -29,14 +31,12 @@
 
         public static string NutstoneLyricBaseDirectory = "\\\\192.168.1.100\\Utilities\\Files\\Downloads\\Lyrics";
 
-        [Obsolete("Use Nutstone LyricBaseDirectory instead")]
-        public static string DropBoxBaseDirectory = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.UserProfile), "Dropbox", "Lyrics");
+        public static string NutstoneSetListBaseDirectory = "\\\\192.168.1.100\\Utilities\\Files\\Downloads\\Lyrics\\SetList";
 
         // C:\Users\david\OneDrive\Documents\Steinberg\Cubase\User Presets\Project Logical Editor
 
         public static string PleDirectoryMacroLocation = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments), "Steinberg", "Cubase", "User Presets", "Project Logical Editor");
 
-        public static string LyricIndexFile = Path.Combine(DropBoxBaseDirectory, "LyricIndex.json");
 
     }
 }

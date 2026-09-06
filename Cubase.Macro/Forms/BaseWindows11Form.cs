@@ -1,4 +1,5 @@
 ﻿using Cubase.Macro.Forms.Cues.CueControls;
+using System.ComponentModel;
 using System.Runtime.InteropServices;
 
 namespace Cubase.Macro.Forms
@@ -75,6 +76,11 @@ namespace Cubase.Macro.Forms
         protected override void OnHandleCreated(EventArgs e)
         {
             base.OnHandleCreated(e);
+
+            // Prevent the Visual Studio designer from executing native DWM calls
+            if (DesignMode || LicenseManager.UsageMode == LicenseUsageMode.Designtime)
+                return;
+
             ApplyWindows11Look();
         }
 

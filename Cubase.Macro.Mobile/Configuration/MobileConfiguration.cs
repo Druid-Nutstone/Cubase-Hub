@@ -26,6 +26,8 @@ namespace Cubase.Macro.Mobile.Configuration
 
         public string LyricDirectory { get; set; } = "Lyrics";
 
+        public string SetListDirectory { get; set; } = "SetList";
+
         public void Save()
         {
             var rootDirectory = Path.GetDirectoryName(CubaseMacroMobileConstants.ConfigurationFile);

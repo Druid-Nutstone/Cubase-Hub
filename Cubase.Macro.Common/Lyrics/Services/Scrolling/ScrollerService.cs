@@ -1,4 +1,5 @@
 ﻿using Cubase.Macro.Common.Models;
+using Cubase.Macro.Common.Models.Lyrics;
 using Cubase.Macro.Common.Socket;
 using System.Diagnostics;
 

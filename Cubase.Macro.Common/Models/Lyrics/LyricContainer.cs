@@ -1,6 +1,6 @@
 ﻿using System.Text.Json;
 
-namespace Cubase.Macro.Common.Models
+namespace Cubase.Macro.Common.Models.Lyrics
 {
     public class LyricContainer
     {

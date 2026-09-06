@@ -1,11 +1,9 @@
-﻿using Cubase.Macro.Common.Lyrics.Scrolling;
-using Cubase.Macro.Common.Lyrics.Services;
-using Cubase.Macro.Common.Lyrics.Services.Scrolling;
+﻿using Cubase.Macro.Common.Lyrics.Services.Scrolling;
 using Cubase.Macro.Common.Socket;
 using Cubase.Macro.Mobile.Configuration;
 using Cubase.Macro.Mobile.Lyrics;
 using Cubase.Macro.Mobile.Nav;
-using Cubase.Macro.Mobile.Services;
+using Cubase.Macro.Mobile.Services.Lyrics;
 using Cubase.Macro.Mobile.Services.Mswin;
 using Microsoft.Extensions.DependencyInjection.Extensions;
 using Microsoft.Extensions.Logging;
@@ -32,10 +30,8 @@ namespace Cubase.Macro.Mobile
             builder.Services.AddTransient<LyricViewer>();
             builder.Services.TryAddTransient<ConfigurationPage>();
             builder.Services.AddSingleton<NavPage>();
-            builder.Services.AddSingleton<FileHandler>();
+            builder.Services.AddSingleton<ILyricService, LyricService>();
             builder.Services.AddSingleton<IMobileConfigurationService, MobileConfigurationService>();
-            builder.Services.AddSingleton<IColourService, ColourService>();
-            builder.Services.AddSingleton<IlyricMidiService, MobileLyricService>();
             builder.Services.AddSingleton<IMsWinService, MsWinService>();
             builder.Services.AddSingleton<IScrollerService, ScrollerService>();
             builder.Services.AddTransient<MainPage>();

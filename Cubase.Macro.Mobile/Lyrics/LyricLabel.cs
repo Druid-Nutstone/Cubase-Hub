@@ -5,6 +5,7 @@
         public LyricLabel() : base()
         {
             this.FontFamily = "CustomMono";
+            this.HorizontalOptions = LayoutOptions.Fill;
         }
 
         public LineType Type { get; set; }

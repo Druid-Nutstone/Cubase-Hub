@@ -1,7 +1,9 @@
 using Cubase.Macro.Common.Lyrics.Services.Scrolling;
 using Cubase.Macro.Common.Models;
+using Cubase.Macro.Common.Models.Lyrics;
 using Cubase.Macro.Common.Socket;
 using Cubase.Macro.Mobile.Configuration;
+using Cubase.Macro.Mobile.Services.Lyrics;
 using Cubase.Macro.Mobile.Services.Mswin;
 using Image = Microsoft.Maui.Controls.Image;
 
@@ -13,7 +15,7 @@ public partial class LyricViewer : ContentPage
 
     private readonly CubaseMacroWebSocketClient webSocketClient;
 
-    private readonly FileHandler fileHandler;
+    private readonly ILyricService lyricService;
 
     private readonly IMobileConfigurationService configurationService;
 
@@ -21,23 +23,21 @@ public partial class LyricViewer : ContentPage
 
     private List<LyricSection> lyrics;
 
-    private int BPM = -1; // beats per minute  
-
-    private int BPB = -1; // beats per bar 
-
-    private int StartBar = 0;
-
     private List<LyricGrid> lyricRows = new();
 
     private MenuHandler menuHandler;
 
+    private SetListNavigationButton setList;
+
     private LyricContainer currentLyrics;
+
+    private SetListContainer currentSetlist;
 
     private BottomMenuHandler bottomMenuHandler;
 
     private CubaseMidiProjectStatus midiProjectStatus;
 
-    public LyricViewer(FileHandler fileHandler,
+    public LyricViewer(ILyricService lyricService,
                        IMsWinService msWinService,
                        IScrollerService scrollerService,
                        IMobileConfigurationService mobileConfigurationService,
@@ -45,7 +45,7 @@ public partial class LyricViewer : ContentPage
     {
         InitializeComponent();
         this.BackgroundColor = CubaseMacroMobileConstants.DefaultBackgroundColour;
-        this.fileHandler = fileHandler;
+        this.lyricService = lyricService;
         this.webSocketClient = webSocketClient;
         this.msWinService = msWinService;
         this.scrollerService = scrollerService;
@@ -84,7 +84,7 @@ public partial class LyricViewer : ContentPage
         {
             if (File.Exists(this.msWinService.LyricFile))
             {
-                var lyricContent = Cubase.Macro.Common.Models.LyricContainer.Load(this.msWinService.LyricFile, (err) => { });
+                var lyricContent = Common.Models.Lyrics.LyricContainer.Load(this.msWinService.LyricFile, (err) => { });
                 await this.LoadFile(lyricContent);
                 return true;
             }
@@ -264,16 +264,50 @@ public partial class LyricViewer : ContentPage
         }
     }
 
-    private async void HideFiles(object sender, EventArgs e)
-    {
-        await this.CloseFiles();
-    }
 
     public async Task ShowFiles()
     {
         await MainThread.InvokeOnMainThreadAsync(async () =>
         {
-            await this.fileHandler.Initialise(this.FileContainer, this, this.ProcessError);
+            var availableLyricFile = await this.lyricService.GetLyricFiles();
+            this.LyricList.Children.Clear();
+            foreach (var file in availableLyricFile)
+            {
+                var name = Path.GetFileNameWithoutExtension(file);
+                var fileLabel = new Button()
+                {
+                    Text = name,
+                    HorizontalOptions = LayoutOptions.Start,
+                    BackgroundColor = CubaseMacroMobileConstants.DefaultBackgroundColour,
+                    TextColor = Colors.White,
+                };
+                fileLabel.Clicked += async (s, e) =>
+                {
+                    await this.LoadFile(Cubase.Macro.Common.Models.Lyrics.LyricContainer.Load(file, (err) => { }));
+                };
+                this.LyricList.Children.Add(fileLabel);
+            }
+
+            this.SetListList.Children.Clear();
+            var availableSetLists = await this.lyricService.GetSetlists();
+            foreach (var file in availableSetLists)
+            {
+                var name = Path.GetFileNameWithoutExtension(file);
+                var fileLabel = new Button()
+                {
+                    Text = name,
+                    HorizontalOptions = LayoutOptions.Start,
+                    BackgroundColor = CubaseMacroMobileConstants.DefaultBackgroundColour,
+                    TextColor = Colors.White,
+                };
+                fileLabel.Clicked += async (s, e) =>
+                {
+                    await this.LoadSetList(Cubase.Macro.Common.Models.Lyrics.SetListContainer.Load(file));
+                };
+                this.SetListList.Children.Add(fileLabel);
+            }
+
+
 
             await this.menuHandler.SetLyricButtonSelected();
 
@@ -300,16 +334,23 @@ public partial class LyricViewer : ContentPage
         });
     }
 
-    public async Task CloseFiles()
+    public async Task<bool> CloseFiles()
     {
+        if (!this.FilesBorder.IsVisible)
+        {
+            return true;
+        }
+
         var tcs = new TaskCompletionSource<bool>();
 
         await MainThread.InvokeOnMainThreadAsync(async () =>
         {
+            this.FilesBorder.WidthRequest = 300;
             var targetColumn = MainGrid.ColumnDefinitions[0];
 
             await this.menuHandler.SetLyricButtonUnSelected();
-
+            // Immediately snap or animate to 0
+            targetColumn.Width = new GridLength(0);
             var animation = new Animation(
                 callback: (v) =>
                 {
@@ -331,6 +372,7 @@ public partial class LyricViewer : ContentPage
 
             return tcs.Task;
         });
+        return true;
     }
 
     protected override async void OnDisappearing()
@@ -343,7 +385,7 @@ public partial class LyricViewer : ContentPage
     {
         base.OnAppearing();
         await this.menuHandler.BuildMenu();
-
+        await this.BuildSetListButtons();
         if (!await this.LoadWinFileIfRequired())
         {
             if (this.webSocketClient.Connected)
@@ -351,10 +393,10 @@ public partial class LyricViewer : ContentPage
                 var currentCubaseProject = await this.webSocketClient.GetProjectStatus((err) => { });
                 if (currentCubaseProject != null)
                 {
-                    var projectFile = await this.fileHandler.LoadProjectLyricIfAvailable(currentCubaseProject.ProjectName);
+                    var projectFile = await this.lyricService.LoadProjectLyricIfAvailable(currentCubaseProject.ProjectName);
                     if (projectFile != null)
                     {
-                        await this.LoadFile(Cubase.Macro.Common.Models.LyricContainer.Load(projectFile, async (err) =>
+                        await this.LoadFile(Common.Models.Lyrics.LyricContainer.Load(projectFile, async (err) =>
                         {
                             await DisplayAlertAsync("Load Error", $"Cannot load project file {projectFile}", "OK");
                         }));
@@ -376,6 +418,53 @@ public partial class LyricViewer : ContentPage
 
     }
 
+    private async Task BuildSetListButtons()
+    {
+        this.SetListButtons.Children.Clear();
+
+        var backButton = new SetListNavigationButton(this.OnSetlistNavigation, SetListDirection.Back);
+        var forwardButton = new SetListNavigationButton(this.OnSetlistNavigation, SetListDirection.Forward);
+
+        this.SetListButtons.Children.Add(backButton);
+        this.SetListButtons.Children.Add(forwardButton);
+
+    }
+
+    private async void OnSetlistNavigation(SetListDirection direction)
+    {
+        var newPosition = direction == SetListDirection.Forward ? this.currentSetlist.CurrentSong + 1 : this.currentSetlist.CurrentSong - 1;
+
+        this.currentSetlist.CurrentSong = newPosition;
+        if (this.currentSetlist.CurrentSong > this.currentSetlist.Songs.Count - 1)
+        {
+            this.currentSetlist.CurrentSong = 0;
+        }
+        if (this.currentSetlist.CurrentSong < 0)
+        {
+            this.currentSetlist.CurrentSong = this.currentSetlist.Songs.Count - 1;
+        }
+
+        await this.LoadSetList(this.currentSetlist);
+
+    }
+
+    public async Task LoadSetList(SetListContainer container)
+    {
+        this.currentSetlist = container;
+        SetListButtons.IsVisible = true;
+        SetListButtons.InvalidateMeasure();
+        BottomMenu.InvalidateMeasure();
+        await this.LoadFile(await this.LoadSetListSong());
+        await Task.Delay(10); // Brief yield to let the UI thread process native handles
+        LyricScrollView.InvalidateMeasure();
+    }
+
+    private async Task<LyricContainer> LoadSetListSong()
+    {
+        var targetLyric = this.currentSetlist.Songs[this.currentSetlist.CurrentSong];
+        return await this.lyricService.LoadSetListLyric(targetLyric);
+    }
+
     public async Task LoadFile(LyricContainer content)
     {
         this.currentLyrics = content;
@@ -385,15 +474,19 @@ public partial class LyricViewer : ContentPage
         // by default hide the chords - this SHOULD BE DONE BY PROFILE !
         await MainThread.InvokeOnMainThreadAsync(async () =>
         {
-            StartBar = 0;
-            BPB = -1;
-            BPM = -1;
             this.lyrics = content.Sections;
             this.lyricRows = new();
-            this.RefreshLyrics(content);
-            // start by NOT showing any chords 
-            await this.ShowHideChords(false);
-            await this.CloseFiles();
+            this.Title = $"Lyrics - {this.currentLyrics.Title}  {(this.currentSetlist != null ? $"{this.currentSetlist.Title} ({this.currentSetlist.CurrentSong})" : string.Empty)}";
+            if (await this.CloseFiles())
+            {
+                this.RefreshLyrics(content);
+                // Force immediate measurement updates
+                LyricContainer.InvalidateMeasure();
+                LyricScrollView.InvalidateMeasure();
+                MainGrid.InvalidateMeasure();
+                // start by NOT showing any chords 
+                await this.ShowHideChords(false);
+            }
         });
     }
 
@@ -490,6 +583,7 @@ public partial class LyricViewer : ContentPage
     {
         var row = new LyricGrid
         {
+            HorizontalOptions = LayoutOptions.Fill,
             ColumnDefinitions = {
                 new ColumnDefinition(30), // Arrow
                 new ColumnDefinition(GridLength.Auto),
@@ -529,6 +623,7 @@ public partial class LyricViewer : ContentPage
     {
         var row = new LyricGrid
         {
+            HorizontalOptions = LayoutOptions.Fill,
             ColumnDefinitions = {
                 new ColumnDefinition(GridLength.Star) // Text
             },
@@ -569,6 +664,7 @@ public partial class LyricViewer : ContentPage
     {
         var row = new LyricGrid
         {
+            HorizontalOptions = LayoutOptions.Fill,
             ColumnDefinitions = {
                 new ColumnDefinition(30), // Arrow
                 new ColumnDefinition(GridLength.Star) // Text

@@ -29,22 +29,24 @@
         private void InitializeComponent()
         {
             panel1 = new Panel();
+            SetListButton = new Cubase.Macro.Forms.Main.Buttons.LyricButton();
             SaveButton = new Cubase.Macro.Forms.Main.Buttons.LyricButton();
             OpenButton = new Cubase.Macro.Forms.Main.Buttons.LyricButton();
             panel2 = new Panel();
+            MidiEnabled = new CheckBox();
             ScrollButton = new Cubase.Macro.Forms.Main.Buttons.LyricButton();
             TransPortLocation = new Label();
             FontDecrease = new Cubase.Macro.Forms.Main.Buttons.LyricButton();
             FontIncrease = new Cubase.Macro.Forms.Main.Buttons.LyricButton();
             EditButton = new Cubase.Macro.Forms.Main.Buttons.LyricButton();
             MainPanel = new Panel();
-            MidiEnabled = new CheckBox();
             panel1.SuspendLayout();
             panel2.SuspendLayout();
             SuspendLayout();
             // 
             // panel1
             // 
+            panel1.Controls.Add(SetListButton);
             panel1.Controls.Add(SaveButton);
             panel1.Controls.Add(OpenButton);
             panel1.Controls.Add(panel2);
@@ -56,6 +58,17 @@
             panel1.Name = "panel1";
             panel1.Size = new Size(800, 60);
             panel1.TabIndex = 0;
+            // 
+            // SetListButton
+            // 
+            SetListButton.Anchor = AnchorStyles.Top | AnchorStyles.Right;
+            SetListButton.Font = new Font("Segoe UI", 9F, FontStyle.Bold);
+            SetListButton.Location = new Point(363, 15);
+            SetListButton.Name = "SetListButton";
+            SetListButton.Size = new Size(98, 30);
+            SetListButton.TabIndex = 7;
+            SetListButton.Text = "Set Lists";
+            SetListButton.UseVisualStyleBackColor = true;
             // 
             // SaveButton
             // 
@@ -87,6 +100,17 @@
             panel2.Name = "panel2";
             panel2.Size = new Size(333, 60);
             panel2.TabIndex = 4;
+            // 
+            // MidiEnabled
+            // 
+            MidiEnabled.Anchor = AnchorStyles.Top | AnchorStyles.Right;
+            MidiEnabled.AutoSize = true;
+            MidiEnabled.Location = new Point(38, 19);
+            MidiEnabled.Name = "MidiEnabled";
+            MidiEnabled.Size = new Size(89, 24);
+            MidiEnabled.TabIndex = 2;
+            MidiEnabled.Text = "Use Midi";
+            MidiEnabled.UseVisualStyleBackColor = true;
             // 
             // ScrollButton
             // 
@@ -150,25 +174,14 @@
             MainPanel.Dock = DockStyle.Fill;
             MainPanel.Location = new Point(0, 60);
             MainPanel.Name = "MainPanel";
-            MainPanel.Size = new Size(800, 390);
+            MainPanel.Size = new Size(800, 522);
             MainPanel.TabIndex = 1;
-            // 
-            // MidiEnabled
-            // 
-            MidiEnabled.Anchor = AnchorStyles.Top | AnchorStyles.Right;
-            MidiEnabled.AutoSize = true;
-            MidiEnabled.Location = new Point(38, 19);
-            MidiEnabled.Name = "MidiEnabled";
-            MidiEnabled.Size = new Size(89, 24);
-            MidiEnabled.TabIndex = 2;
-            MidiEnabled.Text = "Use Midi";
-            MidiEnabled.UseVisualStyleBackColor = true;
             // 
             // LyricViewerForm
             // 
             AutoScaleDimensions = new SizeF(8F, 20F);
             AutoScaleMode = AutoScaleMode.Font;
-            ClientSize = new Size(800, 450);
+            ClientSize = new Size(800, 582);
             Controls.Add(MainPanel);
             Controls.Add(panel1);
             Name = "LyricViewerForm";
@@ -193,5 +206,6 @@
         private Main.Buttons.LyricButton SaveButton;
         private Main.Buttons.LyricButton ScrollButton;
         private CheckBox MidiEnabled;
+        private Main.Buttons.LyricButton SetListButton;
     }
 }

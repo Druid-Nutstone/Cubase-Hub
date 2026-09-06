@@ -169,32 +169,6 @@ namespace Cubase.Macro.Common.Socket
             return response?.GetTransportLocationCollection();
         }
 
-        [Obsolete("Files are held on public nustone server")]
-        public async Task<LyricResponseModel?> GetCurrentLyric(Action<string> onError)
-        {
-            var response = await SendAndWait(
-                WebSocketMidiCommandMessage.CreateFromCommand(
-                    WebSocketMidiCommand.MidiLyricCurrentProject), onError);
-            return response?.GetLyricResponseModel();
-        }
-
-        [Obsolete("Files are held on public nustone server")]
-        public async Task<LyricIndexCollection?> GetLyricIndex(Action<string> onError)
-        {
-            var response = await SendAndWait(
-                WebSocketMidiCommandMessage.CreateFromCommand(
-                    WebSocketMidiCommand.MidiLyricIndex), onError);
-            return response?.GetLyricIndex();
-        }
-
-        [Obsolete("Files are held on public nustone server")]
-        public async Task<LyricContent?> GetLyricContent(Lyric lyric, Action<string> onError)
-        {
-            var response = await SendAndWait(
-                WebSocketMidiCommandMessage.CreateLyricContentRequest(lyric), onError);
-            return response?.GetLyricContent();
-        }
-
         public async Task<WebSocketMidiCommandMessage> SendMidiCommand(CubaseKeyCommand cubaseKeyCommand, Action<string> onError)
         {
             return await SendAndWait(WebSocketMidiCommandMessage.CreateFromKeyCommand(cubaseKeyCommand), onError);

@@ -10,4 +10,8 @@
     <PackageReference Include="Microsoft.Extensions.Logging.Abstractions" Version="10.0.7" />
   </ItemGroup>
 
+  <ItemGroup>
+    <ProjectReference Include="..\..\Nutstone-Server\Nutstone.Server.Common\Nutstone.Server.Common.csproj" />
+  </ItemGroup>
+
 </Project>

@@ -2,7 +2,7 @@
 using System.Text.Json.Serialization;
 using System.Text.RegularExpressions;
 
-namespace Cubase.Macro.Common.Models
+namespace Cubase.Macro.Common.Models.Lyrics
 {
     public class LyricSection
     {
@@ -26,6 +26,8 @@ namespace Cubase.Macro.Common.Models
             set => Lyrics = Encoding.UTF8.GetString(Convert.FromBase64String(value ?? ""));
         }
 
+
+
         /// <summary>
         /// Safely processes a single raw input line containing embedded chords like "[C]hello"
         /// Strips chords, updates local Chords list using correct absolute string positioning,
@@ -33,6 +35,8 @@ namespace Cubase.Macro.Common.Models
         /// </summary>
         public void AddLyric(string rawLyricLine)
         {
+            var localChords = new List<ChordSection>();
+
             if (rawLyricLine == null) return;
 
             // Calculate our global offset starting point before appending this line
@@ -51,7 +55,8 @@ namespace Cubase.Macro.Common.Models
                 int chordPosition = currentGlobalOffset + cleanLineBuilder.Length;
                 string chordName = match.Groups[1].Value;
 
-                Chords.Add(new ChordSection
+
+                localChords.Add(new ChordSection
                 {
                     Chord = chordName,
                     CharacterIndex = chordPosition
@@ -73,6 +78,53 @@ namespace Cubase.Macro.Common.Models
             else
             {
                 Lyrics += Environment.NewLine + cleanLineBuilder.ToString();
+            }
+            // david change adjust chords
+            if (localChords.Count > 0)
+            {
+                this.SanitizeChordIndices(localChords);
+            }
+            Chords.AddRange(localChords);
+        }
+
+        public void SanitizeChordIndices(List<ChordSection> Chords)
+        {
+            if (Chords == null || Chords.Count == 0) return;
+
+            // Sort chords by their index to process them in reading order
+            var sortedChords = Chords.OrderBy(c => c.CharacterIndex).ToList();
+
+            for (int i = 1; i < sortedChords.Count; i++)
+            {
+                var prev = sortedChords[i - 1];
+                var curr = sortedChords[i];
+
+                // Check if they are on the same line (i.e., no newline character between them in the Lyrics string)
+                bool sameLine = true;
+                if (prev.CharacterIndex >= 0 && curr.CharacterIndex < Lyrics.Length)
+                {
+                    int length = curr.CharacterIndex - prev.CharacterIndex;
+                    if (length > 0)
+                    {
+                        string textBetween = Lyrics.Substring(prev.CharacterIndex, Math.Min(length, Lyrics.Length - prev.CharacterIndex));
+                        if (textBetween.Contains(Environment.NewLine))
+                        {
+                            sameLine = false;
+                        }
+                    }
+                }
+
+                // If they are on the same line and too close/overlapping (e.g. indices 0, 1, 2)
+                if (sameLine)
+                {
+                    // Give each chord enough room based on the length of the previous chord name + a space
+                    int minGap = prev.Chord.Length + 2;
+
+                    if (curr.CharacterIndex < prev.CharacterIndex + minGap)
+                    {
+                        curr.CharacterIndex = prev.CharacterIndex + minGap;
+                    }
+                }
             }
         }
 

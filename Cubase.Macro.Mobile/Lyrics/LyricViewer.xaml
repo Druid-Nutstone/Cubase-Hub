@@ -2,7 +2,11 @@
 <ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              x:Class="Cubase.Macro.Mobile.Lyrics.LyricViewer"
-             Title="LyricViewer">
+             Shell.BackgroundColor="#121212"
+             Shell.TitleColor="White"
+             Shell.ForegroundColor="White"
+             Shell.NavBarHasShadow="True"
+             Title="Lyrics">
 
     <Grid RowDefinitions="Auto, *, Auto" ColumnDefinitions="Auto, *" x:Name="MainGrid">
 
@@ -35,12 +39,22 @@
                 <Shadow Brush="Gray" Offset="0,0" Radius="10" Opacity="0.2" />
             </Border.Shadow>
 
-            <VerticalStackLayout Padding="5" WidthRequest="300">
-                <HorizontalStackLayout>
-                    <Label Text="Lyrics" FontSize="18" VerticalOptions="Center"/>
-                </HorizontalStackLayout>
-                <VerticalStackLayout x:Name="FileContainer" />
-            </VerticalStackLayout>
+            <ScrollView>
+                <VerticalStackLayout Padding="5" WidthRequest="300">
+                    <VerticalStackLayout>
+                        <Label Text="Lyrics" FontSize="18" VerticalOptions="Start"/>
+                        <VerticalStackLayout x:Name="LyricList" VerticalOptions="Center">
+
+                        </VerticalStackLayout>
+                    </VerticalStackLayout>
+                    <VerticalStackLayout>
+                        <Label Text="SetList" FontSize="18" VerticalOptions="Start"/>
+                        <VerticalStackLayout x:Name="SetListList" VerticalOptions="Center">
+
+                        </VerticalStackLayout>
+                    </VerticalStackLayout>
+                </VerticalStackLayout>
+            </ScrollView>
         </Border>
 
         <Grid 
@@ -50,18 +64,9 @@
             <HorizontalStackLayout x:Name="Menu" />
         </Grid>
 
-        <ScrollView x:Name="LyricScrollView" Grid.Row="1" Grid.Column="1" Grid.ColumnSpan="2">
-            <VerticalStackLayout x:Name="LyricContainer" Padding="0,20">
-                <!--
-            <VerticalStackLayout.Resources>
-                    <ResourceDictionary>
-                        <Style TargetType="Label">
-                            <Setter Property="FontFamily" Value="Courier New" />
-                        </Style>
-                    </ResourceDictionary>
-                </VerticalStackLayout.Resources>
-            </VerticalStackLayout> 
-            -->
+        <ScrollView x:Name="LyricScrollView" Grid.Row="1" Grid.Column="1">
+            <VerticalStackLayout x:Name="LyricContainer" Padding="0,20" HorizontalOptions="Fill">
+
             </VerticalStackLayout>
 
         </ScrollView>
@@ -73,13 +78,16 @@
            x:Name="BottomMenu">
 
             <Grid.ColumnDefinitions>
-                <ColumnDefinition Width="*" />
                 <ColumnDefinition Width="Auto" />
+                <ColumnDefinition Width="*" />
             </Grid.ColumnDefinitions>
 
-            <HorizontalStackLayout Grid.Column="1" Spacing="5" Margin="0,0,10,0">
+            <HorizontalStackLayout Grid.Column="0" x:Name="SetListButtons" IsVisible="False" Spacing="5" Margin="10,0,0,0" VerticalOptions="Center">
+            </HorizontalStackLayout>
+
+            <HorizontalStackLayout Grid.Column="1" Spacing="5" Margin="0,0,10,0" HorizontalOptions="End" VerticalOptions="Center">
                 <Label Text="Duration: " VerticalOptions="Center" TextColor="White" />
-                <Label x:Name="SongTime" VerticalOptions="Center" TextColor="White" Margin="10" />
+                <Label x:Name="SongTime" VerticalOptions="Center" TextColor="White" Margin="5,0" />
                 <Label Text="Bar/Time: " VerticalOptions="Center" TextColor="White" />
                 <Label x:Name="CurrentBar" VerticalOptions="Center" TextColor="White" />
             </HorizontalStackLayout>

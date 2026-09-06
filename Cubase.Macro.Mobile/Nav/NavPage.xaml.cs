@@ -1,6 +1,6 @@
 using Cubase.Macro.Common.Socket;
 using Cubase.Macro.Mobile.Configuration;
-using Cubase.Macro.Mobile.Lyrics;
+using Cubase.Macro.Mobile.Services.Lyrics;
 using Cubase.Macro.Mobile.Services.Mswin;
 
 namespace Cubase.Macro.Mobile.Nav;
@@ -8,19 +8,19 @@ namespace Cubase.Macro.Mobile.Nav;
 public partial class NavPage : ContentPage
 {
     private readonly CubaseMacroWebSocketClient webSocket;
-    private readonly FileHandler fileHandler;
+    private readonly ILyricService lyricService;
     private readonly IMsWinService msWinService;
     private readonly IMobileConfigurationService configurationService;
 
     public NavPage(CubaseMacroWebSocketClient webSocket,
-                   FileHandler fileHandler,
+                   ILyricService lyricService,
                    IMsWinService msWinService,
                    IMobileConfigurationService configurationService)
     {
         InitializeComponent();
         this.webSocket = webSocket;
         this.configurationService = configurationService;
-        this.fileHandler = fileHandler;
+        this.lyricService = lyricService;
         this.msWinService = msWinService;
         MidiConfiguration.Clicked += async (s, e) =>
         {
@@ -88,7 +88,7 @@ public partial class NavPage : ContentPage
     private async Task GetFileUpdates()
     {
         SetMessage("Checking for lyric updates..");
-        await this.fileHandler.CheckForFileUpdates((err) =>
+        await this.lyricService.CheckForFileUpdates((err) =>
         {
             SetMessage($"Could not get updated lyric files: {err}");
         });
