@@ -3,6 +3,7 @@ using Cubase.Macro.Common.Models;
 using Cubase.Macro.Common.Models.Lyrics;
 using Cubase.Macro.Common.Socket;
 using Cubase.Macro.Mobile.Configuration;
+using Cubase.Macro.Mobile.Lyrics.LyricMenu;
 using Cubase.Macro.Mobile.Services.Lyrics;
 using Cubase.Macro.Mobile.Services.Mswin;
 using Image = Microsoft.Maui.Controls.Image;
@@ -37,6 +38,8 @@ public partial class LyricViewer : ContentPage
 
     private CubaseMidiProjectStatus midiProjectStatus;
 
+    private LyricMenuContainer lyricMenuContainer;
+
     public LyricViewer(ILyricService lyricService,
                        IMsWinService msWinService,
                        IScrollerService scrollerService,
@@ -53,6 +56,7 @@ public partial class LyricViewer : ContentPage
         this.configurationService = mobileConfigurationService;
         this.menuHandler = new MenuHandler(this.Menu, this);
         this.bottomMenuHandler = new BottomMenuHandler(this.BottomMenu, this);
+        this.lyricMenuContainer = new LyricMenuContainer(this.lyricService);
     }
 
     protected override async void OnSizeAllocated(double width, double height)
@@ -269,50 +273,8 @@ public partial class LyricViewer : ContentPage
     {
         await MainThread.InvokeOnMainThreadAsync(async () =>
         {
-            var availableLyricFile = await this.lyricService.GetLyricFiles();
-            this.LyricList.Children.Clear();
-            foreach (var file in availableLyricFile)
-            {
-                var name = Path.GetFileNameWithoutExtension(file);
-                var fileLabel = new Button()
-                {
-                    Text = name,
-                    HorizontalOptions = LayoutOptions.Start,
-                    BackgroundColor = CubaseMacroMobileConstants.DefaultBackgroundColour,
-                    TextColor = Colors.White,
-                };
-                fileLabel.Clicked += async (s, e) =>
-                {
-                    await this.LoadFile(Cubase.Macro.Common.Models.Lyrics.LyricContainer.Load(file, (err) => { }));
-                };
-                this.LyricList.Children.Add(fileLabel);
-            }
-
-            this.SetListList.Children.Clear();
-            var availableSetLists = await this.lyricService.GetSetlists();
-            foreach (var file in availableSetLists)
-            {
-                var name = Path.GetFileNameWithoutExtension(file);
-                var fileLabel = new Button()
-                {
-                    Text = name,
-                    HorizontalOptions = LayoutOptions.Start,
-                    BackgroundColor = CubaseMacroMobileConstants.DefaultBackgroundColour,
-                    TextColor = Colors.White,
-                };
-                fileLabel.Clicked += async (s, e) =>
-                {
-                    await this.LoadSetList(Cubase.Macro.Common.Models.Lyrics.SetListContainer.Load(file));
-                };
-                this.SetListList.Children.Add(fileLabel);
-            }
-
-
-
             await this.menuHandler.SetLyricButtonSelected();
-
             var targetColumn = MainGrid.ColumnDefinitions[0];
-
             // Create an animation object
             var animation = new Animation(
                 callback: (v) =>
@@ -324,7 +286,6 @@ public partial class LyricViewer : ContentPage
                 end: 300,
                 easing: Easing.CubicOut
             );
-
             // Commit the animation
             // The 'this' refers to the page, "FilesAnimation" is just a unique ID
             animation.Commit(this, "FilesAnimation", length: 250);
@@ -381,6 +342,22 @@ public partial class LyricViewer : ContentPage
     }
 
 
+    private async Task OnLyricClick(LyricContainer lyricContainer, bool closeSetlist)
+    {
+        if (closeSetlist)
+        {
+            this.currentSetlist?.CurrentSong = 0;
+            SetListButtons.IsVisible = false;
+            SetListButtons.InvalidateMeasure();
+        }
+        await this.LoadFile(lyricContainer);
+    }
+
+    private async Task OnSetlistClick(SetListContainer setListContainer)
+    {
+        await this.LoadSetList(setListContainer);
+    }
+
     protected override async void OnAppearing()
     {
         base.OnAppearing();
@@ -388,6 +365,8 @@ public partial class LyricViewer : ContentPage
         await this.BuildSetListButtons();
         if (!await this.LoadWinFileIfRequired())
         {
+            await this.lyricMenuContainer.Initialise(this.OnLyricClick, this.OnSetlistClick);
+            this.LyricMenuLoader.Add(this.lyricMenuContainer);
             if (this.webSocketClient.Connected)
             {
                 var currentCubaseProject = await this.webSocketClient.GetProjectStatus((err) => { });
@@ -421,19 +400,15 @@ public partial class LyricViewer : ContentPage
     private async Task BuildSetListButtons()
     {
         this.SetListButtons.Children.Clear();
-
         var backButton = new SetListNavigationButton(this.OnSetlistNavigation, SetListDirection.Back);
         var forwardButton = new SetListNavigationButton(this.OnSetlistNavigation, SetListDirection.Forward);
-
         this.SetListButtons.Children.Add(backButton);
         this.SetListButtons.Children.Add(forwardButton);
-
     }
 
     private async void OnSetlistNavigation(SetListDirection direction)
     {
         var newPosition = direction == SetListDirection.Forward ? this.currentSetlist.CurrentSong + 1 : this.currentSetlist.CurrentSong - 1;
-
         this.currentSetlist.CurrentSong = newPosition;
         if (this.currentSetlist.CurrentSong > this.currentSetlist.Songs.Count - 1)
         {
@@ -443,9 +418,9 @@ public partial class LyricViewer : ContentPage
         {
             this.currentSetlist.CurrentSong = this.currentSetlist.Songs.Count - 1;
         }
-
-        await this.LoadSetList(this.currentSetlist);
-
+        var setListSong = await this.lyricService.LoadSetListLyric(this.currentSetlist.Songs[this.currentSetlist.CurrentSong]);
+        await this.lyricMenuContainer.SetCurrentSetListLyric(this.currentSetlist.CurrentSong);
+        await this.LoadFile(setListSong);
     }
 
     public async Task LoadSetList(SetListContainer container)
@@ -454,15 +429,8 @@ public partial class LyricViewer : ContentPage
         SetListButtons.IsVisible = true;
         SetListButtons.InvalidateMeasure();
         BottomMenu.InvalidateMeasure();
-        await this.LoadFile(await this.LoadSetListSong());
-        await Task.Delay(10); // Brief yield to let the UI thread process native handles
+        await Task.Delay(5); // Brief yield to let the UI thread process native handles
         LyricScrollView.InvalidateMeasure();
-    }
-
-    private async Task<LyricContainer> LoadSetListSong()
-    {
-        var targetLyric = this.currentSetlist.Songs[this.currentSetlist.CurrentSong];
-        return await this.lyricService.LoadSetListLyric(targetLyric);
     }
 
     public async Task LoadFile(LyricContainer content)

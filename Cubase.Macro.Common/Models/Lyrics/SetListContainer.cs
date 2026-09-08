@@ -12,7 +12,7 @@ namespace Cubase.Macro.Common.Models.Lyrics
         public List<SetListSong> Songs { get; set; } = new List<SetListSong>();
 
         [JsonIgnore]
-        public int CurrentSong { get; set; } = 0;
+        public int CurrentSong { get; set; } = -1;
 
         public void Save(string fileName)
         {

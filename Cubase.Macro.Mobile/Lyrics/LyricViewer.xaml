@@ -20,7 +20,7 @@
                 ZIndex="100"
                 StrokeThickness="1"
                 WidthRequest="300">
-            <Border.Resources>
+            <!--<Border.Resources>
                 <ResourceDictionary>
                     <Style TargetType="Label">
                         <Setter Property="TextColor" Value="White" />
@@ -29,7 +29,7 @@
                         <Setter Property="TextColor" Value="White" />
                     </Style>
                 </ResourceDictionary>
-            </Border.Resources>
+            </Border.Resources>-->
 
             <Border.StrokeShape>
                 <RoundRectangle CornerRadius="0,4,4,0" />
@@ -40,19 +40,7 @@
             </Border.Shadow>
 
             <ScrollView>
-                <VerticalStackLayout Padding="5" WidthRequest="300">
-                    <VerticalStackLayout>
-                        <Label Text="Lyrics" FontSize="18" VerticalOptions="Start"/>
-                        <VerticalStackLayout x:Name="LyricList" VerticalOptions="Center">
-
-                        </VerticalStackLayout>
-                    </VerticalStackLayout>
-                    <VerticalStackLayout>
-                        <Label Text="SetList" FontSize="18" VerticalOptions="Start"/>
-                        <VerticalStackLayout x:Name="SetListList" VerticalOptions="Center">
-
-                        </VerticalStackLayout>
-                    </VerticalStackLayout>
+                <VerticalStackLayout Padding="5" x:Name="LyricMenuLoader">
                 </VerticalStackLayout>
             </ScrollView>
         </Border>
