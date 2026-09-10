@@ -55,11 +55,40 @@ public partial class NavPage : ContentPage
         {
             Shell.Current.GoToAsync("LyricViewer");
         }
+
+    }
+
+
+    private async Task SetupAndroidPermissions()
+    {
+        if (DeviceInfo.Platform == DevicePlatform.Android)
+        {
+
+            var writeFile = await Permissions.CheckStatusAsync<Permissions.StorageWrite>();
+            if (writeFile != PermissionStatus.Granted)
+            {
+                writeFile = await Permissions.RequestAsync<Permissions.StorageWrite>();
+            }
+
+            var storageStatus = await Permissions.CheckStatusAsync<Permissions.StorageRead>();
+            if (storageStatus != PermissionStatus.Granted)
+            {
+                storageStatus = await Permissions.RequestAsync<Permissions.StorageRead>();
+            }
+
+            var mediaStatus = await Permissions.CheckStatusAsync<Permissions.Media>();
+            if (mediaStatus != PermissionStatus.Granted)
+            {
+                mediaStatus = await Permissions.RequestAsync<Permissions.Media>();
+            }
+        }
     }
 
     protected override async void OnAppearing()
     {
         base.OnAppearing();
+
+        await this.SetupAndroidPermissions();
 
         await this.configurationService.InitialiseConfiguration();
 

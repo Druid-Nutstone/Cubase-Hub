@@ -16,7 +16,9 @@ namespace Cubase.Macro.Common.Models.Lyrics
 
         public int FontSize { get; set; } = 12;
 
-        public List<LyricSection> Sections { get; set; } = new List<LyricSection>();
+        public List<LyricSection> Sections { get; set; } = new();
+
+        public LyricCustomOptions CustomOptions { get; set; } = new();
 
         public void SetSectionFontSize(int? fontSize = -1)
         {

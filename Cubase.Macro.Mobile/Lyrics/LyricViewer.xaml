@@ -20,16 +20,6 @@
                 ZIndex="100"
                 StrokeThickness="1"
                 WidthRequest="300">
-            <!--<Border.Resources>
-                <ResourceDictionary>
-                    <Style TargetType="Label">
-                        <Setter Property="TextColor" Value="White" />
-                    </Style>
-                    <Style TargetType="Button">
-                        <Setter Property="TextColor" Value="White" />
-                    </Style>
-                </ResourceDictionary>
-            </Border.Resources>-->
 
             <Border.StrokeShape>
                 <RoundRectangle CornerRadius="0,4,4,0" />

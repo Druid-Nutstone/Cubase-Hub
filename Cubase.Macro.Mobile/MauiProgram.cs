@@ -7,6 +7,7 @@ using Cubase.Macro.Mobile.Services.Lyrics;
 using Cubase.Macro.Mobile.Services.Mswin;
 using Microsoft.Extensions.DependencyInjection.Extensions;
 using Microsoft.Extensions.Logging;
+using Plugin.Maui.Audio;
 using Serilog;
 
 namespace Cubase.Macro.Mobile
@@ -18,6 +19,7 @@ namespace Cubase.Macro.Mobile
             var builder = MauiApp.CreateBuilder();
             builder
                 .UseMauiApp<App>()
+                .AddAudio()
                 .ConfigureFonts(fonts =>
                 {
                     fonts.AddFont("JetBrainsMono-Regular.ttf", "CustomMono");

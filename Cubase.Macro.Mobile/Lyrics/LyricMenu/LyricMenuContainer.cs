@@ -1,6 +1,8 @@
 ﻿using Cubase.Macro.Common.Models.Lyrics;
 using Cubase.Macro.Mobile.Controls;
+using Cubase.Macro.Mobile.Lyrics.LyricOption;
 using Cubase.Macro.Mobile.Services.Lyrics;
+using System.Diagnostics;
 
 namespace Cubase.Macro.Mobile.Lyrics.LyricMenu
 {
@@ -25,16 +27,26 @@ namespace Cubase.Macro.Mobile.Lyrics.LyricMenu
             this.lyricService = lyricService;
         }
 
-        public async Task Initialise(Func<LyricContainer, bool, Task> onLyricClick, Func<SetListContainer, Task> onSetListClick)
+        public async Task Initialise(Func<LyricContainer, bool, Task> onLyricClick,
+                                     Func<SetListContainer, Task> onSetListClick)
         {
-            this.Children.Clear();
             this.OnLyricClick = onLyricClick;
             this.OnSetListClick = onSetListClick;
+            await this.SetupLyricTopMenu();
+        }
+
+        public async Task SetupLyricTopMenu()
+        {
+            this.Children.Clear();
+            var topMenuGrid = new Grid(); // maybe do something with this later 
+
+            this.Children.Add(topMenuGrid);
+
             await this.SetupLyricMenu();
             await this.SetupSetlistMenu();
         }
 
-        public async Task SetupTopNavigation(string title)
+        public async Task SetupSetListTopMenu(string title)
         {
             this.setListMenu.Clear();
             var backButton = new BaseButton()
@@ -47,9 +59,7 @@ namespace Cubase.Macro.Mobile.Lyrics.LyricMenu
             this.setListMenu.Children.Add(backButton);
             backButton.Clicked += async (sender, e) =>
             {
-                this.Children.Clear();
-                await this.SetupLyricMenu();
-                await this.SetupSetlistMenu();
+                await this.SetupLyricTopMenu();
             };
 
             var titleLabel = new Label()
@@ -72,6 +82,16 @@ namespace Cubase.Macro.Mobile.Lyrics.LyricMenu
             this.lyrics.Children.Clear();
             this.lyrics.Children.Add(this.GetTitle("Lyrics"));
             var availableLyricFile = await this.lyricService.GetLyricFiles();
+            var lyricGrid = new Grid()
+            {
+                ColumnDefinitions = new ColumnDefinitionCollection()
+                {
+                   new ColumnDefinition() { Width = GridLength.Auto }, // 0: Shrink-wraps the button to its text
+                   new ColumnDefinition() { Width = GridLength.Star }, // 1: Dummy spacer column
+                   new ColumnDefinition() { Width = GridLength.Auto }
+                }
+            };
+
             foreach (var file in availableLyricFile)
             {
                 var name = Path.GetFileNameWithoutExtension(file);
@@ -80,8 +100,40 @@ namespace Cubase.Macro.Mobile.Lyrics.LyricMenu
                 {
                     await this.OnLyricClick?.Invoke(LyricContainer.Load(file, (err) => { }), true);
                 };
-                this.lyrics.Children.Add(fileLabel);
+
+                var editButton = new BaseImageButton()
+                {
+                    Source = "edit.png",
+                    BackgroundColor = Color.FromArgb("#2e2e2e"),
+                    HeightRequest = 32,
+                    WidthRequest = 32,
+                    HorizontalOptions = LayoutOptions.End
+                };
+
+                editButton.Clicked += async (s, e) =>
+                {
+                    this.lyricService.CurrentLyric = LyricContainer.Load(file, (err) => { });
+                    try
+                    {
+                        await Shell.Current.GoToAsync(nameof(LyricOptions));
+                    }
+                    catch (Exception ex)
+                    {
+                        Debug.WriteLine(ex.ToString());
+                    }
+
+                };
+
+                // 1. Add a new row definition to the grid
+                lyricGrid.RowDefinitions.Add(new RowDefinition { Height = GridLength.Auto });
+                int rowIndex = lyricGrid.RowDefinitions.Count - 1;
+
+                // 2. Add the elements specifying (View, Column, Row)
+                lyricGrid.Add(fileLabel, 0, rowIndex);
+                lyricGrid.Add(editButton, 2, rowIndex);
             }
+
+            this.lyrics.Children.Add(lyricGrid);
             this.Children.Add(lyrics);
         }
 
@@ -110,7 +162,7 @@ namespace Cubase.Macro.Mobile.Lyrics.LyricMenu
         {
             this.Children.Clear();
 
-            await this.SetupTopNavigation(setList.Title);
+            await this.SetupSetListTopMenu(setList.Title);
             this.setListGridList = new List<Grid>();
             foreach (var item in setList.Songs.OrderBy(x => x.Index))
             {
@@ -184,6 +236,7 @@ namespace Cubase.Macro.Mobile.Lyrics.LyricMenu
             return new BaseButton()
             {
                 Text = text,
+                Padding = new Thickness(10, 0, 0, 0),
                 HorizontalOptions = LayoutOptions.Start,
                 BackgroundColor = CubaseMacroMobileConstants.DefaultBackgroundColour,
                 TextColor = Colors.White,

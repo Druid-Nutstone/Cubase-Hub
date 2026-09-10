@@ -1,4 +1,6 @@
-﻿namespace Cubase.Macro.Mobile.Lyrics
+﻿using Cubase.Macro.Common.Models.Lyrics;
+
+namespace Cubase.Macro.Mobile.Lyrics
 {
     public class MenuHandler
     {
@@ -69,11 +71,16 @@
             }
         }
 
-        public async Task EnableButtons()
+        public async Task EnableButtons(LyricContainer lyricContainer)
         {
             foreach (var mitem in menuButtons.Skip(1))
             {
                 mitem.MenuItem.IsEnabled = true;
+            }
+            if (lyricContainer.CustomOptions.ShowChords)
+            {
+                var button = this.menuButtons.First(x => x.ButtonName == KnownMenuButton.ShowHideChords);
+                button.SimulateClick();
             }
         }
 
@@ -81,7 +88,7 @@
         {
             this.container.Children.Clear();
 
-            var lyricButton = MenuButton.Create("Hide Lyrics", "Show Lyrics", Colors.Green, defaultButtonBackgroundColour, async (btn) =>
+            var lyricButton = MenuButton.Create("Hide Lyrics", "Lyrics", Colors.Green, defaultButtonBackgroundColour, async (btn) =>
             {
                 if (btn.Pressed)
                 {
@@ -152,6 +159,16 @@
 
         public Func<MenuButton, Task> OnClicked { get; set; }
 
+        public void SimulateClick()
+        {
+            if (MenuItem.IsEnabled)
+            {
+                _ = this.Pressed = !this.Pressed;
+                MenuItem.BackgroundColor = this.Pressed ? this.ActiveColour : this.InActiveColour;
+                MenuItem.Text = this.Pressed ? this.ActiveText : this.InActiveText;
+
+            }
+        }
 
         public void MakeActive()
         {
@@ -215,13 +232,8 @@
 
             newButton.Clicked += async (o, e) =>
             {
-                if (newButton.IsEnabled)
-                {
-                    _ = newMenuButton.Pressed = !newMenuButton.Pressed;
-                    newButton.BackgroundColor = newMenuButton.Pressed ? newMenuButton.ActiveColour : newMenuButton.InActiveColour;
-                    newButton.Text = newMenuButton.Pressed ? newMenuButton.ActiveText : newMenuButton.InActiveText;
-                    await onClicked(newMenuButton);
-                }
+                newMenuButton.SimulateClick();
+                await onClicked(newMenuButton);
             };
 
             return newMenuButton;

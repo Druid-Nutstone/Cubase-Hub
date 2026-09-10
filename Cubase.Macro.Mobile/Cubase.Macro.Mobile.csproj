@@ -72,6 +72,7 @@
 		<MauiSplashScreen Include="Resources\Splash\nutstonesplash.png" Color="#154A70" BaseSize="128,128">
 			<CopyToOutputDirectory>Always</CopyToOutputDirectory>
 		</MauiSplashScreen>
+		<MauiImage Include="Resources\Images\edit.svg" BaseSize="24,24" />
 		
 
 		<!-- Images -->
@@ -84,10 +85,11 @@
 		<!-- Raw Assets (also remove the "Resources\Raw" prefix) -->
 		<MauiAsset Include="Resources\Raw\**" LogicalName="%(RecursiveDir)%(Filename)%(Extension)" />
 	</ItemGroup>
-
+	
 	<ItemGroup>
 		<PackageReference Include="Microsoft.Maui.Controls" Version="$(MauiVersion)" />
 		<PackageReference Include="Microsoft.Extensions.Logging.Debug" Version="10.0.0" />
+		<PackageReference Include="Plugin.Maui.Audio" Version="4.0.0" />
 		<PackageReference Include="Serilog" Version="4.3.1" />
 		<PackageReference Include="Serilog.Extensions.Logging" Version="10.0.0" />
 		<PackageReference Include="Serilog.Sinks.File" Version="7.0.0" />
@@ -103,6 +105,9 @@
 	    <Generator>MSBuild:Compile</Generator>
 	  </MauiXaml>
 	  <MauiXaml Update="Logging\LoggingPage.xaml">
+	    <Generator>MSBuild:Compile</Generator>
+	  </MauiXaml>
+	  <MauiXaml Update="Lyrics\LyricOption\LyricOptions.xaml">
 	    <Generator>MSBuild:Compile</Generator>
 	  </MauiXaml>
 	  <MauiXaml Update="Lyrics\LyricViewer.xaml">

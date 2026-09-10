@@ -40,6 +40,8 @@ public partial class LyricViewer : ContentPage
 
     private LyricMenuContainer lyricMenuContainer;
 
+    private bool isFirstAppearance = true;
+
     public LyricViewer(ILyricService lyricService,
                        IMsWinService msWinService,
                        IScrollerService scrollerService,
@@ -121,19 +123,33 @@ public partial class LyricViewer : ContentPage
             {
                 if (currentProject.ProjectName.Equals(this.currentLyrics.Title, StringComparison.OrdinalIgnoreCase))
                 {
+
                     await this.scrollerService.StartMidiTimer(this.currentLyrics, this.GotoBar, this.TransportTimeUpdated);
                 }
                 else
                 {
+                    await this.StartAudioPlayBackIfRequired();
                     this.scrollerService.StartDurationTimer(this.currentLyrics, this.GotoBar, this.TransportTimeUpdated);
                 }
             }
         }
         else
         {
+            await this.StartAudioPlayBackIfRequired();
             this.scrollerService.StartDurationTimer(this.currentLyrics, this.GotoBar, this.TransportTimeUpdated);
         }
 
+    }
+
+    private async Task StartAudioPlayBackIfRequired()
+    {
+        if (this.currentLyrics.CustomOptions.PlayAudioWithScroll)
+        {
+            if (this.currentLyrics.CustomOptions.PlayAudioWithScroll)
+            {
+                await this.lyricService.StartAudio(this.currentLyrics);
+            }
+        }
     }
 
     private void TransportTimeUpdated(TimeSpan time)
@@ -187,6 +203,7 @@ public partial class LyricViewer : ContentPage
     public async Task StopAutoScroll()
     {
         this.scrollerService.Stop();
+        await this.lyricService.StopAudio();
         await ResetPointer();
         _ = MainThread.InvokeOnMainThreadAsync(async () =>
         {
@@ -341,7 +358,6 @@ public partial class LyricViewer : ContentPage
         base.OnDisappearing();
     }
 
-
     private async Task OnLyricClick(LyricContainer lyricContainer, bool closeSetlist)
     {
         if (closeSetlist)
@@ -361,40 +377,46 @@ public partial class LyricViewer : ContentPage
     protected override async void OnAppearing()
     {
         base.OnAppearing();
-        await this.menuHandler.BuildMenu();
-        await this.BuildSetListButtons();
-        if (!await this.LoadWinFileIfRequired())
+        if (isFirstAppearance)
         {
-            await this.lyricMenuContainer.Initialise(this.OnLyricClick, this.OnSetlistClick);
-            this.LyricMenuLoader.Add(this.lyricMenuContainer);
-            if (this.webSocketClient.Connected)
+            isFirstAppearance = false;
+            await this.menuHandler.BuildMenu();
+            await this.BuildSetListButtons();
+            if (!await this.LoadWinFileIfRequired())
             {
-                var currentCubaseProject = await this.webSocketClient.GetProjectStatus((err) => { });
-                if (currentCubaseProject != null)
+                await this.lyricMenuContainer.Initialise(this.OnLyricClick,
+                                                         this.OnSetlistClick);
+
+                this.LyricMenuLoader.Children.Clear();
+                this.LyricMenuLoader.Children.Add(this.lyricMenuContainer);
+                if (this.webSocketClient.Connected)
                 {
-                    var projectFile = await this.lyricService.LoadProjectLyricIfAvailable(currentCubaseProject.ProjectName);
-                    if (projectFile != null)
+                    var currentCubaseProject = await this.webSocketClient.GetProjectStatus((err) => { });
+                    if (currentCubaseProject != null)
                     {
-                        await this.LoadFile(Common.Models.Lyrics.LyricContainer.Load(projectFile, async (err) =>
+                        var projectFile = await this.lyricService.LoadProjectLyricIfAvailable(currentCubaseProject.ProjectName);
+                        if (projectFile != null)
                         {
-                            await DisplayAlertAsync("Load Error", $"Cannot load project file {projectFile}", "OK");
-                        }));
+                            await this.LoadFile(Common.Models.Lyrics.LyricContainer.Load(projectFile, async (err) =>
+                            {
+                                await DisplayAlertAsync("Load Error", $"Cannot load project file {projectFile}", "OK");
+                            }));
+                        }
+                    }
+                    else
+                    {
+                        await this.menuHandler.DisableButtons();
+                        await this.ShowFiles();
                     }
                 }
                 else
                 {
+                    // todo need to just get the current cubase project and then load it from local disk 
                     await this.menuHandler.DisableButtons();
                     await this.ShowFiles();
                 }
             }
-            else
-            {
-                // todo need to just get the current cubase project and then load it from local disk 
-                await this.menuHandler.DisableButtons();
-                await this.ShowFiles();
-            }
         }
-
     }
 
     private async Task BuildSetListButtons()
@@ -437,7 +459,7 @@ public partial class LyricViewer : ContentPage
     {
         this.currentLyrics = content;
         this.SongTime.Text = $"{content.Duration.Minutes.ToString().PadLeft(2, '0')}:{content.Duration.Seconds.ToString().PadLeft(2, '0')}";
-        await this.menuHandler.EnableButtons();
+        await this.menuHandler.EnableButtons(this.currentLyrics);
         await this.StopAutoScroll();
         // by default hide the chords - this SHOULD BE DONE BY PROFILE !
         await MainThread.InvokeOnMainThreadAsync(async () =>
@@ -452,8 +474,8 @@ public partial class LyricViewer : ContentPage
                 LyricContainer.InvalidateMeasure();
                 LyricScrollView.InvalidateMeasure();
                 MainGrid.InvalidateMeasure();
-                // start by NOT showing any chords 
-                await this.ShowHideChords(false);
+
+                await this.ShowHideChords(this.currentLyrics.CustomOptions.ShowChords);
             }
         });
     }

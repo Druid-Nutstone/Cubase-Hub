@@ -78,7 +78,7 @@ namespace Cubase.Macro.Common.Lyrics.Services.Scrolling
             _scrollTimes = allBars.Select(bar => new BarTimeActivated
             {
                 Bar = bar,
-                BarTime = CalculateTargetTime(bar, lyricContainer.Bpm, (int)lyricContainer.TimeSignature)
+                BarTime = CalculateTargetTime(bar + (lyricContainer.CustomOptions.BarOffset * -1), lyricContainer.Bpm, (int)lyricContainer.TimeSignature)
             })
             .OrderBy(x => x.BarTime)
             .ToList();
