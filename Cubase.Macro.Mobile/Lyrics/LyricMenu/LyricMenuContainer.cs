@@ -96,7 +96,7 @@ namespace Cubase.Macro.Mobile.Lyrics.LyricMenu
             {
                 var name = Path.GetFileNameWithoutExtension(file);
                 var fileLabel = this.GetItemButton(name);
-                fileLabel.Clicked += async (s, e) =>
+                fileLabel.OnTapped += async (label) =>
                 {
                     await this.OnLyricClick?.Invoke(LyricContainer.Load(file, (err) => { }), true);
                 };
@@ -146,7 +146,7 @@ namespace Cubase.Macro.Mobile.Lyrics.LyricMenu
             {
                 var name = Path.GetFileNameWithoutExtension(file);
                 var fileLabel = this.GetItemButton(name);
-                fileLabel.Clicked += async (s, e) =>
+                fileLabel.OnTapped += async (label) =>
                 {
                     var setListContainer = SetListContainer.Load(file);
                     await this.DisplaySetList(setListContainer);
@@ -185,12 +185,8 @@ namespace Cubase.Macro.Mobile.Lyrics.LyricMenu
 
                 var pointer = this.GetPointer();
 
-                var itemButton = new BaseButton()
-                {
-                    Text = item.Title,
-                    TextColor = Colors.White,
-                    BackgroundColor = Color.FromRgba("#2e2e2e")
-                };
+                var itemButton = this.GetItemButton(item.Title);
+
                 contentLine.Add(itemIndex, 0);
                 contentLine.Add(pointer, 1);
                 contentLine.Add(itemButton, 2);
@@ -198,7 +194,7 @@ namespace Cubase.Macro.Mobile.Lyrics.LyricMenu
 
                 this.setListGridList.Add(contentLine);
 
-                itemButton.Clicked += async (s, e) =>
+                itemButton.OnTapped += async (label) =>
                 {
                     await SetCurrentSetListLyric(item.Index);
                     setList.CurrentSong = item.Index;
@@ -231,9 +227,9 @@ namespace Cubase.Macro.Mobile.Lyrics.LyricMenu
             };
         }
 
-        private Button GetItemButton(string text)
+        private BaseLabel GetItemButton(string text)
         {
-            return new BaseButton()
+            return new BaseLabel()
             {
                 Text = text,
                 Padding = new Thickness(10, 0, 0, 0),

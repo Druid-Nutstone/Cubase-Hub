@@ -6,7 +6,6 @@ using Cubase.Macro.Forms.Cues;
 using Cubase.Macro.Forms.Lyrics;
 using Cubase.Macro.Services.Config;
 using Cubase.Macro.Services.Keyboard;
-
 using Cubase.Macro.Services.Midi;
 using Cubase.Macro.Services.WebSockets;
 using Cubase.Macro.Services.Window;
@@ -16,6 +15,8 @@ using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
+using Nutstone.AI.Assistant.Forms.Chat;
+using Nutstone.AI.Assistant.Registration;
 using Serilog;
 using System.Diagnostics;
 using System.IO;
@@ -36,9 +37,9 @@ namespace Cubase.Macro
         static void Main(string[] args)
         {
 
-            ApplicationConfiguration.Initialize();
-            Application.SetHighDpiMode(HighDpiMode.PerMonitorV2);
             Application.EnableVisualStyles();
+            Application.SetCompatibleTextRenderingDefault(false);
+            Application.SetHighDpiMode(HighDpiMode.SystemAware);
             Application.SetCompatibleTextRenderingDefault(false);
 
 
@@ -83,6 +84,13 @@ namespace Cubase.Macro
             else
             {
                 var options = args[0];
+                if (options == "ai")
+                {
+                    var chatForm = host.Services.GetService<ChatForm>();
+                    chatForm.Initialise();
+                    Application.Run(chatForm);
+                }
+
                 if (options == "settings")
                 {
                     var configForm = host.Services.GetService<SettingsForm>();
@@ -159,6 +167,14 @@ namespace Cubase.Macro
             });
             jumpList.JumpItems.Add(new JumpTask
             {
+                Title = "Open AI",
+                Arguments = "ai",
+                ApplicationPath = Application.ExecutablePath,
+                IconResourcePath = Application.ExecutablePath,
+                IconResourceIndex = 0
+            });
+            jumpList.JumpItems.Add(new JumpTask
+            {
                 Title = "Open Midi Control",
                 Arguments = "midicontrol",
                 ApplicationPath = Application.ExecutablePath,
@@ -199,6 +215,7 @@ namespace Cubase.Macro
                         .AddScoped<SettingsForm>()
                         .AddTransient<CueForm>()
                         .AddTransient<LyricViewerForm>()
+                        .RegisterAiAssistance() // register nutstone ai services and forms
                         .AddScoped<MainForm>();
                 })
                 .ConfigureWebHostDefaults(webBuilder =>

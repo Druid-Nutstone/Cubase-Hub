@@ -60,6 +60,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\..\Nutstone-AI\Nutstone.AI.Assistant\Nutstone.AI.Assistant.csproj" />
     <ProjectReference Include="..\Cubase.Hub\Cubase.Hub.csproj" />
     <ProjectReference Include="..\Cubase.Macro.Common\Cubase.Macro.Common.csproj" />
   </ItemGroup>

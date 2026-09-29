@@ -154,7 +154,7 @@ namespace Cubase.Macro.Forms.Lyrics
             this.viewer?.GotoBar(bar);
         }
 
-        private void OnTransportLocationUpdate(TimeSpan response)
+        private void OnTransportLocationUpdate(TimeSpan response, int DontKnowWhatThisisFor)
         {
             this.TransPortLocation.Text = $"{(int)response.TotalMinutes:D2}:{response.Seconds:D2}";
             this.TransPortLocation.Update();
@@ -164,13 +164,11 @@ namespace Cubase.Macro.Forms.Lyrics
         {
             if (lyricEditorType == LyricEditorType.Viewer)
             {
-                SaveButton.Enabled = true;
                 ScrollButton.Enabled = false;
                 this.LoadLyricEditor();
             }
             else
             {
-                SaveButton.Enabled = false;
                 ScrollButton.Enabled = true;
                 this.SourceLyrics = editor?.Lyrics;
                 this.LoadLyricViewer();

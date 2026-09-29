@@ -25,17 +25,16 @@ namespace Cubase.Macro.Common.Lyrics.Services.Scrolling
 
         // Event or Action you can subscribe to from your UI layer (Windows or MAUI)
         public Action<int>? OnGotoBar;
-        public Action<TimeSpan>? OnTransportUpdate;
+        public Action<TimeSpan, int>? OnTransportUpdate;
 
         public ScrollerService(CubaseMacroWebSocketClient webSocketClient)
         {
             this._midiService = webSocketClient;
-
         }
 
         public async Task StartMidiTimer(LyricContainer lyricContainer,
                   Action<int> onGotoBar,
-                  Action<TimeSpan> onTransportUpdate,
+                  Action<TimeSpan, int> onTransportUpdate,
                   int intervalMilliseconds = 1000)
         {
             this.currentLyric = lyricContainer;
@@ -67,9 +66,10 @@ namespace Cubase.Macro.Common.Lyrics.Services.Scrolling
 
         public void StartDurationTimer(LyricContainer lyricContainer,
                           Action<int> onGotoBar,
-                          Action<TimeSpan> onTransportUpdate,
+                          Action<TimeSpan, int> onTransportUpdate,
                           int intervalMilliseconds = 50)
         {
+            this.currentLyric = lyricContainer;
             this.OnGotoBar = onGotoBar;
             this.OnTransportUpdate = onTransportUpdate;
             // Get bars in sections ordered so lowest at the top, then sort by calculated timestamp
@@ -139,11 +139,26 @@ namespace Cubase.Macro.Common.Lyrics.Services.Scrolling
             {
                 while (await _timer!.WaitForNextTickAsync(cancellationToken))
                 {
+                    TimeSpan elapsedPlaybackTime = _stopwatch.Elapsed;
+
+                    // Calculate current bar mathematically from elapsed time, BPM, and time signature
+                    int currentBar = 1;
+                    if (currentLyric != null && currentLyric.Bpm > 0)
+                    {
+                        double secondsPerBeat = 60.0 / currentLyric.Bpm;
+                        double secondsPerBar = secondsPerBeat * (int)currentLyric.TimeSignature;
+
+                        if (secondsPerBar > 0)
+                        {
+                            currentBar = (int)Math.Floor(elapsedPlaybackTime.TotalSeconds / secondsPerBar) + 1;
+                        }
+                    }
+
+                    // Invoke transport update with both elapsed time and the calculated current bar
+                    this.OnTransportUpdate?.Invoke(elapsedPlaybackTime, currentBar);
+
                     if (_scrollTimes == null || _nextBarIndex >= _scrollTimes.Count)
                         continue;
-
-                    TimeSpan elapsedPlaybackTime = _stopwatch.Elapsed;
-                    this.OnTransportUpdate?.Invoke(elapsedPlaybackTime);
 
                     // Check if current time has reached or passed the next scheduled bar timestamp
                     while (_nextBarIndex < _scrollTimes.Count &&

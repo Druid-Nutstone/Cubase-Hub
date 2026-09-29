@@ -66,7 +66,7 @@
             <HorizontalStackLayout Grid.Column="1" Spacing="5" Margin="0,0,10,0" HorizontalOptions="End" VerticalOptions="Center">
                 <Label Text="Duration: " VerticalOptions="Center" TextColor="White" />
                 <Label x:Name="SongTime" VerticalOptions="Center" TextColor="White" Margin="5,0" />
-                <Label Text="Bar/Time: " VerticalOptions="Center" TextColor="White" />
+                <Label Text="Time/Bar: " VerticalOptions="Center" TextColor="White" />
                 <Label x:Name="CurrentBar" VerticalOptions="Center" TextColor="White" />
             </HorizontalStackLayout>
         </Grid>

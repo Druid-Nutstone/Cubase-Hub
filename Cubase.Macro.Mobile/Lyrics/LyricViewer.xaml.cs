@@ -152,9 +152,9 @@ public partial class LyricViewer : ContentPage
         }
     }
 
-    private void TransportTimeUpdated(TimeSpan time)
+    private void TransportTimeUpdated(TimeSpan time, int currentBar)
     {
-        this.CurrentBar.Text = $"{time.Minutes.ToString().PadLeft(2, '0')}:{time.Seconds.ToString().PadLeft(2, '0')}";
+        this.CurrentBar.Text = $"{time.Minutes.ToString().PadLeft(2, '0')}:{time.Seconds.ToString().PadLeft(2, '0')} {currentBar}";
         this.CurrentBar.InvalidateMeasure();
     }
 
