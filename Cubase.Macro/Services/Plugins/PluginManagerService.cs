@@ -1,0 +1,113 @@
+﻿using Cubase.Macro.Common.Models;
+using Cubase.Macro.Services.Midi;
+using Microsoft.Extensions.Logging;
+
+namespace Cubase.Macro.Services.Plugins
+{
+    public class PluginManagerService : IPLuginManagerService
+    {
+        private readonly IMidiService midiService;
+
+        private readonly ILogger<PluginManagerService> logger;
+
+        public PluginManagerService(IMidiService midiService, ILogger<PluginManagerService> logger)
+        {
+            this.midiService = midiService;
+            this.logger = logger;
+        }
+
+
+        public CubasePluginSlotCollection GetCubasePluginSlots()
+        {
+            using var responseReceived = new ManualResetEventSlim(false);
+
+            CubasePluginSlotCollection slots = null;
+
+            void OnCubaseSlotsReturned(
+                CubasePluginSlotCollection cubasePluginSlots)
+            {
+                slots = cubasePluginSlots;
+
+                this.midiService.DeRegisterForGetPluginSlots(
+                    OnCubaseSlotsReturned);
+
+                responseReceived.Set();
+            }
+
+            this.midiService.RegisterForGetPluginSlots(
+                OnCubaseSlotsReturned);
+
+            try
+            {
+                this.midiService.SendSysExMessage(
+                    Models.MidiCommand.GetPluginSlots, "{}");
+
+                if (!responseReceived.Wait(TimeSpan.FromSeconds(30)))
+                {
+                    this.midiService.DeRegisterForGetPluginSlots(
+                        OnCubaseSlotsReturned);
+
+                    throw new TimeoutException(
+                        "Timed out waiting for Cubase plugin slots.");
+                }
+
+                return slots;
+            }
+            catch
+            {
+                this.midiService.DeRegisterForGetPluginSlots(
+                    OnCubaseSlotsReturned);
+
+                throw;
+            }
+        }
+
+        public CubasePluginParameterCollection GetPluginParameters(
+            CubasePluginSlot cubasePluginSlot)
+        {
+            using var responseReceived = new ManualResetEventSlim(false);
+
+            var parameters = new CubasePluginParameterCollection();
+
+            void OnCubaseParametersReturned(
+                CubasePluginParameterCollection pluginParameters)
+            {
+                parameters.AddFromOtherCollection(pluginParameters);
+            }
+
+            void OnCubaseParametersCompleteReturned()
+            {
+                responseReceived.Set();
+            }
+
+            this.midiService.RegisterForGetPluginParameters(
+                OnCubaseParametersReturned);
+
+            this.midiService.RegisterForGetPluginParametersComplete(
+                OnCubaseParametersCompleteReturned);
+
+            try
+            {
+                this.midiService.SendSysExMessage<CubasePluginSlot>(
+                    Models.MidiCommand.GetPluginParameters,
+                    cubasePluginSlot);
+
+                if (!responseReceived.Wait(TimeSpan.FromSeconds(60)))
+                {
+                    throw new TimeoutException(
+                        "Timed out waiting for Cubase plugin parameters to complete.");
+                }
+
+                return parameters;
+            }
+            finally
+            {
+                this.midiService.DeRegisterForGetPluginParameters(
+                    OnCubaseParametersReturned);
+
+                this.midiService.DeRegisterForGetPluginParametersComplete(
+                    OnCubaseParametersCompleteReturned);
+            }
+        }
+    }
+}

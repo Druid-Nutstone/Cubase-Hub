@@ -2,6 +2,9 @@
 using Cubase.Macro.Forms.Main.Buttons;
 using Cubase.Macro.Forms.Main.Menus;
 using Cubase.Macro.Services.Config;
+using Microsoft.Extensions.DependencyInjection;
+using Nutstone.AI.Assistant.Forms.Chat;
+using Nutstone.AI.Assistant.Models;
 using System.ComponentModel;
 
 namespace Cubase.Macro.Forms.Main
@@ -14,6 +17,9 @@ namespace Cubase.Macro.Forms.Main
 
         [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
         public MainForm MainForm { get; set; }
+
+        [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
+        public IServiceProvider ServiceProvider { get; set; }
 
         private bool haveSetSize = false;
 
@@ -66,6 +72,18 @@ namespace Cubase.Macro.Forms.Main
         private void ButtonLyrics_Click()
         {
             this.mainForm.ShowLyrics();
+        }
+
+        private void AIButton_Click()
+        {
+            var aiForm = this.ServiceProvider.GetService<ChatForm>();
+            aiForm.Initialise(this.OnAIActionResult);
+            aiForm.ShowDialog();
+        }
+
+        private void OnAIActionResult(ChatResult chatResult)
+        {
+
         }
 
         private void ButtonReload_Click()
@@ -201,7 +219,7 @@ namespace Cubase.Macro.Forms.Main
             ButtonCueLevels.Bind(ButtonCueLevels_Click, Color.Yellow, "C", "Cue levels");
             ButtonReload.Bind(ButtonReload_Click, Color.Cyan, "R", "Reload Scripts");
             ButtonLyrics.Bind(ButtonLyrics_Click, Color.LightGreen, "L", "Show lyrics");
-
+            AIButton.Bind(AIButton_Click, Color.Magenta, "AI", "Open AI ");
         }
 
         public void InitialiseCommon(List<CubaseMacro> macros, Action<CubaseMacro, MacroButton> onMacroClicked)

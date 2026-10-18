@@ -7,6 +7,7 @@ using Cubase.Macro.Forms.Lyrics;
 using Cubase.Macro.Services.Config;
 using Cubase.Macro.Services.Keyboard;
 using Cubase.Macro.Services.Midi;
+using Cubase.Macro.Services.Plugins;
 using Cubase.Macro.Services.WebSockets;
 using Cubase.Macro.Services.Window;
 using Cubase.Macro.Services.WindowsServices;
@@ -208,6 +209,7 @@ namespace Cubase.Macro
                         .AddSingleton<IWindowService, WindowService>()
                         .AddSingleton<IConfigurationService, ConfigurationService>()
                         .AddSingleton<IMidiService, MidiService>()
+                        .AddSingleton<IPLuginManagerService, PluginManagerService>()
                         .AddSingleton<IScrollerService, ScrollerService>()
                         .AddSingleton<CubaseMacroWebSocketClient>()
                         .AddSingleton<IWindowsControllerService, WindowsControllerService>()

@@ -30,6 +30,7 @@
         {
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(MainMenuControl));
             NavPanel = new Panel();
+            ButtonStartStopTransportMonitoring = new Cubase.Macro.Forms.Cues.CueControls.ToggleCubaseButton();
             ButtonLyrics = new Cubase.Macro.Forms.Main.Buttons.ActionButton();
             ButtonCueLevels = new Cubase.Macro.Forms.Main.Buttons.ActionButton();
             ButtonReload = new Cubase.Macro.Forms.Main.Buttons.ActionButton();
@@ -41,7 +42,7 @@
             MainPanel = new Panel();
             MenuSplitter = new Splitter();
             CommonPanel = new Panel();
-            ButtonStartStopTransportMonitoring = new Cubase.Macro.Forms.Cues.CueControls.ToggleCubaseButton();
+            AIButton = new Cubase.Macro.Forms.Main.Buttons.ActionButton();
             NavPanel.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)ButtonRefresh).BeginInit();
             ((System.ComponentModel.ISupportInitialize)ButtonPositionCubase).BeginInit();
@@ -52,6 +53,7 @@
             // 
             // NavPanel
             // 
+            NavPanel.Controls.Add(AIButton);
             NavPanel.Controls.Add(ButtonStartStopTransportMonitoring);
             NavPanel.Controls.Add(ButtonLyrics);
             NavPanel.Controls.Add(ButtonCueLevels);
@@ -66,6 +68,20 @@
             NavPanel.Name = "NavPanel";
             NavPanel.Size = new Size(200, 79);
             NavPanel.TabIndex = 0;
+            // 
+            // ButtonStartStopTransportMonitoring
+            // 
+            ButtonStartStopTransportMonitoring.Anchor = AnchorStyles.Top | AnchorStyles.Right;
+            ButtonStartStopTransportMonitoring.FlatAppearance.BorderSize = 0;
+            ButtonStartStopTransportMonitoring.FlatStyle = FlatStyle.Flat;
+            ButtonStartStopTransportMonitoring.Font = new Font("Segoe UI", 9F, FontStyle.Bold);
+            ButtonStartStopTransportMonitoring.Location = new Point(157, 40);
+            ButtonStartStopTransportMonitoring.Name = "ButtonStartStopTransportMonitoring";
+            ButtonStartStopTransportMonitoring.OnOff = false;
+            ButtonStartStopTransportMonitoring.Size = new Size(30, 30);
+            ButtonStartStopTransportMonitoring.TabIndex = 15;
+            ButtonStartStopTransportMonitoring.Text = "T";
+            ButtonStartStopTransportMonitoring.UseVisualStyleBackColor = true;
             // 
             // ButtonLyrics
             // 
@@ -181,19 +197,17 @@
             CommonPanel.Size = new Size(200, 205);
             CommonPanel.TabIndex = 3;
             // 
-            // ButtonStartStopTransportMonitoring
+            // AIButton
             // 
-            ButtonStartStopTransportMonitoring.Anchor = AnchorStyles.Top | AnchorStyles.Right;
-            ButtonStartStopTransportMonitoring.FlatAppearance.BorderSize = 0;
-            ButtonStartStopTransportMonitoring.FlatStyle = FlatStyle.Flat;
-            ButtonStartStopTransportMonitoring.Font = new Font("Segoe UI", 9F, FontStyle.Bold);
-            ButtonStartStopTransportMonitoring.Location = new Point(150, 40);
-            ButtonStartStopTransportMonitoring.Name = "ButtonStartStopTransportMonitoring";
-            ButtonStartStopTransportMonitoring.OnOff = false;
-            ButtonStartStopTransportMonitoring.Size = new Size(30, 30);
-            ButtonStartStopTransportMonitoring.TabIndex = 15;
-            ButtonStartStopTransportMonitoring.Text = "T";
-            ButtonStartStopTransportMonitoring.UseVisualStyleBackColor = true;
+            AIButton.FlatAppearance.BorderSize = 0;
+            AIButton.FlatStyle = FlatStyle.Flat;
+            AIButton.Font = new Font("Segoe UI", 9F, FontStyle.Bold);
+            AIButton.Location = new Point(118, 41);
+            AIButton.Name = "AIButton";
+            AIButton.Size = new Size(33, 30);
+            AIButton.TabIndex = 16;
+            AIButton.Text = "AI";
+            AIButton.UseVisualStyleBackColor = true;
             // 
             // MainMenuControl
             // 
@@ -229,5 +243,6 @@
         private Buttons.ActionButton ButtonCueLevels;
         private Buttons.ActionButton ButtonLyrics;
         private Cues.CueControls.ToggleCubaseButton ButtonStartStopTransportMonitoring;
+        private Buttons.ActionButton AIButton;
     }
 }

@@ -40,6 +40,10 @@ var sysexCommand = {
         UpdateSolo,
         LocationChanged,
         StartTransportEventMonitoring,
-        StopTransportEventMonitoring
+        StopTransportEventMonitoring,
+        GetPluginSlots,
+        GetPluginParameters,
+        GetPluginParametersComplete
+
     }
 }

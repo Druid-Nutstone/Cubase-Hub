@@ -27,6 +27,18 @@ namespace Cubase.Macro.Services.Midi
 
         public void RegisterForGetCueLevelsEndCallbacks(Action onGetCueLevelsEnd);
 
+        public void RegisterForGetPluginSlots(Action<CubasePluginSlotCollection> onPluginSlot);
+
+        public void DeRegisterForGetPluginSlots(Action<CubasePluginSlotCollection> onPluginSlot);
+
+        public void RegisterForGetPluginParameters(Action<CubasePluginParameterCollection> onPluginParameter);
+
+        public void DeRegisterForGetPluginParameters(Action<CubasePluginParameterCollection> onPluginParameter);
+
+        public void RegisterForGetPluginParametersComplete(Action onPluginParameterComplete);
+
+        public void DeRegisterForGetPluginParametersComplete(Action onPluginParameterComplete);
+
         public void DeRegisterForGetCueLevelsEndCallbacks(Action onGetCueLevelsEnd);
 
         public void RegisterForTransportMonitoring(Action<bool> onMonitoringChanged);

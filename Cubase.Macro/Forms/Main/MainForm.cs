@@ -61,6 +61,7 @@ namespace Cubase.Macro
             this.logger = log;
             this.mainMenuControl.Logger = this.Log;
             this.mainMenuControl.MainForm = this;
+            this.mainMenuControl.ServiceProvider = serviceProvider;
             this.midiService.RegisterForTransportMonitoring(this.HookTransportMonitoring);
             StaticConfig.Instance.SetConfiguration(this.configurationService.Configuration);
             ThemeApplier.ApplyDarkTheme(this);

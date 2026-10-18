@@ -45,6 +45,12 @@ namespace Cubase.Macro.Services.Midi
 
         private List<Action<bool>> registeredTransportCallbacks { get; set; } = new List<Action<bool>>();
 
+        private List<Action<CubasePluginSlotCollection>> registeredPluginSlotCallBacks = new List<Action<CubasePluginSlotCollection>>();
+
+        private List<Action<CubasePluginParameterCollection>> registeredPluginParameterCallBacks = new List<Action<CubasePluginParameterCollection>>();
+
+        private List<Action> registeredPluginParameterCompleteCallBacks = new List<Action>();
+
         public bool MonitoringTransport { get { return monitoringTransport; } }
 
         public Action<CubaseMidiResponse> OnMidiResponse { get; set; }
@@ -275,6 +281,18 @@ namespace Cubase.Macro.Services.Midi
                         logger.LogError(ex, $"Error deserialising CommandValueChanged");
                     }
                     break;
+                // plugin routines 
+                case var _ when command.Equals(MidiCommand.GetPluginSlots.ToString(), StringComparison.OrdinalIgnoreCase):
+                    var pluginSlots = JsonSerializer.Deserialize<CubasePluginSlotCollection>(payload);
+                    this.HandlePluginSlots(pluginSlots);
+                    break;
+                case var _ when command.Equals(MidiCommand.GetPluginParameters.ToString(), StringComparison.OrdinalIgnoreCase):
+                    var pluginParameters = JsonSerializer.Deserialize<CubasePluginParameterCollection>(payload);
+                    this.HandlePluginParameters(pluginParameters);
+                    break;
+                case var _ when command.Equals(MidiCommand.GetPluginParametersComplete.ToString(), StringComparison.OrdinalIgnoreCase):
+                    this.HandlePluginParametersComplete();
+                    break;
                 default:
                     logger.LogInformation(
                         "Unhandled MIDI command: {Command} Payload: {Payload}",
@@ -300,6 +318,30 @@ namespace Cubase.Macro.Services.Midi
                 }
             }
 
+        }
+
+        private void HandlePluginSlots(CubasePluginSlotCollection cubasePluginSlots)
+        {
+            foreach (var handler in this.registeredPluginSlotCallBacks)
+            {
+                handler.Invoke(cubasePluginSlots);
+            }
+        }
+
+        private void HandlePluginParameters(CubasePluginParameterCollection cubasePluginParameters)
+        {
+            foreach (var handler in this.registeredPluginParameterCallBacks)
+            {
+                handler.Invoke(cubasePluginParameters);
+            }
+        }
+
+        private void HandlePluginParametersComplete()
+        {
+            foreach (var handler in this.registeredPluginParameterCompleteCallBacks)
+            {
+                handler.Invoke();
+            }
         }
 
         private void HandleLocationChange(TransportLocaton transportLocaton)
@@ -415,6 +457,36 @@ namespace Cubase.Macro.Services.Midi
             }
         }
 
+        public void RegisterForGetPluginSlots(Action<CubasePluginSlotCollection> onPluginSlot)
+        {
+            this.registeredPluginSlotCallBacks.Add(onPluginSlot);
+        }
+
+        public void DeRegisterForGetPluginSlots(Action<CubasePluginSlotCollection> onPluginSlot)
+        {
+            this.registeredPluginSlotCallBacks.Remove(onPluginSlot);
+        }
+
+        public void RegisterForGetPluginParameters(Action<CubasePluginParameterCollection> onPluginParameter)
+        {
+            this.registeredPluginParameterCallBacks.Add(onPluginParameter);
+        }
+
+        public void DeRegisterForGetPluginParameters(Action<CubasePluginParameterCollection> onPluginParameter)
+        {
+            this.registeredPluginParameterCallBacks.Remove(onPluginParameter);
+        }
+
+        public void RegisterForGetPluginParametersComplete(Action onPluginParameterComplete)
+        {
+            this.registeredPluginParameterCompleteCallBacks.Add(onPluginParameterComplete);
+        }
+
+        public void DeRegisterForGetPluginParametersComplete(Action onPluginParameterComplete)
+        {
+            this.registeredPluginParameterCompleteCallBacks.Remove(onPluginParameterComplete);
+        }
+
         public void RegisterForUpdateCueLevelsEndCallbacks(Action onUpdateCueLevelsEnd)
         {
             this.UpdatedCueLevelsEndCallbacks.Add(onUpdateCueLevelsEnd);
@@ -440,5 +512,7 @@ namespace Cubase.Macro.Services.Midi
             this.HandleClearChannels();
             this.SendMidiMessage(CubaseKeyCommand.CreateMidi("Reload Scripts", 22, 1));
         }
+
+
     }
 }
