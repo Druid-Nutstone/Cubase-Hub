@@ -46,7 +46,10 @@ var sysexCommand = {
         GetPluginParametersComplete,
         UpdatePluginParameter,
 
-        GetAvailablePlugins
+        GetAvailablePlugins,
+        GetAvailablePluginsComplete,
+
+        InsertPlugin
 
     }
 }

@@ -49,7 +49,11 @@ namespace Cubase.Macro.Services.Midi
 
         private List<Action<CubasePluginParameterCollection>> registeredPluginParameterCallBacks = new List<Action<CubasePluginParameterCollection>>();
 
+        private List<Action<CubasePluginDetailCollection>> registeredPluginDetailCallBacks = new List<Action<CubasePluginDetailCollection>>();
+
         private List<Action> registeredPluginParameterCompleteCallBacks = new List<Action>();
+
+        private List<Action> registeredPluginDetailsCompleteCallBack = new List<Action>();
 
         public bool MonitoringTransport { get { return monitoringTransport; } }
 
@@ -293,6 +297,13 @@ namespace Cubase.Macro.Services.Midi
                 case var _ when command.Equals(MidiCommand.GetPluginParametersComplete.ToString(), StringComparison.OrdinalIgnoreCase):
                     this.HandlePluginParametersComplete();
                     break;
+                case var _ when command.Equals(MidiCommand.GetAvailablePlugins.ToString(), StringComparison.OrdinalIgnoreCase):
+                    var pluginDetails = JsonSerializer.Deserialize<CubasePluginDetailCollection>(payload);
+                    this.HandlePluginDetails(pluginDetails);
+                    break;
+                case var _ when command.Equals(MidiCommand.GetAvailablePluginsComplete.ToString(), StringComparison.OrdinalIgnoreCase):
+                    this.HandlePluginDetailsComplete();
+                    break;
                 default:
                     logger.LogInformation(
                         "Unhandled MIDI command: {Command} Payload: {Payload}",
@@ -336,9 +347,25 @@ namespace Cubase.Macro.Services.Midi
             }
         }
 
+        private void HandlePluginDetails(CubasePluginDetailCollection cubasePluginDetails)
+        {
+            foreach (var handler in this.registeredPluginDetailCallBacks)
+            {
+                handler.Invoke(cubasePluginDetails);
+            }
+        }
+
         private void HandlePluginParametersComplete()
         {
             foreach (var handler in this.registeredPluginParameterCompleteCallBacks)
+            {
+                handler.Invoke();
+            }
+        }
+
+        private void HandlePluginDetailsComplete()
+        {
+            foreach (var handler in this.registeredPluginDetailsCompleteCallBack)
             {
                 handler.Invoke();
             }
@@ -482,9 +509,29 @@ namespace Cubase.Macro.Services.Midi
             this.registeredPluginParameterCompleteCallBacks.Add(onPluginParameterComplete);
         }
 
+        public void RegisterForGetPluginDetail(Action<CubasePluginDetailCollection> onPluginDetail)
+        {
+            this.registeredPluginDetailCallBacks.Add(onPluginDetail);
+        }
+
+        public void DeRegisterForGetPluginDetail(Action<CubasePluginDetailCollection> onPluginDetail)
+        {
+            this.registeredPluginDetailCallBacks.Remove(onPluginDetail);
+        }
+
         public void DeRegisterForGetPluginParametersComplete(Action onPluginParameterComplete)
         {
             this.registeredPluginParameterCompleteCallBacks.Remove(onPluginParameterComplete);
+        }
+
+        public void RegisterForGetPluginDetailsComplete(Action onPluginDetailComplete)
+        {
+            this.registeredPluginDetailsCompleteCallBack.Add(onPluginDetailComplete);
+        }
+
+        public void DeRegisterForGetPluginDetailsComplete(Action onPluginDetailComplete)
+        {
+            this.registeredPluginDetailsCompleteCallBack.Remove(onPluginDetailComplete);
         }
 
         public void RegisterForUpdateCueLevelsEndCallbacks(Action onUpdateCueLevelsEnd)
@@ -512,7 +559,5 @@ namespace Cubase.Macro.Services.Midi
             this.HandleClearChannels();
             this.SendMidiMessage(CubaseKeyCommand.CreateMidi("Reload Scripts", 22, 1));
         }
-
-
     }
 }

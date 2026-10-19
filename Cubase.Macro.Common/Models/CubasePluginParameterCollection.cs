@@ -32,6 +32,8 @@ namespace Cubase.Macro.Common.Models
         public string Units { get; set; }
 
         public double ProcessValue { get; set; }
+
+        public bool UseValue { get; set; } = false;
     }
 
     public class UpdateCubasePluginParameter : CubasePluginParameter
@@ -48,7 +50,9 @@ namespace Cubase.Macro.Common.Models
                 Name = cubasePluginParameter.Name,
                 ProcessValue = cubasePluginParameter.ProcessValue,
                 Tag = cubasePluginParameter.Tag,
-                Units = cubasePluginParameter.Units
+                Units = cubasePluginParameter.Units,
+                UseValue = cubasePluginParameter.UseValue
+
             };
 
         }

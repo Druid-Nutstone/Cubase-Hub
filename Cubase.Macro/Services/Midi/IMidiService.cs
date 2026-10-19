@@ -33,11 +33,19 @@ namespace Cubase.Macro.Services.Midi
 
         public void RegisterForGetPluginParameters(Action<CubasePluginParameterCollection> onPluginParameter);
 
+        public void RegisterForGetPluginDetail(Action<CubasePluginDetailCollection> onPluginDetail);
+
+        public void DeRegisterForGetPluginDetail(Action<CubasePluginDetailCollection> onPluginDetail);
+
         public void DeRegisterForGetPluginParameters(Action<CubasePluginParameterCollection> onPluginParameter);
 
         public void RegisterForGetPluginParametersComplete(Action onPluginParameterComplete);
 
         public void DeRegisterForGetPluginParametersComplete(Action onPluginParameterComplete);
+
+        public void RegisterForGetPluginDetailsComplete(Action onPluginDetailComplete);
+
+        public void DeRegisterForGetPluginDetailsComplete(Action onPluginDetailComplete);
 
         public void DeRegisterForGetCueLevelsEndCallbacks(Action onGetCueLevelsEnd);
 
