@@ -11,6 +11,8 @@ namespace Cubase.Macro.Services.Midi
 
         bool MonitoringTransport { get; }
 
+        Action<bool>? OnCommandComplete { get; set; }
+
         public CueLevelCollection CueCollection { get; }
 
         public TrackCollection TrackCollection { get; }
@@ -28,6 +30,10 @@ namespace Cubase.Macro.Services.Midi
         public void RegisterForGetCueLevelsEndCallbacks(Action onGetCueLevelsEnd);
 
         public void RegisterForGetPluginSlots(Action<CubasePluginSlotCollection> onPluginSlot);
+
+        public void RegisterForGetPluginSlotsComplete(Action onPluginSlotComplete);
+
+        public void DeRegisterForGetPluginSlotsComplete(Action onPluginSlotComplete);
 
         public void DeRegisterForGetPluginSlots(Action<CubasePluginSlotCollection> onPluginSlot);
 

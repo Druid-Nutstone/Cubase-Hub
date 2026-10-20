@@ -1,6 +1,5 @@
 ﻿using Cubase.Macro.Common.Models;
 using Nutstone.AI.Assistant.LocalModels.PluginOutputDefinitions;
-using Nutstone.AI.Assistant.Services.Plugins;
 
 namespace Cubase.Macro.Tests.MidiTests
 {
@@ -31,18 +30,86 @@ namespace Cubase.Macro.Tests.MidiTests
         {
             this.midiService.Dispose();
         }
+
+        [TestMethod]
+        public void Test_Plugin_Mapping_Parameters()
+        {
+            var pluginDescription = "l4Maximizer Test";
+            var pluginList = this.pluginService.GetPluginPresetsByDescription(pluginDescription);
+            var plugin = pluginList.First().Plugin as RootPluginOutput;
+
+            var result = this.pluginManagerService.UpdateCubasePlugin(plugin, (err) => { }, (warning) => { });
+        }
+
+        [TestMethod]
+        public void Remove_Plugins_From_Selected_Track()
+        {
+
+            var pluginSlots = this.pluginManagerService.GetCubasePluginSlots();
+            foreach (var plugin in pluginSlots.GetAllPlugins())
+            {
+                this.pluginManagerService.RemovePlugin(plugin);
+            }
+        }
+
+        [TestMethod]
+        public void Find_Mismatches_In_Plugin_Names()
+        {
+            var plugins = this.pluginService.GetKnownPluginNames();
+
+            var cubasePlugins = this.pluginManagerService
+                .GetAvailablePluginDetail()
+                .Select(x => x.PluginName)
+                .ToList();
+
+            var mismatches = plugins
+                .Where(plugin => !cubasePlugins.Contains(
+                    plugin, StringComparer.OrdinalIgnoreCase))
+                .Select(plugin => new
+                {
+                    CurrentName = plugin,
+                    ShouldBe = cubasePlugins.FirstOrDefault(cubaseName =>
+                        cubaseName.Contains(plugin, StringComparison.OrdinalIgnoreCase)
+                        || plugin.Contains(cubaseName, StringComparison.OrdinalIgnoreCase))
+                })
+                .ToList();
+        }
+
+        [TestMethod]
+        public void Create_Test_Plugins_In_Cubase()
+        {
+            // remove existing plugins;
+            this.Remove_Plugins_From_Selected_Track();
+            // get available plugins that are supported 
+            var plugins = this.pluginService.GetKnownPluginNames();
+            // get all cubase plugins 
+            var knownPlugins = this.pluginManagerService.GetAvailablePluginDetail();
+            // get a list of plugins (up to 16 slots)
+            var pluginsToInsert = knownPlugins
+                .Where(x => plugins.Any(p =>
+                    string.Equals(p, x.PluginName, StringComparison.OrdinalIgnoreCase)))
+                .Take(16)
+                .ToList();
+            foreach (var plugin in pluginsToInsert)
+            {
+                // get slots
+                var slots = this.pluginManagerService.GetCubasePluginSlots();
+                var firstFreeSlot = slots.GetFirstFreeSlot();
+                this.pluginManagerService.InsertPluginIntoCurrentTrack(CubaseInsertPlugin.CreateFromPluginDetail(firstFreeSlot.Value, plugin));
+            }
+        }
+
         [TestMethod]
         /// more of a system test NOTE the fix for frequency2
         public void Can_Map_Ai_Cubase_Plugin_To_Cubase_Plugin()
         {
-            var aipluginService = new PluginService();
 
-            var index = aipluginService.GetPluginIndex();
+            var index = this.pluginService.GetPluginIndex();
 
             var pluginIndex = index.FirstOrDefault(x => x.Question.Contains("Kiss", StringComparison.OrdinalIgnoreCase));
             if (pluginIndex != null)
             {
-                var aiPluginObjects = aipluginService.GetPluginObjectsFromIndex(pluginIndex);
+                var aiPluginObjects = this.pluginService.GetPluginObjectsFromIndex(pluginIndex);
                 foreach (var aiPlugin in aiPluginObjects)
                 {
                     var asRootPlugin = (RootPluginOutput)aiPlugin;
@@ -82,7 +149,7 @@ namespace Cubase.Macro.Tests.MidiTests
         [TestMethod]
         public void Can_Get_Plugin_Parameters()
         {
-            var pluginName = "frequency";
+            var pluginName = "L4 Ultramaximizer Mono";
 
             var pluginSlots = this.pluginManagerService.GetCubasePluginSlots();
             if (pluginSlots.PluginExists(pluginName))
@@ -95,6 +162,23 @@ namespace Cubase.Macro.Tests.MidiTests
                 }
 
                 parameters.SaveToJson(Path.Combine(targetDir, $"{pluginName}Parameters.json"));
+            }
+        }
+
+        [TestMethod]
+        public void Can_Generate_Saved_Parameters()
+        {
+            var pluginSlots = this.pluginManagerService.GetCubasePluginSlots();
+            foreach (var plugin in pluginSlots)
+            {
+                var parameters = this.pluginManagerService.GetPluginParameters(pluginSlots.GetPluginByName(plugin.PluginName));
+                var targetDir = "C:\\Deleteme\\Cubase_Plugin_Parameters";
+                if (!Directory.Exists(targetDir))
+                {
+                    Directory.CreateDirectory(targetDir);
+                }
+
+                parameters.SaveToJson(Path.Combine(targetDir, $"{plugin.PluginName}Parameters.json"));
             }
         }
 

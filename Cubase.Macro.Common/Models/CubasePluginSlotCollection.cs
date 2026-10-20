@@ -2,6 +2,12 @@
 {
     public class CubasePluginSlotCollection : List<CubasePluginSlot>
     {
+
+        public void AddFromOtherCollection(CubasePluginSlotCollection cubasePluginSlots)
+        {
+            this.AddRange(cubasePluginSlots);
+        }
+
         public CubasePluginSlot? GetPluginByName(string name)
         {
             if (this.PluginExists(name))
@@ -14,6 +20,11 @@
         public bool PluginExists(string name)
         {
             return this.Any(x => x.PluginName.Equals(name, StringComparison.OrdinalIgnoreCase));
+        }
+
+        public List<CubasePluginSlot> GetAllPlugins()
+        {
+            return this.Where(x => !string.IsNullOrEmpty(x.PluginName)).ToList();
         }
 
         public int? GetFirstFreeSlot()

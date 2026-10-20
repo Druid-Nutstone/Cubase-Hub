@@ -18,6 +18,7 @@ using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using Nutstone.AI.Assistant.Forms.Chat;
 using Nutstone.AI.Assistant.Registration;
+using Nutstone.AI.Assistant.Services.Plugins;
 using Serilog;
 using System.Diagnostics;
 using System.IO;
@@ -210,6 +211,7 @@ namespace Cubase.Macro
                         .AddSingleton<IConfigurationService, ConfigurationService>()
                         .AddSingleton<IMidiService, MidiService>()
                         .AddSingleton<IPLuginManagerService, PluginManagerService>()
+                        .AddSingleton<IPluginService, PluginService>()
                         .AddSingleton<IScrollerService, ScrollerService>()
                         .AddSingleton<CubaseMacroWebSocketClient>()
                         .AddSingleton<IWindowsControllerService, WindowsControllerService>()

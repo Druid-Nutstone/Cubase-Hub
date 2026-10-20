@@ -6,6 +6,7 @@ using Cubase.Macro.Services.Midi;
 using Cubase.Macro.Services.Plugins;
 using Cubase.Macro.Services.Window;
 using Microsoft.Extensions.DependencyInjection;
+using Nutstone.AI.Assistant.Services.Plugins;
 
 namespace Cubase.Macro.Registration
 {
@@ -21,6 +22,7 @@ namespace Cubase.Macro.Registration
                    .AddSingleton<IMidiService, MidiService>()
                    .AddSingleton<IScrollerService, ScrollerService>()
                    .AddSingleton<IPLuginManagerService, PluginManagerService>()
+                   .AddSingleton<IPluginService, PluginService>()
                    .AddSingleton<CubaseMacroWebSocketClient>();
         }
     }

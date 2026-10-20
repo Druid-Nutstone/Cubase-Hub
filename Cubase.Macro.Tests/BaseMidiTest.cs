@@ -5,6 +5,7 @@ using Cubase.Macro.Services.Plugins;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Logging.Abstractions;
+using Nutstone.AI.Assistant.Services.Plugins;
 
 namespace Cubase.Macro.Tests
 {
@@ -18,6 +19,8 @@ namespace Cubase.Macro.Tests
 
         protected IPLuginManagerService pluginManagerService;
 
+        protected IPluginService pluginService;
+
         public BaseMidiTest()
         {
             var services = new ServiceCollection();
@@ -27,6 +30,7 @@ namespace Cubase.Macro.Tests
             this.configurationService = serviceProvider.GetService<IConfigurationService>();
             this.midiService = serviceProvider.GetService<IMidiService>();
             this.pluginManagerService = serviceProvider.GetService<IPLuginManagerService>();
+            this.pluginService = serviceProvider.GetService<IPluginService>();
             // 
 
         }

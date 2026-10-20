@@ -55,6 +55,8 @@ namespace Cubase.Macro.Services.Midi
 
         private List<Action> registeredPluginDetailsCompleteCallBack = new List<Action>();
 
+        private List<Action> registeredSlotsCompleteCallBack = new List<Action>();
+
         public bool MonitoringTransport { get { return monitoringTransport; } }
 
         public Action<CubaseMidiResponse> OnMidiResponse { get; set; }
@@ -290,6 +292,9 @@ namespace Cubase.Macro.Services.Midi
                     var pluginSlots = JsonSerializer.Deserialize<CubasePluginSlotCollection>(payload);
                     this.HandlePluginSlots(pluginSlots);
                     break;
+                case var _ when command.Equals(MidiCommand.GetPluginSlotsComplete.ToString(), StringComparison.OrdinalIgnoreCase):
+                    this.HandlePluginSlotsComplete();
+                    break;
                 case var _ when command.Equals(MidiCommand.GetPluginParameters.ToString(), StringComparison.OrdinalIgnoreCase):
                     var pluginParameters = JsonSerializer.Deserialize<CubasePluginParameterCollection>(payload);
                     this.HandlePluginParameters(pluginParameters);
@@ -358,6 +363,14 @@ namespace Cubase.Macro.Services.Midi
         private void HandlePluginParametersComplete()
         {
             foreach (var handler in this.registeredPluginParameterCompleteCallBacks)
+            {
+                handler.Invoke();
+            }
+        }
+
+        private void HandlePluginSlotsComplete()
+        {
+            foreach (var handler in this.registeredSlotsCompleteCallBack)
             {
                 handler.Invoke();
             }
@@ -522,6 +535,16 @@ namespace Cubase.Macro.Services.Midi
         public void DeRegisterForGetPluginParametersComplete(Action onPluginParameterComplete)
         {
             this.registeredPluginParameterCompleteCallBacks.Remove(onPluginParameterComplete);
+        }
+
+        public void RegisterForGetPluginSlotsComplete(Action onPluginSlotComplete)
+        {
+            this.registeredSlotsCompleteCallBack.Add(onPluginSlotComplete);
+        }
+
+        public void DeRegisterForGetPluginSlotsComplete(Action onPluginSlotComplete)
+        {
+            this.registeredSlotsCompleteCallBack.Remove(onPluginSlotComplete);
         }
 
         public void RegisterForGetPluginDetailsComplete(Action onPluginDetailComplete)

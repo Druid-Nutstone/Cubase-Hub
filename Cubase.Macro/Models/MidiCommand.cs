@@ -42,6 +42,8 @@ var sysexCommand = {
         StartTransportEventMonitoring,
         StopTransportEventMonitoring,
         GetPluginSlots,
+
+        GetPluginSlotsComplete,
         GetPluginParameters,
         GetPluginParametersComplete,
         UpdatePluginParameter,
@@ -49,7 +51,9 @@ var sysexCommand = {
         GetAvailablePlugins,
         GetAvailablePluginsComplete,
 
-        InsertPlugin
+        InsertPlugin,
+
+        RemovePlugin
 
     }
 }

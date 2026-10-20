@@ -16,5 +16,9 @@ namespace Cubase.Macro.Services.Plugins
         List<CubasePluginParameter> MapAIPluginToCubasePlugin(CubasePluginParameterCollection availableParameters, RootPluginOutput aiPlugin);
 
         bool UpdatePluginParameter(UpdateCubasePluginParameter parameter);
+
+        bool RemovePlugin(CubasePluginSlot cubasePlugin);
+
+        bool UpdateCubasePlugin(RootPluginOutput rootPlugin, Action<string> onError, Action<string> onWarning);
     }
 }
