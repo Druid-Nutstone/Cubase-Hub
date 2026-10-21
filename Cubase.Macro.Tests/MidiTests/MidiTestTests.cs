@@ -34,7 +34,7 @@ namespace Cubase.Macro.Tests.MidiTests
         [TestMethod]
         public void Test_Plugin_Mapping_Parameters()
         {
-            var pluginDescription = "l4Maximizer Test";
+            var pluginDescription = "MultiBandCompressor Test";
             var pluginList = this.pluginService.GetPluginPresetsByDescription(pluginDescription);
             var plugin = pluginList.First().Plugin as RootPluginOutput;
 
