@@ -34,7 +34,7 @@ namespace Cubase.Macro.Tests.MidiTests
         [TestMethod]
         public void Test_Plugin_Mapping_Parameters()
         {
-            var pluginDescription = "MultiBandCompressor Test";
+            var pluginDescription = "RoomWorks Test";
             var pluginList = this.pluginService.GetPluginPresetsByDescription(pluginDescription);
             var plugin = pluginList.First().Plugin as RootPluginOutput;
 
@@ -47,6 +47,7 @@ namespace Cubase.Macro.Tests.MidiTests
 
             var pluginSlots = this.pluginManagerService.GetCubasePluginSlots();
             foreach (var plugin in pluginSlots.GetAllPlugins())
+
             {
                 this.pluginManagerService.RemovePlugin(plugin);
             }
@@ -149,7 +150,7 @@ namespace Cubase.Macro.Tests.MidiTests
         [TestMethod]
         public void Can_Get_Plugin_Parameters()
         {
-            var pluginName = "L4 Ultramaximizer Mono";
+            var pluginName = "RoomWorks";
 
             var pluginSlots = this.pluginManagerService.GetCubasePluginSlots();
             if (pluginSlots.PluginExists(pluginName))
