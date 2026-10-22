@@ -22,6 +22,11 @@
             var track = this.FirstOrDefault(x => x.Id == trackId);
             return track != null ? track.Volume : 0;
         }
+
+        public List<Track> GetActiveTracks()
+        {
+            return this.Where(x => x.Selected).ToList();
+        }
     }
 
     public class Track

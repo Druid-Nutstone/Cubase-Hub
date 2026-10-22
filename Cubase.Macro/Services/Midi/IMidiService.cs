@@ -23,6 +23,10 @@ namespace Cubase.Macro.Services.Midi
 
         public void SendSysExMessage<T>(MidiCommand command, T request);
 
+        public void RegisterForTracksComplete(Action<TrackCollection> onTracksComplete);
+
+        public void DeRegisterForTracksComplete(Action<TrackCollection> onTracksComplete);
+
         public void RegisterForUpdateCueLevelsEndCallbacks(Action onUpdateCueLevelsEnd);
 
         public void DeRegisterForUpdateCueLevelsEndCallbacks(Action onUpdateCueLevelsEnd);
@@ -78,6 +82,8 @@ namespace Cubase.Macro.Services.Midi
         Action? OnReadyReceived { get; set; }
 
         Action<CubaseMidiResponse> OnMidiResponse { get; set; }
+
+        void GetTracks();
 
         bool Initialised { get; }
 

@@ -2,6 +2,7 @@
 using Cubase.Macro.Services.Midi;
 using Microsoft.Extensions.Logging;
 using Nutstone.AI.Assistant.LocalModels.PluginOutputDefinitions;
+using Nutstone.AI.Assistant.Models;
 using Nutstone.AI.Assistant.Services.Plugins;
 
 namespace Cubase.Macro.Services.Plugins
@@ -57,6 +58,62 @@ namespace Cubase.Macro.Services.Plugins
             {
                 this.midiService.DeRegisterForGetPluginDetail(OnCubasePluginDetailsReturned);
                 this.midiService.DeRegisterForGetPluginDetailsComplete(OnCubasePluginDetailsCompleteReturned);
+            }
+        }
+
+        public Nutstone.AI.Assistant.Models.ChatRequest? GetChatRequest(Action<string> onError)
+        {
+
+            var selectedTracks = this.midiService.TrackCollection.GetActiveTracks();
+
+            if (selectedTracks.Count > 1)
+            {
+                onError.Invoke($"There are multiple tracks selected {string.Join(",", selectedTracks.Select(x => x.Name))}");
+                return null;
+            }
+
+            if (selectedTracks.Count == 0)
+            {
+                onError.Invoke("Cannot find any selected tracks!");
+                return null;
+            }
+
+            // get existing plugins 
+            var plugins = this.GetCubasePluginSlots();
+            return new Nutstone.AI.Assistant.Models.ChatRequest()
+            {
+                SelectedTrackName = selectedTracks.First().Name,
+                SelectedTrackExistingPlugins =
+                      this.pluginService.GetPluginNamesFromCubasePluginNames(plugins.GetActivePluginList())
+            };
+        }
+
+        public TrackCollection? GetTracks()
+        {
+            using var responseReceived = new ManualResetEventSlim(false);
+
+            TrackCollection tracks = null;
+
+            void OnTracksCompleteReturned(TrackCollection tracksReceived)
+            {
+                tracks = tracksReceived;
+                responseReceived.Set();
+            }
+
+            this.midiService.RegisterForTracksComplete(OnTracksCompleteReturned);
+            try
+            {
+                this.midiService.GetTracks();
+                if (!responseReceived.Wait(TimeSpan.FromSeconds(60)))
+                {
+                    throw new TimeoutException(
+                        "Timed out waiting for Cubase plugin parameters to complete.");
+                }
+                return tracks;
+            }
+            finally
+            {
+                this.midiService.DeRegisterForTracksComplete(OnTracksCompleteReturned);
             }
         }
 
@@ -294,6 +351,82 @@ namespace Cubase.Macro.Services.Plugins
             finally
             {
                 this.midiService.OnCommandComplete = null;
+            }
+        }
+
+        public void ProcessPluginRequest(ChatResult pluginRequest)
+        {
+            SendProgressMessage("Running Cubase plugin intergeation commands");
+
+            CubasePluginSlotCollection pluginSlots;
+
+            string currentTrackName = null;
+
+            if (!EnsureCubaseIsReady())
+            {
+                return;
+            }
+
+            if (pluginRequest.RemoveExistingPlugins)
+            {
+                SendProgressMessage($"Removing Existing plugins from track {currentTrackName}");
+                pluginSlots = this.GetCubasePluginSlots();
+                foreach (var plugin in pluginSlots.GetAllPlugins())
+                {
+                    SendProgressMessage($"Removing {plugin.PluginName}");
+                    this.RemovePlugin(plugin);
+                }
+            }
+
+            pluginSlots = this.GetCubasePluginSlots();
+            var pluginDetail = this.GetAvailablePluginDetail();
+            foreach (RootPluginOutput plugin in pluginRequest.Plugins)
+            {
+                // get the cubase plugin name 
+                var cubaseName = this.pluginService.GetCubasePluginName(plugin.PluginName);
+                var pluginExists = pluginSlots.GetPluginByName(cubaseName);
+                SendProgressMessage($"updating or insertinfg {cubaseName}");
+                if (pluginExists == null) // new plugin 
+                {
+                    this.InsertPluginIntoCurrentTrack(
+                        CubaseInsertPlugin.CreateFromPluginDetail(pluginSlots.GetFirstFreeSlot().Value, pluginDetail.GetPluginByName(cubaseName)));
+                    pluginSlots = this.GetCubasePluginSlots();
+                    this.UpdateCubasePlugin(plugin,
+                        SendErrorMessage,
+                        SendProgressMessage);
+                }
+                else
+                {
+                    this.UpdateCubasePlugin(plugin,
+                        SendErrorMessage,
+                        SendProgressMessage);
+                }
+                pluginSlots = this.GetCubasePluginSlots();
+            }
+
+            pluginRequest.OnProgress.Invoke(ChatProgress.CreateComplete("Insert/updates are complete"));
+
+            bool EnsureCubaseIsReady()
+            {
+                SendProgressMessage("Validating Request ..");
+                var tracks = this.midiService.TrackCollection;
+                if (tracks.GetActiveTracks().Count != 1)
+                {
+                    SendErrorMessage($"There can only be ONE track selected. the current selected tracks count is {tracks.GetActiveTracks().Count}");
+                    return false;
+                }
+                currentTrackName = tracks.GetActiveTracks().First().Name;
+                return true;
+            }
+
+            void SendProgressMessage(string message)
+            {
+                pluginRequest.OnProgress.Invoke(ChatProgress.CreateProgress(message));
+            }
+
+            void SendErrorMessage(string message)
+            {
+                pluginRequest.OnProgress.Invoke(ChatProgress.CreateError(message));
             }
         }
     }

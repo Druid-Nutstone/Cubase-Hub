@@ -7,6 +7,7 @@ using Cubase.Macro.Services;
 using Cubase.Macro.Services.Config;
 using Cubase.Macro.Services.Keyboard;
 using Cubase.Macro.Services.Midi;
+using Cubase.Macro.Services.Plugins;
 using Cubase.Macro.Services.Window;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
@@ -40,6 +41,8 @@ namespace Cubase.Macro
 
         private readonly IMidiService midiService;
 
+        private readonly IPLuginManagerService pluginManagerService;
+
         private readonly ILogger<MainForm> logger;
 
         [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
@@ -47,6 +50,7 @@ namespace Cubase.Macro
 
         public MainForm(IKeyboardService keyboardService,
                         IConfigurationService configurationService,
+                        IPLuginManagerService pluginManagerService,
                         IWindowService windowService,
                         IMidiService midiService,
                         ILogger<MainForm> log,
@@ -58,6 +62,7 @@ namespace Cubase.Macro
             this.serviceProvider = serviceProvider;
             this.midiService = midiService;
             this.windowService = windowService;
+            this.pluginManagerService = pluginManagerService;
             this.logger = log;
             this.mainMenuControl.Logger = this.Log;
             this.mainMenuControl.MainForm = this;
@@ -108,7 +113,7 @@ namespace Cubase.Macro
             this.macros = CubaseMacroCollection.Load();
             if (this.macros.Macros.Count > 0)
             {
-                this.mainMenuControl.InitialiseMain(this.macros.Macros.First(), MacroClicked, this.OnBackClicked, this, this.configurationService);
+                this.mainMenuControl.InitialiseMain(this.macros.Macros.First(), MacroClicked, this.OnBackClicked, this, this.configurationService, this.pluginManagerService);
                 if (this.macros.CommonMacros.Count > 0)
                 {
                     this.mainMenuControl.InitialiseCommon(this.macros.CommonMacros, MacroClicked);
@@ -153,7 +158,7 @@ namespace Cubase.Macro
                 }
             }
             var parentMenu = this.macros.FindParentIdRecursive(this.macros.Macros.First(), currentMacro.ParentId.Value);
-            this.mainMenuControl.InitialiseMain(parentMenu, MacroClicked, this.OnBackClicked, this, this.configurationService);
+            this.mainMenuControl.InitialiseMain(parentMenu, MacroClicked, this.OnBackClicked, this, this.configurationService, this.pluginManagerService);
             this.windowService.BringCubaseToFront();
         }
 
@@ -193,7 +198,7 @@ namespace Cubase.Macro
                     macroButton.SetBlockCursor();
                     RunMacro(macro.ToggleOnKeys, macro);
                 }
-                this.mainMenuControl.InitialiseMain(macro, MacroClicked, this.OnBackClicked, this, this.configurationService);
+                this.mainMenuControl.InitialiseMain(macro, MacroClicked, this.OnBackClicked, this, this.configurationService, this.pluginManagerService);
                 macroButton.SetDefaultCursor();
                 this.windowService.BringCubaseToFront();
             }

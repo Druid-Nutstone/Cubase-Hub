@@ -2,6 +2,7 @@
 using Cubase.Macro.Forms.Main.Buttons;
 using Cubase.Macro.Forms.Main.Menus;
 using Cubase.Macro.Services.Config;
+using Cubase.Macro.Services.Plugins;
 using Microsoft.Extensions.DependencyInjection;
 using Nutstone.AI.Assistant.Forms.Chat;
 using Nutstone.AI.Assistant.Models;
@@ -36,6 +37,8 @@ namespace Cubase.Macro.Forms.Main
         private MainForm mainForm;
 
         private IConfigurationService configurationService;
+
+        private IPLuginManagerService pluginManagerService;
 
         public MainMenuControl()
         {
@@ -74,16 +77,24 @@ namespace Cubase.Macro.Forms.Main
             this.mainForm.ShowLyrics();
         }
 
-        private void AIButton_Click()
+        private async void AIButton_Click()
         {
             var aiForm = this.ServiceProvider.GetService<ChatForm>();
-            aiForm.Initialise(this.OnAIActionResult);
-            aiForm.ShowDialog();
+            var request = this.pluginManagerService.GetChatRequest((err) =>
+            {
+                MessageBox.Show("Cannot initialise Cubase AI integration");
+                return;
+            });
+            if (request != null)
+            {
+                await aiForm?.Initialise(request, this.OnAIActionResult);
+                aiForm.ShowDialog();
+            }
         }
 
         private void OnAIActionResult(ChatResult chatResult)
         {
-
+            this.pluginManagerService.ProcessPluginRequest(chatResult);
         }
 
         private void ButtonReload_Click()
@@ -203,9 +214,15 @@ namespace Cubase.Macro.Forms.Main
             }
         }
 
-        public void InitialiseMain(CubaseMacro menu, Action<CubaseMacro, MacroButton> onMacroClicked, Action<CubaseMacro, PictureButton> onBack, MainForm mainForm, IConfigurationService configurationService)
+        public void InitialiseMain(CubaseMacro menu,
+                                   Action<CubaseMacro, MacroButton> onMacroClicked,
+                                   Action<CubaseMacro, PictureButton> onBack,
+                                   MainForm mainForm,
+                                   IConfigurationService configurationService,
+                                   IPLuginManagerService pluginManagerService)
         {
             this.configurationService = configurationService;
+            this.pluginManagerService = pluginManagerService;
             this.menu = menu;
             this.mainForm = mainForm;
             this.onMacroClicked = onMacroClicked;

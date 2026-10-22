@@ -51,6 +51,8 @@ namespace Cubase.Macro.Services.Midi
 
         private List<Action<CubasePluginDetailCollection>> registeredPluginDetailCallBacks = new List<Action<CubasePluginDetailCollection>>();
 
+        private List<Action<TrackCollection>> registeredTracksCompleteCallBacks = new List<Action<TrackCollection>>();
+
         private List<Action> registeredPluginParameterCompleteCallBacks = new List<Action>();
 
         private List<Action> registeredPluginDetailsCompleteCallBack = new List<Action>();
@@ -228,6 +230,13 @@ namespace Cubase.Macro.Services.Midi
             {
                 case var _ when command.Equals(MidiCommand.Ready.ToString(), StringComparison.OrdinalIgnoreCase):
                     HandleReady();
+                    break;
+                case var _ when command.Equals(MidiCommand.TrackUpdate.ToString(), StringComparison.OrdinalIgnoreCase):
+                    var trackBits = JsonSerializer.Deserialize<TrackCollection>(payload);
+                    this.tracks.AddRange(trackBits);
+                    break;
+                case var _ when command.Equals(MidiCommand.TrackComplete.ToString(), StringComparison.OrdinalIgnoreCase):
+                    HandleTracksComplete();
                     break;
                 case var _ when command.Equals(MidiCommand.ClearChannels.ToString(), StringComparison.OrdinalIgnoreCase):
                     HandleClearChannels();
@@ -409,6 +418,14 @@ namespace Cubase.Macro.Services.Midi
             this.cueLevels = new CueLevelCollection();
         }
 
+        private void HandleTracksComplete()
+        {
+            foreach (var handler in this.registeredTracksCompleteCallBacks)
+            {
+                handler.Invoke(this.tracks);
+            }
+        }
+
         private void HandleReady()
         {
             ReadyReceived = true;
@@ -474,6 +491,12 @@ namespace Cubase.Macro.Services.Midi
             this.SendSysExMessage(MidiCommand.GetCueLevels, "{}");
         }
 
+        public void GetTracks()
+        {
+            this.tracks = new TrackCollection();
+            this.SendSysExMessage(MidiCommand.Tracks, "{}");
+        }
+
         public void StartTransportMonitoring()
         {
             if (this.Initialised)
@@ -520,6 +543,16 @@ namespace Cubase.Macro.Services.Midi
         public void RegisterForGetPluginParametersComplete(Action onPluginParameterComplete)
         {
             this.registeredPluginParameterCompleteCallBacks.Add(onPluginParameterComplete);
+        }
+
+        public void RegisterForTracksComplete(Action<TrackCollection> onTracksComplete)
+        {
+            this.registeredTracksCompleteCallBacks.Add(onTracksComplete);
+        }
+
+        public void DeRegisterForTracksComplete(Action<TrackCollection> onTracksComplete)
+        {
+            this.registeredTracksCompleteCallBacks.Add(onTracksComplete);
         }
 
         public void RegisterForGetPluginDetail(Action<CubasePluginDetailCollection> onPluginDetail)

@@ -53,7 +53,13 @@ var sysexCommand = {
 
         InsertPlugin,
 
-        RemovePlugin
+        RemovePlugin,
+
+        Tracks,
+
+        TrackUpdate,
+
+        TrackComplete
 
     }
 }

@@ -22,6 +22,13 @@
             return this.Any(x => x.PluginName.Equals(name, StringComparison.OrdinalIgnoreCase));
         }
 
+        public List<string> GetActivePluginList()
+        {
+            return this.Where(x => !string.IsNullOrEmpty(x.PluginName))
+                       .Select(x => x.PluginName)
+                       .ToList();
+        }
+
         public List<CubasePluginSlot> GetAllPlugins()
         {
             return this.Where(x => !string.IsNullOrEmpty(x.PluginName)).ToList();

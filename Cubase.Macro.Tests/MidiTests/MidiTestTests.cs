@@ -1,4 +1,5 @@
 ﻿using Cubase.Macro.Common.Models;
+using Nutstone.AI.Assistant.Forms.Cubase;
 using Nutstone.AI.Assistant.LocalModels.PluginOutputDefinitions;
 
 namespace Cubase.Macro.Tests.MidiTests
@@ -29,6 +30,24 @@ namespace Cubase.Macro.Tests.MidiTests
         public void TearDown()
         {
             this.midiService.Dispose();
+        }
+
+        [TestMethod]
+        public void Can_Populate_Plugins_From_UI()
+        {
+            Thread.Sleep(2000); // allow cubase to initialise tracks 
+            var request = this.pluginManagerService.GetChatRequest((err) => { });
+            var chatForm = new CubaseIntegrationForm(request,
+                               (chatResult) =>
+                               {
+                                   if (chatResult.Command == Nutstone.AI.Assistant.Models.ChatResultCommand.InsertPlugins)
+                                   {
+                                       this.pluginManagerService.ProcessPluginRequest(chatResult);
+                                   }
+                               },
+                               this.pluginService,
+                               null);
+            chatForm.ShowDialog();
         }
 
         [TestMethod]
