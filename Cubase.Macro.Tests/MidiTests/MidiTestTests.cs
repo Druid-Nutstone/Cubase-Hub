@@ -1,6 +1,7 @@
 ﻿using Cubase.Macro.Common.Models;
 using Nutstone.AI.Assistant.Forms.Cubase;
 using Nutstone.AI.Assistant.LocalModels.PluginOutputDefinitions;
+using Nutstone.AI.Assistant.Models;
 
 namespace Cubase.Macro.Tests.MidiTests
 {
@@ -35,6 +36,13 @@ namespace Cubase.Macro.Tests.MidiTests
         [TestMethod]
         public void Can_Populate_Plugins_From_UI()
         {
+            var qanda = new SavedQuestionAndAnswer()
+            {
+                Question = "Are you mad?",
+                DateCreated = DateTime.Now,
+                Answer = "[\r\n{\r\n  \"PluginName\": \"RoomWorks\",\r\n  \"FilterFrequencyLow\": 200,\r\n  \"FilterFrequencyHigh\": 5000,\r\n  \"FilterGainLow\": -6,\r\n  \"FilterGainHigh\": -3,\r\n  \"PreDelay\": 25,\r\n  \"Size\": 120,\r\n  \"ReverbTime\": 1.8,\r\n  \"Diffusion\": 75,\r\n  \"Width\": 100,\r\n  \"DampingFrequencyLow\": 300,\r\n  \"DampingFrequencyHigh\": 6000,\r\n  \"DampingLevelLow\": 80,\r\n  \"DampingLevelHigh\": 60,\r\n  \"EnvelopeAmount\": 20,\r\n  \"EnvelopeAttack\": 50,\r\n  \"EnvelopeRelease\": 200,\r\n  \"OutputMix\": 100,\r\n  \"OutputEfficiency\": 50,\r\n  \"Purpose\": \"A balanced medium-sized hall setting. The low-shelf filter prevents muddiness, while the high-shelf controls sibilance. Damping is applied to mimic natural air absorption, and a light envelope is used to maintain clarity during transient peaks.\",\r\n  \"CanAutomate\": true,\r\n  \"FullTypeName\": \"Nutstone.AI.Assistant.LocalModels.PluginOutputDefinitions.Reverbs.RoomWorks\",\r\n  \"Id\": \"daee1853-d49f-462a-87d7-2a4d32229a66\"\r\n}\r\n]"
+
+            };
             Thread.Sleep(2000); // allow cubase to initialise tracks 
             var request = this.pluginManagerService.GetChatRequest((err) => { });
             var chatForm = new CubaseIntegrationForm(request,
@@ -46,7 +54,7 @@ namespace Cubase.Macro.Tests.MidiTests
                                    }
                                },
                                this.pluginService,
-                               null);
+                               qanda);
             chatForm.ShowDialog();
         }
 
