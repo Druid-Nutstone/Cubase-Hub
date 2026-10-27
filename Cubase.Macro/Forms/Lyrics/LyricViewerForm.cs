@@ -6,6 +6,7 @@ using Cubase.Macro.Forms.Lyrics.SetLists;
 using Cubase.Macro.Forms.Lyrics.Viewer.New;
 using Cubase.Macro.Services.Config;
 using Cubase.Macro.Services.Midi;
+using Microsoft.Win32;
 using System.ComponentModel;
 using System.IO;
 
@@ -78,25 +79,35 @@ namespace Cubase.Macro.Forms.Lyrics
 
         private void OpenLyrics()
         {
-            var fileOpen = new OpenFileDialog()
+            Cursor = Cursors.WaitCursor;
+            Application.DoEvents();
+            var targetPath = this.GetTargetPath(CubaseMacroConstants.NutstoneLyricBaseDirectory);
+
+            if (!string.IsNullOrEmpty(targetPath))
             {
-                InitialDirectory = CubaseMacroConstants.NutstoneLyricBaseDirectory,
-                Filter = $"Lyric Files (*{CubaseMacroConstants.NutstoneLyricNotation})|*{CubaseMacroConstants.NutstoneLyricNotation}",
-                Title = "Open Lyric File",
 
-                // 1. CRUCIAL: Breaks the OS "last used history" cache tracking rule
-                RestoreDirectory = false,
+                var fileOpen = new System.Windows.Forms.OpenFileDialog()
+                {
+                    InitialDirectory = targetPath,
+                    Filter = $"Lyric Files (*{CubaseMacroConstants.NutstoneLyricNotation})|*{CubaseMacroConstants.NutstoneLyricNotation}",
+                    Title = "Open Lyric File",
 
-                // 2. STABILITY: Forces the Win32 dialog engine to strictly evaluate 
-                // the network path string viability before fallback routines kick in
-                CheckPathExists = true
-            };
+                    // 1. CRUCIAL: Breaks the OS "last used history" cache tracking rule
+                    RestoreDirectory = false,
 
-            if (fileOpen.ShowDialog() == DialogResult.OK)
-            {
-                this.FileName = fileOpen.FileName;
-                this.LoadFile();
+                    // 2. STABILITY: Forces the Win32 dialog engine to strictly evaluate 
+                    // the network path string viability before fallback routines kick in
+                    CheckPathExists = true
+                };
+
+                if (fileOpen.ShowDialog() == DialogResult.OK)
+                {
+                    this.FileName = fileOpen.FileName;
+                    this.LoadFile();
+                }
             }
+            Cursor = Cursors.Default;
+            Application.DoEvents();
         }
 
 
@@ -109,16 +120,53 @@ namespace Cubase.Macro.Forms.Lyrics
 
         private void SaveLyrics()
         {
-            var sourceFile = this.editor?.Lyrics.Save(CubaseMacroConstants.NutstoneLyricBaseDirectory, (err) =>
+            try
             {
-                MessageBox.Show($"Error saving lyrics: {err}");
-            });
-            if (!string.IsNullOrEmpty(sourceFile))
+
+                Cursor = Cursors.WaitCursor;
+                Application.DoEvents();
+
+                var targetPath = this.GetTargetPath(CubaseMacroConstants.NutstoneLyricBaseDirectory);
+
+                var sourceFile = this.editor?.Lyrics.Save(targetPath, (err) =>
+                {
+                    MessageBox.Show($"Error saving lyrics: {err}");
+                });
+                if (!string.IsNullOrEmpty(sourceFile))
+                {
+                    this.FileName = sourceFile;
+                    MessageBox.Show($"Lyrics and Chords saved to {sourceFile}");
+                }
+            }
+            finally
             {
-                this.FileName = sourceFile;
-                MessageBox.Show($"Lyrics and Chords saved to {sourceFile}");
+                Cursor = Cursors.Default;
+                Application.DoEvents();
             }
 
+        }
+
+
+        private string GetTargetPath(string targetPath)
+        {
+            if (!Directory.Exists(targetPath))
+            {
+                var getTargetPath = new OpenFolderDialog()
+                {
+                    Title = "Select lyric folder ..",
+                    ShowHiddenItems = true
+                };
+                if ((bool)getTargetPath.ShowDialog())
+                {
+                    targetPath = getTargetPath.FolderName;
+                }
+                else
+                {
+                    return null;
+                }
+
+            }
+            return targetPath;
         }
 
         private void StartScrolling()

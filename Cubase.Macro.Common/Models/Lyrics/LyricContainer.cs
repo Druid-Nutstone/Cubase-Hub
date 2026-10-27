@@ -44,7 +44,6 @@ namespace Cubase.Macro.Common.Models.Lyrics
                     onError?.Invoke("Title and duration are required");
                     return null;
                 }
-
                 var asText = JsonSerializer.Serialize(this, new JsonSerializerOptions { WriteIndented = true });
                 var targetFile = Path.Combine(targetPath, $"{this.Title.Trim()}{CubaseMacroConstants.NutstoneLyricNotation}");
                 File.WriteAllText(targetFile, asText);
