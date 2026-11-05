@@ -18,7 +18,7 @@ namespace Cubse.Hub.Tests.Project.Tests
 
 
 
-            var process = Process.GetProcesses().FirstOrDefault(x => x.ProcessName.Equals("Cubase15.exe", StringComparison.OrdinalIgnoreCase));
+            var process = Process.GetProcesses().FirstOrDefault(x => x.ProcessName.Equals("Cubase16.exe", StringComparison.OrdinalIgnoreCase));
 
 
         }

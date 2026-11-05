@@ -15,7 +15,7 @@ namespace Cubase.Macro.Models
 
         public int KeyHeight { get; set; } = 120;
 
-        public string CubaseExecutable { get; set; } = "Cubase15";
+        public string CubaseExecutable { get; set; } = "Cubase16";
 
         public string CubaseProjectWindowName { get; set; } = "Cubase Pro Project";
 

@@ -25,7 +25,7 @@ namespace Cubase.Macro.Services.Plugins
         [Obsolete("Just use the TrackCollection from the midi service")]
         TrackCollection? GetTracks();
 
-        ChatRequest? GetChatRequest(Action<string> onError);
+        TrackChatRequest? GetChatRequest(Action<string> onError);
 
         void ProcessPluginRequest(ChatResult pluginRequest);
 

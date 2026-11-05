@@ -61,7 +61,7 @@ namespace Cubase.Macro.Services.Plugins
             }
         }
 
-        public Nutstone.AI.Assistant.Models.ChatRequest? GetChatRequest(Action<string> onError)
+        public Nutstone.AI.Assistant.Models.TrackChatRequest? GetChatRequest(Action<string> onError)
         {
 
             var selectedTracks = this.midiService.TrackCollection.GetActiveTracks();
@@ -80,7 +80,7 @@ namespace Cubase.Macro.Services.Plugins
 
             // get existing plugins 
             var plugins = this.GetCubasePluginSlots();
-            return new Nutstone.AI.Assistant.Models.ChatRequest()
+            return new Nutstone.AI.Assistant.Models.TrackChatRequest()
             {
                 SelectedTrackName = selectedTracks.First().Name,
                 SelectedTrackExistingPlugins =
