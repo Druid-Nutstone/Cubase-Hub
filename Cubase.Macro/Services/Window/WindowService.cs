@@ -229,7 +229,6 @@ namespace Cubase.Macro.Services.Window
             if (cubaseHandle == IntPtr.Zero) return IntPtr.Zero;
             var hwnd = Process.GetProcesses().FirstOrDefault(p => p.MainWindowTitle.StartsWith(this.configurationService.Configuration.CubaseProjectWindowName, StringComparison.OrdinalIgnoreCase) && p.MainWindowHandle == cubaseHandle)?.MainWindowHandle;
             return hwnd ?? cubaseHandle;
-
         }
 
         public bool BringCubaseToFront()

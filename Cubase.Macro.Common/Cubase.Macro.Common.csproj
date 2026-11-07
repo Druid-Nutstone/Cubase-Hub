@@ -14,4 +14,8 @@
     <ProjectReference Include="..\..\Nutstone-Server\Nutstone.Server.Common\Nutstone.Server.Common.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="Services\" />
+  </ItemGroup>
+
 </Project>
