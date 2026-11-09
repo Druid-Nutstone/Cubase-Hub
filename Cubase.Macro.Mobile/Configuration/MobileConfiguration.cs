@@ -6,7 +6,7 @@ namespace Cubase.Macro.Mobile.Configuration
     public class MobileConfiguration
     {
 #if DEBUG
-        public string MidiServerIpAddress { get; set; } = "192.168.1.110";
+        public string MidiServerIpAddress { get; set; } = "192.168.4.110";
         // Place sensitive logging or diagnostic tools here
 
 #else

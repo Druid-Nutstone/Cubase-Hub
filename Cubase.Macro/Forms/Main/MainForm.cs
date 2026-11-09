@@ -11,6 +11,8 @@ using Cubase.Macro.Services.Plugins;
 using Cubase.Macro.Services.Window;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
+using Nutstone.AI.Assistant.Forms.Chat;
+using Nutstone.AI.Assistant.Models;
 using System.ComponentModel;
 using System.Data;
 
@@ -73,12 +75,11 @@ namespace Cubase.Macro
             LoadMacros();
             this.ShowMacros();
             this.HookMouseMove(this);
-            this.mainMenuControl.SetTransportMonitorState(this.midiService.MonitoringTransport);
         }
 
         private void HookTransportMonitoring(bool monitoringState)
         {
-            this.mainMenuControl.SetTransportMonitorState(monitoringState);
+            // this.mainMenuControl.SetTransportMonitorState(monitoringState);
         }
 
         private void HookMouseMove(Control baseControl)
@@ -400,6 +401,30 @@ namespace Cubase.Macro
             this.serviceProvider.GetService<CueForm>().ShowDialog();
             this.PositionCubaseWithMouse = true;
         }
+
+        public void ShowAI()
+        {
+            var aiForm = this.serviceProvider.GetService<ChatForm>();
+            var request = this.pluginManagerService.GetChatRequest((err) =>
+            {
+
+            });
+            if (request != null)
+            {
+                aiForm?.Initialise(request, this.OnAIActionResult);
+            }
+            else
+            {
+                aiForm?.Initialise();
+            }
+            aiForm?.Show();
+        }
+
+        private void OnAIActionResult(ChatResult chatResult)
+        {
+            this.pluginManagerService.ProcessPluginRequest(chatResult);
+        }
+
 
         public void ShowLyrics()
         {

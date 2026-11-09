@@ -66,23 +66,23 @@ namespace Cubase.Macro.Common.Socket
             // Reset/Recreate the client and the cancellation token source
 
             this.client = new ClientWebSocket();
-            this.client.Options.KeepAliveInterval = TimeSpan.FromSeconds(20);
-            this.client.Options.KeepAliveInterval = TimeSpan.Zero;
             var ctsConnect = new CancellationTokenSource();
 
             try
             {
-                // Set the timeout duration
-                ctsConnect.CancelAfter(TimeSpan.FromSeconds(5));
+                ctsConnect.CancelAfter(TimeSpan.FromSeconds(20));
 
                 await this.client.ConnectAsync(
                     new Uri($"ws://{ipAddress}:{port}/ws"),
                     ctsConnect.Token);
+
             }
             catch (Exception ex)
             {
                 errorHandler.Invoke(ex.Message);
-                logger.LogError(ex, "Error occurred while connecting to WebSocket");
+                logger.LogError(ex, $"Error occurred while connecting to WebSocket {ex.Message}");
+                client?.Dispose();
+                client = null;
                 return false;
             }
             if (this.client.State != WebSocketState.Open)

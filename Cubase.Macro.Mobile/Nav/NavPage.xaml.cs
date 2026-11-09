@@ -98,7 +98,7 @@ public partial class NavPage : ContentPage
         {
             RetryConnection.IsVisible = true;
             RetryConnection.IsEnabled = true;
-            await this.GetFileUpdates();
+            await this.GetLyrics();
             await EnableLyrics();
         }
         else
@@ -107,11 +107,16 @@ public partial class NavPage : ContentPage
         }
     }
 
+    private async Task GetLyrics()
+    {
+        SetMessage("Checking for lyric updates ..");
+        await this.GetFileUpdates();
+    }
+
     private async Task ReloadButtons()
     {
         await this.GetFileUpdates();
         await this.EnableButtons();
-        SetMessage("Ready");
     }
 
     private async Task GetFileUpdates()
@@ -121,7 +126,8 @@ public partial class NavPage : ContentPage
         {
             SetMessage($"Could not get updated lyric files: {err}");
         });
-        SetMessage("Ready");
+        var msg = this.webSocket.Connected ? "Socket and lyrics Ready" : "No Midi Available .. Lyrics updated";
+        SetMessage(msg);
     }
 
     private async Task EnableButtons()

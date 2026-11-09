@@ -1,11 +1,9 @@
 ﻿using Cubase.Macro.Common.Models;
 using Cubase.Macro.Forms.Main.Buttons;
 using Cubase.Macro.Forms.Main.Menus;
+using Cubase.Macro.Models;
 using Cubase.Macro.Services.Config;
 using Cubase.Macro.Services.Plugins;
-using Microsoft.Extensions.DependencyInjection;
-using Nutstone.AI.Assistant.Forms.Chat;
-using Nutstone.AI.Assistant.Models;
 using System.ComponentModel;
 
 namespace Cubase.Macro.Forms.Main
@@ -57,54 +55,38 @@ namespace Cubase.Macro.Forms.Main
             ButtonPositionCubase.HelpText = "Position Cubase";
             ButtonRefresh.Click += ButtonRefresh_Click;
             ButtonRefresh.HelpText = "Reload Configuration";
-            ButtonStartStopTransportMonitoring.Bind(Color.IndianRed, DarkTheme.BackColor, Color.Black, DarkTheme.TextColor, ToggleTransportMonitoring, "Toggle Transport location monitoring on and off");
             MainPanel.Resize += MenuSizeChanged;
 
         }
 
-        public void SetTransportMonitorState(bool monitorState)
-        {
-            this.ButtonStartStopTransportMonitoring.SetStateWithoutCallback(monitorState);
-        }
-
-        private void ToggleTransportMonitoring(bool startStop)
+        private bool ToggleTransportMonitoring(bool startStop)
         {
             this.MainForm.ToggleTransportMonitoring(startStop);
+            return startStop;
         }
 
-        private void ButtonLyrics_Click()
+        private bool ButtonLyricsClick(bool isActive)
         {
             this.mainForm.ShowLyrics();
+            return false;
         }
 
-        private async void AIButton_Click()
+        private bool ButtonAIClick(bool isActive)
         {
-            var aiForm = this.ServiceProvider.GetService<ChatForm>();
-            var request = this.pluginManagerService.GetChatRequest((err) =>
-            {
-                MessageBox.Show("Cannot initialise Cubase AI integration");
-                return;
-            });
-            if (request != null)
-            {
-                await aiForm?.Initialise(request, this.OnAIActionResult);
-                aiForm.ShowDialog();
-            }
+            this.mainForm.ShowAI();
+            return false;
         }
 
-        private void OnAIActionResult(ChatResult chatResult)
-        {
-            this.pluginManagerService.ProcessPluginRequest(chatResult);
-        }
-
-        private void ButtonReload_Click()
+        private bool ButtonReloadClick(bool asActive)
         {
             this.mainForm.ReloadScripts();
+            return false;
         }
 
-        private void ButtonCueLevels_Click()
+        private bool ButtonCueLevelsClick(bool isActive)
         {
             this.mainForm.ShowCueLevels();
+            return false; // always inactive because the form is modal
         }
 
         private void MenuSizeChanged(object? sender, EventArgs e)
@@ -233,10 +215,46 @@ namespace Cubase.Macro.Forms.Main
                 menuControl.AddMacro(macro, onMacroClicked);
 
             }
-            ButtonCueLevels.Bind(ButtonCueLevels_Click, Color.Yellow, "C", "Cue levels");
-            ButtonReload.Bind(ButtonReload_Click, Color.Cyan, "R", "Reload Scripts");
-            ButtonLyrics.Bind(ButtonLyrics_Click, Color.LightGreen, "L", "Show lyrics");
-            AIButton.Bind(AIButton_Click, Color.Magenta, "AI", "Open AI ");
+            var actionCollection = new DropDownToggleItemCollection()
+            {
+                new DropDownToggleItem()
+                {
+                    ActiveText = "Cue Levels",
+                    OnClick = ButtonCueLevelsClick,
+                    IconText = "🎚️"
+                },
+                new DropDownToggleItem()
+                {
+                    ActiveText = "Reload Scripts",
+                    OnClick = ButtonReloadClick,
+                    IconText = "🔄"
+                },
+                new DropDownToggleItem()
+                {
+                    ActiveText = "Open Lyrics",
+                    OnClick = ButtonLyricsClick,
+                    IconText = "📜"
+                },
+                new DropDownToggleItem()
+                {
+                    ActiveText = "Open AI",
+                    OnClick = ButtonAIClick,
+                    IconText = "🤖"
+                },
+                new DropDownToggleItem()
+                {
+                    ActiveText = "Stop Transport",
+                    InActiveText = "Start Transport",
+                    InActiveBackColour = Color.Green,
+                    InActiveTextColour = Color.Black,
+                    ActiveBackColour = Color.Red,
+                    ActiveTextColour = Color.White,
+                    OnClick = ToggleTransportMonitoring,
+                    IconText = "🔴"
+                }
+            };
+            this.Actions.Initialise(actionCollection);
+
         }
 
         public void InitialiseCommon(List<CubaseMacro> macros, Action<CubaseMacro, MacroButton> onMacroClicked)
