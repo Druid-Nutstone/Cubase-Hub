@@ -15,12 +15,15 @@ namespace Cubase.Hub.Services.Cubase
         {
             if (File.Exists(projectPath))
             {
+                Directory.SetCurrentDirectory(Path.GetDirectoryName(projectPath));
+
                 var cubaseLocation = this.configurationService.Configuration?.CubaseExeLocation;
                 if (!string.IsNullOrEmpty(cubaseLocation))
                 {
                     var cubase = new System.Diagnostics.Process();
                     cubase.StartInfo.FileName = this.configurationService.Configuration?.CubaseExeLocation;
                     cubase.StartInfo.Arguments = $"\"{projectPath}\"";
+                    cubase.StartInfo.WorkingDirectory = Path.GetDirectoryName(projectPath);
                     cubase.Start();
                 }
                 else

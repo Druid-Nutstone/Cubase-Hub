@@ -20,6 +20,7 @@ using Nutstone.AI.Assistant.Forms.Chat;
 using Nutstone.AI.Assistant.Models;
 using System.ComponentModel;
 using System.Data;
+using System.IO;
 
 namespace Cubase.Macro
 {
@@ -417,8 +418,13 @@ namespace Cubase.Macro
                 MessageBox.Show("Could not load the Cubase Hub Configuration");
                 canInitialiseCubaseHub = false;
             });
-            cubaseHubconfig?.Configuration?.CubaseExeLocation = $"C:\\Program Files\\Steinberg\\{this.configurationService.Configuration.CubaseExecutable}\\{this.configurationService.Configuration.CubaseExecutable}.exe";
 
+            var cubaseExeLocation = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ProgramFiles), "Steinberg", this.configurationService.Configuration.CubaseExecutable, $"{this.configurationService.Configuration.CubaseExecutable}.exe");
+            var cubaseUserTemplateLocation = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData), "Steinberg", $"{this.configurationService.Configuration.CubaseExecutable}_64", "Project Templates");
+            var cubaseTemplateLocation = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ProgramFiles), "Steinberg", this.configurationService.Configuration.CubaseExecutable, "Project Templates", "Cubase Pro");
+            cubaseHubconfig?.Configuration?.CubaseExeLocation = cubaseExeLocation;
+            cubaseHubconfig?.Configuration?.CubaseUserTemplateLocation = cubaseUserTemplateLocation;
+            cubaseHubconfig?.Configuration?.CubaseTemplateLocation = cubaseTemplateLocation;
             return canInitialiseCubaseHub ? cubaseHubconfig : null;
         }
 

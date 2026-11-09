@@ -56,6 +56,7 @@ namespace Cubase.Macro.Forms.Main
             ButtonRefresh.Click += ButtonRefresh_Click;
             ButtonRefresh.HelpText = "Reload Configuration";
             MainPanel.Resize += MenuSizeChanged;
+            this.InitialiseActions();
 
         }
 
@@ -209,6 +210,10 @@ namespace Cubase.Macro.Forms.Main
                 menuControl.AddMacro(macro, onMacroClicked);
 
             }
+        }
+
+        private void InitialiseActions()
+        {
             var actionCollection = new DropDownToggleItemCollection();
             actionCollection.AddToggleButton("Options", "⚙️", (isActive) =>
             {
@@ -241,7 +246,6 @@ namespace Cubase.Macro.Forms.Main
                 return isActive;
             });
             this.Actions.Initialise(actionCollection);
-
         }
 
         public void InitialiseCommon(List<CubaseMacro> macros, Action<CubaseMacro, MacroButton> onMacroClicked)
