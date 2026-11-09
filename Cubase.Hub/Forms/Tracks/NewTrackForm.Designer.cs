@@ -81,7 +81,7 @@
             label4.Name = "label4";
             label4.Size = new Size(733, 75);
             label4.TabIndex = 6;
-            label4.Text = "Cubase (sometimes) does not support creating a new project programatically. I have copied the target directory to the clipboard . Paste that into the File open dialogue.  AND REMEMBER TO SAVE IT!";
+            label4.Text = "Cubase will probably put up a dialog about the files moving - select the New(1) onbe button. It might also popup the directory. you can use Ctrl+V to paste the new location";
             // 
             // TrackName
             // 

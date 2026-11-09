@@ -78,11 +78,19 @@ namespace Cubase.Hub.Forms.Tracks
 
             File.Copy(template.TemplateLocation, targetTemplate);
 
+
+
             var now = DateTime.Now;
 
             File.SetCreationTime(targetTemplate, now);
             File.SetLastWriteTime(targetTemplate, now);
             File.SetLastAccessTime(targetTemplate, now);
+
+            // this don't work - thought i could hack the file - but i can't!!!
+            //var oldContent = File.ReadAllText(targetTemplate);
+            //var newContent = oldContent.Replace(Path.GetDirectoryName(template.TemplateLocation), Path.GetDirectoryName(targetTemplate));
+            //newContent = newContent.Replace(Path.GetFileName(template.TemplateName), Path.GetFileNameWithoutExtension(targetTemplate));
+            //File.WriteAllText(targetTemplate, newContent);
 
             this.cubaseService.OpenCubaseProject(targetTemplate, (err) =>
             {
