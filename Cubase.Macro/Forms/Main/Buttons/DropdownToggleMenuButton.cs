@@ -58,11 +58,18 @@ namespace Cubase.Macro.Forms.Main.Buttons
         {
             base.OnClick(e);
 
-            // Force the context menu drop down container to match button width
-            _contextMenu.Width = this.Width;
+            if (!_contextMenu.Visible)
+            {
+                // Force the context menu drop down container to match button width
+                _contextMenu.Width = this.Width;
 
-            Point offsetLocation = new Point(0, this.Height);
-            _contextMenu.Show(this, offsetLocation);
+                Point offsetLocation = new Point(this.Width - 24, 5);
+                _contextMenu.Show(this, offsetLocation);
+            }
+            else
+            {
+                _contextMenu.Close();
+            }
         }
     }
 
@@ -200,6 +207,22 @@ namespace Cubase.Macro.Forms.Main.Buttons
                 {
                     this.DropDownItems.Add(new DropDownButtonItem(subButton, parent, ownerButton));
                 }
+
+                // Ensure sub-menus inherit the exact same renderer, sizing, and clean borders
+                this.DropDown.Renderer = parent.Renderer;
+
+                // Force nested sub-menu dropdowns to match the owner button width when they open
+                this.DropDownOpened += (s, e) =>
+                {
+                    int targetWidth = ownerButton != null ? ownerButton.Width : 150;
+                    this.DropDown.Width = targetWidth;
+                    this.DropDown.MinimumSize = new Size(targetWidth, 0);
+
+                    foreach (ToolStripItem subItem in this.DropDown.Items)
+                    {
+                        subItem.Width = targetWidth;
+                    }
+                };
             }
         }
 
@@ -235,7 +258,7 @@ namespace Cubase.Macro.Forms.Main.Buttons
         protected override void OnClick(EventArgs e)
         {
             this.isActive = !this.isActive;
-            if (this.MenuButton.SubItems == null)
+            if (this.MenuButton.SubItems?.Count == 0)
             {
                 this.isActive = this.MenuButton.OnClick.Invoke(this.isActive);
                 this.menuStrip.Invalidate();

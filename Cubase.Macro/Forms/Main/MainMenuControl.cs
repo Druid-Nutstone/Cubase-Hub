@@ -77,12 +77,6 @@ namespace Cubase.Macro.Forms.Main
             return false;
         }
 
-        private bool ButtonReloadClick(bool asActive)
-        {
-            this.mainForm.ReloadScripts();
-            return false;
-        }
-
         private bool ButtonCueLevelsClick(bool isActive)
         {
             this.mainForm.ShowCueLevels();
@@ -177,7 +171,7 @@ namespace Cubase.Macro.Forms.Main
 
         private void ButtonClose_Click(object? sender, EventArgs e)
         {
-            this.ActionMenuClick(this.ButtonClose, this.mainForm.Close);
+            this.ActionMenuClick(this.ButtonClose, this.mainForm.Minimise);
         }
 
         private void ButtonBack_Click(object? sender, EventArgs e)
@@ -215,44 +209,37 @@ namespace Cubase.Macro.Forms.Main
                 menuControl.AddMacro(macro, onMacroClicked);
 
             }
-            var actionCollection = new DropDownToggleItemCollection()
+            var actionCollection = new DropDownToggleItemCollection();
+            actionCollection.AddToggleButton("Options", "⚙️", (isActive) =>
             {
-                new DropDownToggleItem()
-                {
-                    ActiveText = "Cue Levels",
-                    OnClick = ButtonCueLevelsClick,
-                    IconText = "🎚️"
-                },
-                new DropDownToggleItem()
-                {
-                    ActiveText = "Reload Scripts",
-                    OnClick = ButtonReloadClick,
-                    IconText = "🔄"
-                },
-                new DropDownToggleItem()
-                {
-                    ActiveText = "Open Lyrics",
-                    OnClick = ButtonLyricsClick,
-                    IconText = "📜"
-                },
-                new DropDownToggleItem()
-                {
-                    ActiveText = "Open AI",
-                    OnClick = ButtonAIClick,
-                    IconText = "🤖"
-                },
-                new DropDownToggleItem()
-                {
-                    ActiveText = "Stop Transport",
-                    InActiveText = "Start Transport",
-                    InActiveBackColour = Color.Green,
-                    InActiveTextColour = Color.Black,
-                    ActiveBackColour = Color.Red,
-                    ActiveTextColour = Color.White,
-                    OnClick = ToggleTransportMonitoring,
-                    IconText = "🔴"
-                }
-            };
+                this.mainForm.OpenSettings();
+                return isActive;
+            });
+            actionCollection.AddToggleButton("Cue Levels", "🎚️", ButtonCueLevelsClick);
+            actionCollection.AddToggleButton("Open Lyrics", "📜", ButtonLyricsClick);
+            actionCollection.AddToggleButton("Open AI", "🤖", ButtonAIClick);
+            actionCollection.AddToggleButton("Stop Transport", "🔴",
+                                             ToggleTransportMonitoring,
+                                             "Start Transport",
+                                             Color.Red,
+                                             Color.White,
+                                             Color.Green, Color.Black);
+            var albumButtons = actionCollection.AddToggleButton("Albums", "💿", null);
+            albumButtons.AddItem("Manage", "📖", (isActive) =>
+            {
+                this.mainForm.OpenAlbums();
+                return isActive;
+            });
+            albumButtons.AddItem("New", "➕", (isActive) =>
+            {
+                this.mainForm.NewAlbum();
+                return isActive;
+            });
+            actionCollection.AddToggleButton("New Track", "🎵", (isActive) =>
+            {
+                this.mainForm.NewTrack();
+                return isActive;
+            });
             this.Actions.Initialise(actionCollection);
 
         }

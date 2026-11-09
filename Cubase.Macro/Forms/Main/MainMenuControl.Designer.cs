@@ -66,10 +66,11 @@
             Actions.BackColor = Color.FromArgb(45, 45, 48);
             Actions.FlatAppearance.BorderSize = 0;
             Actions.FlatStyle = FlatStyle.Flat;
+            Actions.Font = new Font("Segoe UI", 9F, FontStyle.Bold);
             Actions.ForeColor = Color.White;
             Actions.Location = new Point(3, 41);
             Actions.Name = "Actions";
-            Actions.Size = new Size(192, 38);
+            Actions.Size = new Size(190, 38);
             Actions.TabIndex = 17;
             Actions.Text = "Actions";
             Actions.UseVisualStyleBackColor = false;

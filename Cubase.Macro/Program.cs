@@ -4,6 +4,7 @@ using Cubase.Macro.Common.Socket;
 using Cubase.Macro.Forms.Configuration;
 using Cubase.Macro.Forms.Cues;
 using Cubase.Macro.Forms.Lyrics;
+using Cubase.Macro.Registration;
 using Cubase.Macro.Services.Config;
 using Cubase.Macro.Services.Keyboard;
 using Cubase.Macro.Services.Midi;
@@ -77,7 +78,7 @@ namespace Cubase.Macro
             {
                 // get main form 
                 var mainForm = host.Services.GetService<MainForm>();
-                mainForm.WindowState = FormWindowState.Minimized;
+                // mainForm.WindowState = FormWindowState.Minimized;
                 StartMidiService(host);
                 // start websocket api 
                 _ = host.RunAsync();
@@ -220,6 +221,7 @@ namespace Cubase.Macro
                         .AddTransient<CueForm>()
                         .AddTransient<LyricViewerForm>()
                         .RegisterAiAssistance() // register nutstone ai services and forms
+                        .RegisterCubaseHubServices()
                         .AddScoped<MainForm>();
                 })
                 .ConfigureWebHostDefaults(webBuilder =>

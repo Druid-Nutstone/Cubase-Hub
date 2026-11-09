@@ -1,5 +1,10 @@
-﻿using Cubase.Macro.Common.Models;
+﻿using Cubase.Hub.Forms;
+using Cubase.Hub.Forms.Albums;
+using Cubase.Hub.Forms.Tracks;
+using Cubase.Hub.Services.Models;
+using Cubase.Macro.Common.Models;
 using Cubase.Macro.Forms;
+using Cubase.Macro.Forms.Configuration;
 using Cubase.Macro.Forms.Cues;
 using Cubase.Macro.Forms.Lyrics;
 using Cubase.Macro.Forms.Main.Buttons;
@@ -20,6 +25,8 @@ namespace Cubase.Macro
 {
     public partial class MainForm : BaseWindows11Form
     {
+        private int boundsTolerence = SystemInformation.BorderSize.Width * 9;
+
         [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
         public Action ActionComplete { get; set; } = () => { };
 
@@ -379,7 +386,6 @@ namespace Cubase.Macro
 
         public void ShowMacros()
         {
-
             Rectangle screen = Screen.PrimaryScreen.WorkingArea;
             // Use WorkingArea to avoid taskbar overlap
             // Use Bounds if you WANT to cover taskbar
@@ -391,7 +397,7 @@ namespace Cubase.Macro
 
             this.Location = new Point(screen.Left, screen.Top);
             this.Size = new Size(this.Width, Screen.PrimaryScreen.WorkingArea.Height);
-            this.WindowState = FormWindowState.Minimized;
+            // this.WindowState = FormWindowState.Minimized;
             this.ResumeLayout();
         }
 
@@ -400,6 +406,84 @@ namespace Cubase.Macro
             this.PositionCubaseWithMouse = false;
             this.serviceProvider.GetService<CueForm>().ShowDialog();
             this.PositionCubaseWithMouse = true;
+        }
+
+        private Cubase.Hub.Services.Config.IConfigurationService? InitialiseCubaseHubConfiguration()
+        {
+            var cubaseHubconfig = this.serviceProvider.GetService<Cubase.Hub.Services.Config.IConfigurationService>();
+            bool canInitialiseCubaseHub = true;
+            cubaseHubconfig?.LoadConfiguration(() =>
+            {
+                MessageBox.Show("Could not load the Cubase Hub Configuration");
+                canInitialiseCubaseHub = false;
+            });
+            cubaseHubconfig?.Configuration?.CubaseExeLocation = $"C:\\Program Files\\Steinberg\\{this.configurationService.Configuration.CubaseExecutable}\\{this.configurationService.Configuration.CubaseExecutable}.exe";
+
+            return canInitialiseCubaseHub ? cubaseHubconfig : null;
+        }
+
+        public void OpenSettings()
+        {
+            var settingsForm = this.serviceProvider.GetService<SettingsForm>();
+            var windowPos = this.PositionFormNextToMainForm();
+            settingsForm.Location = new Point(windowPos.X, windowPos.Y);
+            settingsForm.StartPosition = FormStartPosition.Manual;
+            settingsForm.ShowDialog();
+        }
+
+        public void NewTrack()
+        {
+            var cubaseHubconfig = this.InitialiseCubaseHubConfiguration();
+            if (cubaseHubconfig != null)
+            {
+                var newTrack = this.serviceProvider.GetService<NewTrackForm>();
+
+                var windowPos = this.PositionFormNextToMainForm();
+                newTrack.Location = new Point(windowPos.X, windowPos.Y);
+                newTrack.StartPosition = FormStartPosition.Manual;
+                newTrack.Initialise();
+                newTrack.ShowDialog();
+            }
+        }
+
+        public void NewAlbum()
+        {
+            var cubaseHubconfig = this.InitialiseCubaseHubConfiguration();
+            if (cubaseHubconfig != null)
+            {
+                var newAlbumForm = this.serviceProvider.GetService<NewAlbumForm>();
+
+                var windowPos = this.PositionFormNextToMainForm();
+                newAlbumForm.Location = new Point(windowPos.X, windowPos.Y);
+                newAlbumForm.StartPosition = FormStartPosition.Manual;
+                newAlbumForm.ShowDialog();
+            }
+        }
+
+        public void OpenAlbums()
+        {
+            var albumForm = this.serviceProvider.GetService<ManageAlbumsForm>();
+            var cubaseHubconfig = this.InitialiseCubaseHubConfiguration();
+            if (cubaseHubconfig != null)
+            {
+                cubaseHubconfig?.Configuration?.AlbumWindowLocation = this.PositionFormNextToMainForm();
+                albumForm?.Initialise();
+                albumForm?.Show();
+            }
+        }
+
+        private WindowSettings PositionFormNextToMainForm()
+        {
+            var workingArea = Screen.AllScreens[0].WorkingArea;
+            var windowLocation = new Hub.Services.Models.WindowSettings()
+            {
+                Height = workingArea.Height + boundsTolerence,
+                isMaximised = false,
+                Width = (workingArea.Width - this.Width) + (boundsTolerence * 2),
+                X = this.Width - boundsTolerence,
+                Y = 0
+            };
+            return windowLocation;
         }
 
         public void ShowAI()
