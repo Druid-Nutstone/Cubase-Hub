@@ -245,6 +245,11 @@ namespace Cubase.Macro.Forms.Main
                 this.mainForm.NewTrack();
                 return isActive;
             });
+            actionCollection.AddToggleButton("Capture Audio", "🔊", (isActive) =>
+            {
+                this.mainForm.CaptureAudio();
+                return isActive;
+            });
             this.Actions.Initialise(actionCollection);
         }
 

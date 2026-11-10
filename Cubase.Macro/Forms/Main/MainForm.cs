@@ -4,6 +4,7 @@ using Cubase.Hub.Forms.Tracks;
 using Cubase.Hub.Services.Models;
 using Cubase.Macro.Common.Models;
 using Cubase.Macro.Forms;
+using Cubase.Macro.Forms.AudioCapture;
 using Cubase.Macro.Forms.Configuration;
 using Cubase.Macro.Forms.Cues;
 using Cubase.Macro.Forms.Lyrics;
@@ -435,6 +436,15 @@ namespace Cubase.Macro
             settingsForm.Location = new Point(windowPos.X, windowPos.Y);
             settingsForm.StartPosition = FormStartPosition.Manual;
             settingsForm.ShowDialog();
+        }
+
+        public void CaptureAudio()
+        {
+            var captureAudioFrom = new AudioCaptureForm();
+            var windowPos = this.PositionFormNextToMainForm();
+            captureAudioFrom.Location = new Point(windowPos.X, windowPos.Y);
+            captureAudioFrom.StartPosition = FormStartPosition.Manual;
+            captureAudioFrom.ShowDialog();
         }
 
         public void NewTrack()
