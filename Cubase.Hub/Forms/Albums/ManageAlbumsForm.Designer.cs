@@ -203,7 +203,7 @@
             // 
             CopyToWebSite.Image = Properties.Resources.ed_copy;
             CopyToWebSite.ImageAlign = ContentAlignment.MiddleLeft;
-            CopyToWebSite.Location = new Point(1137, 2);
+            CopyToWebSite.Location = new Point(873, 3);
             CopyToWebSite.Name = "CopyToWebSite";
             CopyToWebSite.Size = new Size(157, 38);
             CopyToWebSite.TabIndex = 10;
@@ -213,13 +213,13 @@
             // 
             // UploadTracks
             // 
+            UploadTracks.Anchor = AnchorStyles.Top | AnchorStyles.Right;
             UploadTracks.Image = Properties.Resources.arrow_up;
             UploadTracks.ImageAlign = ContentAlignment.MiddleLeft;
-            UploadTracks.Location = new Point(873, 3);
+            UploadTracks.Location = new Point(1253, 3);
             UploadTracks.Name = "UploadTracks";
-            UploadTracks.Size = new Size(258, 38);
+            UploadTracks.Size = new Size(41, 38);
             UploadTracks.TabIndex = 9;
-            UploadTracks.Text = "Upload Tracks";
             UploadTracks.UseVisualStyleBackColor = true;
             // 
             // label3
@@ -336,6 +336,8 @@
             mixdownControl.AutoSize = true;
             mixdownControl.AutoSizeMode = AutoSizeMode.GrowAndShrink;
             mixdownControl.ColumnCount = 2;
+            mixdownControl.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 100F));
+            mixdownControl.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 100F));
             mixdownControl.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 100F));
             mixdownControl.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 100F));
             mixdownControl.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 100F));

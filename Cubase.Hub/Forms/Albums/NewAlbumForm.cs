@@ -67,7 +67,7 @@ namespace Cubase.Hub.Forms
             folderBrowse.ShowNewFolderButton = true;
             if (folderBrowse.ShowDialog() == DialogResult.OK)
             {
-                this.albumConfigurationControl.DisableTitle();
+                //Dav this.albumConfigurationControl.DisableTitle();
                 this.albumPath = folderBrowse.SelectedPath;
                 this.SelectedRootDirectory.Text = folderBrowse.SelectedPath;
                 this.UpdatePathRoot();
@@ -156,6 +156,11 @@ namespace Cubase.Hub.Forms
             {
                 return false;
             }
+        }
+
+        private void albumConfigurationControl_Load(object sender, EventArgs e)
+        {
+
         }
     }
 }

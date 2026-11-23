@@ -334,9 +334,20 @@ namespace Cubase.Macro.Forms.Configuration
         {
             this.DataPanel.Controls.Clear();
 
-            foreach (var macro in this.Macros.Macros)
+            if (this.Macros.CommonMacros.Contains(this.Macro))
             {
-                RemoveMacroRecursive(macro, this.Macro);
+                this.Macros.CommonMacros.Remove(this.Macro);
+                this.MacroUpdatedEventHandler?.Invoke();
+                return;
+            }
+
+
+            if (!this.Macro.Macros.Remove(this.Macro))
+            {
+                foreach (var macro in this.Macros.Macros)
+                {
+                    RemoveMacroRecursive(macro, this.Macro);
+                }
             }
 
             this.MacroUpdatedEventHandler?.Invoke();

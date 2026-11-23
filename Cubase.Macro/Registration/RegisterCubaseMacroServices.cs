@@ -1,6 +1,7 @@
 ﻿using Cubase.Hub.Forms;
 using Cubase.Hub.Forms.Albums;
 using Cubase.Hub.Forms.CompletedMixes;
+using Cubase.Hub.Forms.Edit;
 using Cubase.Hub.Forms.Mixes;
 using Cubase.Hub.Forms.Tracks;
 using Cubase.Hub.Services.Album;
@@ -65,6 +66,7 @@ namespace Cubase.Macro.Registration
                    .AddTransient<NewTrackForm>()
                    .AddTransient<ManageMixesForm>()
                    .AddSingleton<IProjectService, ProjectService>()
+                   .AddScoped<EditTrackForm>()
                    .AddTransient<ManageAlbumsForm>();
 
         }

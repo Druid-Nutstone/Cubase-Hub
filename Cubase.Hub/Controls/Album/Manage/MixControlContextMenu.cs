@@ -133,10 +133,13 @@ namespace Cubase.Hub.Controls.Album.Manage
 
         protected override void OnClick(EventArgs e)
         {
-            this.EditTrack.Initialise(this.MixDown.FileName);
+            this.EditTrack.AudioFile = this.MixDown.FileName;
+            this.EditTrack.ShowDialog();
             var trackService = ServiceProvider.GetService<ITrackService>();
             MixDown = trackService.PopulateTagsFromFile(this.MixDown.FileName);
             this.mixControl.MenuMixChanged(MixDown);
+
+
         }
     }
 

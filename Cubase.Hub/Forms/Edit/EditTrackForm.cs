@@ -37,6 +37,15 @@ namespace Cubase.Hub.Forms.Edit
             }
         }
 
+        protected override void OnShown(EventArgs e)
+        {
+            base.OnShown(e);
+            if (!string.IsNullOrEmpty(this.AudioFile))
+            {
+                this.Initialise(this.AudioFile);
+            }
+        }
+
         public void Initialise(string audioFile)
         {
             this.UpdateButton.Enabled = false;

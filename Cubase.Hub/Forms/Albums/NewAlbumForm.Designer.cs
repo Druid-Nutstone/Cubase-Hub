@@ -72,6 +72,7 @@
             albumConfigurationControl.Name = "albumConfigurationControl";
             albumConfigurationControl.Size = new Size(760, 230);
             albumConfigurationControl.TabIndex = 0;
+            albumConfigurationControl.Load += albumConfigurationControl_Load;
             // 
             // panel1
             // 
