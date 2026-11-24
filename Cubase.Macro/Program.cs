@@ -5,10 +5,13 @@ using Cubase.Macro.Forms.Configuration;
 using Cubase.Macro.Forms.Cues;
 using Cubase.Macro.Forms.Lyrics;
 using Cubase.Macro.Registration;
+using Cubase.Macro.Services.ConditionalMacros;
+using Cubase.Macro.Services.ConditionalMacros.Transport;
 using Cubase.Macro.Services.Config;
 using Cubase.Macro.Services.Keyboard;
 using Cubase.Macro.Services.Midi;
 using Cubase.Macro.Services.Plugins;
+using Cubase.Macro.Services.SysEx;
 using Cubase.Macro.Services.WebSockets;
 using Cubase.Macro.Services.Window;
 using Cubase.Macro.Services.WindowsServices;
@@ -147,6 +150,14 @@ namespace Cubase.Macro
             {
                 windowsService.StartMidiWindowsService();
             }
+
+            while (!midiService.Initialised)
+            {
+                Thread.Sleep(100);
+            }
+
+            var conditionalServices = host.Services.GetService<IConditionalMacroService>();
+            conditionalServices.Initialise();
         }
 
         static void SetJumpListItems()
@@ -215,6 +226,9 @@ namespace Cubase.Macro
                         .AddSingleton<IPluginService, PluginService>()
                         .AddSingleton<IScrollerService, ScrollerService>()
                         .AddSingleton<CubaseMacroWebSocketClient>()
+                        .AddSingleton<IConditionalMacroFunction, TransportMacroFunction>()
+                        .AddSingleton<IConditionalMacroService, ConditionalMacroService>()
+                        .AddSingleton<ISysExService, SysExService>()
                         .AddSingleton<IWindowsControllerService, WindowsControllerService>()
                         .AddScoped<SettingsMainControl>()
                         .AddScoped<SettingsForm>()

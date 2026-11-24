@@ -9,11 +9,14 @@ namespace Cubase.Macro.Forms.Configuration
 
         private readonly IConfigurationService configurationService;
 
+        private readonly IServiceProvider serviceProvider;
+
         private string nodeSelected = string.Empty;
 
-        public SettingsMainControl(IConfigurationService configurationService)
+        public SettingsMainControl(IConfigurationService configurationService, IServiceProvider serviceProvider)
         {
             InitializeComponent();
+            this.serviceProvider = serviceProvider;
             this.configurationService = configurationService;
             NewMenu.Click += NewMenu_Click;
         }
@@ -22,7 +25,7 @@ namespace Cubase.Macro.Forms.Configuration
         {
             var newMenuMacro = CubaseMacro.CreateNewMenuMacro();
             this.macros.Macros.Add(newMenuMacro);
-            var editMacro = new EditMacroControl(this.macros, newMenuMacro, this.MacroSaved);
+            var editMacro = new EditMacroControl(this.macros, newMenuMacro, this.serviceProvider, this.MacroSaved);
             this.LoadDataPanel(editMacro);
         }
 
@@ -54,7 +57,7 @@ namespace Cubase.Macro.Forms.Configuration
         private void LoadTreeView()
         {
             this.TreePanel.Controls.Clear();
-            var treeView = new MacroTreeView(this.DataPanel, this.MacroSaved, this.OnNodeSelected, this.configurationService.Configuration, this.nodeSelected);
+            var treeView = new MacroTreeView(this.DataPanel, this.MacroSaved, this.OnNodeSelected, this.configurationService.Configuration, this.serviceProvider, this.nodeSelected);
             this.TreePanel.Controls.Add(treeView);
             treeView.Build(this.macros);
         }

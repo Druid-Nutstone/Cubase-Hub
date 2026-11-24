@@ -33,6 +33,7 @@
             ButtonDel = new Button();
             label1 = new Label();
             AfterKeyWaitTime = new Cubase.Macro.BoundControls.BoundTextBox();
+            ButtonConditional = new Button();
             SuspendLayout();
             // 
             // MacroCommandListView
@@ -50,27 +51,29 @@
             // 
             // ButtonAdd
             // 
-            ButtonAdd.Location = new Point(374, 3);
+            ButtonAdd.Location = new Point(3, 130);
             ButtonAdd.Name = "ButtonAdd";
-            ButtonAdd.Size = new Size(55, 29);
+            ButtonAdd.Size = new Size(103, 29);
             ButtonAdd.TabIndex = 1;
-            ButtonAdd.Text = "Add";
+            ButtonAdd.Text = "Add Key";
             ButtonAdd.UseVisualStyleBackColor = true;
             // 
             // ButtonDel
             // 
-            ButtonDel.Location = new Point(374, 38);
+            ButtonDel.BackColor = Color.IndianRed;
+            ButtonDel.ForeColor = Color.White;
+            ButtonDel.Location = new Point(366, 3);
             ButtonDel.Name = "ButtonDel";
             ButtonDel.Size = new Size(55, 29);
             ButtonDel.TabIndex = 2;
             ButtonDel.Text = "Del";
-            ButtonDel.UseVisualStyleBackColor = true;
+            ButtonDel.UseVisualStyleBackColor = false;
             // 
             // label1
             // 
             label1.AutoSize = true;
             label1.Font = new Font("Segoe UI", 9F, FontStyle.Bold);
-            label1.Location = new Point(8, 134);
+            label1.Location = new Point(8, 170);
             label1.Name = "label1";
             label1.Size = new Size(301, 20);
             label1.TabIndex = 3;
@@ -78,15 +81,25 @@
             // 
             // AfterKeyWaitTime
             // 
-            AfterKeyWaitTime.Location = new Point(8, 157);
+            AfterKeyWaitTime.Location = new Point(8, 193);
             AfterKeyWaitTime.Name = "AfterKeyWaitTime";
             AfterKeyWaitTime.Size = new Size(125, 27);
             AfterKeyWaitTime.TabIndex = 4;
+            // 
+            // ButtonConditional
+            // 
+            ButtonConditional.Location = new Point(149, 130);
+            ButtonConditional.Name = "ButtonConditional";
+            ButtonConditional.Size = new Size(211, 29);
+            ButtonConditional.TabIndex = 5;
+            ButtonConditional.Text = "Add Conditional Key";
+            ButtonConditional.UseVisualStyleBackColor = true;
             // 
             // MacroKeySelectorControl
             // 
             AutoScaleDimensions = new SizeF(8F, 20F);
             AutoScaleMode = AutoScaleMode.Font;
+            Controls.Add(ButtonConditional);
             Controls.Add(AfterKeyWaitTime);
             Controls.Add(label1);
             Controls.Add(ButtonDel);
@@ -105,5 +118,6 @@
         private Button ButtonDel;
         private Label label1;
         private BoundControls.BoundTextBox AfterKeyWaitTime;
+        private Button ButtonConditional;
     }
 }

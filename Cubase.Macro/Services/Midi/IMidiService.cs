@@ -19,7 +19,9 @@ namespace Cubase.Macro.Services.Midi
 
         public TransportLocationCollection TransportLocation { get; }
 
-        public bool SendMidiMessage(CubaseKeyCommand cubaseMidiCommand);
+        TransportModel TransportModel { get; }
+
+        public bool SendMidiMessage(CubaseKeyCommand cubaseMidiCommand, Action<string> onError);
 
         public void SendSysExMessage<T>(MidiCommand command, T request);
 

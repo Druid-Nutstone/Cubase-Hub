@@ -14,6 +14,7 @@ using Cubase.Macro.Services.Config;
 using Cubase.Macro.Services.Keyboard;
 using Cubase.Macro.Services.Midi;
 using Cubase.Macro.Services.Plugins;
+using Cubase.Macro.Services.SysEx;
 using Cubase.Macro.Services.Window;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
@@ -50,6 +51,8 @@ namespace Cubase.Macro
 
         private readonly IWindowService windowService;
 
+        private readonly ISysExService sysExService;
+
         private readonly IMidiService midiService;
 
         private readonly IPLuginManagerService pluginManagerService;
@@ -64,6 +67,7 @@ namespace Cubase.Macro
                         IPLuginManagerService pluginManagerService,
                         IWindowService windowService,
                         IMidiService midiService,
+                        ISysExService sysExService,
                         ILogger<MainForm> log,
                         IServiceProvider serviceProvider)
         {
@@ -71,6 +75,7 @@ namespace Cubase.Macro
             this.keyboardService = keyboardService;
             this.configurationService = configurationService;
             this.serviceProvider = serviceProvider;
+            this.sysExService = sysExService;
             this.midiService = midiService;
             this.windowService = windowService;
             this.pluginManagerService = pluginManagerService;
@@ -282,8 +287,16 @@ namespace Cubase.Macro
             }
         }
 
+        private bool RunSysexMacro(CubaseKeyCommand command)
+        {
+            return this.sysExService.ExecuteSysExCommand(command.Name, (err) =>
+            {
+                MessageBox.Show($"Error running Sysex {command.Name}. {err} ");
+            });
+        }
 
-        private void RunMidiMacro(CubaseKeyCommand command)
+
+        private bool RunMidiMacro(CubaseKeyCommand command)
         {
             var haveMidiResponse = false;
             this.midiService.OnMidiResponse = (midiResponse) =>
@@ -295,24 +308,31 @@ namespace Cubase.Macro
                 }
             };
 
-            this.midiService.SendMidiMessage(command);
+            var result = this.midiService.SendMidiMessage(command, (err) =>
+            {
+                MessageBox.Show($"Error sending midi command. {err}");
+            });
 
-            var count = 0;
-            // very naff - but hey ho 
-            while (!haveMidiResponse && count <= 100)
+            if (result)
             {
-                Thread.Sleep(20);
-                count++;
-            }
-            if (count > 100)
-            {
-                this.logger.LogError($"Did not receive a response for midi command {command.Name}");
-                var commandResponse = MessageBox.Show("Cubase midi is not responding. Shall I restart the midi service?", "Midi not responding", MessageBoxButtons.YesNo, MessageBoxIcon.Question);
-                if (commandResponse == DialogResult.Yes)
+                var count = 0;
+                // very naff - but hey ho 
+                while (!haveMidiResponse && count <= 100)
                 {
-                    this.midiService.RestartMidi();
+                    Thread.Sleep(20);
+                    count++;
+                }
+                if (count > 100)
+                {
+                    this.logger.LogError($"Did not receive a response for midi command {command.Name}");
+                    var commandResponse = MessageBox.Show("Cubase midi is not responding. Shall I restart the midi service?", "Midi not responding", MessageBoxButtons.YesNo, MessageBoxIcon.Question);
+                    if (commandResponse == DialogResult.Yes)
+                    {
+                        this.midiService.RestartMidi();
+                    }
                 }
             }
+            return result;
         }
 
         private void RunMacro(List<CubaseKeyCommand> macros, CubaseMacro macro)
@@ -326,10 +346,13 @@ namespace Cubase.Macro
             {
                 if (okToContinue)
                 {
-
                     if (command.Category == CubaseMacroConstants.Midi)
                     {
                         this.RunMidiMacro(command);
+                    }
+                    else if (command.Category == CubaseMacroConstants.SysEx)
+                    {
+                        this.RunSysexMacro(command);
                     }
                     else
                     {

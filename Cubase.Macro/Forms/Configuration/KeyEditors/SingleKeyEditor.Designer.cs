@@ -47,13 +47,13 @@
             // 
             KeySelectorControl.Location = new Point(15, 40);
             KeySelectorControl.Name = "KeySelectorControl";
-            KeySelectorControl.Size = new Size(451, 157);
+            KeySelectorControl.Size = new Size(451, 235);
             KeySelectorControl.TabIndex = 1;
             // 
             // ReturnToParentMenuAfterExecution
             // 
             ReturnToParentMenuAfterExecution.AutoSize = true;
-            ReturnToParentMenuAfterExecution.Location = new Point(15, 203);
+            ReturnToParentMenuAfterExecution.Location = new Point(15, 281);
             ReturnToParentMenuAfterExecution.Name = "ReturnToParentMenuAfterExecution";
             ReturnToParentMenuAfterExecution.Size = new Size(180, 24);
             ReturnToParentMenuAfterExecution.TabIndex = 2;

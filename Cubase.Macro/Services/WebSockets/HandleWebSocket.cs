@@ -145,11 +145,15 @@ namespace Cubase.Macro.Services.WebSockets
         static WebSocketMidiCommandMessage RunMidiCommand(CubaseKeyCommand cubaseKeyCommand)
         {
             Log?.Information($"Received Midi Command {cubaseKeyCommand.Name}");
-            if (MidiService.SendMidiMessage(cubaseKeyCommand))
+            string error = string.Empty;
+            if (MidiService.SendMidiMessage(cubaseKeyCommand, (err) =>
+            {
+                error = err;
+            }))
             {
                 return WebSocketMidiCommandMessage.CreateFromCommand(WebSocketMidiCommand.MidiCommand);
             }
-            else return WebSocketMidiCommandMessage.CreateError("Not implemented! - yet");
+            else return WebSocketMidiCommandMessage.CreateError(string.IsNullOrEmpty(error) ? "Not implemented! - yet" : error);
         }
     }
 }

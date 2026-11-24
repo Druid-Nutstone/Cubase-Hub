@@ -98,6 +98,10 @@ namespace Cubase.Macro.Common.Models
             return Convert.ToBase64String(Encoding.UTF8.GetBytes(json));
         }
 
+        public bool IsConditional { get; set; } = false;
+
+        public CubaseConditionalKey? Conditional { get; set; }
+
         public static CubaseKeyCommand Deserialise(string base64)
         {
             var json = Encoding.UTF8.GetString(Convert.FromBase64String(base64));

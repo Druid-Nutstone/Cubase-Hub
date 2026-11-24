@@ -1,5 +1,7 @@
 ﻿using Cubase.Macro.Common.Models;
+using Cubase.Macro.Forms.Configuration.KeyEditors.ConditionalKeys;
 using Cubase.Macro.Forms.Configuration.KeySelector;
+using System.ComponentModel;
 
 namespace Cubase.Macro.Forms.Configuration.KeyEditors
 {
@@ -7,12 +9,38 @@ namespace Cubase.Macro.Forms.Configuration.KeyEditors
     {
         private List<CubaseKeyCommand> keys;
 
+        private CubaseConditionalKey conditionalKey = new CubaseConditionalKey();
+
+        [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
+        public IServiceProvider ServiceProvider { get; set; }
+
         public MacroKeySelectorControl()
         {
             InitializeComponent();
             ButtonAdd.Click += ButtonAdd_Click;
             ButtonDel.Click += ButtonDel_Click;
+            ButtonConditional.Click += ButtonConditional_Click;
             this.MacroCommandListView.SelectedIndexChanged += MacroCommandListView_SelectedIndexChanged;
+        }
+
+        private void ButtonConditional_Click(object? sender, EventArgs e)
+        {
+            this.conditionalKey = new CubaseConditionalKey();
+            var form = new ConditionalEditorForm(this.ServiceProvider, this.conditionalKey, this.OnConditionKeyChange);
+            form?.ShowDialog();
+        }
+
+        private void OnConditionKeyChange(CubaseConditionalKey conditionalKey)
+        {
+            var newKeyCommand = new CubaseKeyCommand()
+            {
+                IsConditional = true,
+                Conditional = conditionalKey,
+                Name = conditionalKey.Command.Name,
+                Category = CubaseMacroConstants.Midi
+            };
+            this.keys.Add(newKeyCommand);
+            this.MacroCommandListView.Populate(this.keys);
         }
 
         private void MacroCommandListView_SelectedIndexChanged(object? sender, EventArgs e)
@@ -61,12 +89,13 @@ namespace Cubase.Macro.Forms.Configuration.KeyEditors
             this.MacroCommandListView.Populate(this.keys);
         }
 
-        public void Initialise(List<CubaseKeyCommand> commands)
+        public void Initialise(List<CubaseKeyCommand> commands, IServiceProvider serviceProvider)
         {
             this.keys = commands;
+            this.ServiceProvider = serviceProvider;
             this.MacroCommandListView.Populate(commands);
-        }
 
+        }
 
     }
 }

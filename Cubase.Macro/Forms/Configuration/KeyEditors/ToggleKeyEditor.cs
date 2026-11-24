@@ -15,6 +15,9 @@ namespace Cubase.Macro.Forms.Configuration.KeyEditors
         }
 
         [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
+        public IServiceProvider ServiceProvider { get; set; }
+
+        [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
         public CubaseMacro Macro
         {
             get
@@ -31,8 +34,8 @@ namespace Cubase.Macro.Forms.Configuration.KeyEditors
 
         private void BindControls()
         {
-            MacroToggleOn.Initialise(this.macro.ToggleOnKeys);
-            MacroToggleOff.Initialise(this.macro.ToggleOffKeys);
+            MacroToggleOn.Initialise(this.macro.ToggleOnKeys, this.ServiceProvider);
+            MacroToggleOff.Initialise(this.macro.ToggleOffKeys, this.ServiceProvider);
         }
     }
 }

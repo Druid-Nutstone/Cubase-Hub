@@ -59,7 +59,11 @@ var sysexCommand = {
 
         TrackUpdate,
 
-        TrackComplete
+        TrackComplete,
+
+        TransportUpdate,
+
+        UpdateTrack
 
     }
 }

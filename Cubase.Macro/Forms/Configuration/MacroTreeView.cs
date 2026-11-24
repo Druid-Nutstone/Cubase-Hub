@@ -8,6 +8,8 @@ namespace Cubase.Macro.Forms.Configuration
     {
         private Panel dataPanel;
 
+        private readonly IServiceProvider serviceProvider;
+
         private CubaseMacroCollection macros;
 
         private Action macroUpdatedEventHandler;
@@ -18,10 +20,16 @@ namespace Cubase.Macro.Forms.Configuration
 
         private string lastPath = string.Empty;
 
-        public MacroTreeView(Panel DataPanel, Action MacroUpdatedEventHandler, Action<string> NodeSelected, CubaseMacroConfiguration cubaseMacroConfiguration, string lastNode)
+        public MacroTreeView(Panel DataPanel,
+                             Action MacroUpdatedEventHandler,
+                             Action<string> NodeSelected,
+                             CubaseMacroConfiguration cubaseMacroConfiguration,
+                             IServiceProvider serviceProvider,
+                             string lastNode)
         {
             this.lastPath = lastNode;
             this.nodeSelected = NodeSelected;
+            this.serviceProvider = serviceProvider;
             this.Dock = DockStyle.Fill;
             ThemeApplier.ApplyDarkTheme(this);
             this.macroUpdatedEventHandler = MacroUpdatedEventHandler;
@@ -34,8 +42,8 @@ namespace Cubase.Macro.Forms.Configuration
         {
             this.macros = macros;
             this.Nodes.Clear();
-            this.Nodes.Add(new PrimaryMacroTreeNode(macros, dataPanel, macroUpdatedEventHandler));
-            this.Nodes.Add(new CommonMacrosTreeNode(macros, dataPanel, macroUpdatedEventHandler));
+            this.Nodes.Add(new PrimaryMacroTreeNode(macros, dataPanel, serviceProvider, macroUpdatedEventHandler));
+            this.Nodes.Add(new CommonMacrosTreeNode(macros, dataPanel, serviceProvider, macroUpdatedEventHandler));
             this.Nodes.Add(new ConfigurationTreeNode(this.cubaseMacroConfiguration));
             this.ExpandAll();
             if (!string.IsNullOrEmpty(lastPath))
@@ -95,14 +103,14 @@ namespace Cubase.Macro.Forms.Configuration
         {
             if (e.Node is MenuMacroTreeNode menuNode)
             {
-                var editControl = new EditMacroControl(this.macros, menuNode.Macro, this.macroUpdatedEventHandler);
+                var editControl = new EditMacroControl(this.macros, menuNode.Macro, this.serviceProvider, this.macroUpdatedEventHandler);
                 this.dataPanel.Controls.Clear();
                 editControl.Dock = DockStyle.Fill;
                 this.dataPanel.Controls.Add(editControl);
             }
             else if (e.Node is KeyCommandMacroTreeNode keyCommandNode)
             {
-                var editControl = new EditMacroControl(this.macros, keyCommandNode.Macro, this.macroUpdatedEventHandler);
+                var editControl = new EditMacroControl(this.macros, keyCommandNode.Macro, this.serviceProvider, this.macroUpdatedEventHandler);
                 this.dataPanel.Controls.Clear();
                 editControl.Dock = DockStyle.Fill;
                 this.dataPanel.Controls.Add(editControl);
@@ -151,31 +159,31 @@ namespace Cubase.Macro.Forms.Configuration
 
         public class CommonMacrosTreeNode : BaseMacroTreeNode
         {
-            public CommonMacrosTreeNode(CubaseMacroCollection macros, Panel DataPanel, Action MacroUpdatedEventHandler)
+            public CommonMacrosTreeNode(CubaseMacroCollection macros, Panel DataPanel, IServiceProvider serviceProvider, Action MacroUpdatedEventHandler)
             {
                 this.Text = "Common Macros";
                 foreach (var macro in macros.CommonMacros)
                 {
-                    this.Nodes.Add(new KeyCommandMacroTreeNode(macro, macros, DataPanel, MacroUpdatedEventHandler));
+                    this.Nodes.Add(new KeyCommandMacroTreeNode(macro, macros, DataPanel, serviceProvider, MacroUpdatedEventHandler));
                 }
-                this.ContextMenuStrip = new MacroTreeViewContentMenu(macros, DataPanel, MacroUpdatedEventHandler);
+                this.ContextMenuStrip = new MacroTreeViewContentMenu(macros, DataPanel, serviceProvider, MacroUpdatedEventHandler);
             }
         }
 
         public class PrimaryMacroTreeNode : BaseMacroTreeNode
         {
-            public PrimaryMacroTreeNode(CubaseMacroCollection macros, Panel DataPanel, Action MacroUpdatedEventHandler)
+            public PrimaryMacroTreeNode(CubaseMacroCollection macros, Panel DataPanel, IServiceProvider serviceProvider, Action MacroUpdatedEventHandler)
             {
                 this.Text = "Macros";
                 foreach (var macro in macros.Macros)
                 {
                     if (macro.MacroType == CubaseMacroType.Menu)
                     {
-                        this.Nodes.Add(new MenuMacroTreeNode(macro, macros, DataPanel, MacroUpdatedEventHandler));
+                        this.Nodes.Add(new MenuMacroTreeNode(macro, macros, DataPanel, serviceProvider, MacroUpdatedEventHandler));
                     }
                     else if (macro.MacroType == CubaseMacroType.KeyCommand)
                     {
-                        this.Nodes.Add(new KeyCommandMacroTreeNode(macro, macros, DataPanel, MacroUpdatedEventHandler));
+                        this.Nodes.Add(new KeyCommandMacroTreeNode(macro, macros, DataPanel, serviceProvider, MacroUpdatedEventHandler));
                     }
                 }
             }
@@ -185,20 +193,20 @@ namespace Cubase.Macro.Forms.Configuration
         {
             public CubaseMacro Macro { get; private set; }
 
-            public MenuMacroTreeNode(CubaseMacro macro, CubaseMacroCollection macros, Panel DataPanel, Action MacroUpdatedEventHandler)
+            public MenuMacroTreeNode(CubaseMacro macro, CubaseMacroCollection macros, Panel DataPanel, IServiceProvider serviceProvider, Action MacroUpdatedEventHandler)
             {
                 this.Macro = macro;
                 this.Text = macro.Title;
-                this.ContextMenuStrip = new MacroTreeViewContentMenu(macros, macro, DataPanel, MacroUpdatedEventHandler);
+                this.ContextMenuStrip = new MacroTreeViewContentMenu(macros, macro, DataPanel, serviceProvider, MacroUpdatedEventHandler);
                 foreach (var subMacro in macro.Macros)
                 {
                     if (subMacro.MacroType == CubaseMacroType.Menu)
                     {
-                        this.Nodes.Add(new MenuMacroTreeNode(subMacro, macros, DataPanel, MacroUpdatedEventHandler));
+                        this.Nodes.Add(new MenuMacroTreeNode(subMacro, macros, DataPanel, serviceProvider, MacroUpdatedEventHandler));
                     }
                     else if (subMacro.MacroType == CubaseMacroType.KeyCommand)
                     {
-                        this.Nodes.Add(new KeyCommandMacroTreeNode(subMacro, macros, DataPanel, MacroUpdatedEventHandler));
+                        this.Nodes.Add(new KeyCommandMacroTreeNode(subMacro, macros, DataPanel, serviceProvider, MacroUpdatedEventHandler));
                     }
                 }
             }
@@ -208,11 +216,11 @@ namespace Cubase.Macro.Forms.Configuration
         {
             public CubaseMacro Macro { get; private set; }
 
-            public KeyCommandMacroTreeNode(CubaseMacro macro, CubaseMacroCollection macros, Panel DataPanel, Action MacroUpdatedEventHandler)
+            public KeyCommandMacroTreeNode(CubaseMacro macro, CubaseMacroCollection macros, Panel DataPanel, IServiceProvider serviceProvider, Action MacroUpdatedEventHandler)
             {
                 this.Text = macro.Title;
                 this.Macro = macro;
-                this.ContextMenuStrip = new MacroTreeViewContentMenu(macros, macro, DataPanel, MacroUpdatedEventHandler);
+                this.ContextMenuStrip = new MacroTreeViewContentMenu(macros, macro, DataPanel, serviceProvider, MacroUpdatedEventHandler);
             }
         }
     }

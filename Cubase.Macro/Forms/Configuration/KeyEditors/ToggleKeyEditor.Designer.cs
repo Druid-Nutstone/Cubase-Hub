@@ -38,7 +38,7 @@
             // 
             MacroToggleOn.Location = new Point(15, 40);
             MacroToggleOn.Name = "MacroToggleOn";
-            MacroToggleOn.Size = new Size(449, 208);
+            MacroToggleOn.Size = new Size(449, 231);
             MacroToggleOn.TabIndex = 0;
             // 
             // label1

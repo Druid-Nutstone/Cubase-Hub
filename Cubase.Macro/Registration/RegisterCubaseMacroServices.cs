@@ -13,10 +13,14 @@ using Cubase.Hub.Services.Projects;
 using Cubase.Hub.Services.Track;
 using Cubase.Macro.Common.Lyrics.Services.Scrolling;
 using Cubase.Macro.Common.Socket;
+using Cubase.Macro.Forms.Configuration.KeyEditors.ConditionalKeys;
+using Cubase.Macro.Services.ConditionalMacros;
+using Cubase.Macro.Services.ConditionalMacros.Transport;
 using Cubase.Macro.Services.Config;
 using Cubase.Macro.Services.Keyboard;
 using Cubase.Macro.Services.Midi;
 using Cubase.Macro.Services.Plugins;
+using Cubase.Macro.Services.SysEx;
 using Cubase.Macro.Services.Window;
 using Microsoft.Extensions.DependencyInjection;
 using Nutstone.AI.Assistant.Services.Plugins;
@@ -36,6 +40,10 @@ namespace Cubase.Macro.Registration
                    .AddSingleton<IScrollerService, ScrollerService>()
                    .AddSingleton<IPLuginManagerService, PluginManagerService>()
                    .AddSingleton<IPluginService, PluginService>()
+                   .AddSingleton<IConditionalMacroFunction, TransportMacroFunction>()
+                   .AddSingleton<IConditionalMacroService, ConditionalMacroService>()
+                   .AddSingleton<ISysExService, SysExService>()
+                   .AddTransient<ConditionalEditorForm>()
                    .AddSingleton<CubaseMacroWebSocketClient>();
         }
 

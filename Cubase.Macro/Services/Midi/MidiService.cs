@@ -1,5 +1,6 @@
 ﻿using Cubase.Macro.Common.Models;
 using Cubase.Macro.Models;
+using Cubase.Macro.Services.ConditionalMacros;
 using Cubase.Macro.Services.Config;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
@@ -14,6 +15,8 @@ namespace Cubase.Macro.Services.Midi
         private readonly ILogger<MidiService> logger;
         private readonly IServiceProvider serviceProvider;
         private IConfigurationService configurationService;
+
+        private IConditionalMacroService conditionalMacroService;
 
         private NutstoneDriver? midiDriver;
 
@@ -73,6 +76,10 @@ namespace Cubase.Macro.Services.Midi
 
         public TransportLocationCollection TransportLocation => this.transportLocation ?? new TransportLocationCollection();
 
+        private TransportModel transportModel = new TransportModel();
+
+        public TransportModel TransportModel => this.transportModel;
+
         private bool _volumeChanging = false;
 
         public bool VolumeChanging
@@ -88,6 +95,7 @@ namespace Cubase.Macro.Services.Midi
             this.logger = logger;
             this.serviceProvider = serviceProvider;
             this.configurationService = this.serviceProvider.GetService<IConfigurationService>();
+            this.conditionalMacroService = this.serviceProvider.GetService<IConditionalMacroService>();
             cueTimer.Elapsed += CueTimer_Elapsed;
             cueTimer.Interval = 1500;
         }
@@ -116,15 +124,27 @@ namespace Cubase.Macro.Services.Midi
             this.Initialised = true;
         }
 
-        public bool SendMidiMessage(CubaseKeyCommand cubaseMidiCommand)
+        public bool SendMidiMessage(CubaseKeyCommand cubaseMidiCommand, Action<string> onError)
         {
             try
             {
-                logger.LogInformation($"Sending Midi {cubaseMidiCommand.Name} Ch:{cubaseMidiCommand.Channel} Note:{cubaseMidiCommand.Note}");
-                midiDriver?.SendNoteOn(
-                    cubaseMidiCommand.Channel,
-                    cubaseMidiCommand.Note,
-                    127);
+                if (cubaseMidiCommand.IsConditional)
+                {
+                    var actualCommand = SendMidiConditional(cubaseMidiCommand, onError);
+                    if (actualCommand != null)
+                    {
+                        return this.SendMidiMessage(actualCommand, onError);
+                    }
+                    return false;
+                }
+                else
+                {
+                    logger.LogInformation($"Sending Midi {cubaseMidiCommand.Name} Ch:{cubaseMidiCommand.Channel} Note:{cubaseMidiCommand.Note}");
+                    midiDriver?.SendNoteOn(
+                        cubaseMidiCommand.Channel,
+                        cubaseMidiCommand.Note,
+                        127);
+                }
 
                 return true;
             }
@@ -156,6 +176,11 @@ namespace Cubase.Macro.Services.Midi
         public void RestartMidi()
         {
             midiDriver?.RestartPort();
+        }
+
+        private CubaseKeyCommand SendMidiConditional(CubaseKeyCommand cubaseMidiCommand, Action<string> onError)
+        {
+            return this.conditionalMacroService.ExecuteConditionalMacro(cubaseMidiCommand, onError);
         }
 
         private void MidiDriver_MidiMessageReceived(byte[] message)
@@ -295,6 +320,10 @@ namespace Cubase.Macro.Services.Midi
                     {
                         logger.LogError(ex, $"Error deserialising CommandValueChanged");
                     }
+                    break;
+                // Transport
+                case var _ when command.Equals(MidiCommand.TransportUpdate.ToString(), StringComparison.OrdinalIgnoreCase):
+                    this.transportModel = JsonSerializer.Deserialize<TransportModel>(payload);
                     break;
                 // plugin routines 
                 case var _ when command.Equals(MidiCommand.GetPluginSlots.ToString(), StringComparison.OrdinalIgnoreCase):
@@ -613,7 +642,7 @@ namespace Cubase.Macro.Services.Midi
         public void ReloadScripts()
         {
             this.HandleClearChannels();
-            this.SendMidiMessage(CubaseKeyCommand.CreateMidi("Reload Scripts", 22, 1));
+            this.SendMidiMessage(CubaseKeyCommand.CreateMidi("Reload Scripts", 22, 1), (err) => { });
         }
     }
 }

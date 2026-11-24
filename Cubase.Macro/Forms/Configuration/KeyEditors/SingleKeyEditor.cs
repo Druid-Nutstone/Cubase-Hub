@@ -11,7 +11,12 @@ namespace Cubase.Macro.Forms.Configuration.KeyEditors
         {
             InitializeComponent();
             ThemeApplier.ApplyDarkTheme(this);
+
         }
+
+        [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
+        public IServiceProvider ServiceProvider { get; set; }
+
 
         [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
         public CubaseMacro Macro
@@ -30,7 +35,7 @@ namespace Cubase.Macro.Forms.Configuration.KeyEditors
 
         private void BindControls()
         {
-            this.KeySelectorControl.Initialise(this.macro.ToggleOnKeys);
+            this.KeySelectorControl.Initialise(this.macro.ToggleOnKeys, this.ServiceProvider);
             this.ReturnToParentMenuAfterExecution.Bind(nameof(CubaseMacro.ReturnToParentMenuAfterExecution), this.macro);
         }
     }

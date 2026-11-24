@@ -4,12 +4,16 @@ namespace Cubase.Macro.Forms.Configuration
 {
     public class MacroTreeViewContentMenu : ContextMenuStrip
     {
-        public MacroTreeViewContentMenu(CubaseMacroCollection macros, CubaseMacro parent, Panel dataPanel, Action macroUpdatedEventHandler)
+        public MacroTreeViewContentMenu(CubaseMacroCollection macros,
+                                        CubaseMacro parent,
+                                        Panel dataPanel,
+                                        IServiceProvider serviceProvider,
+                                        Action macroUpdatedEventHandler)
         {
             if (parent.MacroType == CubaseMacroType.Menu)
             {
-                this.Items.Add(new NewMenuTreeViewMenuItem(macros, parent, dataPanel, macroUpdatedEventHandler));
-                this.Items.Add(new NewCommandTreeViewMenuItem(macros, parent, dataPanel, macroUpdatedEventHandler));
+                this.Items.Add(new NewMenuTreeViewMenuItem(macros, parent, dataPanel, serviceProvider, macroUpdatedEventHandler));
+                this.Items.Add(new NewCommandTreeViewMenuItem(macros, parent, dataPanel, serviceProvider, macroUpdatedEventHandler));
             }
             this.Items.Add(new MoveUpCommandTreeViewMenuItem(macros, parent, dataPanel, macroUpdatedEventHandler));
             this.Items.Add(new MoveDownCommandTreeViewMenuItem(macros, parent, dataPanel, macroUpdatedEventHandler));
@@ -21,9 +25,9 @@ namespace Cubase.Macro.Forms.Configuration
             this.Items.Add(new DeleteMenuTreeViewMenuItem(macros, parent, dataPanel, macroUpdatedEventHandler));
         }
 
-        public MacroTreeViewContentMenu(CubaseMacroCollection macros, Panel dataPanel, Action macroUpdatedEventHandler)
+        public MacroTreeViewContentMenu(CubaseMacroCollection macros, Panel dataPanel, IServiceProvider serviceProvider, Action macroUpdatedEventHandler)
         {
-            this.Items.Add(new NewCommonCommandTreeViewMenuItem(macros, dataPanel, macroUpdatedEventHandler));
+            this.Items.Add(new NewCommonCommandTreeViewMenuItem(macros, dataPanel, serviceProvider, macroUpdatedEventHandler));
             this.Items.Add(new MoveUpCommandTreeViewMenuItem(macros, null, dataPanel, macroUpdatedEventHandler));
             this.Items.Add(new MoveDownCommandTreeViewMenuItem(macros, null, dataPanel, macroUpdatedEventHandler));
             this.Items.Add(new CopyCommandTreeViewMenuItem(macros, null, dataPanel, macroUpdatedEventHandler)); ;
@@ -257,11 +261,13 @@ namespace Cubase.Macro.Forms.Configuration
 
         private Action MacroUpdatedEventHandler { get; set; }
 
+        private IServiceProvider serviceProvider;
 
-        public NewCommonCommandTreeViewMenuItem(CubaseMacroCollection macros, Panel dataPanel, Action macroUpdatedEventHandler)
+        public NewCommonCommandTreeViewMenuItem(CubaseMacroCollection macros, Panel dataPanel, IServiceProvider serviceProvider, Action macroUpdatedEventHandler)
         {
             this.Macros = macros;
             this.DataPanel = dataPanel;
+            this.serviceProvider = serviceProvider;
             this.MacroUpdatedEventHandler = macroUpdatedEventHandler;
             this.Text = "Add Macro";
         }
@@ -270,7 +276,7 @@ namespace Cubase.Macro.Forms.Configuration
         {
             var newMacro = CubaseMacro.CreateKeyCommandMacro("New Macro", Guid.Empty);
             this.Macros.CommonMacros.Add(newMacro);
-            var editControl = new EditMacroControl(this.Macros, newMacro, this.MacroUpdatedEventHandler);
+            var editControl = new EditMacroControl(this.Macros, newMacro, this.serviceProvider, this.MacroUpdatedEventHandler);
             this.DataPanel.Controls.Clear();
             editControl.Dock = DockStyle.Fill;
             this.DataPanel.Controls.Add(editControl);
@@ -288,12 +294,14 @@ namespace Cubase.Macro.Forms.Configuration
 
         private Action MacroUpdatedEventHandler { get; set; }
 
+        private IServiceProvider serviceProvider;
 
-        public NewCommandTreeViewMenuItem(CubaseMacroCollection macros, CubaseMacro parent, Panel dataPanel, Action macroUpdatedEventHandler)
+        public NewCommandTreeViewMenuItem(CubaseMacroCollection macros, CubaseMacro parent, Panel dataPanel, IServiceProvider serviceProvider, Action macroUpdatedEventHandler)
         {
             this.Macro = parent;
             this.Macros = macros;
             this.DataPanel = dataPanel;
+            this.serviceProvider = serviceProvider;
             this.MacroUpdatedEventHandler = macroUpdatedEventHandler;
             this.Text = "Add Macro";
         }
@@ -302,7 +310,7 @@ namespace Cubase.Macro.Forms.Configuration
         {
             var newMacro = CubaseMacro.CreateKeyCommandMacro("New Macro", this.Macro.Id);
             this.Macro.Macros.Add(newMacro);
-            var editControl = new EditMacroControl(this.Macros, newMacro, this.MacroUpdatedEventHandler);
+            var editControl = new EditMacroControl(this.Macros, newMacro, this.serviceProvider, this.MacroUpdatedEventHandler);
             this.DataPanel.Controls.Clear();
             editControl.Dock = DockStyle.Fill;
             this.DataPanel.Controls.Add(editControl);
@@ -385,11 +393,14 @@ namespace Cubase.Macro.Forms.Configuration
 
         private Panel DataPanel { get; set; }
 
+        private IServiceProvider serviceProvider;
+
         private Action MacroUpdatedEventHandler { get; set; }
 
-        public NewMenuTreeViewMenuItem(CubaseMacroCollection macros, CubaseMacro parent, Panel dataPanel, Action macroUpdatedEventHandler)
+        public NewMenuTreeViewMenuItem(CubaseMacroCollection macros, CubaseMacro parent, Panel dataPanel, IServiceProvider serviceProvider, Action macroUpdatedEventHandler)
         {
             this.Macro = parent;
+            this.serviceProvider = serviceProvider;
             this.Macros = macros;
             this.DataPanel = dataPanel;
             this.MacroUpdatedEventHandler = macroUpdatedEventHandler;
@@ -400,7 +411,7 @@ namespace Cubase.Macro.Forms.Configuration
         {
             var newMacro = CubaseMacro.CreateNewMenuMacro(this.Macro.Id);
             this.Macro.Macros.Add(newMacro);
-            var editControl = new EditMacroControl(this.Macros, newMacro, this.MacroUpdatedEventHandler);
+            var editControl = new EditMacroControl(this.Macros, newMacro, this.serviceProvider, this.MacroUpdatedEventHandler);
             this.DataPanel.Controls.Clear();
             editControl.Dock = DockStyle.Fill;
             this.DataPanel.Controls.Add(editControl);

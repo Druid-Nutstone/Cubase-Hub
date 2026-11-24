@@ -11,11 +11,16 @@ namespace Cubase.Macro.Forms.Configuration
 
         private Action MacoSavedEventHandler;
 
+        private readonly IServiceProvider serviceProvider;
 
-        public EditMacroControl(CubaseMacroCollection macros, CubaseMacro macroToEdit, Action macroSavedEventHandler)
+        public EditMacroControl(CubaseMacroCollection macros,
+                                CubaseMacro macroToEdit,
+                                IServiceProvider serviceProvider,
+                                Action macroSavedEventHandler)
         {
             InitializeComponent();
             this.cubaseMacros = macros;
+            this.serviceProvider = serviceProvider;
             this.macro = macroToEdit;
             this.MacoSavedEventHandler = macroSavedEventHandler;
             this.UpdateButton.Click += UpdateButton_Click;
@@ -98,6 +103,7 @@ namespace Cubase.Macro.Forms.Configuration
             this.ContentPanel.Controls.Clear();
             control.Dock = DockStyle.Fill;
             this.ContentPanel.Controls.Add(control);
+            ((IKeyEditor)control).ServiceProvider = this.serviceProvider;
             ((IKeyEditor)control).Macro = this.macro;
         }
 

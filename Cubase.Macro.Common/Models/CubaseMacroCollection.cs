@@ -115,6 +115,7 @@ namespace Cubase.Macro.Common.Models
 
         public List<CubaseMacro> Macros { get; set; } = new List<CubaseMacro>();
 
+
         public bool MenuChangesVisibility { get; set; } = false;
 
         public string Serialize()
@@ -197,7 +198,7 @@ namespace Cubase.Macro.Common.Models
     {
         NotApplicable = 0,
         Single = 1,
-        Toggle = 2
+        Toggle = 2,
     }
 
     public enum CubaseMacroToggleState

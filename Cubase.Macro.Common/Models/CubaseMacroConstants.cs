@@ -12,6 +12,8 @@
 
         public static string Midi = nameof(Midi);
 
+        public static string SysEx = nameof(SysEx);
+
         public static string UserAppDataFolderPath =
             System.IO.Path.Combine(
                 Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData),
