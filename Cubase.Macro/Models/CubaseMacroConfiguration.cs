@@ -21,6 +21,8 @@ namespace Cubase.Macro.Models
 
         public bool ReloadWindowsMidiService { get; set; } = false;
 
+        public List<string> SourceCubaseFolders { get; set; } = new List<string>();
+
         public WindowSettings? CueLevelLocation { get; set; } = null;
 
         public int LyricFontSize { get; set; } = 12;

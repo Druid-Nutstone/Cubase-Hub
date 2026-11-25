@@ -27,6 +27,22 @@
         {
             return this.Where(x => x.Selected).ToList();
         }
+
+        public List<Track> GetTracksByName(List<string> names)
+        {
+            if (names == null || names.Count == 0)
+            {
+                return new List<Track>();
+            }
+
+            var nameSet = new HashSet<string>(
+                names.Where(n => n != null),
+                StringComparer.OrdinalIgnoreCase);
+
+            return this
+                .Where(track => track.Name != null && nameSet.Contains(track.Name))
+                .ToList();
+        }
     }
 
     public class Track

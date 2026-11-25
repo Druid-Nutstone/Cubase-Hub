@@ -28,6 +28,30 @@ namespace Cubase.Macro.Forms.Configuration.Config
             LyricFontSize.LostFocus += SaveConfig;
             lyricEditorPath.Bind(nameof(CubaseMacroConfiguration.LyricViewerFilePath), this.cubaseMacroConfiguration);
             lyricEditorPath.LostFocus += SaveConfig;
+            this.AddSourceLocation.Click += AddSourceLocation_Click;
+            this.PopulateSourceLocations();
+        }
+
+        private void PopulateSourceLocations()
+        {
+            foreach (var item in cubaseMacroConfiguration.SourceCubaseFolders)
+            {
+                this.CubaseSourceFolderView.AddSourceDirectory(item);
+            }
+        }
+
+        private void AddSourceLocation_Click(object? sender, EventArgs e)
+        {
+            var folderbrowser = new FolderBrowserDialog();
+            folderbrowser.ShowNewFolderButton = true;
+            folderbrowser.UseDescriptionForTitle = true;
+            folderbrowser.Description = "Select NEW cubase project source";
+            if (folderbrowser.ShowDialog() != DialogResult.Cancel)
+            {
+                this.cubaseMacroConfiguration.SourceCubaseFolders.Add(folderbrowser.SelectedPath);
+                this.cubaseMacroConfiguration.Save();
+                this.CubaseSourceFolderView.AddSourceDirectory(folderbrowser.SelectedPath);
+            }
         }
 
         private void SaveConfig(object? sender, EventArgs e)

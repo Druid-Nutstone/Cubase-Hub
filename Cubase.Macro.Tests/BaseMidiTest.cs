@@ -1,5 +1,6 @@
 ﻿using Cubase.Macro.Registration;
 using Cubase.Macro.Services.Config;
+using Cubase.Macro.Services.Lex;
 using Cubase.Macro.Services.Midi;
 using Cubase.Macro.Services.Plugins;
 using Microsoft.Extensions.DependencyInjection;
@@ -17,6 +18,8 @@ namespace Cubase.Macro.Tests
 
         protected IMidiService midiService;
 
+        protected ICLService cLService;
+
         protected IPLuginManagerService pluginManagerService;
 
         protected IPluginService pluginService;
@@ -31,6 +34,7 @@ namespace Cubase.Macro.Tests
             this.midiService = serviceProvider.GetService<IMidiService>();
             this.pluginManagerService = serviceProvider.GetService<IPLuginManagerService>();
             this.pluginService = serviceProvider.GetService<IPluginService>();
+            this.cLService = serviceProvider.GetService<ICLService>();
             // 
 
         }

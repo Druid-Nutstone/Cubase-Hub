@@ -1,17 +1,10 @@
-using Cubase.Macro.Common.Lyrics.Services.Scrolling;
 using Cubase.Macro.Common.Models;
-using Cubase.Macro.Common.Socket;
 using Cubase.Macro.Forms.Configuration;
-using Cubase.Macro.Forms.Cues;
 using Cubase.Macro.Forms.Lyrics;
 using Cubase.Macro.Registration;
 using Cubase.Macro.Services.ConditionalMacros;
-using Cubase.Macro.Services.ConditionalMacros.Transport;
 using Cubase.Macro.Services.Config;
-using Cubase.Macro.Services.Keyboard;
 using Cubase.Macro.Services.Midi;
-using Cubase.Macro.Services.Plugins;
-using Cubase.Macro.Services.SysEx;
 using Cubase.Macro.Services.WebSockets;
 using Cubase.Macro.Services.Window;
 using Cubase.Macro.Services.WindowsServices;
@@ -22,7 +15,6 @@ using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using Nutstone.AI.Assistant.Forms.Chat;
 using Nutstone.AI.Assistant.Registration;
-using Nutstone.AI.Assistant.Services.Plugins;
 using Serilog;
 using System.Diagnostics;
 using System.IO;
@@ -218,22 +210,7 @@ namespace Cubase.Macro
                     });
 
                     services
-                        .AddSingleton<IKeyboardService, KeyboardService>()
-                        .AddSingleton<IWindowService, WindowService>()
-                        .AddSingleton<IConfigurationService, ConfigurationService>()
-                        .AddSingleton<IMidiService, MidiService>()
-                        .AddSingleton<IPLuginManagerService, PluginManagerService>()
-                        .AddSingleton<IPluginService, PluginService>()
-                        .AddSingleton<IScrollerService, ScrollerService>()
-                        .AddSingleton<CubaseMacroWebSocketClient>()
-                        .AddSingleton<IConditionalMacroFunction, TransportMacroFunction>()
-                        .AddSingleton<IConditionalMacroService, ConditionalMacroService>()
-                        .AddSingleton<ISysExService, SysExService>()
-                        .AddSingleton<IWindowsControllerService, WindowsControllerService>()
-                        .AddScoped<SettingsMainControl>()
-                        .AddScoped<SettingsForm>()
-                        .AddTransient<CueForm>()
-                        .AddTransient<LyricViewerForm>()
+                        .RegisterCubaseMacro()
                         .RegisterAiAssistance() // register nutstone ai services and forms
                         .RegisterCubaseHubServices()
                         .AddScoped<MainForm>();

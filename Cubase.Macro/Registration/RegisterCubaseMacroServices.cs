@@ -13,15 +13,19 @@ using Cubase.Hub.Services.Projects;
 using Cubase.Hub.Services.Track;
 using Cubase.Macro.Common.Lyrics.Services.Scrolling;
 using Cubase.Macro.Common.Socket;
-using Cubase.Macro.Forms.Configuration.KeyEditors.ConditionalKeys;
+using Cubase.Macro.Forms.Configuration;
+using Cubase.Macro.Forms.Cues;
+using Cubase.Macro.Forms.Lyrics;
 using Cubase.Macro.Services.ConditionalMacros;
 using Cubase.Macro.Services.ConditionalMacros.Transport;
 using Cubase.Macro.Services.Config;
 using Cubase.Macro.Services.Keyboard;
+using Cubase.Macro.Services.Lex;
 using Cubase.Macro.Services.Midi;
 using Cubase.Macro.Services.Plugins;
 using Cubase.Macro.Services.SysEx;
 using Cubase.Macro.Services.Window;
+using Cubase.Macro.Services.WindowsServices;
 using Microsoft.Extensions.DependencyInjection;
 using Nutstone.AI.Assistant.Services.Plugins;
 
@@ -33,18 +37,25 @@ namespace Cubase.Macro.Registration
         public static IServiceCollection RegisterCubaseMacro(this IServiceCollection services)
         {
             return services
-                   .AddSingleton<IKeyboardService, KeyboardService>()
-                   .AddSingleton<IWindowService, WindowService>()
-                   .AddSingleton<IConfigurationService, ConfigurationService>()
-                   .AddSingleton<IMidiService, MidiService>()
-                   .AddSingleton<IScrollerService, ScrollerService>()
-                   .AddSingleton<IPLuginManagerService, PluginManagerService>()
-                   .AddSingleton<IPluginService, PluginService>()
-                   .AddSingleton<IConditionalMacroFunction, TransportMacroFunction>()
-                   .AddSingleton<IConditionalMacroService, ConditionalMacroService>()
-                   .AddSingleton<ISysExService, SysExService>()
-                   .AddTransient<ConditionalEditorForm>()
-                   .AddSingleton<CubaseMacroWebSocketClient>();
+                        .AddSingleton<IKeyboardService, KeyboardService>()
+                        .AddSingleton<IWindowService, WindowService>()
+                        .AddSingleton<IConfigurationService, ConfigurationService>()
+                        .AddSingleton<IMidiService, MidiService>()
+                        .AddSingleton<IPLuginManagerService, PluginManagerService>()
+                        .AddSingleton<IPluginService, PluginService>()
+                        .AddSingleton<IScrollerService, ScrollerService>()
+                        .AddSingleton<CubaseMacroWebSocketClient>()
+                        .AddSingleton<IConditionalMacroFunction, TransportMacroFunction>()
+                        .AddSingleton<IConditionalMacroService, ConditionalMacroService>()
+                        .AddSingleton<ISysExService, SysExService>()
+                        .AddSingleton<IWindowsControllerService, WindowsControllerService>()
+                        .AddScoped<SettingsMainControl>()
+                        .AddScoped<SettingsForm>()
+                        .AddTransient<ICLService, CLService>()
+                        .AddTransient<ICLFunctionService, CLFunctionService>()
+                        .AddSingleton<IMacroIntepreter, MacroIntepreter>()
+                        .AddTransient<CueForm>()
+                        .AddTransient<LyricViewerForm>();
         }
 
         /*

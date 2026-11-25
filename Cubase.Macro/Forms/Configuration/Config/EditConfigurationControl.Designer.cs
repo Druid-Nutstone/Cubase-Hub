@@ -44,6 +44,14 @@
             LyricFontSize = new Cubase.Macro.BoundControls.BoundTextBox();
             label7 = new Label();
             lyricEditorPath = new Cubase.Macro.BoundControls.BoundTextBox();
+            groupBox1 = new GroupBox();
+            panel2 = new Panel();
+            CubaseSourceFolderView = new CubaseSourceLocationListView();
+            panel1 = new Panel();
+            AddSourceLocation = new Button();
+            groupBox1.SuspendLayout();
+            panel2.SuspendLayout();
+            panel1.SuspendLayout();
             SuspendLayout();
             // 
             // label1
@@ -61,13 +69,13 @@
             ResetVisibilityKey.Anchor = AnchorStyles.Top | AnchorStyles.Left | AnchorStyles.Right;
             ResetVisibilityKey.Location = new Point(24, 46);
             ResetVisibilityKey.Name = "ResetVisibilityKey";
-            ResetVisibilityKey.Size = new Size(223, 27);
+            ResetVisibilityKey.Size = new Size(708, 27);
             ResetVisibilityKey.TabIndex = 1;
             // 
             // SelectVisibilityKey
             // 
             SelectVisibilityKey.Anchor = AnchorStyles.Top | AnchorStyles.Right;
-            SelectVisibilityKey.Location = new Point(253, 45);
+            SelectVisibilityKey.Location = new Point(738, 45);
             SelectVisibilityKey.Name = "SelectVisibilityKey";
             SelectVisibilityKey.Size = new Size(94, 29);
             SelectVisibilityKey.TabIndex = 2;
@@ -186,10 +194,61 @@
             lyricEditorPath.Size = new Size(323, 27);
             lyricEditorPath.TabIndex = 15;
             // 
+            // groupBox1
+            // 
+            groupBox1.Controls.Add(panel2);
+            groupBox1.Controls.Add(panel1);
+            groupBox1.Font = new Font("Segoe UI", 9F, FontStyle.Bold);
+            groupBox1.Location = new Point(407, 170);
+            groupBox1.Name = "groupBox1";
+            groupBox1.Size = new Size(425, 187);
+            groupBox1.TabIndex = 16;
+            groupBox1.TabStop = false;
+            groupBox1.Text = "Source Project Locations";
+            // 
+            // panel2
+            // 
+            panel2.Controls.Add(CubaseSourceFolderView);
+            panel2.Dock = DockStyle.Fill;
+            panel2.Location = new Point(3, 58);
+            panel2.Name = "panel2";
+            panel2.Size = new Size(419, 126);
+            panel2.TabIndex = 1;
+            // 
+            // CubaseSourceFolderView
+            // 
+            CubaseSourceFolderView.Dock = DockStyle.Fill;
+            CubaseSourceFolderView.Location = new Point(0, 0);
+            CubaseSourceFolderView.MultiSelect = false;
+            CubaseSourceFolderView.Name = "CubaseSourceFolderView";
+            CubaseSourceFolderView.Size = new Size(419, 126);
+            CubaseSourceFolderView.TabIndex = 0;
+            CubaseSourceFolderView.UseCompatibleStateImageBehavior = false;
+            CubaseSourceFolderView.View = View.Details;
+            // 
+            // panel1
+            // 
+            panel1.Controls.Add(AddSourceLocation);
+            panel1.Dock = DockStyle.Top;
+            panel1.Location = new Point(3, 23);
+            panel1.Name = "panel1";
+            panel1.Size = new Size(419, 35);
+            panel1.TabIndex = 0;
+            // 
+            // AddSourceLocation
+            // 
+            AddSourceLocation.Location = new Point(3, 3);
+            AddSourceLocation.Name = "AddSourceLocation";
+            AddSourceLocation.Size = new Size(190, 29);
+            AddSourceLocation.TabIndex = 0;
+            AddSourceLocation.Text = "Add Source Directory";
+            AddSourceLocation.UseVisualStyleBackColor = true;
+            // 
             // EditConfigurationControl
             // 
             AutoScaleDimensions = new SizeF(8F, 20F);
             AutoScaleMode = AutoScaleMode.Font;
+            Controls.Add(groupBox1);
             Controls.Add(lyricEditorPath);
             Controls.Add(label7);
             Controls.Add(LyricFontSize);
@@ -207,7 +266,10 @@
             Controls.Add(ResetVisibilityKey);
             Controls.Add(label1);
             Name = "EditConfigurationControl";
-            Size = new Size(366, 554);
+            Size = new Size(851, 554);
+            groupBox1.ResumeLayout(false);
+            panel2.ResumeLayout(false);
+            panel1.ResumeLayout(false);
             ResumeLayout(false);
             PerformLayout();
         }
@@ -230,5 +292,10 @@
         private BoundControls.BoundTextBox LyricFontSize;
         private Label label7;
         private BoundControls.BoundTextBox lyricEditorPath;
+        private GroupBox groupBox1;
+        private Panel panel2;
+        private CubaseSourceLocationListView CubaseSourceFolderView;
+        private Panel panel1;
+        private Button AddSourceLocation;
     }
 }
