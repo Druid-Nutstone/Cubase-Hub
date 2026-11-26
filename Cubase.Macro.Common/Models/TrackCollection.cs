@@ -28,6 +28,16 @@
             return this.Where(x => x.Selected).ToList();
         }
 
+        public Track? GetTrackById(string id)
+        {
+            return this.FirstOrDefault(x => x.Id == id);
+        }
+
+        public List<Track> GetSelectedTracks()
+        {
+            return this.Where(x => x.Selected).ToList();
+        }
+
         public List<Track> GetTracksByName(List<string> names)
         {
             if (names == null || names.Count == 0)

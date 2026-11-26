@@ -63,7 +63,9 @@ var sysexCommand = {
 
         TransportUpdate,
 
-        UpdateTrack
+        UpdateTrack,
+
+        UpdateTransport
 
     }
 }

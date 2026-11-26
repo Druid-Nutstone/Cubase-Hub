@@ -3,6 +3,7 @@ using Cubase.Macro.Services.Config;
 using Cubase.Macro.Services.Lex;
 using Cubase.Macro.Services.Midi;
 using Cubase.Macro.Services.Plugins;
+using Cubase.Macro.Tests.Fakes;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Logging.Abstractions;
@@ -24,11 +25,15 @@ namespace Cubase.Macro.Tests
 
         protected IPluginService pluginService;
 
-        public BaseMidiTest()
+        public BaseMidiTest(bool? fakeit = false)
         {
             var services = new ServiceCollection();
             services.RegisterCubaseMacro()
                     .AddSingleton(typeof(ILogger<>), typeof(NullLogger<>));
+            if (fakeit.HasValue && fakeit.Value)
+            {
+                services.AddSingleton<IMidiService, FakeMidiService>();
+            }
             this.serviceProvider = services.BuildServiceProvider();
             this.configurationService = serviceProvider.GetService<IConfigurationService>();
             this.midiService = serviceProvider.GetService<IMidiService>();

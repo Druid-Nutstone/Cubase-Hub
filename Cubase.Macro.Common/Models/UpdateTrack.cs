@@ -15,5 +15,6 @@
         Solo = 1,
         Mute = 2,
         Selected = 3,
+        Unknown = 99
     }
 }
