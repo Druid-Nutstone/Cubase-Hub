@@ -6,22 +6,28 @@ namespace Cubase.Macro.Services.Lex
     {
         private LexVariableCollection variables = new LexVariableCollection();
 
-        private readonly ICLFunctionService functionService;
+        private readonly IScriptFunctionService functionService;
 
         private Action<string> OnError;
 
-        public MacroIntepreter(ICLFunctionService functionService)
+        private Action<string> OnProgress;
+
+        public MacroIntepreter(IScriptFunctionService functionService)
         {
             this.functionService = functionService;
         }
 
-        public void ProcessStatements(List<Statement> statements, Action<string> onError)
+        public void ProcessStatements(List<Statement> statements, Action<string> onError, Action<string> onProgress)
         {
             this.variables = new LexVariableCollection();
 
             this.OnError = onError;
 
+            this.OnProgress = onProgress;
+
+
             this.ProcessStatementList(statements);
+            OnProgress("Script Complete.");
         }
 
 
@@ -39,7 +45,7 @@ namespace Cubase.Macro.Services.Lex
 
         private void ProcessFunctionCallExpression(FunctionCallExpression functionCall, LexVariable? variable = null)
         {
-            var result = this.functionService.ExecuteFunction(functionCall, this.OnError, variable);
+            var result = this.functionService.ExecuteFunction(functionCall, this.OnError, this.OnProgress, variable);
         }
 
         private void ProcessStatementList(List<Statement> statements)

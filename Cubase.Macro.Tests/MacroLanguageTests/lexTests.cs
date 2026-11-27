@@ -16,16 +16,16 @@
             this.StartMidiService();
 
             string script = """
-                var result = RecordEnableByname("Groove Agent","Yamaha")
+                var result = SelectEnableByName("Groove Agent")
                 if result == true then
-                   RecordDisableByName("Groove Agent")
-                   ExecuteMidi("Start")
+                   // RecordDisableByName("Groove Agent")
+                   // ExecuteMidi("Start")
                 end if  
                 """;
-            this.cLService.ProcessMacro(script, (error) =>
+            this.cLService.RunScript(script, (error) =>
             {
                 Console.WriteLine(error);
-            });
+            }, (p) => { });
         }
 
         [TestMethod]
@@ -33,24 +33,42 @@
         {
             this.StartMidiService();
             string script = """
-                var result = SetSelected("Record",true)
-                if (result == true) then 
-                    var enablePlay = SetTransport("Play", true)
+                // set left locator to cursor position 
+                var setLocatorResult = ExecuteMidi("Set Left Locator")
+                if (setLocatorResult == true) then 
+                   // move back 4 bars 
+                   var moveCursorBack = ExecuteMidi("Cursor Back 1 Bar", 4)
+                   if (moveCursorBack == true) then
+                      // set marker 3 to current position 
+                      var setMarker3 = ExecuteMidi("Set Marker 3")
+                      if (setMarker3 == true) then 
+                        // set any selected tracks into record mode 
+                        var result = SetSelected("Record",true)
+                        if (result == true) then 
+                           // enable punch in 
+                           var enablePunchIn = SetTransport("PunchIn", true)
+                           if (enablePunchIn == true) then
+                              var enablePlay = SetTransport("Play", true) 
+                           end if   
+                        end if
+                      end if
+                   end if                      
                 end if
                 """;
             var tskj = Task.Run(() =>
             {
                 var tlist = this.midiService.TrackCollection.GetSelectedTracks();
-                while (this.midiService.TrackCollection.GetSelectedTracks().Count() == 0)
+                while (tlist.Count == 0)
                 {
                     Thread.Sleep(1000);
+                    tlist = this.midiService.TrackCollection.GetSelectedTracks();
                 }
             });
             tskj.Wait();
-            this.cLService.ProcessMacro(script, (error) =>
+            this.cLService.RunScript(script, (error) =>
             {
                 Console.WriteLine(error);
-            });
+            }, (progress) => { });
         }
 
         [TestCleanup]

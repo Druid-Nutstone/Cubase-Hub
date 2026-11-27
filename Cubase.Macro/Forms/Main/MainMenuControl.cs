@@ -215,9 +215,14 @@ namespace Cubase.Macro.Forms.Main
         private void InitialiseActions()
         {
             var actionCollection = new DropDownToggleItemCollection();
-            actionCollection.AddToggleButton("Options", "⚙️", (isActive) =>
+            actionCollection.AddToggleButton("Configuration", "⚙️", (isActive) =>
             {
                 this.mainForm.OpenSettings();
+                return isActive;
+            });
+            actionCollection.AddToggleButton("Cubase Scripts", "📜", (isActive) =>
+            {
+                this.mainForm.OpenScripts();
                 return isActive;
             });
             actionCollection.AddToggleButton("Cue Levels", "🎚️", ButtonCueLevelsClick);

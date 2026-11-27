@@ -1,6 +1,7 @@
 using Cubase.Macro.Common.Models;
 using Cubase.Macro.Forms.Configuration;
 using Cubase.Macro.Forms.Lyrics;
+using Cubase.Macro.Forms.Scripts;
 using Cubase.Macro.Registration;
 using Cubase.Macro.Services.ConditionalMacros;
 using Cubase.Macro.Services.Config;
@@ -112,6 +113,13 @@ namespace Cubase.Macro
                         return;
                     }
                 }
+                if (options == "scripts")
+                {
+                    var config = host.Services.GetService<IConfigurationService>();
+                    config?.ReloadConfiguration();
+                    var scriptsForm = host.Services.GetService<ScriptMainForm>();
+                    Application.Run(scriptsForm);
+                }
             }
         }
 
@@ -183,6 +191,14 @@ namespace Cubase.Macro
             {
                 Title = "Open Midi Control",
                 Arguments = "midicontrol",
+                ApplicationPath = Application.ExecutablePath,
+                IconResourcePath = Application.ExecutablePath,
+                IconResourceIndex = 0
+            });
+            jumpList.JumpItems.Add(new JumpTask
+            {
+                Title = "Open Scripts",
+                Arguments = "scripts",
                 ApplicationPath = Application.ExecutablePath,
                 IconResourcePath = Application.ExecutablePath,
                 IconResourceIndex = 0

@@ -2,6 +2,6 @@
 {
     public interface IMacroIntepreter
     {
-        void ProcessStatements(List<Statement> statments, Action<string> onError);
+        void ProcessStatements(List<Statement> statments, Action<string> onError, Action<string> onProgress);
     }
 }

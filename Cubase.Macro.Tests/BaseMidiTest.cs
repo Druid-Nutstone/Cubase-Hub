@@ -19,7 +19,7 @@ namespace Cubase.Macro.Tests
 
         protected IMidiService midiService;
 
-        protected ICLService cLService;
+        protected IScriptService cLService;
 
         protected IPLuginManagerService pluginManagerService;
 
@@ -39,7 +39,7 @@ namespace Cubase.Macro.Tests
             this.midiService = serviceProvider.GetService<IMidiService>();
             this.pluginManagerService = serviceProvider.GetService<IPLuginManagerService>();
             this.pluginService = serviceProvider.GetService<IPluginService>();
-            this.cLService = serviceProvider.GetService<ICLService>();
+            this.cLService = serviceProvider.GetService<IScriptService>();
             // 
 
         }

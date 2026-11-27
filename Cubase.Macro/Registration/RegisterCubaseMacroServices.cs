@@ -16,6 +16,7 @@ using Cubase.Macro.Common.Socket;
 using Cubase.Macro.Forms.Configuration;
 using Cubase.Macro.Forms.Cues;
 using Cubase.Macro.Forms.Lyrics;
+using Cubase.Macro.Forms.Scripts;
 using Cubase.Macro.Services.ConditionalMacros;
 using Cubase.Macro.Services.ConditionalMacros.Transport;
 using Cubase.Macro.Services.Config;
@@ -51,8 +52,10 @@ namespace Cubase.Macro.Registration
                         .AddSingleton<IWindowsControllerService, WindowsControllerService>()
                         .AddScoped<SettingsMainControl>()
                         .AddScoped<SettingsForm>()
-                        .AddTransient<ICLService, CLService>()
-                        .AddTransient<ICLFunctionService, CLFunctionService>()
+                        .AddTransient<ScriptMainForm>()
+                        .AddTransient<EditScriptForm>()
+                        .AddTransient<IScriptService, ScriptService>()
+                        .AddTransient<IScriptFunctionService, ScriptFunctionService>()
                         .AddSingleton<IMacroIntepreter, MacroIntepreter>()
                         .AddTransient<CueForm>()
                         .AddTransient<LyricViewerForm>();

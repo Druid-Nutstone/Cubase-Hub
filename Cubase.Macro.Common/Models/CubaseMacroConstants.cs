@@ -10,9 +10,16 @@
 
         public static string NutstoneSetListNotation = ".nsn";
 
+        /// <summary>
+        /// cls = cubase language script
+        /// </summary>
+        public static string NutstoneCubaseScript = ".csl";
+
         public static string Midi = nameof(Midi);
 
         public static string SysEx = nameof(SysEx);
+
+        public static string Script = nameof(Script);
 
         public static string UserAppDataFolderPath =
             System.IO.Path.Combine(
@@ -21,7 +28,7 @@
 
         public static string LogPath = Path.Combine(UserAppDataFolderPath, "Logs");
 
-        public static string KeyCommandsFileLocation { get; set; } = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData), "Steinberg", "Cubase 15_64", "Key Commands.xml");
+        public static string KeyCommandsFileLocation { get; set; } = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData), "Steinberg", "Cubase 16_64", "Key Commands.xml");
 
         public static string MacroConfigurationFileName = Path.Combine(UserAppDataFolderPath, "CubaseMacro.json");
 
@@ -30,6 +37,8 @@
         public static string MidiConfigurationFileName = Path.Combine(UserAppDataFolderPath, "CubaseMidiMacroConfig.json");
 
         public static string MidiJavascriptFileName = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments), "Steinberg", "Cubase", "MIDI Remote", "Driver Scripts", "Local", "Nutstone", "VirtualDevice", "Nutstone_VirtualDevice.js");
+
+        public static string ScriptFolder = Path.Combine(UserAppDataFolderPath, "Scripts");
 
         public static string NutstoneLyricBaseDirectory = "\\\\192.168.1.100\\Utilities\\Files\\Downloads\\Lyrics";
 

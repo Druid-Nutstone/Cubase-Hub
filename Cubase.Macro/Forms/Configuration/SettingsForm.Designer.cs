@@ -31,15 +31,16 @@
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(SettingsForm));
             menuStrip1 = new MenuStrip();
             OpenConfig = new ToolStripMenuItem();
-            DataPanel = new Panel();
             OpenLyrics = new ToolStripMenuItem();
+            DataPanel = new Panel();
+            OpenScripts = new ToolStripMenuItem();
             menuStrip1.SuspendLayout();
             SuspendLayout();
             // 
             // menuStrip1
             // 
             menuStrip1.ImageScalingSize = new Size(20, 20);
-            menuStrip1.Items.AddRange(new ToolStripItem[] { OpenConfig, OpenLyrics });
+            menuStrip1.Items.AddRange(new ToolStripItem[] { OpenConfig, OpenLyrics, OpenScripts });
             menuStrip1.Location = new Point(0, 0);
             menuStrip1.Name = "menuStrip1";
             menuStrip1.Size = new Size(1221, 28);
@@ -52,6 +53,12 @@
             OpenConfig.Size = new Size(154, 24);
             OpenConfig.Text = "Open Configuration";
             // 
+            // OpenLyrics
+            // 
+            OpenLyrics.Name = "OpenLyrics";
+            OpenLyrics.Size = new Size(58, 24);
+            OpenLyrics.Text = "Lyrics";
+            // 
             // DataPanel
             // 
             DataPanel.Dock = DockStyle.Fill;
@@ -60,11 +67,11 @@
             DataPanel.Size = new Size(1221, 627);
             DataPanel.TabIndex = 1;
             // 
-            // OpenLyrics
+            // OpenScripts
             // 
-            OpenLyrics.Name = "OpenLyrics";
-            OpenLyrics.Size = new Size(58, 24);
-            OpenLyrics.Text = "Lyrics";
+            OpenScripts.Name = "OpenScripts";
+            OpenScripts.Size = new Size(119, 24);
+            OpenScripts.Text = "Cubase Scripts";
             // 
             // SettingsForm
             // 
@@ -90,5 +97,6 @@
         private Panel DataPanel;
         private ToolStripMenuItem OpenConfig;
         private ToolStripMenuItem OpenLyrics;
+        private ToolStripMenuItem OpenScripts;
     }
 }

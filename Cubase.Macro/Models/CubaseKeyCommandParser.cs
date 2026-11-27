@@ -1,4 +1,5 @@
 ﻿using Cubase.Macro.Common.Models;
+using Cubase.Macro.Services.Lex;
 using Cubase.Macro.Services.SysEx;
 using System.IO;
 using System.Xml.Linq;
@@ -28,7 +29,23 @@ namespace Cubase.Macro.Models
             }
             AddMidiCommands(list);
             AddSysexCommands(list);
+            AddScriptCommands(list);
             return list;
+        }
+
+        private void AddScriptCommands(CubaseKeyCommandCollection commands)
+        {
+            var scriptService = new ScriptService();
+            foreach (var script in scriptService.GetScripts())
+            {
+                commands.Add(new CubaseKeyCommand()
+                {
+                    Category = CubaseMacroConstants.Script,
+                    Name = script.Name,
+                    Key = script.Description,
+                    ScriptPath = script.ScriptPath
+                });
+            }
         }
 
         private void AddSysexCommands(CubaseKeyCommandCollection commands)
@@ -41,7 +58,6 @@ namespace Cubase.Macro.Models
                     Category = CubaseMacroConstants.SysEx,
                     Name = sysEx,
                     Key = "SysEx"
-
                 });
             }
         }

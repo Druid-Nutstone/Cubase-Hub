@@ -18,10 +18,6 @@ namespace Cubase.Macro.Services.Lex
             {
                 return TrackUpdateValueType.Solo;
             }
-            if (valueType.ToLower().StartsWith("solo"))
-            {
-                return TrackUpdateValueType.Solo;
-            }
             if (valueType.ToLower().StartsWith("mute"))
             {
                 return TrackUpdateValueType.Mute;

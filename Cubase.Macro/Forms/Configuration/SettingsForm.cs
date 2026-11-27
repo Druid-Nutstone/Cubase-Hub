@@ -1,4 +1,5 @@
 ﻿using Cubase.Macro.Common.Models;
+using Cubase.Macro.Forms.Scripts;
 using System.Diagnostics;
 
 namespace Cubase.Macro.Forms.Configuration
@@ -7,14 +8,23 @@ namespace Cubase.Macro.Forms.Configuration
     {
         private readonly SettingsMainControl settingsMainControl;
 
-        public SettingsForm(SettingsMainControl settingsMainControl)
+        private readonly ScriptMainForm scriptMainForm;
+
+        public SettingsForm(SettingsMainControl settingsMainControl, ScriptMainForm scriptsForm)
         {
             InitializeComponent();
             ThemeApplier.ApplyDarkTheme(this);
             this.settingsMainControl = settingsMainControl;
+            this.scriptMainForm = scriptsForm;
             this.OpenConfig.Click += OpenConfig_Click;
             this.OpenLyrics.Click += OpenLyrics_Click;
+            this.OpenScripts.Click += OpenScripts_Click;
             this.Initialise();
+        }
+
+        private void OpenScripts_Click(object? sender, EventArgs e)
+        {
+            this.scriptMainForm.ShowDialog();
         }
 
         private void OpenLyrics_Click(object? sender, EventArgs e)

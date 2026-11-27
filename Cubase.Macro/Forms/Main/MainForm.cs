@@ -9,9 +9,11 @@ using Cubase.Macro.Forms.Configuration;
 using Cubase.Macro.Forms.Cues;
 using Cubase.Macro.Forms.Lyrics;
 using Cubase.Macro.Forms.Main.Buttons;
+using Cubase.Macro.Forms.Scripts;
 using Cubase.Macro.Services;
 using Cubase.Macro.Services.Config;
 using Cubase.Macro.Services.Keyboard;
+using Cubase.Macro.Services.Lex;
 using Cubase.Macro.Services.Midi;
 using Cubase.Macro.Services.Plugins;
 using Cubase.Macro.Services.SysEx;
@@ -53,14 +55,19 @@ namespace Cubase.Macro
 
         private readonly ISysExService sysExService;
 
+        private readonly IScriptService scriptService;
+
         private readonly IMidiService midiService;
 
         private readonly IPLuginManagerService pluginManagerService;
 
         private readonly ILogger<MainForm> logger;
 
+
         [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
         public bool PositionCubaseWithMouse { get; set; } = true;
+
+        private Dictionary<string, Func<CubaseKeyCommand, bool>> macroProcessors;
 
         public MainForm(IKeyboardService keyboardService,
                         IConfigurationService configurationService,
@@ -68,6 +75,7 @@ namespace Cubase.Macro
                         IWindowService windowService,
                         IMidiService midiService,
                         ISysExService sysExService,
+                        IScriptService scriptService,
                         ILogger<MainForm> log,
                         IServiceProvider serviceProvider)
         {
@@ -76,6 +84,7 @@ namespace Cubase.Macro
             this.configurationService = configurationService;
             this.serviceProvider = serviceProvider;
             this.sysExService = sysExService;
+            this.scriptService = scriptService;
             this.midiService = midiService;
             this.windowService = windowService;
             this.pluginManagerService = pluginManagerService;
@@ -89,6 +98,12 @@ namespace Cubase.Macro
             LoadMacros();
             this.ShowMacros();
             this.HookMouseMove(this);
+            this.macroProcessors = new Dictionary<string, Func<CubaseKeyCommand, bool>>()
+            {
+                { CubaseMacroConstants.Midi, this.RunMidiMacro },
+                { CubaseMacroConstants.SysEx, this.RunSysexMacro },
+                { CubaseMacroConstants.Script, this.RunMidiScript }
+            };
         }
 
         private void HookTransportMonitoring(bool monitoringState)
@@ -295,6 +310,13 @@ namespace Cubase.Macro
             });
         }
 
+        private bool RunMidiScript(CubaseKeyCommand command)
+        {
+            return this.scriptService.RunScriptFromFileName(command.ScriptPath, (err) =>
+            {
+                MessageBox.Show($"Error running {command.Name}. {err}");
+            }, (progress) => { });
+        }
 
         private bool RunMidiMacro(CubaseKeyCommand command)
         {
@@ -346,13 +368,10 @@ namespace Cubase.Macro
             {
                 if (okToContinue)
                 {
-                    if (command.Category == CubaseMacroConstants.Midi)
+
+                    if (this.macroProcessors.ContainsKey(command.Category))
                     {
-                        this.RunMidiMacro(command);
-                    }
-                    else if (command.Category == CubaseMacroConstants.SysEx)
-                    {
-                        this.RunSysexMacro(command);
+                        this.macroProcessors[command.Category](command);
                     }
                     else
                     {
@@ -509,6 +528,12 @@ namespace Cubase.Macro
                 albumForm?.Initialise();
                 albumForm?.Show();
             }
+        }
+
+        public void OpenScripts()
+        {
+            var scriptsForm = this.serviceProvider.GetService<ScriptMainForm>();
+            scriptsForm.ShowDialog();
         }
 
         private WindowSettings PositionFormNextToMainForm()

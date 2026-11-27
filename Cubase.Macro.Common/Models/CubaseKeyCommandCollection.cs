@@ -85,7 +85,7 @@ namespace Cubase.Macro.Common.Models
         public string Name { get; set; } = string.Empty;
         public string Key { get; set; } = string.Empty;
         public string Category { get; set; } = string.Empty;
-
+        public string? ScriptPath { get; set; } = string.Empty; 
         public int Note { get; set; } = 0;
 
         public int Channel { get; set; } = 0;
