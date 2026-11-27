@@ -34,6 +34,8 @@
             ControlPanel = new Panel();
             NewScript = new Button();
             MainPanel = new Panel();
+            importToolStripMenuItem = new ToolStripMenuItem();
+            ImportScript = new ToolStripMenuItem();
             menuStrip1.SuspendLayout();
             ControlPanel.SuspendLayout();
             SuspendLayout();
@@ -41,7 +43,7 @@
             // menuStrip1
             // 
             menuStrip1.ImageScalingSize = new Size(20, 20);
-            menuStrip1.Items.AddRange(new ToolStripItem[] { fileToolStripMenuItem });
+            menuStrip1.Items.AddRange(new ToolStripItem[] { fileToolStripMenuItem, importToolStripMenuItem });
             menuStrip1.Location = new Point(0, 0);
             menuStrip1.Name = "menuStrip1";
             menuStrip1.Size = new Size(800, 28);
@@ -58,7 +60,7 @@
             // OpenScript
             // 
             OpenScript.Name = "OpenScript";
-            OpenScript.Size = new Size(224, 26);
+            OpenScript.Size = new Size(128, 26);
             OpenScript.Text = "Open";
             // 
             // ControlPanel
@@ -87,6 +89,19 @@
             MainPanel.Size = new Size(800, 378);
             MainPanel.TabIndex = 2;
             // 
+            // importToolStripMenuItem
+            // 
+            importToolStripMenuItem.DropDownItems.AddRange(new ToolStripItem[] { ImportScript });
+            importToolStripMenuItem.Name = "importToolStripMenuItem";
+            importToolStripMenuItem.Size = new Size(68, 24);
+            importToolStripMenuItem.Text = "Import";
+            // 
+            // ImportScript
+            // 
+            ImportScript.Name = "ImportScript";
+            ImportScript.Size = new Size(224, 26);
+            ImportScript.Text = "Script";
+            // 
             // ScriptMainForm
             // 
             AutoScaleDimensions = new SizeF(8F, 20F);
@@ -113,5 +128,7 @@
         private Button NewScript;
         private ToolStripMenuItem fileToolStripMenuItem;
         private ToolStripMenuItem OpenScript;
+        private ToolStripMenuItem importToolStripMenuItem;
+        private ToolStripMenuItem ImportScript;
     }
 }

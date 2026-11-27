@@ -24,11 +24,27 @@ namespace Cubase.Macro.Forms.Scripts
         {
             this.NewScript.Click += NewScript_Click;
             this.OpenScript.Click += OpenScript_Click;
+            this.ImportScript.Click += ImportScript_Click;
             this.scriptIndex = new ScriptIndexControl(this.serviceProvider);
             this.MainPanel.Controls.Clear();
             this.MainPanel.Controls.Add(this.scriptIndex);
             this.scriptIndex.Initialise();
 
+        }
+
+        private void ImportScript_Click(object? sender, EventArgs e)
+        {
+            var openFile = new OpenFileDialog()
+            {
+                Filter = $"Cubase Script (*{CubaseMacroConstants.NutstoneCubaseScript})|*{CubaseMacroConstants.NutstoneCubaseScript}"
+            };
+            if (openFile.ShowDialog() == DialogResult.OK)
+            {
+                var fileName = Path.GetFileName(openFile.FileName);
+                var targetFile = Path.Combine(CubaseMacroConstants.ScriptFolder, fileName);
+                File.Copy(openFile.FileName, targetFile, true);
+                MessageBox.Show($"File copied to {targetFile}");
+            }
         }
 
         private void OpenScript_Click(object? sender, EventArgs e)
